@@ -10,7 +10,7 @@ function doit()
     local status = "Pos: " .. pos[0] .. ", " .. pos[1] .. "\n";
 
     status = status .. "RGB: " .. table.concat(pixels, ", ") .. "\nHEX: 0x" .. decToHex(pixels[1]) .. decToHex(pixels[2]) .. decToHex(pixels[3]) .. "FF\nPixelRaw: " .. pixelsRaw .. "\n\n";
-    extraInfo = "Tap Ctrl to Save Values to ATITD9/info_logs.txt"
+    extraInfo = "Tap Ctrl to Save Values to ATITD10/info_logs.txt"
     lsDrawRect(10, 260, 80, 200, 0,  pixelsRaw);
     statusScreen(status .. extraInfo, nil, nil, 0.7);
 
