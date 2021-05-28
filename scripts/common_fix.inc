@@ -71,7 +71,7 @@ function getWindowBorders(x, y)
   if not x or not y then
     error("Incorrect number of arguments to getWindowBorders()");
   end
-  return boundsToBox(srGetWindowBorders(x, y, 3));
+  return boundsToBox(srGetWindowBorders(x, y, 0));
 end
 
 -------------------------------------------------------------------------------
