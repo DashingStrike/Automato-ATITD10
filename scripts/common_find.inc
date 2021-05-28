@@ -14,7 +14,7 @@ lsRequireVersion(2,41);
 
 -- The colors used by srFindFirst/NextTextRegion and srGetWindowBorders to determine
 -- the innermost border pixels
-srSetWindowBorderColorRange(0x644026, 0x6d472a);
+srSetWindowBorderColorRange(0x806144, 0x886952);
 
 -- The colors that srStripRegion/Screen() looks for to decide it should invert (and
 -- treat as background when stripping)
@@ -24,7 +24,7 @@ srSetWindowBorderColorRange(0x644026, 0x6d472a);
 srSetWindowInvertColorRange(minSetWindowInvertColorRange, maxSetWindowInvertColorRange);
 
 -- The color range that is treated as window background and stripped in srStripRegion()
-srSetWindowBackgroundColorRange(0xDBC998,0xFFFFFA);
+srSetWindowBackgroundColorRange(0x283C42,0xFFFFFA);
 
 -------------------------------------------------------------------------------
 -- findAllImages(image_name, range, tol)
@@ -485,7 +485,7 @@ function findClockRegion()
   local hyksos = srFindImage("faction/faction_hyksos.png", factionTolerance);
   local kush = srFindImage("faction/faction_kush.png", factionTolerance);
   local meshwesh = srFindImage("faction/faction_meshwesh.png", factionTolerance);
- 
+
   if neutral then
     faction = "Neutral";
     srSetWindowInvertColorRange(0x8E5C34, 0xE4D7CC);
