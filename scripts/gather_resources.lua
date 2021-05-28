@@ -43,18 +43,18 @@ function gatherGrass()
 			       timeStarted = lsGetTimer()
 				end
 			end
-			
+
 		checkBreak();
 		srReadScreen();
 		local grass = srFindImage("grass.png");
-		
+
 			if autoMove then
 				checkElapsedTime();
 				moveCharacter();
 			end
-		
+
 			if grass then
-				srClickMouseNoMove(grass[0]+5,grass[1],1);
+				srClickMouseNoMove(grass[0]+5,grass[1]);
 				sleepWithStatus(2300, "Clicking Grass Icon\nWaiting on Animation\n\nGrass Collected: " .. tostring(counter) .. "\n\n\nElapsed Time: " .. getElapsedTime(timeStarted));
 				counter = counter + 1;
 				lastGathered = lsGetTimer()
@@ -84,19 +84,19 @@ end
 
 function gatherDirt()
 	timeStarted = lsGetTimer();
-	
+
 	local warn_small_font=nil;
 	local warn_large_font=nil;
-	
+
 	while 1 do
 		checkBreak();
 		srReadScreen();
-		
+
 		stats_black2 = nil;
 		stats_black3 = nil;
 		stats_blackB = nil;
 		stats_blackC = nil;
-		
+
 		stats_black = srFindImage("endurance.png");
 		stats_blackB = srFindImage("endurance2.png"); -- We can proceed when it's semi-dark red (same as white)
 		stats_blackC = srFindImage("endurance3.png"); -- We can proceed when it's dark red (same as white)
@@ -112,14 +112,14 @@ function gatherDirt()
 				warn_small_font = true;
 			end
 		end
-		
+
 		local warning="";
 		if warn_small_font then
 			warning = "Your font size appears to be smaller than the default, many macros here will not work correctly.";
 		elseif warn_large_font then
 			warning = "Your font size appears to be larger than the default, many macros here will not work correctly.";
 		end
-		
+
 		if not stats_black and not stats_black2 and not stats_black3 and not stats_blackB and not stats_blackC then
 			sleepWithStatus(100, "Waiting for Endurance timer to be visible and white");
 		else
@@ -127,7 +127,7 @@ function gatherDirt()
 			local dirt = srFindImage("dirt.png");
 			if dirt then
 			srClickMouseNoMove(dirt[0]+5,dirt[1],1);
-			sleepWithStatus(2300, "Clicking Dirt Icon\n\nDirt Collected: " .. tostring(counter) .. "\n\n\nElapsed Time: " .. getElapsedTime(timeStarted));			
+			sleepWithStatus(2300, "Clicking Dirt Icon\n\nDirt Collected: " .. tostring(counter) .. "\n\n\nElapsed Time: " .. getElapsedTime(timeStarted));
 			counter = counter + 1;
 			else
 			sleepWithStatus(50, "Searching for Dirt Icon\n\nDirt Collected: " .. tostring(counter) .. "\n\n\nElapsed Time: " .. getElapsedTime(timeStarted));
@@ -179,16 +179,16 @@ function gatherClay()
 			timeStarted = lsGetTimer()
 			end
 		end
-		
+
 		checkBreak();
 		srReadScreen();
 		local clay = srFindImage("clay.png");
-		
+
 			if autoMove then
 				checkElapsedTime();
 				moveCharacter();
 			end
-		
+
 			if clay then
 			srClickMouseNoMove(clay[0]+5,clay[1],1);
 			sleepWithStatus(2300, "Clicking Clay Icon\nWaiting on Animation\n\nClay Collected: " .. tostring(counter) .. "\n\n\nElapsed Time: " .. getElapsedTime(timeStarted));
@@ -210,14 +210,14 @@ function gatherResources()
 	while 1 do
 		-- Ask for which button
 		local image_name = nil;
-		local is_done = nil;	
+		local is_done = nil;
 		while not is_done do
 			local y = 0;
 			local x = nil;
 			local z = 0;
 			local bsize = nil;
 			checkBreak();
-			
+
 				if autoMove then
 				  autoMoveColor = 0x80ff80ff;
 				else
@@ -225,7 +225,7 @@ function gatherResources()
 				end
 
 			autoMove = readSetting("autoMove",autoMove);
-			
+
 			if autoMove then
 			 autoMove = CheckBox(35, 170, z, 0x80ff80ff, " Set Automove Direction",
 								  autoMove, 0.65, 0.65);
@@ -235,14 +235,14 @@ function gatherResources()
 			end
 
 			writeSetting("autoMove",autoMove);
-						
+
 			if autoMove then
 			lsPrintWrapped(15, 195, z+10, lsScreenX - 20, 0.7, 0.7, 0xffffffff,
 				"Selecting clay or grass will prompt you to select which direction you wish to move in.");
 			lsPrintWrapped(15, 235, z+10, lsScreenX - 20, 0.7, 0.7, 0xfd4018ff,
 				"There will be some drift, as movement is done via mouse click!");
 			end
-			
+
 			for i=1, #button_names do
 			    if button_names[i] == "Clay" then
 					x = 25;
@@ -276,10 +276,10 @@ function gatherResources()
 			end
 			lsDoFrame();
 			lsSleep(10);
-		end	
-		
+		end
+
 		if image_name == "Grass" then
-			gatherGrass();	
+			gatherGrass();
 		elseif image_name == "Slate" then
 			gatherSlate();
 		elseif image_name == "Clay" then
@@ -287,7 +287,7 @@ function gatherResources()
 		elseif image_name == "Limestone" then
 			gatherLimestone();
 		elseif image_name == "Dirt" then
-			gatherDirt();	
+			gatherDirt();
 		end
 	end
 end
@@ -306,7 +306,7 @@ function moveCharacter()
 		if directionCounter == 0 then
 			srClickMouseNoMove(xyCenter[0]+(300/1080) * srGetWindowSize()[1], xyCenter[1], 0);
 		else
-			srClickMouseNoMove(xyCenter[0]-(300/1080) * srGetWindowSize()[1], xyCenter[1], 0);	
+			srClickMouseNoMove(xyCenter[0]-(300/1080) * srGetWindowSize()[1], xyCenter[1], 0);
 		end
 		lsSleep(move_delay);
 	end
@@ -314,7 +314,7 @@ function moveCharacter()
 		if directionCounter == 0 then
 			srClickMouseNoMove(xyCenter[0], xyCenter[1]+(300/1080) * srGetWindowSize()[1], 0);
 		else
-			srClickMouseNoMove(xyCenter[0], xyCenter[1]-(300/1080) * srGetWindowSize()[1], 0);	
+			srClickMouseNoMove(xyCenter[0], xyCenter[1]-(300/1080) * srGetWindowSize()[1], 0);
 		end
 		lsSleep(move_delay);
 	end
@@ -322,7 +322,7 @@ function moveCharacter()
 		if directionCounter == 0 then
 			srClickMouseNoMove(xyCenter[0]-(300/1080) * srGetWindowSize()[1], xyCenter[1], 0);
 		else
-			srClickMouseNoMove(xyCenter[0]+(300/1080) * srGetWindowSize()[1], xyCenter[1], 0);	
+			srClickMouseNoMove(xyCenter[0]+(300/1080) * srGetWindowSize()[1], xyCenter[1], 0);
 		end
 		lsSleep(move_delay);
 	end
@@ -330,7 +330,7 @@ function moveCharacter()
 		if directionCounter == 0 then
 			srClickMouseNoMove(xyCenter[0], xyCenter[1]-(300/1080) * srGetWindowSize()[1], 0);
 		else
-			srClickMouseNoMove(xyCenter[0], xyCenter[1]+(300/1080) * srGetWindowSize()[1], 0);	
+			srClickMouseNoMove(xyCenter[0], xyCenter[1]+(300/1080) * srGetWindowSize()[1], 0);
 		end
 		lsSleep(move_delay);
 	end
@@ -365,11 +365,9 @@ function checkElapsedTime()
 	    srClickMouseNoMove(xyCenter[0]-300, xyCenter[1], 1); --Right click ground (Stop player from walking)
 		if drawWater() then -- Attempt to refill jugs, in case we're doing Clay
 		  lastGathered = lsGetTimer(); -- Reset Timer and continue, after fetching water
-		else	
+		else
 		  lsPlaySound("fail.wav");
 		  error("No resources found within past " .. math.floor(timeOut/1000) .." seconds; Aborting...")
 		end
 	  end
 end
-
-
