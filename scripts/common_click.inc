@@ -232,27 +232,26 @@ function drawWater(skipTimer)
     end
   end
 
-  [[--
+
   -- Second, check for aqueduct
-  srReadScreen();
-  if not result then
-    local aqueduct = srFindImage("Aqueduct.png");
-    if not aqueduct then
-      aqueduct = srFindImage("Aqueduct2.png");
-    end
-    if aqueduct then
-    sleepWithStatus(200, "Refilling water...", nil, 0.7);
-      safeClick(aqueduct[0], aqueduct[1]);
-      sleepWithStatus(200, "Refreshing aqueduct...", nil, 0.7);
-      srReadScreen();
-      local fill = srFindImage("FillWithWater.png");
-      if fill then
-        safeClick(fill[0] + 5, fill[1]);
-        result = true;
-      end
-    end
-  end
-  --]]
+  --srReadScreen();
+  --if not result then
+  --  local aqueduct = srFindImage("Aqueduct.png");
+  --  if not aqueduct then
+  --    aqueduct = srFindImage("Aqueduct2.png");
+  --  end
+  --  if aqueduct then
+  --  sleepWithStatus(200, "Refilling water...", nil, 0.7);
+  --    safeClick(aqueduct[0], aqueduct[1]);
+  --    sleepWithStatus(200, "Refreshing aqueduct...", nil, 0.7);
+  --    srReadScreen();
+  --    local fill = srFindImage("FillWithWater.png");
+  --    if fill then
+  --      safeClick(fill[0] + 5, fill[1]);
+  --      result = true;
+  --    end
+  --  end
+  --end
 
   -- Last, check for nearby pond
   srReadScreen();
