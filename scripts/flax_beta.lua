@@ -69,7 +69,7 @@ xyFlaxMenu = {}
 window_h = 145
 
 --This is only used when Extra Grid Spacing checkbox is UN checked. The additional spacing between pinned up windows.
-min_width_offset = 75
+min_width_offset = 85
 
 --[[
 How much of the ATITD screen to ignore (protect the right side of screen from closing windows when finished
@@ -696,9 +696,9 @@ function dragWindows(loop_count)
   end
 
   if clearUI then
-    arrangeStashed(nil, true, window_w, window_h, space_to_leave, offsetWidth+10, offsetHeight);
+    arrangeStashed(nil, true, window_w, window_h, space_to_leave, offsetWidth, offsetHeight);
   else
-    arrangeStashed(nil, waterGap, window_w, window_h, space_to_leave, offsetWidth+10, offsetHeight);
+    arrangeStashed(nil, waterGap, window_w, window_h, space_to_leave, offsetWidth, offsetHeight);
   end
 
 end
