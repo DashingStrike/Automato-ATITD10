@@ -45,8 +45,8 @@ function doit()
   windowSize = srGetWindowSize();
   local ctr = 0;
   local xyScreenSize = srGetWindowSize();
-  --[[ THIS HAS BEEN TEMPORARILY COMMENTED OUT UNTIL THE OCR FUNCTIONALITY IS FIXED FOR T10
   while true do
+  --[[ THIS HAS BEEN TEMPORARILY COMMENTED OUT UNTIL THE OCR FUNCTIONALITY IS FIXED FOR T10
     if ((ctr % 10) == 0) then
       srReadScreen();
       clickAllText("Dig under");
