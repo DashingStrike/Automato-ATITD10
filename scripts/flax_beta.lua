@@ -305,12 +305,12 @@ function promptFlaxNumbers()
       )
       y = y + 65
     end
-
+--[[
     readClock = readSetting("readClock", readClock)
     readClock = CheckBox(120, y + 5, z + 10, 0xFFFFFFff, " Read Clock Coords", readClock, 0.7, 0.7)
     writeSetting("readClock", readClock)
     y = y + 2
-
+--]]
     clearUI = readSetting("clearUI",clearUI);
     clearUI = CheckBox(120, y + 19, z + 10, 0xFFFFFFff, " Pin grid below the UI", clearUI, 0.7, 0.7);
     writeSetting("clearUI",clearUI);
