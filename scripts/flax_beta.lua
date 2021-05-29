@@ -696,9 +696,9 @@ function dragWindows(loop_count)
   end
 
   if clearUI then
-    arrangeStashed(nil, true, window_w, window_h, space_to_leave, offsetWidth, offsetHeight);
+    arrangeStashed(nil, true, window_w, window_h, space_to_leave, offsetWidth+10, offsetHeight);
   else
-    arrangeStashed(nil, waterGap, window_w, window_h, space_to_leave, offsetWidth, offsetHeight);
+    arrangeStashed(nil, waterGap, window_w, window_h, space_to_leave, offsetWidth+10, offsetHeight);
   end
 
 end
@@ -751,14 +751,14 @@ function harvestAll(loop_count)
         end
       end
 
-    --  local waters = findAllImages("flax/weedThis.png")
-    --  for i = #waters, 1, -1 do
-    --    lastClick = lastClickTime(waters[i][0], waters[i][1])
-    --    if lastClick == nil or lsGetTimer() - lastClick >= CLICK_MIN_WEED then
-    --      clickText(waters[i])
-    --      trackClick(waters[i][0], waters[i][1])
-    --    end
-    --  end
+     local waters = findAllImages("flax/weedWater.png")
+      for i = #waters, 1, -1 do
+        lastClick = lastClickTime(waters[i][0], waters[i][1])
+        if lastClick == nil or lsGetTimer() - lastClick >= CLICK_MIN_WEED then
+          clickText(waters[i])
+          trackClick(waters[i][0], waters[i][1])
+        end
+      end
 
       local harvests = findAllImages("flax/harvest.png")
       for i = #harvests, 1, -1 do
