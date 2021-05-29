@@ -318,17 +318,19 @@ function closeAllWindows(x, y, width, height)
   end
 
   local closeImages = {"ThisIs.png", "UnPin.png"};
+  local closeRight = {1, nil};
 
   local found = true;
   while found do
     found = false;
     for i=1,#closeImages do
       local image = closeImages[i];
+      local right = closeRight[i];
       srReadScreen();
       local images = findAllImagesInRange(image, x, y, width, height);
       while #images >= 1 do
         done = true;
-        safeClick(images[#images][0], images[#images][1]);
+        safeClick(images[#images][0], images[#images][1], right);
         sleepWithStatus(10, "Please wait ...", nil, nil, "Closing Windows");
         srReadScreen();
         images = findAllImagesInRange(image, x, y, width, height);

@@ -69,7 +69,7 @@ xyFlaxMenu = {}
 window_h = 145
 
 --This is only used when Extra Grid Spacing checkbox is UN checked. The additional spacing between pinned up windows.
-min_width_offset = 85
+min_width_offset = 75
 
 --[[
 How much of the ATITD screen to ignore (protect the right side of screen from closing windows when finished
@@ -365,7 +365,7 @@ function promptFlaxNumbers()
       -- This window MUST be big enough otherwise rip out seeds will hang automato!
       -- As a result, we need to reduce space on the right to accomodate a 5x5 grid on widescreen monitors
       window_w = 380
-      space_to_leave = 90
+      space_to_leave = 250
 
       lsPrintWrapped(
         10,
