@@ -230,8 +230,9 @@ function drawWater(skipTimer)
       safeClick(max[0]+5, max[1]+5);
       result = true;
     end
-  end 
+  end
 
+  [[--
   -- Second, check for aqueduct
   srReadScreen();
   if not result then
@@ -251,6 +252,7 @@ function drawWater(skipTimer)
       end
     end
   end
+  --]]
 
   -- Last, check for nearby pond
   srReadScreen();
