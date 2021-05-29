@@ -1,5 +1,6 @@
--- boards.lua v1.1 -- Revised by Tallow, Rewrite by Manon to also click repair and use mostly OCR.
+-- boards.lua v1.1 -- Revised by Tallow, Rewrite by Manon to also click repair and use mostly OCR. 
 -- Run a set of Sawmills or Wood Planes to generate boards.
+-- Reverted by Talion to use images till OCR is sorted.
 --
 
 dofile("common.inc");
