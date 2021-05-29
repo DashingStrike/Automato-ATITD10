@@ -115,7 +115,6 @@ function repairBoards()
   if not carpShop then
     --clickrepair = findAllText("Repair this Wood Plane");
 	clickrepair = findAllImages("boards/RepairWoodPlane.png");
-
     for i=1,#clickrepair do
 	  clickText(clickrepair[i]);
       --clickText(clickrepair[i]);
