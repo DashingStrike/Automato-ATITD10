@@ -228,7 +228,7 @@ end
 
 function digHole()
   srReadScreen();
-  digdeeper = srFindImage("statclicks/digHole/dig_deeper.png");
+  digdeeper = srFindImage("statclicks/dig_deeper.png");
   --grilledOnion = findText("Grilled Onions");
     if digdeeper ~= nil then
       --[[
