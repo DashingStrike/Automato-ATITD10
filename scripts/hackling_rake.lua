@@ -102,7 +102,7 @@ function doit()
 		srReadScreen();
 		OK = srFindImage("ok.png"); -- If we got an OK popup, this suggests "Your Flax Comb/Hackling Rake has wore out", quit
 		foundRepair = srFindImage("repair.png");
-		endurance_stat = srFindImage("endurance.png");
+		endurance_stat = srFindImage("stats/endurance.png");
 		this = srFindImage("ThisIs.png")
 
 		if step == 1 then
