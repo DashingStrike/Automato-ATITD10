@@ -1,4 +1,4 @@
--- boards.lua v1.1 -- Revised by Tallow, Rewrite by Manon to also click repair and use mostly OCR. 
+-- boards.lua v1.1 -- Revised by Tallow, Rewrite by Manon to also click repair and use mostly OCR.
 -- Run a set of Sawmills or Wood Planes to generate boards.
 -- Reverted by Talion to use images till OCR is sorted.
 --
@@ -19,16 +19,11 @@ function doit()
   boards = 0;  --Total boards planed
   brokeplane = 0;
   if(arrangeWindows) then
-    arrangeInGrid(false, false, 360, 130);
+    arrangeInGrid(false, false, 360, 130, nil, 60);
   end
 
-  while (true) do
-    checkBreak();
-    closePopUp();
-    refreshWindows();
-    repairBoards(); -- Repairs Wood Planes
-    planeBoards(); -- Planes Boards
-  end
+  planeBoards(); -- Planes Boards
+
 end
 
 function promptParameters()
@@ -101,7 +96,6 @@ end
 
 function refreshWindows()
   srReadScreen();
-  --this = findAllText("This is");
   this = findAllImages("ThisIs.png");
   for i=1,#this do
     clickText(this[i]);
@@ -111,13 +105,10 @@ end
 
 function repairBoards()
   srReadScreen();
-
   if not carpShop then
-    --clickrepair = findAllText("Repair this Wood Plane");
 	clickrepair = findAllImages("boards/RepairWoodPlane.png");
     for i=1,#clickrepair do
-	  clickText(clickrepair[i]);
-      --clickText(clickrepair[i]);
+      clickText(clickrepair[i]);
       lsSleep(100);
     end
   end
@@ -142,6 +133,7 @@ function planeBoards()
         if not carpShop then
 		  srReadScreen();
           p = srFindImageInRange("boards/planeWood.png", x, y, width, height, 5000);
+          repairBoards();
         else
           p = srFindImageInRange("boards/carpWood.png", x, y, width, height, 5000);
         end
