@@ -59,6 +59,7 @@ end
 
 function walkTo(dest)
   srReadScreen();
+  local escape = "\27"
   local coords = findCoords();
     if not coords then
       error("Could not find coordinates from the clock.\nIs the /clockloc visible or partially covered?");
@@ -96,7 +97,7 @@ function walkTo(dest)
     end
   if globalWalkingStop then break; end
   end
-  srClickMouseNoMove(5, 5, 1); -- right click to force avatar to stop running. Rarely happens, mainly when zoomed out quite a bit.
+  srKeyEvent(escape) -- Hit ESC to force avatar to stop running.
   globalWalking = nil;
   globalWalkingStop = nil;
   return coords;
