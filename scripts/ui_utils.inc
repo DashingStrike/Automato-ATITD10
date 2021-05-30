@@ -48,16 +48,16 @@ function promptNumber(prompt_string, default_value, scale)
 	while not is_done do
 		-- Put these everywhere to make sure we don't lock up with no easy way to escape!
 		checkBreak("disallow pause");
-		
+
 		lsPrint(10, 10, z, scale, scale, 0xFFFFFFff, prompt_string);
-		
+
 		-- lsEditBox needs a key to uniquely name this edit box
 		--   let's just use the prompt!
 		-- lsEditBox returns two different things (a state and a value)
 		is_done, value = lsEditBox(prompt_string,
 			10, 40, z, 100, 30, scale, scale,
 			0x000000ff, default_value);
-			
+
 		if lsButtonText(120, 40, z, 100, 0xFFFFFFff, "OK") then
 			is_done = 1;
 		end
@@ -65,20 +65,20 @@ function promptNumber(prompt_string, default_value, scale)
 		if is_done and not value then
 			error 'Canceled';
 		end
-		
+
 		if lsButtonText(lsScreenX - 110, lsScreenY - 30, z, 100, 0xFFFFFFff, "End script") then
 			error "Clicked End Script button";
 		end
-	
+
 		if not tonumber(value) then
 			is_done = nil;
 			lsPrint(10, 80, z, 0.7, 0.7, 0xFF2020ff, "MUST BE A NUMBER");
 		end
-		
+
 		lsDoFrame();
 		lsSleep(10); -- Sleep just so we don't eat up all the CPU for no reason
 	end
-	
+
 	return tonumber(value);
 end
 
@@ -93,11 +93,11 @@ function promptOkay(prompt_string)
 	while not is_done do
 		-- Put these everywhere to make sure we don't lock up with no easy way to escape!
 		checkBreak("disallow pause");
-		
+
 		lsPrint(10, 10, 0, 0.7, 0.7, 0xB0B0B0ff, "Hold Ctrl+Shift to end this script.");
 		lsPrint(10, 35, 0, 0.7, 0.7, 0xB0B0B0ff, "Hold Alt+Shift to choose Okay.");
 		lsPrintWrapped(10, 60, 0, lsScreenX - 20, 1, 1, color, prompt_string);
-		
+
 		if (lsButtonText(120, 200, z, 100, 0xFFFFFFff, "OK") or
 				(lsAltHeld() and lsShiftHeld())) then
 			is_done = 1;
@@ -108,15 +108,15 @@ function promptOkay(prompt_string)
 			is_done = 1;
 			ret = nil;
 		end
-		
+
 		lsDoFrame();
 		lsSleep(10); -- Sleep just so we don't eat up all the CPU for no reason
 	end
-	
+
 	while (lsAltHeld() or lsShiftHeld()) do
 		statusScreen("Please release Alt+Shift", 0x808080ff);
 	end
-	
+
 	return ret;
 end
 
@@ -164,6 +164,6 @@ function fatalError(message)
 	end
 	while(1) do
 		checkBreak();
-		lsSleep(10);
+		lsSleep(100);
 	end
 end

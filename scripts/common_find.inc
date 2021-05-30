@@ -488,25 +488,25 @@ function findClockRegion()
 
   if neutral then
     faction = "Neutral";
-    srSetWindowInvertColorRange(0x8E5C34, 0xE4D7CC);
+    srSetWindowInvertColorRange(0x804D22, 0xCFA37B);
     clockUpperLeftX = neutral[0];
     clockUpperLeftY = neutral[1];
 
   elseif hyksos then
     faction = "Hyksos";
-    srSetWindowInvertColorRange(0x6B660C, 0xDCDBC2);
+    srSetWindowInvertColorRange(0x68640E, 0xC0B162);
     clockUpperLeftX = hyksos[0];
     clockUpperLeftY = hyksos[1];
 
   elseif kush then
     faction = "Kush";
-    srSetWindowInvertColorRange(0x0F2E11, 0xC4CEC4);
+    srSetWindowInvertColorRange(0x0F2B13, 0x68906F);
     clockUpperLeftX = kush[0];
     clockUpperLeftY = kush[1];
 
   elseif meshwesh then
     faction = "Meshwesh";
-    srSetWindowInvertColorRange(0x004141, 0xBFD4D4);
+    srSetWindowInvertColorRange(0x002E2E, 0x59A1A2);
     clockUpperLeftX = meshwesh[0];
     clockUpperLeftY = meshwesh[1];
 
@@ -518,7 +518,7 @@ function findClockRegion()
   if faction ~= "Clock not detected" then
     local clockUpperLeftX = clockUpperLeftX - 30;
     local clockUpperLeftY = clockUpperLeftY - 10;
-    local clockWidth = 255;
+    local clockWidth = 250;
     local clockHeight = 55;
     clockRegion = makeBox(clockUpperLeftX, clockUpperLeftY, clockWidth, clockHeight);
   end
