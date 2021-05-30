@@ -9,8 +9,8 @@ dofile("serialize.inc");
 dofile("settings.inc");
 dofile("constants.inc");
 
-routeFileName = "gatherRoutes.txt";
-defaultRoutesFileName = "defaultRoutes.inc";
+routeFileName = "gather_routes.txt";
+defaultRoutesFileName = "default_routes.inc";
 routes = {};
 routeNames = {};
 
@@ -367,92 +367,91 @@ end
 route = 0;
 
 function queryRoute()
-    local scale = 1.4;
-    local z = 0;
-    local done = false;
-    local nada = nil;
+  local scale = 1.4;
+  local z = 0;
+  local done = false;
+  local nada = nil;
 
-    while not done do
-        local showEditRoute = nil;
-        checkBreak();
-        lsSetCamera(0,0,lsScreenX*scale,lsScreenY*scale);
-        local y = 10;
-        lsPrint(5, y, z, 1, 1, 0xFFFFFFff, "Route:");
-        y = y + 32;
-        route = readSetting("route",route);
-        route = lsDropdown("routeToWalk" .. unique, 5, y, 0, 405, route, routeNames);
-        writeSetting("route",route);
-        y = y + 32;
-        if lsButtonText(5, y, z, 80, 0xFFFFFFff, "New") then
-            showEditRoute = #routeNames+1;
-        end
-        if lsButtonText(93, y, z, 80, 0xFFFFFFff, "Edit") then
-            showEditRoute = route;
-        end
-        if lsButtonText(181, y, z, 80, 0xFFFFFFff, "Delete") then
-            if(promptOkay("Are you sure you want to delete route \"" .. routeNames[route] .. "\"?")) then
-                if(deleteRoute(route)) then
-                    route = route - 1;
-                    if(route < 1) then
-                        route = 1;
-                    end
-                    updateUnique();
+  while not done do
+    local showEditRoute = nil;
+    checkBreak();
+    lsSetCamera(0,0,lsScreenX*scale,lsScreenY*scale);
+    local y = 10;
+    lsPrint(5, y, z, 1, 1, 0xFFFFFFff, "Route:");
+    y = y + 32;
+    route = readSetting("route",route);
+    route = lsDropdown("routeToWalk" .. unique, 5, y, 0, 405, route, routeNames);
+    writeSetting("route",route);
+    y = y + 32;
+    if lsButtonText(5, y, z, 80, 0xFFFFFFff, "New") then
+        showEditRoute = #routeNames+1;
+    end
+    if lsButtonText(93, y, z, 80, 0xFFFFFFff, "Edit") then
+        showEditRoute = route;
+    end
+    if lsButtonText(181, y, z, 80, 0xFFFFFFff, "Delete") then
+        if(promptOkay("Are you sure you want to delete route \"" .. routeNames[route] .. "\"?")) then
+            if(deleteRoute(route)) then
+                route = route - 1;
+                if(route < 1) then
+                    route = 1;
                 end
-            end
-        end
-        y = y + 64;
-        wood = readSetting("wood",wood);
-        wood = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather wood", wood);
-        writeSetting("wood",wood);
-        y = y + 32;
-        slate = readSetting("slate",slate);
-        slate = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather slate", slate);
-        writeSetting("slate",slate);
-        y = y + 32;
-        grass = readSetting("grass",grass);
-        grass = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather grass", grass);
-        writeSetting("grass",grass);
-        y = y + 32;
-        clay = readSetting("clay",clay);
-        clay = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather clay and flint", clay);
-        writeSetting("clay",clay);
-        y = y + 36;
-        papy = readSetting("papy",papy);
-        papy = lsCheckBox(10, y, z, 0xFFFFFFff, " Plant Papyrus", papy);
-        writeSetting("papy",papy);
-        if(papy) then
-			y = y + 32;
-				lsPrint(35, y+5, z, 1, 1, 0xFFFFFFff, "Pass Delay (ms)");
-				papyDelay = readSetting("papyDelay",papyDelay);
-				nada, papyDelay = lsEditBox("papyDelay",
-					200, y+7, z, 70, 0, 1.0, 1.0, 0x000000ff, papyDelay);
-				writeSetting("papyDelay",papyDelay);
-				if (papy and (not tonumber(papyDelay))) then
-					lsPrint(35, y+32, z+10, 0.9, 0.9, 0xFF2020ff, "MUST BE A NUMBER");
-				end
-		end
-        y = y + 36;
-        repeatForever = readSetting("repeatForever",repeatForever);
-        repeatForever = lsCheckBox(10, y, z, 0xFFFFFFff, " Repeat forever", repeatForever);
-        writeSetting("repeatForever",repeatForever);
-        lsSetCamera(0,0,lsScreenX,lsScreenY);
-        if lsButtonText(10, 320, z, 90, 0xFFFFFFff, "GO!") then
-            followRoute(route);
-        end
-        if lsButtonText(200, 320, z, 90, 0xFFFFFFff, "Exit") then
-            done = true;
-            return;
-        end
-        lsDoFrame();
-        lsSleep(tick_delay);
-        if(showEditRoute) then
-            if(editRoute(showEditRoute)) then
-                route = showEditRoute;
                 updateUnique();
             end
-            showEditRoute = nil;
         end
     end
+    y = y + 64;
+    slate = readSetting("slate",slate);
+    slate = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather slate", slate);
+    writeSetting("slate",slate);
+    y = y + 32;
+    grass = readSetting("grass",grass);
+    grass = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather grass", grass);
+    writeSetting("grass",grass);
+    y = y + 32;
+--[[Disabled for T10
+    clay = readSetting("clay",clay);
+    clay = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather clay and flint", clay);
+    writeSetting("clay",clay);
+    y = y + 36;
+    wood = readSetting("wood",wood);
+    wood = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather wood", wood);
+    writeSetting("wood",wood);
+    y = y + 32;
+    papy = readSetting("papy",papy);
+    papy = lsCheckBox(10, y, z, 0xFFFFFFff, " Plant Papyrus", papy);
+    writeSetting("papy",papy);
+    if(papy) then
+    y = y + 32;
+    lsPrint(35, y+5, z, 1, 1, 0xFFFFFFff, "Pass Delay (ms)");
+    papyDelay = readSetting("papyDelay",papyDelay);
+    nada, papyDelay = lsEditBox("papyDelay", 200, y+7, z, 70, 0, 1.0, 1.0, 0x000000ff, papyDelay);
+    writeSetting("papyDelay",papyDelay);
+    if (papy and (not tonumber(papyDelay))) then
+      lsPrint(35, y+32, z+10, 0.9, 0.9, 0xFF2020ff, "MUST BE A NUMBER");
+    end
+    y = y + 36;]]
+    repeatForever = readSetting("repeatForever",repeatForever);
+    repeatForever = lsCheckBox(10, y, z, 0xFFFFFFff, " Repeat forever", repeatForever);
+    writeSetting("repeatForever",repeatForever);
+    lsSetCamera(0,0,lsScreenX,lsScreenY);
+    if lsButtonText(10, 320, z, 90, 0xFFFFFFff, "GO!") then
+      followRoute(route);
+    end
+    if lsButtonText(200, 320, z, 90, 0xFFFFFFff, "Exit") then
+      done = true;
+      return;
+    end
+    lsDoFrame();
+    lsSleep(tick_delay);
+    if(showEditRoute) then
+      if(editRoute(showEditRoute)) then
+          route = showEditRoute;
+          updateUnique();
+      end
+      showEditRoute = nil;
+    end
+  end
 end
 
 function deleteRoute(route)
@@ -531,11 +530,12 @@ function editRoute(route)
             end
         end
     else
+        local coords = getCoords();
         thisRoute[0] = "";
         thisRoute[1] = {};
         thisRoute[1][1] = {};
-        thisRoute[1][1][1] = 0;
-        thisRoute[1][1][2] = 0;
+        thisRoute[1][1][1] = coords[0];
+        thisRoute[1][1][2] = coords[1];
         thisRoute[1][1][3] = 1;
         thisRoute[2] = {};
         thisRoute[2][1] = "";
@@ -742,6 +742,7 @@ end
 function insertWaypointAfter(where,thisRoute)
     local temp = {};
     local i;
+    local coords = getCoords();
     for i = 1, ((#thisRoute[1]) + 1) do
         temp[i] = {};
         if(i <= where) then
@@ -749,8 +750,8 @@ function insertWaypointAfter(where,thisRoute)
             temp[i][2] = thisRoute[1][i][2];
             temp[i][3] = thisRoute[1][i][3];
         elseif(i == where + 1) then
-            temp[i][1] = 0;
-            temp[i][2] = 0;
+            temp[i][1] = coords[0];
+            temp[i][2] = coords[1];
             temp[i][3] = 1;
         else
             temp[i][1] = thisRoute[1][i-1][1];
@@ -864,7 +865,7 @@ function followRoute(route)
             end
         end
         if(not haveWarehouse) then
-            if papy then 
+            if papy then
                 haveWarehouse = false;
             else
                 if(not promptOkay("This route does not include a warehouse.  If you add a warehouse's coords to this route, resources will be stashed there every time you reach those coordinates.")) then
@@ -910,7 +911,7 @@ function followRoute(route)
             end
         elseif(r[curr][3] == Warehouse) then
             srReadScreen()
-            local stash = findText("Stash...")
+            local stash = findImage("stash/stash.png");
             if stash then
                 stashAllButWood();
             end
@@ -1252,6 +1253,8 @@ function walkTo(x, y, showStatus, promptIfNotMoving)
     local lastPos = {};
     lastPos[0] = 0;
     lastPos[1] = 0;
+
+    srKeyUp(VK_ALL);
     while(1) do
         updateStatus();
         srReadScreen();
@@ -1329,42 +1332,43 @@ function walkTo(x, y, showStatus, promptIfNotMoving)
                     lastRightLeftChange = 0;
                 end
             end
+          if movingLeft == false and movingRight == false then
             if(pos[1] < yn) then
-                if(movingDown) then
-                    srKeyUp(VK_DOWN);
-                    movingDown = false;
-                    lastUpDownChange = 0;
-                end
-                t = lsGetTimer();
-                if(lastUpDownChange < t - 100 or not movingUp) then
-                    srKeyDown(VK_UP);
-                    movingUp = true;
-                    lastUpDownChange = t;
-                end
+              if(movingDown) then
+                srKeyUp(VK_DOWN);
+                movingDown = false;
+                lastUpDownChange = 0;
+              end
+              t = lsGetTimer();
+              if(lastUpDownChange < t - 100 or not movingUp) then
+                srKeyDown(VK_UP);
+                movingUp = true;
+                lastUpDownChange = t;
+              end
             elseif(pos[1] > yn) then
-                if(movingUp) then
-                    srKeyUp(VK_UP);
-                    movingUp = false;
-                    lastUpDownChange = 0;
-                end
-                t = lsGetTimer();
-                if(lastUpDownChange < t - 100 or not movingDown) then
-                    srKeyDown(VK_DOWN);
-                    movingDown = true;
-                    lastUpDownChange = t;
-                end
+              if(movingUp) then
+                srKeyUp(VK_UP);
+                movingUp = false;
+                lastUpDownChange = 0;
+              end
+              t = lsGetTimer();
+              if(lastUpDownChange < t - 100 or not movingDown) then
+                srKeyDown(VK_DOWN);
+                movingDown = true;
+                lastUpDownChange = t;
+              end
             else
-                if(movingDown) then
-                    srKeyUp(VK_DOWN);
-                    movingDown = false;
-                    lastUpDownChange = 0;
-                elseif(movingUp) then
-                    srKeyUp(VK_UP);
-                    movingUp = false;
-                    lastUpDownChange = 0;
-                end
+              if(movingDown) then
+                srKeyUp(VK_DOWN);
+                movingDown = false;
+                lastUpDownChange = 0;
+              elseif(movingUp) then
+                srKeyUp(VK_UP);
+                movingUp = false;
+                lastUpDownChange = 0;
+              end
             end
---            lsSleep(moveDelay);
+          end
         else
             errorCount = errorCount + 1;
             setStatus("Can't find position.  Make sure clockloc is shown. (" .. errorCount .. ")");
@@ -1534,79 +1538,80 @@ function plantPapy()
 end
 
 function stashAllButWood()
-    local needMax;
-    local count = 0;
-    local stashedSomething = true;
-    while(stashedSomething) do
-        stashedSomething = false;
-        needMax = true;
-        lsSleep(150);
-        srReadScreen();
-        local pos = findText("Stash...");
+  local needMax;
+  local count = 0;
+  local stashedSomething = true;
+  while(stashedSomething) do
+    stashedSomething = false;
+    needMax = true;
+    lsSleep(150);
+    srReadScreen();
+    local pos = findImage("stash/stash.png");
+    if(pos) then
+      safeClick(pos[0] + 10, pos[1] + 5);
+      lsSleep(250);
+      srReadScreen();
+      pos = findImage("stash/grass.png");
+      if(pos) then
+        stashItem(pos,true);
+        stashedSomething = true;
+      else
+        pos = findImage("stash/slate.png");
         if(pos) then
-            safeClick(pos[0] + 10, pos[1] + 5);
-            lsSleep(250);
-            srReadScreen();
-            local pos = findText("Clay (");
+          stashItem(pos,true);
+          stashedSomething = true;
+--[[      Disabled for T10
+          else
+          pos = findText("Slate (");
+          if(pos) then
+            stashItem(pos,true);
+            stashedSomething = true;
+          else
+            pos = findText("Grass (");
             if(pos) then
+              stashItem(pos,true);
+              stashedSomething = true;
+            else
+              pos = findText("Tadpoles");
+              if(pos) then
                 stashItem(pos,true);
                 stashedSomething = true;
-            else
-                pos = findText("Flint (");
+              else
+                pos = findText("Wood (");
                 if(pos) then
-                    stashItem(pos,true);
-                    stashedSomething = true;
+                  stashItem(pos,true);
+                  stashedSomething = true;
                 else
-                    pos = findText("Slate (");
+                  pos = findText("Insect...");
+                  if(pos) then
+                    safeClick(pos[0] + 10, pos[1] + 5);
+                    lsSleep(150);
+                    srReadScreen();
+                    pos = findText("All Insect");
                     if(pos) then
-                        stashItem(pos,true);
-                        stashedSomething = true;
-                    else
-                        pos = findText("Grass (");
-                        if(pos) then
-                            stashItem(pos,true);
-                            stashedSomething = true;
-                        else
-                            pos = findText("Tadpoles");
-                            if(pos) then
-                                stashItem(pos,true);
-                                stashedSomething = true;
-                            else
-                                pos = findText("Wood (");
-                                if(pos) then
-                                        stashItem(pos,true);
-                                        stashedSomething = true;
-                                else
-                                    pos = findText("Insect...");
-                                    if(pos) then
-                                        safeClick(pos[0] + 10, pos[1] + 5);
-                                        lsSleep(150);
-                                        srReadScreen();
-                                        pos = findText("All Insect");
-                                        if(pos) then
-                                            stashItem(pos,false);
-                                            stashedSomething = true;
+                      stashItem(pos,false);
+                      stashedSomething = true;
 
-                                        end
-                                    end
-                                end
-                            end
-                        end
                     end
+                  end
                 end
+              end
             end
-            if(stashedSomething) then
-                clickWaypoint(Warehouse);
-            else
-                safeClick(10,200);
-            end
-        else
-            if(count < 1) then
-                fatalError("Unable to find the Stash menu item.");
-            end
+          end]]
         end
-        count = count + 1;
+      end
+      if(stashedSomething) then
+        clickWaypoint(Warehouse);
+      else
+        safeClick(10,200);
+      end
+    else
+      if(count < 1) then
+        fatalError("Unable to find the Stash menu item.");
+      end
     end
+    count = count + 1;
+  end
 end
 
 function stashItem(pos,clickMaxButton)
