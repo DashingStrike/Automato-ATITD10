@@ -10,7 +10,6 @@
 dofile("common.inc");
 
 
-right_click = false;  -- Set this boolean to 'true' to do right clicks. If this was blank or false, then it would do left clicks.
 per_click_delay = 150;  -- Time is in ms
 
 
@@ -81,7 +80,7 @@ function closeMethod1()
 
 
 			for i=#buttons, 1, -1 do
-				srClickMouseNoMove(buttons[i][0]+5, buttons[i][1]+3, right_click);
+				srClickMouseNoMove(buttons[i][0]+5, buttons[i][1]+3,1);
 				lsSleep(per_click_delay);
 
 			end
@@ -111,7 +110,7 @@ function closeMethod2()
 
 
 			for i=#buttons, 1, -1 do
-				srClickMouseNoMove(buttons[i][0]+5, buttons[i][1]+3, right_click);
+				srClickMouseNoMove(buttons[i][0]+5, buttons[i][1]+3);
 				lsSleep(per_click_delay);
 
 			end
@@ -140,7 +139,7 @@ function closeMethod3()
 
 
 			for i=#buttons, 1, -1 do
-				srClickMouseNoMove(buttons[i][0]+5, buttons[i][1]+3, right_click);
+				srClickMouseNoMove(buttons[i][0]+5, buttons[i][1]+3);
 				lsSleep(per_click_delay);
 
 			end
