@@ -6,59 +6,34 @@
 -- misnamed and is oddly significantly slower.
 ----------------------------------------------------------
 function findCoords()
+  srReadScreen();
+
   local result = nil;
-  local str = nil;
+  local str = "";
   local clockRegion = findClockRegion();
-  local anchor = findText("Yea", clockRegion);
-  if anchor then
-    local lines = findAllText(nil, clockRegion);
-    for i=1,#lines do
-      --lsPrintln("LINE " .. i .. " : " .. table.concat(lines[i], ","));
-	if i == 2 then
-	  str = lines[i];
-	end
+
+  local lines = findAllText(nil, clockRegion);
+  for i=1,#lines do
+    if i == 2 then
+      str = lines[i][2];
+      str = string.gsub(str, " ?1 ?","1");
+    end
+  end
+
+  local start, stop = string.find(str, "%-?[0-9]+, %-?[0-9]+");
+  if start ~= nil then
+    -- Strip everything except the coords
+    str = string.sub(str, start, stop);
+
+    local coords = explode(",", str);
+
+    for i=1,#coords do
+      x = tonumber(coords[1])
+      y = tonumber(coords[2])
     end
 
-	  -- Numeral 1 always has a space before and/or after it.  This attempts to repair that OCR flaw. All other numbers have no space.
-	  str = str[2];
-	  str = string.gsub(str, " 1", "1");
-	  str = string.gsub(str, "1 ", "1");
-
-
-	  -- Misc Exceptions we want to strip
-	  str = string.gsub(str, "0::#", ":"); -- Giza Exception
-	  str = string.gsub(str, "#t#", ":"); -- Napata Exception occurs at minimum: 0, -6327
-	  str = string.gsub(str, "<=t", "");
-	  str = string.gsub(str, "#u", ":"); -- Zau Exception
-
-	  -- Attempt to find the : to fetch coordinates, but also look at some exceptions
-	  if string.find(str, ": ([0-9-]+)") then
-	    str = string.sub(str, string.find(str, ": ([0-9-]+)")+2, string.len(str));
-
-	  elseif string.find(str, ":([0-9-]+)") then
-	    str = string.sub(str, string.find(str, ":([0-9-]+)")+1, string.len(str));
-
-	  elseif string.find(str, ":#([0-9-]+)") then
-	    str = string.sub(str, string.find(str, ":#([0-9-]+)")+1, string.len(str));
-	    str = string.gsub(str, "#", ""); -- Remove # sign, sometimes misread by OCR in Meshwesh Delta
-
-	  elseif string.find(str, "<# ([0-9-]+)") then
-	    str = string.sub(str, string.find(str, "<# ([0-9-]+)")+1, string.len(str));
-	    str = string.gsub(str, "# ", ""); -- East Sinai weird scenario
-	  end
-
-	  str = string.gsub(str, "  ", ","); -- Catch double space between numbers
-	  str = string.gsub(str, " ", ",");  -- Catch single space between numbers
-	  local coords = explode(",", str);
-
-	    for i=1,#coords do
-            x = tonumber(coords[1])
-            y = tonumber(coords[2])
-          end
-
-
---  One more check to ensure x and y have values. If they're nil, exit with a friendlier message than.
---  "wrong number of parameters sent to makePoint". -Tizuby
+    --  One more check to ensure x and y have values. If they're nil, exit with a friendlier message than.
+    --  "wrong number of parameters sent to makePoint". -Tizuby
     if x == nil or y == nil then
       error("Could not find coordinates from the clock.\nIs the /clockloc visible or partially covered?");
     end
@@ -66,10 +41,8 @@ function findCoords()
     if not result[0] or not result[1] then
       result = nil;
       lsPrintln("Failed to find coords");
-    else
-      --lsPrintln("Coordinates: " .. result[0] .. ", " .. result[1]);
     end
-  end -- if anchor
+  end
   srSetWindowInvertColorRange(minSetWindowInvertColorRange, maxSetWindowInvertColorRange); -- Reset color range back to default (defined at top of common_find.inc)
   return result;
 end

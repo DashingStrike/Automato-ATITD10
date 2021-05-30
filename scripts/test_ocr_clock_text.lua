@@ -39,8 +39,8 @@ function pointToLocation()
 
       for i=#findBlah, 1, -1 do
         srSetMousePos(findBlah[i][0]+xOffset,findBlah[i][1]+yOffset);
-        sleepWithStatus(pointingSpeed, "Pointing to Location " .. window .. "/" .. #findBlah .. "\n\nX Offset: " 
-          .. xOffset .. "\nY Offset: " .. yOffset .. "\n\nMouse Location: " .. findBlah[i][0]+xOffset .. ", " .. 
+        sleepWithStatus(pointingSpeed, "Pointing to Location " .. window .. "/" .. #findBlah .. "\n\nX Offset: "
+          .. xOffset .. "\nY Offset: " .. yOffset .. "\n\nMouse Location: " .. findBlah[i][0]+xOffset .. ", " ..
         findBlah[i][1]+yOffset, nil, 0.7, 0.7);
         window = window + 1;
       end

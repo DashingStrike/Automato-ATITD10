@@ -47,14 +47,10 @@ end
 
 function findStuff()
   srReadScreen();
-  
+
   -- Test srFindFirstTextRegion/srFindNextTextRegion
   --srSetWindowBorderColorRange(0x6a4529, 0x6d472a); ---- Now defined globally at top of common_find.inc
   local regions = findAllTextRegions();
-  if not (regions and #regions > 0) then
-    srSetWindowBorderColorRange(0, 0); -- ATITD T8 colors
-    regions = findAllTextRegions();
-  end
   if regions and windowIndex > #regions then
     windowIndex = 1;
   end
@@ -68,10 +64,10 @@ function findStuff()
         0xFFFFFFff, "Region " .. windowIndex .. "/" .. #regions ) then
       windowIndex = windowIndex + 1;
     end
-  else 
+  else
     lsPrint(0, 0, 10, 1, 1, 0xFF8080ff, "No text regions found")
   end
-  
+
   local scale = 0.75;
   local pos = getMousePos();
   local y = lsScreenY / 2;
@@ -93,9 +89,9 @@ function findStuff()
   lsPrint(10, y, 10, scale, scale, 0xFFFFFFff, "srFindInvRegion = " .. invreg[0] .. "," .. invreg[1] ..
     " - " .. invreg[2] .. "," .. invreg[3]);
   y = y + 20;
-  
+
   -- Test srGetWindowBorders
-  local borders = srGetWindowBorders(pos[0], pos[1], 3);
+  local borders = srGetWindowBorders(pos[0], pos[1], 0);
   local xyWindowSize = srGetWindowSize();
   local color = 0xFFFFFFff;
   local found = true;
@@ -107,7 +103,7 @@ function findStuff()
   lsPrint(10, y, 10, scale, scale, color, "srGetWindowBorders = " .. borders[0] .. "," .. borders[1] ..
     " - " .. borders[2] .. "," .. borders[3]);
   y = y + 12;
-  
+
   if not found then
     y = y + lsPrintWrapped(20, y, 10, lsScreenX - 20, 0.75, 0.75, color, "No valid window border found under cursor");
   else
@@ -116,8 +112,8 @@ function findStuff()
       5, y, 2, lsScreenX - 10, lsScreenY - (y + 20) - 2);
     y = y + 20;
   end
-  
-  
+
+
   if lsButtonText(lsScreenX - 110, lsScreenY - 30, 20, 100,
       0xFFFFFFff, "End Script") then
     error(quitMessage);
