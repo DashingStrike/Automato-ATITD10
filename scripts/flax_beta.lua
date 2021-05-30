@@ -13,8 +13,7 @@ dofile("settings.inc")
 askText =
   singleLine(
   [[
-  flax_stable v1.1 (by Jimbly, tweaked by Cegaiel and KasumiGhia,
-  revised by Tallow. Updated for T7 by Skyfeather) --
+  flax_beta (Updated for T10)
   Plant flax and harvest either flax or seeds. --
   Make sure the plant flax window is pinned and on the RIGHT side of
   the screen. Your Automato window should also be on the RIGHT side
@@ -38,14 +37,14 @@ grid_h = 4
 seeds_per_pass = 4
 finish_up = 0
 finish_up_message = ""
+--[[
 harvest = "Harvest this"
 weedAndWater = "Weed and Water"
 weedThis = "Weed this"
 harvestSeeds = "Harvest seeds"
 thisIs = "This is"
 utility = "Utility"
-txtRipOut = "Rip out"
-
+]]--
 -- walkTo() Parameters
 rot_flax = false
 water_needed = false
@@ -66,7 +65,7 @@ xyCenter = {}
 xyFlaxMenu = {}
 
 -- The flax bed window
-window_h = 145
+window_h = 120
 
 --This is only used when Extra Grid Spacing checkbox is UN checked. The additional spacing between pinned up windows.
 min_width_offset = 75
@@ -305,12 +304,12 @@ function promptFlaxNumbers()
       )
       y = y + 65
     end
---[[
+
     readClock = readSetting("readClock", readClock)
     readClock = CheckBox(120, y + 5, z + 10, 0xFFFFFFff, " Read Clock Coords", readClock, 0.7, 0.7)
     writeSetting("readClock", readClock)
     y = y + 2
---]]
+
     clearUI = readSetting("clearUI",clearUI);
     clearUI = CheckBox(120, y + 19, z + 10, 0xFFFFFFff, " Pin grid below the UI", clearUI, 0.7, 0.7);
     writeSetting("clearUI",clearUI);
@@ -333,8 +332,9 @@ function promptFlaxNumbers()
 
     if is_plant then
       -- Will plant and harvest flax
-      window_w = 285
+      window_w = 270
       space_to_leave = false
+
       lsPrintWrapped(10, y+10, z + 10, lsScreenX - 20, 0.7, 0.7, 0xffff40ff, 'Uncheck "Grow Flax" for SEEDS!')
       y = y + 24
       lsPrintWrapped(
@@ -364,8 +364,8 @@ function promptFlaxNumbers()
       -- Flax window will grow to 333 px before returning to 290.
       -- This window MUST be big enough otherwise rip out seeds will hang automato!
       -- As a result, we need to reduce space on the right to accomodate a 5x5 grid on widescreen monitors
-      window_w = 380
-      space_to_leave = 250
+      window_w = 370
+      space_to_leave = 50
 
       lsPrintWrapped(
         10,
@@ -465,7 +465,7 @@ function doit()
   end
 
   setCameraView(CARTOGRAPHER2CAM)
-  --drawWater()
+  drawWater()
   startTime = lsGetTimer()
 
   for loop_count = 1, num_loops do
@@ -479,7 +479,7 @@ function doit()
     if is_plant and (water_needed or rot_flax) then
       walk(water_location, false)
       if water_needed then
-        --drawWater()
+        drawWater()
         lsSleep(150)
         clickMax() -- Sometimes drawWater() misses the max button
       end
@@ -488,7 +488,7 @@ function doit()
       rotFlax()
     end
     walkHome(startPos)
-    --drawWater()
+    drawWater()
     if finish_up == 1 or quit then
       break;
     end
@@ -519,26 +519,20 @@ end
 -------------------------------------------------------------------------------
 
 function rotFlax()
-  centerMouse()
-  local escape = "\27"
-  local pos = nil
-  while (not pos) do
-    lsSleep(refresh_time)
-    srKeyEvent(escape)
-    lsSleep(refresh_time)
-    srReadScreen()
-    pos = findText("Skills...")
-  end
-  clickText(pos)
-  lsSleep(refresh_time)
-  srReadScreen()
-  local pos = findText("Rot flax")
-  if pos then
-    clickText(pos)
+  srReadScreen();
+  local flax = srFindImage("flax/flaxInv.png")
+  if not flax then
+    error("'Flax' was not visible in the inventory window");
+  else
+    safeClick(flax[0]+5, flax[1]);
     lsSleep(refresh_time)
     srReadScreen()
-    if not clickMax() then
-      fatalError("Unable to find the Max button.")
+    local rot = srFindImage("flax/rotFlax.png")
+    if rot then
+      safeClick(rot[0], rot[1]);
+      lsSleep(refresh_time)
+      srReadScreen()
+      clickMax()
     end
   end
 end
@@ -784,7 +778,31 @@ function harvestAll(loop_count)
 
     --if numSeedsHarvested >= seeds_per_iter and not is_plant  then
     if harvestLeft <= 0 and not is_plant then -- New method in case one or more plants failed and we have less flax beds than expected
+      bedDisappeared = false
       did_harvest = true
+      while did_harvest and not bedDisappeared do
+        lsSleep(30);
+        srReadScreen();
+        -- Monitor for Weed This/etc
+        local tops = findAllImages("ThisIs.png")
+        for i = 1, #tops do
+          checkBreak()
+          safeClick(tops[i][0], tops[i][1])
+        end
+
+        if #tops <= 0 then
+          bedDisappeared = true
+          closeAllWindows(0, 0, xyWindowSize[0] - max_width_offset, xyWindowSize[1])
+        else
+          sleepWithStatus(
+            1500,
+            "(" .. loop_count .. "/" .. num_loops .. ") ... Waiting for flax beds to disappear",
+            nil,
+            0.7,
+            "Stand by"
+          )
+        end
+      end
     end
 
     if #tops <= 0 then
@@ -893,30 +911,8 @@ function checkForMenu()
 end
 
 -------------------------------------------------------------------------------
--- ripOutAllSeeds
---
--- Use the Utility menu to rip out a flax bed that has gone to seed.
--- pos should be the screen position of the 'This Is' text on the window.
+-- Click Tracking Functions
 -------------------------------------------------------------------------------
-
-function ripOutAllSeeds()
-  checkBreak()
-  sleepWithStatus(refresh_time, "Ripping Out" .. "\n\nElapsed Time: " .. getElapsedTime(startTime), nil, 0.7)
-  srReadScreen()
-  flaxRegions = findAllText("This is ", nil, REGION)
-  for i = 1, #flaxRegions do
-    checkBreak()
-    local utloc = waitForText(utility, nil, nil, flaxRegions[i])
-    lsPrintln("Clicking Utility.. button at: " .. utloc[0] .. ", " .. utloc[1])
-    clickText(utloc)
-    lsPrintln("Clicking rip out")
-    clickText(waitForText(txtRipOut, 5000))
-    lsSleep(refresh_time)
-    lsPrintln("Unpinning region")
-    unpinWindow(flaxRegions[i])
-    lsSleep(refresh_time)
-  end
-end
 
 clicks = {}
 function trackClick(x, y)
