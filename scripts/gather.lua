@@ -426,6 +426,7 @@ function queryRoute()
     papyDelay = readSetting("papyDelay",papyDelay);
     nada, papyDelay = lsEditBox("papyDelay", 200, y+7, z, 70, 0, 1.0, 1.0, 0x000000ff, papyDelay);
     writeSetting("papyDelay",papyDelay);
+    end
     if (papy and (not tonumber(papyDelay))) then
       lsPrint(35, y+32, z+10, 0.9, 0.9, 0xFF2020ff, "MUST BE A NUMBER");
     end
