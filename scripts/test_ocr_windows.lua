@@ -107,6 +107,7 @@ function findStuff()
   if not found then
     y = y + lsPrintWrapped(20, y, 10, lsScreenX - 20, 0.75, 0.75, color, "No valid window border found under cursor");
   else
+    srStripRegion(borders[0], borders[1], borders[2] - borders[0] + 1, borders[3] - borders[1] + 1);
     showDebugInRange("current-window",
       borders[0], borders[1], borders[2] - borders[0] + 1, borders[3] - borders[1] + 1,
       5, y, 2, lsScreenX - 10, lsScreenY - (y + 20) - 2);

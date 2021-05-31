@@ -1,4 +1,4 @@
--- Console will output last character in each line (when training). 
+-- Console will output last character in each line (when training).
 -- Also check https://www.atitd.org/wiki/tale6/User:Skyfeather/VT_OCR for more info on OCR
 
 dofile("common.inc");
@@ -22,13 +22,13 @@ function findStuff()
   local scale = 0.9;
 
   srReadScreen();
-  --local regions = findAllTextRegions();
+  local regions = findAllTextRegions();
+  regions = regions[2];
 
-  local regions = findChatRegionReplacement();
+  --local regions = findChatRegionReplacement();
   local chatBox = makeBox(regions[0],regions[1], lsScreenX, lsScreenY);
 
   --sleepWithStatus(5000, regions[0] .. ", " .. regions[1] .. ", " .. regions[2] .. ", " .. regions[3]);
-  --srStripRegion(chatbox);
 
   lsPrint(10, lsScreenY - 160, z, scale, scale, 0xFFFFFFff, "offsetX:");
 
@@ -65,13 +65,12 @@ function findStuff()
     lsPrint(10, lsScreenY - 60, 10, 0.7, 0.7, 0xFFFFFFff, "Replace ? with the character you are training");
 
 
-  if lsButtonText(0, lsScreenY - 30, z, 100,
-                  0xFFFFFFff, "Train") then
-
-    srStripScreen(chatbox)
+  if lsButtonText(0, lsScreenY - 30, z, 100, 0xFFFFFFff, "Train") then
+    srStripRegion(regions[0], regions[1], regions[2], regions[3]);
     --Console will output ??? as last character in each line (when training). Replace ??? with the correct number of letter (case sensitive)
     srTrainTextReader(regions[0]+offsetX,regions[1]+offsetY, '?')
   else
+    --srStripRegion(regions[0], regions[1], regions[2], regions[3]);
     srStripRegion(regions[0]+offsetX,regions[1]+offsetY,   8, 12)
   end
 
