@@ -256,7 +256,7 @@ function drawWater(skipTimer)
   -- Last, check for nearby pond
   srReadScreen();
   if not result then
-    local water = srFindImage("water.png", 1);
+    local water = srFindImage("water.png", 5000);
     --local watersmall = srFindImage("iconWaterJugSmallIcon.png", 1);
 
     --if (water or watersmall) then
