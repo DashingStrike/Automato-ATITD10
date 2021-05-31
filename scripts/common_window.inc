@@ -330,6 +330,12 @@ function closeAllWindows(x, y, width, height)
       local images = findAllImagesInRange(image, x, y, width, height);
       while #images >= 1 do
         done = true;
+        if image == "UnPin.png" then
+          safeClick(images[#images][0]-15, images[#images][1], right);
+          lsSleep(250);
+        else
+          safeClick(images[#images][0], images[#images][1], right);
+        end
         safeClick(images[#images][0], images[#images][1], right);
         sleepWithStatus(10, "Please wait ...", nil, nil, "Closing Windows");
         srReadScreen();
