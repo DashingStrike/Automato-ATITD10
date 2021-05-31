@@ -15,7 +15,6 @@ items = {
         },
         --end
         {"",
-
             "Dig Hole",
             --[[
             "Churn Butter",
@@ -42,18 +41,19 @@ items = {
         },
         --foc
         {"",
-        --[[
+            "Long Sharp Stick",
             "Rawhide Strips",
+            "Sharpened Stick",
+            "Tinder"
+        --[[
             "Barrel Tap",
             "Bottle Stopper",
             "Clay Lamp",
             "Crudely Carved Handle",
             "Large Crude Handle",
             "Personal Chit",
-            "Sharpened Stick",
             "Search Rotten Wood",
             "Tap Rods",
-            "Tinder",
             "Wooden Peg",
             "Wooden Pestle"
             ]]--
@@ -201,30 +201,27 @@ function weave(clothType)
         end
     end
 end
-
-function carve(item)
-    if item == "Tinder" then
-         carveText = findText("Carve Wood into " .. item);
-      elseif item == "Wooden Peg" then
-         carveText = findText("Carve a small " .. item);
-      elseif item == "Rawhide Strips" then
-         carveText = findText("Carve Leather into " .. item);
-       elseif item == "Clay Lamp" then
-         carveText = findText("Make a " .. item);
-      else
-         carveText = findText("Carve a " .. item);
-   end
-
-    if carveText ~= nil then
-        clickText(carveText);
-        lsSleep(per_tick);
-        srReadScreen();
-        closePopUp();
-        lsSleep(per_tick);
-    end
-end
 ]]--
 
+function carve(item)
+  if item == "Tinder" then
+    carveItem = srFindImage("statclicks/carve_tinder.png");
+  elseif item == "Rawhide Strips" then
+    carveItem = srFindImage("statclicks/carve_rawhide.png");
+  elseif item == "Long Sharp Stick" then
+    carveItem = srFindImage("statclicks/carve_longSharpStick.png");
+  elseif item == "Sharp Stick" then
+    carveItem = srFindImage("statclicks/carve_sharpStick.png");
+  end
+
+  if carveItem ~= nil then
+      safeClick(carveItem[0],carveItem[1]);
+      lsSleep(per_tick);
+      srReadScreen();
+      closePopUp();
+      lsSleep(per_tick);
+  end
+end
 
 function digHole()
   srReadScreen();
@@ -237,7 +234,6 @@ function digHole()
       end
       ]]--
       safeClick(digdeeper[0], digdeeper[1])
-      clickText(digText);
       lsSleep(per_tick);
     end
 end
@@ -560,6 +556,17 @@ function doTasks()
                 lsPrint(10, 10, 0, 0.7, 0.7, 0xB0B0B0ff, "Working on " .. curTask);
                 lsDoFrame();
                 digHole();
+                if curtask == "Dig Hole" then
+                  digHole();
+                elseif curTask == "Tinder" then
+                  carve(curTask);
+                elseif curTask == "Rawhide Strips" then
+                  carve(curTask);
+                elseif curTask == "Long Sharp Stick" then
+                  carve(curTask);
+                elseif curTask == "Sharpened Stick" then
+                    carve(curTask);
+                end
                 --[[
                 if curTask == "Flax Comb" then
                     combFlax();
@@ -589,8 +596,6 @@ function doTasks()
                     carve(curTask);
                 elseif curTask == "Clay Lamp" then
                     carve(curTask);
-                 elseif curTask == "Rawhide Strips" then
-                     carve(curTask);
                 elseif curTask == "Bottle Stopper" then
                     carve(curTask);
                 elseif curTask == "Crudely Carved Handle" then
@@ -599,16 +604,10 @@ function doTasks()
                     carve(curTask);
                 elseif curTask == "Personal Chit" then
                     carve(curTask);
-                elseif curTask == "Sharpened Stick" then
-                    carve(curTask);
-                elseif curTask == "Tinder" then
-                    carve(curTask);
                 elseif curTask == "Wooden Peg" then
                     carve(curTask);
                 elseif curTask == "Wooden Pestle" then
                     carve(curTask);
-                elseif curTask == "Dig Hole" then
-                    digHole();
                 elseif curTask == "Search Rotten Wood" then
                     searchRottenWood();
                 else
@@ -641,9 +640,9 @@ function closePopUp()
     while 1 do -- Perform a loop in case there are multiple pop-ups behind each other;
       checkBreak();
       srReadScreen();
-      OK = srFindImage("OK.png");
-      if OK then
-        safeClick(OK[0]+2,OK[1]+2, true);
+      ok = srFindImage("ok.png");
+      if ok then
+        safeClick(ok[0],ok[1], true);
         lsSleep(750);
       else
         break;
