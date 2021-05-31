@@ -406,7 +406,7 @@ end
 
 function getPlantWindowPos()
   srReadScreen()
-  local plantPos = srFindImage("plant.png");
+  local plantPos = srFindImage("plant.png",7000);
   if plantPos then
     plantPos[0] = plantPos[0] + 20
     plantPos[1] = plantPos[1] + 10
@@ -520,14 +520,14 @@ end
 
 function rotFlax()
   srReadScreen();
-  local flax = srFindImage("flax/flaxInv.png")
+  local flax = srFindImage("flax/flaxInv.png",7000)
   if not flax then
     error("'Flax' was not visible in the inventory window");
   else
     safeClick(flax[0]+5, flax[1]);
     lsSleep(refresh_time)
     srReadScreen()
-    local rot = srFindImage("flax/rotFlax.png")
+    local rot = srFindImage("flax/rotFlax.png",7000)
     if rot then
       safeClick(rot[0], rot[1]);
       lsSleep(refresh_time)
@@ -544,7 +544,7 @@ end
 -------------------------------------------------------------------------------
 
 function plantAndPin(loop_count)
-  local icon_tray = srFindImage("icon_tray_opened.png");
+  local icon_tray = srFindImage("icon_tray_opened.png",7000);
   if icon_tray then
     safeClick(icon_tray[0] + 5, icon_tray[1] + 5);
   end
@@ -615,7 +615,7 @@ function plantAndPin(loop_count)
     end
   end
 
-  icon_tray = srFindImage("icon_tray_closed.png");
+  icon_tray = srFindImage("icon_tray_closed.png",7000);
   if icon_tray then
     safeClick(icon_tray[0] + 5, icon_tray[1] + 5);
   end
@@ -715,7 +715,7 @@ function harvestAll(loop_count)
     srReadScreen()
 
     -- Monitor for Weed This/etc
-    local tops = findAllImages("ThisIs.png")
+    local tops = findAllImages("ThisIs.png",7000)
     for i = 1, #tops do
       checkBreak()
       safeClick(tops[i][0], tops[i][1])
@@ -736,7 +736,7 @@ function harvestAll(loop_count)
       lsPrintln("Checking Weeds")
       lsPrintln("numTops: " .. #tops)
 
-      local weeds = findAllImages("flax/weedThis.png")
+      local weeds = findAllImages("flax/weedThis.png",7000)
       for i = #weeds, 1, -1 do
         lastClick = lastClickTime(weeds[i][0], weeds[i][1])
         if lastClick == nil or lsGetTimer() - lastClick >= CLICK_MIN_WEED then
@@ -745,7 +745,7 @@ function harvestAll(loop_count)
         end
       end
 
-     local waters = findAllImages("flax/weedWater.png")
+     local waters = findAllImages("flax/weedWater.png",7000)
       for i = #waters, 1, -1 do
         lastClick = lastClickTime(waters[i][0], waters[i][1])
         if lastClick == nil or lsGetTimer() - lastClick >= CLICK_MIN_WEED then
@@ -754,7 +754,7 @@ function harvestAll(loop_count)
         end
       end
 
-      local harvests = findAllImages("flax/harvest.png")
+      local harvests = findAllImages("flax/harvest.png",7000)
       for i = #harvests, 1, -1 do
         lastClick = lastClickTime(harvests[i][0], harvests[i][1])
         if lastClick == nil or lsGetTimer() - lastClick >= CLICK_MIN_WEED then
@@ -764,7 +764,7 @@ function harvestAll(loop_count)
       end
 
     else -- if not is_plant
-        seedsList = findAllImages("flax/harvest.png")
+        seedsList = findAllImages("flax/harvest.png",7000)
         for i = #seedsList, 1, -1 do
           lastClick = lastClickTime(seedsList[i][0], seedsList[i][1])
           if lastClick == nil or lsGetTimer() - lastClick >= CLICK_MIN_SEED then
@@ -784,7 +784,7 @@ function harvestAll(loop_count)
         lsSleep(30);
         srReadScreen();
         -- Monitor for Weed This/etc
-        local tops = findAllImages("ThisIs.png")
+        local tops = findAllImages("ThisIs.png",7000)
         for i = 1, #tops do
           checkBreak()
           safeClick(tops[i][0], tops[i][1])
