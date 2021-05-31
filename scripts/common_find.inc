@@ -14,12 +14,12 @@ lsRequireVersion(2,41);
 
 -- The colors used by srFindFirst/NextTextRegion and srGetWindowBorders to determine
 -- the innermost border pixels
-srSetWindowBorderColorRange(0x806144, 0x886952);
+srSetWindowBorderColorRange(0x644026, 0x886952);
 
 -- The colors that srStripRegion/Screen() looks for to decide it should invert (and
 -- treat as background when stripping)
-    minSetWindowInvertColorRange = 0x1e2e31;
-    maxSetWindowInvertColorRange = 0x263539;
+minSetWindowInvertColorRange = 0x1E2E31;
+maxSetWindowInvertColorRange = 0x929DA0;
 
 srSetWindowInvertColorRange(minSetWindowInvertColorRange, maxSetWindowInvertColorRange);
 
@@ -439,13 +439,7 @@ end
 
 -- replacement for srFindChatRegion() for ATITD T9
 function findChatRegionReplacement()
-  local pos = findChatRegionSub()
-
---  while not pos do
---    pos = findChatRegionSub();
---    sleepWithStatus(100,"Cound not find \'Main\' Chat Tab...", nil, 0.7);
---  end
-
+  local pos = findChatRegionSub();
   if pos then
     local borders = srGetWindowBorders(pos[0], pos[1]+20);
     -- Offset past blue background into text area

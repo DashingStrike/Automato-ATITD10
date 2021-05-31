@@ -8,7 +8,7 @@
 -- DEPRECATED. Use findText or findAllText instead.
 -------------------------------------------------------------------------------
 function findAllTextRegions()
-  lsPrintln("findAllTextRegions is deprecated. Do not call this anymore");
+  --lsPrintln("findAllTextRegions is deprecated. Do not call this anymore");
   local xyWindowSize = srGetWindowSize();
   local y = 0;
   local buttons = {};
