@@ -911,7 +911,7 @@ function followRoute(route)
             end
         elseif(r[curr][3] == Warehouse) then
             srReadScreen()
-            local stash = findImage("stash/stash.png",7000);
+            local stash = findImage("stash/stash.png", nil,7000);
             if stash then
                 stashAllButWood();
             end
@@ -1546,17 +1546,17 @@ function stashAllButWood()
     needMax = true;
     lsSleep(150);
     srReadScreen();
-    local pos = findImage("stash/stash.png",7000);
+    local pos = findImage("stash/stash.png", nil, 7000);
     if(pos) then
       safeClick(pos[0] + 10, pos[1] + 5);
       lsSleep(250);
       srReadScreen();
-      pos = findImage("stash/grass.png",7000);
+      pos = findImage("stash/grass.png", nil, 7000);
       if(pos) then
         stashItem(pos,true);
         stashedSomething = true;
       else
-        pos = findImage("stash/slate.png",7000);
+        pos = findImage("stash/slate.png", nil, 7000);
         if(pos) then
           stashItem(pos,true);
           stashedSomething = true;
