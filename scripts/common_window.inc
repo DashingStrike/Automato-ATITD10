@@ -318,7 +318,7 @@ function closeAllWindows(x, y, width, height)
   end
 
   local closeImages = {"ThisIs.png", "UnPin.png"};
-  local closeRight = {1, nil};
+  local closeRight = {1, 1};
 
   local found = true;
   while found do
@@ -332,7 +332,7 @@ function closeAllWindows(x, y, width, height)
         done = true;
         if image == "UnPin.png" then
           safeClick(images[#images][0]-15, images[#images][1], right);
-          lsSleep(250);
+          lsSleep(500);
         else
           safeClick(images[#images][0], images[#images][1], right);
         end
