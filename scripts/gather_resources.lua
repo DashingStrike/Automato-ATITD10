@@ -46,7 +46,12 @@ function gatherGrass()
 
 		checkBreak();
 		srReadScreen();
-		local grass = srFindImage("grass.png");
+		local grass = srFindImage("grass.png",7000);
+		local grass2 = srFindImage("grass2.png",7000);  -- Alterative Grass Image (For redundancy)
+
+		if not grass and grass2 then
+		  grass = grass2
+		end
 
 			if autoMove then
 				checkElapsedTime();
