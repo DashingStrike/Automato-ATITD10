@@ -409,7 +409,6 @@ function queryRoute()
     grass = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather grass", grass);
     writeSetting("grass",grass);
     y = y + 32;
---[[Disabled for T10
     clay = readSetting("clay",clay);
     clay = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather clay and flint", clay);
     writeSetting("clay",clay);
@@ -430,7 +429,7 @@ function queryRoute()
     if (papy and (not tonumber(papyDelay))) then
       lsPrint(35, y+32, z+10, 0.9, 0.9, 0xFF2020ff, "MUST BE A NUMBER");
     end
-    y = y + 36;]]
+    y = y + 36;
     repeatForever = readSetting("repeatForever",repeatForever);
     repeatForever = lsCheckBox(10, y, z, 0xFFFFFFff, " Repeat forever", repeatForever);
     writeSetting("repeatForever",repeatForever);
@@ -1526,13 +1525,13 @@ function plantPapy()
         return false;
     end
     srReadScreen();
-    local pos = findText("Papyrus");
+    local pos = srFindImage("plant.png",5000);
     if(pos) then
-        safeClick(pos[0]+20, pos[1]+5);
+        safeClick(pos[0], pos[1]);
         sleepWithBreak(500);
         return true;
     else
-        fatalError("Unable to find the Papyrus option.");
+        fatalError("Unable to find the Plant option.");
     end
     return false;
 end
