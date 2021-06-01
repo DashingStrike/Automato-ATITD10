@@ -14,7 +14,7 @@ lsRequireVersion(2,41);
 
 -- The colors used by srFindFirst/NextTextRegion and srGetWindowBorders to determine
 -- the innermost border pixels
-srSetWindowBorderColorRange(0x644026, 0x886952);
+srSetWindowBorderColorRange(0x806144, 0x886952);
 
 -- The colors that srStripRegion/Screen() looks for to decide it should invert (and
 -- treat as background when stripping)
