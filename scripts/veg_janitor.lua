@@ -17,7 +17,7 @@ dofile("veg_janitor/screen.inc")
 WARNING = [[
 THIS IS A BETA MACRO YOU ARE USING AT YOUR OWN RISK
 You must be in the fully zoomed in top down F8 F8 F8 view, Alt+L to lock the camere once there.
-In 'Options -> Interface Options '
+In 'Options -> Interface Options'
 You Must ENABLE: "Use the chat area instead of popups for many messages"
 In 'Options -> One-Click and Related'
 You must DISABLE: "Plant all crops where you stand"
