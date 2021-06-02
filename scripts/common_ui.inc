@@ -103,6 +103,30 @@ function askForWindow(message)
   while lsShiftHeld() do
     checkBreak();
   end
+
+  srReadScreen();
+  if srFindImage("old_client_test.png", 1) then
+    lsClipboardSet("https://www.desert-nomad.com/Download");
+
+    while 1 do
+      local errorMessage = [[
+        Detected the old ATITD client. Automato is not compatible with this version.
+
+        A link to the new client download page has been copied to your clipboard.
+
+        Paste it into your browser or visit
+        https://www.desert-nomad.com/Download
+      ]];
+      lsPrintWrapped(10, 10, 0, lsScreenX - 20, 0.7, 0.7, 0xFF0000FF, errorMessage);
+      if lsButtonText(lsScreenX - 110, lsScreenY - 30, 0, 100, 0xFFFFFFFF, "Exit") then
+        error('error');
+      end
+      lsDoFrame();
+      checkBreak();
+      lsSleep(50);
+    end
+  end
+
   return makePoint(mouseX, mouseY);
 end
 
