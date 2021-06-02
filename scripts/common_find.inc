@@ -518,3 +518,21 @@ function findClockRegion()
   end
   return clockRegion;
 end
+
+function CheckHoverTray()
+-- Check if the Mouse is hovering over the Tray Bar (Grass, Sand, Mud, etc icon tray)
+-- If a macro is looking for grass, slate, limestone, etc icon, then we might need to check if mouse is currently hovering the tray.
+-- When mouse is hovering a tray, the icon highlights with an orange color and adds a tooltip. This can potentially cause errors.
+-- Example usage: if hoverTray() then sleepWithStatus(100,"I'm hovering the Tray") else sleepWithStatus(100,"I'm NOT hovering Tray")
+-- Returns true if mouse is hovering the tray; returns false if it is NOT hovering the tray.
+-- You could do something like moveMouse to another position when true.
+
+  srReadScreen();
+  local tray = srFindImage("icon_tray_opened.png")
+  local mousePos = getMousePos()
+    if tray and (mousePos[0] > tray[0]+30 and mousePos[0] < tray[0]+570) and (mousePos[1] > tray[1]-50 and mousePos[1] <  tray[1]+50) then
+      return true;
+    else
+      return false;
+    end
+end
