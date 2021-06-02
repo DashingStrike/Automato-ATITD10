@@ -80,7 +80,6 @@ function gatherLimestone()
 		local slate = srFindImage("limestone.png",7000);
 			if slate then
 			srClickMouseNoMove(slate[0]+5,slate[1]);
-			srSetMousePos(pos[0]/2, pos[1]/2);
 			sleepWithStatus(2300, "Clicking Limestone Icon\n\nLimestone Collected: " .. tostring(counter) .. "\n\n\nElapsed Time: " .. getElapsedTime(timeStarted));
 			counter = counter + 1;
 			else
