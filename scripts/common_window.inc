@@ -332,7 +332,6 @@ function closeAllWindows(x, y, width, height)
         done = true;
         if image == "UnPin.png" then
           safeClick(images[#images][0]-15, images[#images][1], right);
-          lsSleep(500);
         else
           safeClick(images[#images][0], images[#images][1], right);
         end
