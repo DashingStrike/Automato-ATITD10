@@ -30,17 +30,21 @@ function start()
 		this = findAllImages("ThisIs.png");
 		checkBreak();
 		for i=1,#this do
+			safeClick(this[i][0], this[i][1]);
+			lsSleep(75);
 			if jug then
 				srReadScreen();
 				local wetJug = findAllImages("pottery/mouldJug.png")
 					for i=#wetJug, 1, -1 do
 						safeClick(wetJug[i][0], wetJug[i][1]);
+						lsSleep(75);
 					end
 	    elseif mortar then
 				srReadScreen();
 				local clayMortar = findAllImages("pottery/mouldMortar.png")
 					for i=#clayMortar, 1, -1 do
 						safeClick(clayMortar[i][0], clayMortar[i][1]);
+						lsSleep(75);
 					end
 			elseif cookpot then
 				srReadScreen();
@@ -147,13 +151,12 @@ function config()
 	  timer = mortarTimer;
 	end
 
-	msTimer = (timer * 60) * 1000
-    msTimerTeppyDuckOffset = (duckTeppyOffset * timer) * 1600 -- Add extra time to compensate for duck/teppy time
-	adjustedTimer = msTimer + msTimerTeppyDuckOffset;
+    timerTeppyDuckOffset = (duckTeppyOffset * timer) * 1000 -- Add extra time to compensate for duck/teppy time
+	adjustedTimer = timer + timerTeppyDuckOffset;
 
     if jug or mortar or cookpot then
     lsPrintWrapped(15, y, z+10, lsScreenX - 20, 0.7, 0.7, 0xd0d0d0ff,
-                   "Uncheck box to see more options!\n\n A " .. product .. " requires " .. timer .. "m per pass\n\n" .. timer .. "m = " .. msTimer .. " ms\n" .. "+ Game Time Offset: " ..  msTimerTeppyDuckOffset .. " ms\n= " .. msTimer + msTimerTeppyDuckOffset .. " ms per pass");
+                   "Uncheck box to see more options!\n\n A " .. product .. " requires " .. timer .. "m per pass\n\n" .. timer .. "m = " .. timer .. " ms\n" .. "+ Game Time Offset: " ..  timerTeppyDuckOffset .. " ms\n= " .. timer + timerTeppyDuckOffset .. " ms per pass");
 
       if lsButtonText(10, lsScreenY - 30, z, 100, 0xFFFFFFff, "Begin") then
         is_done = 1;
