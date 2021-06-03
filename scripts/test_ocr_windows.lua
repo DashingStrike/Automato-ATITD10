@@ -49,7 +49,14 @@ function findStuff()
   srReadScreen();
 
   -- Test srFindFirstTextRegion/srFindNextTextRegion
-  --srSetWindowBorderColorRange(0x6a4529, 0x6d472a); ---- Now defined globally at top of common_find.inc
+  -- srSetWindowBorderColorRange(0x846549, 0x86664a); -- Defined globally at top of common_find.inc
+  -- srSetWindowInvertColorRange(0x1E2E31, 0x2F4249);
+  -- srSetWindowBackgroundColorRange(0x283C42,0xFFFFFA);
+
+  -- Fetch border test before possibly calling srStripRegion
+  local pos = getMousePos();
+  local borders = srGetWindowBorders(pos[0], pos[1], 0);
+
   local regions = findAllTextRegions();
   if regions and windowIndex > #regions then
     windowIndex = 1;
@@ -69,7 +76,6 @@ function findStuff()
   end
 
   local scale = 0.75;
-  local pos = getMousePos();
   local y = lsScreenY / 2;
   lsPrint(10, y, 10, scale, scale, 0xFFFFFFff, "Current Mouse Position: " .. pos[0] .. ", " .. pos[1]);
   y = y + 20;
@@ -91,7 +97,6 @@ function findStuff()
   y = y + 20;
 
   -- Test srGetWindowBorders
-  local borders = srGetWindowBorders(pos[0], pos[1], 0);
   local xyWindowSize = srGetWindowSize();
   local color = 0xFFFFFFff;
   local found = true;
@@ -107,7 +112,7 @@ function findStuff()
   if not found then
     y = y + lsPrintWrapped(20, y, 10, lsScreenX - 20, 0.75, 0.75, color, "No valid window border found under cursor");
   else
-    srStripRegion(borders[0], borders[1], borders[2] - borders[0] + 1, borders[3] - borders[1] + 1);
+    -- srStripRegion(borders[0], borders[1], borders[2] - borders[0] + 1, borders[3] - borders[1] + 1);
     showDebugInRange("current-window",
       borders[0], borders[1], borders[2] - borders[0] + 1, borders[3] - borders[1] + 1,
       5, y, 2, lsScreenX - 10, lsScreenY - (y + 20) - 2);
