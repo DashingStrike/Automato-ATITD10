@@ -5,6 +5,7 @@
 --
 dofile("common.inc");
 dofile("settings.inc");
+dofile("hackling_rake.lua");
 
 items = {
         --strength
@@ -16,9 +17,9 @@ items = {
         --end
         {"",
             "Dig Hole",
+            "Flax Comb",
             --[[
             "Churn Butter",
-            "Flax Comb",
             "Excavate Blocks",
             "Hackling Rake",
             "Pump Aqueduct",
@@ -63,10 +64,6 @@ items = {
 local lagBound = {};
 lagBound["Dig Hole"] = true;
 lagBound["Survey (Uncover)"] = true;
-
---Set this to True if you want to take everything from flax comb/hackling rake
--- otherwise false.   Usually only true when using flax comb.
-takeAllWhenCombingFlax = false;
 
 -- Due to a window refresh bug (T9) rods can be lost when auto retrieve is enabled
 -- disabling it and manually refreshing the rod window bypasses this bug.
@@ -249,42 +246,35 @@ function searchRottenWood()
         lsSleep(per_tick);
     end
 end
+]]--
 
 function combFlax()
-    flaxReg = findText("This is [a-z]+ Flax Comb", nil, REGION + REGEX);
-    if flaxReg == nil then
+    local comb = srFindImage("statclicks/comb.png", 6000);
+    if comb == nil then
         return;
     end
-    flaxText = findText("This is [a-z]+ Flax Comb", flaxReg, REGEX);
-    clickText(flaxText);
+    safeClick(comb[0], comb[1]);
     lsSleep(per_tick);
     srReadScreen();
-    local fix = findText("Repair", flaxReg);
+    local fix = srFindImage("repair.png", 6000);
     if (fix) then
         repairRake();
     end
+    --[[
     grilledOnion = findText("Grilled Onions");
     if grilledOnion then
         eatOnion();
     end
-    s1 = findText("Separate Rotten", flaxReg);
-    s23 = findText("Continue processing", flaxReg);
-    clean = findText("Clean the");
+    ]]--
+    local s1 = srFindImage("rake/separate.png", 6000);
+    local s23 = srFindImage("rake/process.png", 6000);
+    local clean = srFindImage("rake/clean.png", 6000);
     if s1 then
-        clickText(s1);
+      safeClick(s1[0], s1[1]);
     elseif s23 then
-        clickText(s23);
+      safeClick(s23[0], s23[1]);
     elseif clean then
-        if takeAllWhenCombingFlax == true then
-            clickText(findText("Take...", flaxReg));
-            everythingObj = waitForText("Everything", 1000);
-            if everythingObj == nil then
-                return;
-            end
-            clickText(everythingObj);
-            lsSleep(150);
-        end
-        clickText(clean);
+      safeClick(clean[0], clean[1]);
     else
         lsPrint(5, 0, 10, 1, 1, "Found Stats");
         lsDoFrame();
@@ -292,7 +282,7 @@ function combFlax()
     end
 end
 
-
+--[[
 function hacklingRake()
     expressionToFind = "This is [a-z]+[ Improved]* Hackling Rake";
     flaxReg = findText(expressionToFind, nil, REGION + REGEX);
@@ -334,64 +324,6 @@ function hacklingRake()
         lsDoFrame();
         lsSleep(2000);
     end
-end
-
-function repairRake()
-    step = 1;
-    lsPlaySound("fail.wav");
-    sleepWithStatus(1000, "Attempting to Repair Rake !")
-    local repair = findText("Repair")
-    local material;
-    local plusButtons;
-    local maxButton;
-
-    if repair then
-        clickText(waitForText("Repair", 1000));
-        clickText(waitForText("Load Materials", 1000));
-        lsSleep(500);
-        srReadScreen();
-        plusButtons = findAllImages("plus.png");
-
-        for i = 1, #plusButtons do
-            local x = plusButtons[i][0];
-            local y = plusButtons[i][1];
-            srClickMouseNoMove(x, y);
-            lsSleep(100);
-
-            if i == 1 then
-                material = "Boards";
-            elseif i == 2 then
-                material = "Bricks";
-            elseif i == 3 then
-                material = "Thorns";
-            else
-                material = "What the heck?";
-            end
-
-            srReadScreen();
-            OK = srFindImage("ok.png")
-            if OK then
-
-                sleepWithStatus(5000, "You don\'t have any \'" .. material .. "\', Aborting !\n\nClosing Build Menu and Popups ...", nil, 0.7)
-                srClickMouseNoMove(OK[0], OK[1]);
-                srReadScreen();
-                blackX = srFindImage("blackX.png");
-                srClickMouseNoMove(blackX[0], blackX[1]);
-                num_loops = nil;
-                break;
-
-            else -- No OK button, Load Material
-
-                srReadScreen();
-                maxButton = srFindImage("max.png");
-                if maxButton then
-                    srClickMouseNoMove(maxButton[0], maxButton[1]);
-                end
-                sleepWithStatus(1000, "Loaded " .. material, nil, 0.7);
-                lsSleep(100);
-            end -- if OK
-        end -- for loop
-    end -- if repair
 end
 
 function eatOnion()
@@ -566,10 +498,10 @@ function doTasks()
                   carve(curTask);
                 elseif curTask == "Sharpened Stick" then
                     carve(curTask);
+                elseif curTask == "Flax Comb" then
+                    combFlax();
                 end
                 --[[
-                if curTask == "Flax Comb" then
-                    combFlax();
                 elseif curTask == "Hackling Rake" then
                     hacklingRake();
                 elseif curTask == "Weave Canvas" then
