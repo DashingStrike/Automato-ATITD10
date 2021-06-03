@@ -18,6 +18,7 @@ items = {
         {"",
             "Dig Hole",
             "Flax Comb",
+            "Oil (Flax Seed)",
             --[[
             "Churn Butter",
             "Excavate Blocks",
@@ -247,6 +248,16 @@ function searchRottenWood()
     end
 end
 ]]--
+
+function flaxOil()
+  srReadScreen();
+  seperateoil = srFindImage("statclicks/seperate_oil.png");
+    if seperateoil ~= nil then
+      safeClick(seperateoil[0], seperateoil[1])
+      lsSleep(per_tick);
+      closePopUp();
+    end
+end
 
 function combFlax()
     local comb = srFindImage("statclicks/comb.png", 6000);
@@ -500,6 +511,8 @@ function doTasks()
                     carve(curTask);
                 elseif curTask == "Flax Comb" then
                     combFlax();
+                elseif curTask == "Oil (Flax Seed)" then
+                    flaxOil();
                 end
                 --[[
                 elseif curTask == "Hackling Rake" then
