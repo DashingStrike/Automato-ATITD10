@@ -13,7 +13,11 @@ items = {
         {"",
             "Dig Hole",
             "Flax Comb",
-            "Oil (Flax Seed)",
+            "Weave Canvas",
+            "Weave Linen",
+            "Weave Papy Basket",
+            "Weave Wool Cloth",
+            "Oil (Flax Seed)"
             --[[
             "Churn Butter",
             "Excavate Blocks",
@@ -21,11 +25,8 @@ items = {
             "Pump Aqueduct",
             "Push Pyramid",
             "Stir Cement",
-            "Weave Canvas",
-            "Weave Linen",
-            "Weave Papy Basket",
             "Weave Silk",
-            "Weave Wool Cloth",
+
             "Water Insects",
             ]]--
         },
@@ -121,7 +122,7 @@ function getClickActions()
         end
     end
 end
---[[
+
 function weave(clothType)
     if clothType == "Canvas" then
         srcType = "Twine";
@@ -140,60 +141,48 @@ function weave(clothType)
         srcQty = "50";
     end
 
-    --   lsPrintln("Weaving " .. srcType);
-    -- find our loom type
-    loomReg = findText(" Loom", nil, REGION);
-    if loomReg == nil then
-        --    lsPrintln("Couldn't find loom");
-        return;
-    end
-    studReg = findText("This is [a-z]+ Student's Loom", nil, REGION + REGEX);
-
-    if clothType == "Linen" then
-        weaveText = findText("Weave Thread into Linen Cloth", loomReg);
+    if clothType == "Basket" then
+        weaveImage = srFindImage("statclicks/weave_papyrus.png");
     else
-        weaveText = findText("Weave " .. srcType, loomReg);
+        weaveImage = srFindImage("statclicks/weave_" .. srcType .. ".png");
     end
-    if weaveText ~= nil then
-        clickText(weaveText);
-        lsSleep(per_tick);
+    if weaveImage ~= nil then
+        safeClick(weaveImage[0],weaveImage[1]);
+        lsSleep(100);
         --Close the error window if a student's loom
-        if studReg then
+        srReadScreen();
+        studloom = srFindImage("statclicks/student_loom.png")
+        if studloom then
             lsSleep(500);
             srReadScreen();
-            --closeEmptyAndErrorWindows();
             closePopUp();
         end
         -- reload the loom
-        loadText = findText("Load the Loom with " .. srcType, loomReg);
-        if loadText ~= nil then
-            clickText(loadText);
-            local t = waitForText("Load how much", 2000);
+        loadImage = srFindImage("statclicks/with_" .. srcType .. ".png");
+        if loadImage ~= nil then
+            safeClick(loadImage[0],loadImage[1]);
+            local t = waitForImage("statclicks/how_much.png", 2000);
             if t ~= nil then
                 srCharEvent(srcQty .. "\n");
             end
-            --closeEmptyAndErrorWindows(); --This should just be a func to close the error region, but lazy.
             closePopUp();
         end
     end
 
     -- Restring student looms
     srReadScreen();
-    if studReg then
-        --      lsPrintln("Restringing");
+    if studloom then
         srReadScreen();
-        t = findText("Re-String", studReg);
+        t = srFindImage("statclicks/restring.png");
         if t ~= nil then
-            clickText(t);
-            lsSleep(per_tick);
+            safeClick(t[0],t[1]);
+            lsSleep(75);
             srReadScreen();
-            --closeEmptyAndErrorWindows(); --This should just be a func to close the error region, but lazy.
             closePopUp();
-            lsSleep(per_tick);
+            lsSleep(75);
         end
     end
 end
-]]--
 
 function carve(item)
   if item == "Tinder" then
@@ -511,18 +500,18 @@ function doTasks()
                     combFlax();
                 elseif curTask == "Oil (Flax Seed)" then
                     flaxOil();
-                end
-                --[[
-                elseif curTask == "Hackling Rake" then
-                    hacklingRake();
                 elseif curTask == "Weave Canvas" then
                     weave("Canvas");
                 elseif curTask == "Weave Linen" then
                     weave("Linen");
-                elseif curTask == "Weave Papy Basket" then
-                    weave("Basket");
                 elseif curTask == "Weave Wool Cloth" then
                     weave("Wool");
+                elseif curTask == "Weave Papy Basket" then
+                    weave("Basket");
+                end
+                --[[
+                elseif curTask == "Hackling Rake" then
+                    hacklingRake();
                 elseif curTask == "Weave Silk" then
                     weave("Silk");
                 elseif curTask == "Push Pyramid" then
