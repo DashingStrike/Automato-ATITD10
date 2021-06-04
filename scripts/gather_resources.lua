@@ -97,9 +97,7 @@ function gatherDirt()
 		srReadScreen();
 		local endurance = srFindImage("stats/endurance.png")
 
-		if endurance then
-			sleepWithStatus(100, "Waiting for Endurance timer to be visible and white");
-		else
+		if not endurance then
 			srReadScreen();
 			local dirt = srFindImage("dirt.png", 7000);
 			if dirt then
@@ -110,6 +108,8 @@ function gatherDirt()
 			sleepWithStatus(50, "Searching for Dirt Icon\n\nDirt Collected: " .. tostring(counter) .. "\n\n\nElapsed Time: " .. getElapsedTime(timeStarted));
 			end
 			closePopUp()
+		else
+			sleepWithStatus(100, "Waiting for Endurance timer to be visible and white");
 		end
 	end
 end
