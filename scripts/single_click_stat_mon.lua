@@ -83,11 +83,15 @@ function askQty()
 end
 
 function closePopUp()
-  lsSleep(250);
-  srReadScreen()
-  local ok = srFindImage("OK.png")
-  if ok then
-    srClickMouseNoMove(ok[0],ok[1]);
-    lsSleep(50);
+  while 1 do -- Perform a loop in case there are multiple pop-ups behind each other; this will close them all before continuing.
+      checkBreak();
+      lsSleep(250);
+      srReadScreen();
+      ok = srFindImage("OK.png");
+      if ok then
+        srClickMouseNoMove(ok[0],ok[1]);
+      else
+          break;
+      end
   end
 end
