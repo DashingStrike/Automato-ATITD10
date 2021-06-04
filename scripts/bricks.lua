@@ -194,18 +194,16 @@ function repairRack()
   repair = findAllImages("repair.png");
     for i=1,#repair do
       clickText(repair[i]);
-      srReadScreen();
-      if(srFindImage("bricks/" .. imgToRepair,5000)) then
-        closeAllWindows();
-        srReadScreen();
-        local OK = srFindImage("OK.png")
-          if OK then
-            srClickMouseNoMove(ok[0]+5,ok[1],1);
-          end
-        error("Out of boards to repair broken moulds");
-      end
-      lsSleep(100);
+      lsSleep(50);
     end
+    lsSleep(250);
+    srReadScreen();
+    local ok = srFindImage("OK.png");
+      if ok then
+        srClickMouseNoMove(ok[0],ok[1]);
+        lsSleep(50);
+      end
+    error("Out of boards to repair broken brick moulds")
 end
 
 function makeBricks()
