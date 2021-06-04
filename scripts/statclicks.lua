@@ -251,7 +251,7 @@ end
 
 function flaxOil()
   srReadScreen();
-  seperateoil = srFindImage("statclicks/seperate_oil.png");
+  local seperateoil = srFindImage("statclicks/seperate_oil.png");
     if seperateoil ~= nil then
       safeClick(seperateoil[0], seperateoil[1])
       lsSleep(per_tick);
@@ -270,6 +270,10 @@ function combFlax()
     local fix = srFindImage("repair.png", 6000);
     if (fix) then
         repairRake();
+        lsSleep(75);
+        srReadScreen();
+        safeClick(comb[0],comb[1]);
+        lsSleep(75);
     end
     --[[
     grilledOnion = findText("Grilled Onions");
