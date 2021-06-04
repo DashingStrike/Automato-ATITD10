@@ -1,10 +1,3 @@
--- single_click_stat_mon.lua v1.1 -- Revised by Tallow
---
--- Repeatedly click a single location whenever stats are black.
---
---March 28, 2018: Added ability to enter # of clicks, Elapsed Timer ~Cegaiel
-
-
 dofile("common.inc");
 
 askText = singleLine([[
@@ -59,8 +52,6 @@ function doit()
   end
 end
 
-
-
 function askQty()
   local is_done = false;
   local count = 1;
@@ -96,6 +87,7 @@ function closePopUp()
   srReadScreen()
   local ok = srFindImage("OK.png")
   if ok then
-    srClickMouseNoMove(ok[0]+5,ok[1],1);
+    srClickMouseNoMove(ok[0]+5,ok[1]);
+    lsSleep(50);
   end
 end
