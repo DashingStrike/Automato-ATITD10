@@ -1560,18 +1560,18 @@ function stashAllButWood()
         if(pos) then
           stashItem(pos,true);
           stashedSomething = true;
---[[      Disabled for T10
           else
-          pos = findText("Slate (");
+          pos = findImage("stash/clay.png", nil, 7000);
           if(pos) then
             stashItem(pos,true);
             stashedSomething = true;
           else
-            pos = findText("Grass (");
+            pos = findImage("stash/flint.png", nil, 7000);
             if(pos) then
               stashItem(pos,true);
               stashedSomething = true;
             else
+--[[          Disabled for T10
               pos = findText("Tadpoles");
               if(pos) then
                 stashItem(pos,true);
@@ -1595,9 +1595,9 @@ function stashAllButWood()
                     end
                   end
                 end
-              end
+              end]]
             end
-          end]]
+          end
         end
       end
       if(stashedSomething) then
