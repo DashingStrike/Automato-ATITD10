@@ -203,7 +203,7 @@ function repairRack()
         srClickMouseNoMove(ok[0],ok[1]);
         lsSleep(50);
       end
-    error("Out of boards to repair broken bricks moulds")
+    error("Out of boards to repair broken brick moulds")
 end
 
 function makeBricks()
