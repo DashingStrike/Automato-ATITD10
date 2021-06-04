@@ -4,7 +4,7 @@
 dofile("common.inc");
 
 function doit()
-    askForWindow("Wood gathering v1.0 by Cegaiel & Manon.\n\nPin 5-10 tree windows, will click them VERTICALLY (left to right if there is a tie - multiple columns are fine). \n\nOptionally, pin a Bonfire window for stashing wood. \n\nIf the trees are part of an oasis, you only need to pin 1 of the trees.");
+    askForWindow("Pin 5-10 tree windows, will click them VERTICALLY (left to right if there is a tie - multiple columns are fine). \n\nOptionally, pin a Bonfire window for stashing wood. \n\nIf the trees are part of an oasis, you only need to pin 1 of the trees.");
     while 1 do
         checkBreak();
         refreshWindows();

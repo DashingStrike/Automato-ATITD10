@@ -11,7 +11,7 @@ duckTeppyOffset = 10; -- How many extra seconds to add (to each real-life minute
 timer = 0;   -- Just a default to prevent error
 arrangeWindows = true;
 
-askText = "potteryAuto v1.0 - by Rhaom\n\nMould Jugs or Clay Mortars, without the mouse being used.\n\nPin up windows manually or select the arrange windows checkbox.";
+askText = "Mould Jugs or Clay Mortars, without the mouse being used.\n\nPin up windows manually or select the arrange windows checkbox.";
 
 
 function doit()

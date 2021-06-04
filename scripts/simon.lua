@@ -1,16 +1,7 @@
--- simon.lua v1.1 -- by Tallow
--- simon.lua v1.12 -- Tweaked by Cegaiel - Add Pass Delay box, various GUI tweaks.
---   Added read/writeSettings routine to save configuration to file (Settings.simon.lua.txt)
---   Next button hidden until at least one point added. Displays in realtime, the coordinates clicked. Do Right clicks, so we don't accidentally run on a misclick.
---
--- Set up a list of points to click on request. Useful for paint or
--- ad-hoc macros.
---
-
 dofile("common.inc");
 dofile("settings.inc");
 
-askText = "Simon v1.13\n\nv1.1 - by Tallow\nv1.12-.13 - Tweaked by Cegaiel\n\nSets up a list of points and then clicks on them in sequence.\n\nCan optionally add a timer to wait between each pass (ie project takes a few minutes to complete).\n\nOr will watch Stats Timer (red/black) for clicking.";
+askText = "Simon v1.13\n\nSets up a list of points and then clicks on them in sequence.\n\nCan optionally add a timer to wait between each pass (ie project takes a few minutes to complete).\n\nOr will watch Stats Timer (red/black) for clicking.";
 
 clickDelay = 150;
 is_stats = true;
