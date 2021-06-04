@@ -588,13 +588,12 @@ end
 function closePopUp()
     while 1 do -- Perform a loop in case there are multiple pop-ups behind each other;
       checkBreak();
+      lsSleep(250);
       srReadScreen();
       ok = srFindImage("ok.png");
       if ok then
-        safeClick(ok[0],ok[1], true);
-        lsSleep(750);
-      else
-        break;
+        srClickMouseNoMove(ok[0],ok[1]);
+        lsSleep(50);
       end
     end
 end

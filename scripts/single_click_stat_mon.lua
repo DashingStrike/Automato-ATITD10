@@ -84,10 +84,11 @@ function askQty()
 end
 
 function closePopUp()
+  lsSleep(250);
   srReadScreen()
   local ok = srFindImage("OK.png")
   if ok then
-    srClickMouseNoMove(ok[0]+5,ok[1]);
+    srClickMouseNoMove(ok[0],ok[1]);
     lsSleep(50);
   end
 end
