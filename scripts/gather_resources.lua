@@ -92,48 +92,18 @@ end
 function gatherDirt()
 	timeStarted = lsGetTimer();
 
-	local warn_small_font=nil;
-	local warn_large_font=nil;
-
 	while 1 do
 		checkBreak();
 		srReadScreen();
+		local endurance = srFindImage("stats/endurance.png")
 
-		stats_black2 = nil;
-		stats_black3 = nil;
-		stats_blackB = nil;
-		stats_blackC = nil;
-
-		stats_black = srFindImage("endurance.png");
-		stats_blackB = srFindImage("endurance2.png"); -- We can proceed when it's semi-dark red (same as white)
-		stats_blackC = srFindImage("endurance3.png"); -- We can proceed when it's dark red (same as white)
-
-		if not stats_black then
-			--stats_black2 = srFindImage("AllStats-Black2.png");
-			if not stats_black2 then
-				--stats_black3 = srFindImage("AllStats-Black3.png");
-				if stats_black3 then
-					warn_large_font = true;
-				end
-			else
-				warn_small_font = true;
-			end
-		end
-
-		local warning="";
-		if warn_small_font then
-			warning = "Your font size appears to be smaller than the default, many macros here will not work correctly.";
-		elseif warn_large_font then
-			warning = "Your font size appears to be larger than the default, many macros here will not work correctly.";
-		end
-
-		if not stats_black and not stats_black2 and not stats_black3 and not stats_blackB and not stats_blackC then
+		if endurance then
 			sleepWithStatus(100, "Waiting for Endurance timer to be visible and white");
 		else
 			srReadScreen();
-			local dirt = srFindImage("dirt.png");
+			local dirt = srFindImage("dirt.png", 7000);
 			if dirt then
-			srClickMouseNoMove(dirt[0]+5,dirt[1],1);
+			srClickMouseNoMove(dirt[0]+5,dirt[1]);
 			sleepWithStatus(2300, "Clicking Dirt Icon\n\nDirt Collected: " .. tostring(counter) .. "\n\n\nElapsed Time: " .. getElapsedTime(timeStarted));
 			counter = counter + 1;
 			else
