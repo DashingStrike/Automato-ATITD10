@@ -167,7 +167,7 @@ function gatherClay()
 			end
 
 			if clay then
-			srClickMouseNoMove(clay[0]+5,clay[1],1);
+			srClickMouseNoMove(clay[0]+5,clay[1]);
 			sleepWithStatus(2300, "Clicking Clay Icon\nWaiting on Animation\n\nClay Collected: " .. tostring(counter) .. "\n\n\nElapsed Time: " .. getElapsedTime(timeStarted));
 			counter = counter + 1;
 			lastGathered = lsGetTimer()
@@ -331,7 +331,8 @@ function closePopUp()
         ok = srFindImage("OK.png");
 				if ok then
 					srClickMouseNoMove(ok[0],ok[1]);
-					lsSleep(50);
+				else
+						break;
 				end
     end
 end
