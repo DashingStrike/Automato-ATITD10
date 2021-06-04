@@ -1,8 +1,3 @@
--- statclicks v1.0 by Skyfeather
---
--- Repeatedly performs tasks based on required stat attributes. Can perform several tasks
--- at once as long as they use different attributes.
---
 dofile("common.inc");
 dofile("settings.inc");
 dofile("hackling_rake.lua");
@@ -79,7 +74,6 @@ textLookup["Pump Aqueduct"] = "Pump the Aqueduct";
 statNames = {"strength", "endurance", "constitution", "focus"};
 statTimer = {};
 askText = singleLine([[
-   Statclicks v 1.0 by Skyfeather.
    Repeatedly performs stat-dependent tasks. Can perform several tasks at once as long as they use different attributes.
    Will also eat food from a kitchen grilled veggies once food is up if a kitchen is pinned.
    Ensure that windows of tasks you are performing are pinned and press shift.

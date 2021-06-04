@@ -1,7 +1,3 @@
--- Macro created by Unknown, updated for T8 by Manon on 10 March 2018.
--- WaypointColors are hexadecimal RGBA
--- Tree and color definitions updated for T9 by Spatulus 2019-10-25
-
 dofile("screen_reader_common.inc");
 dofile("ui_utils.inc");
 dofile("common.inc");
@@ -349,7 +345,7 @@ function doit()
     if(not promptOkay("WARNING! This macro requires your chats to be minimized and your \"Use arrow keys for movement\" option to be enabled. Enable fast gather from the One-Click Options menu.")) then
         return;
     end
-    if(not promptOkay("Time of day, shadows and light intensity should be on lowest setting. Updated for T8 by Manon.")) then
+    if(not promptOkay("Time of day, shadows and light intensity should be on lowest setting. Updated for T10.")) then
         return;
     end
     math.randomseed(lsGetTimer());
