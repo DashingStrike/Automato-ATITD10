@@ -44,7 +44,7 @@ function Plant:tick()
   if self:fully_grown() then
 
     -- TODO Move out of Plant class
-    if not self.last_harvest_attempt or (lsGetTimer() - self.last_harvest_attempt) > 500 then
+    if not self.last_harvest_attempt or (lsGetTimer() - self.last_harvest_attempt) > self.config.harvest_delay_time then
       self.last_harvest_attempt = lsGetTimer()
       if self.controller:harvest() then
         self.harvested = true
