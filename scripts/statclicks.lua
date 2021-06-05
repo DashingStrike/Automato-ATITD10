@@ -214,14 +214,12 @@ end
 
 function digHole()
   srReadScreen();
-  digdeeper = srFindImage("statclicks/dig_deeper.png");
-  --grilledOnion = findText("Grilled Onions");
+  local digdeeper = srFindImage("statclicks/dig_deeper.png");
+  local consume = srFindImage("consume.png");
     if digdeeper ~= nil then
-      --[[
-      if grilledOnion then
+      if consume then
           eatOnion();
       end
-      ]]--
       safeClick(digdeeper[0], digdeeper[1])
       lsSleep(per_tick);
     end
@@ -266,12 +264,13 @@ function combFlax()
         safeClick(comb[0],comb[1]);
         lsSleep(75);
     end
-    --[[
-    grilledOnion = findText("Grilled Onions");
-    if grilledOnion then
+
+    srReadScreen();
+    local consume = srFindImage("consume.png");
+    if consume then
         eatOnion();
     end
-    ]]--
+
     local s1 = srFindImage("rake/separate.png", 6000);
     local s23 = srFindImage("rake/process.png", 6000);
     local clean = srFindImage("rake/clean.png", 6000);
@@ -285,6 +284,18 @@ function combFlax()
         lsPrint(5, 0, 10, 1, 1, "Found Stats");
         lsDoFrame();
         lsSleep(2000);
+    end
+end
+
+function eatOnion()
+  srReadScreen();
+  local buffed = srFindImage("stats/enduranceBuff.png")
+    if not buffed then
+      srReadScreen();
+      local consumeOnion = srFindImage("consume.png")
+      lsSleep(75);
+      safeClick(consumeOnion[0],consumeOnion[1]);
+      waitforImage("stats/enduranceBuff.png")
     end
 end
 
@@ -330,14 +341,6 @@ function hacklingRake()
         lsDoFrame();
         lsSleep(2000);
     end
-end
-
-function eatOnion()
-    srReadScreen();
-    local buffed = srFindImage("foodBuff.png");
-        if not buffed then
-            clickAllText("Grilled Onions");
-        end
 end
 
 function pyramidPush()
