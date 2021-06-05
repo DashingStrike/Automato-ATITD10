@@ -113,6 +113,35 @@ function doit()
 			task = srFindImage("rake/clean.png");
 			task_text = "Clean the Rake";
 		end
+		
+		
+		--Task somehow didn't set try and find the next step
+		srReadScreen();
+		if (task == null) then
+		    task = srFindImage("rake/separate.png");
+			task_text = "Remove Straw";
+			step = 1;
+			
+			if (task == null) then
+			    task = srFindImage("rake/process.png");
+			    task_text = "Separate Tow";
+				step = 2;
+			end
+			
+			if (task == null) then
+			    task = srFindImage("rake/process.png");
+			    task_text = "Refine the Lint";
+				step = 3;
+			end
+			
+			if (task == null) then
+			    task = srFindImage("rake/clean.png");
+			    task_text = "Clean the Rake";
+				step = 4;
+			end
+			
+		end
+		
 
 GUI = "Next Step: " .. step .. "/4 - " .. task_text .. "\n\n----------------------------------------------\n1) Straw Removed: " .. straw .."/" .. num_loops*per_rake .. "\n2) Tow Seperated: " .. tow .. "/" .. num_loops*per_rake .. "\n3) Lint Refined: " .. lint .. "/" .. num_loops*per_rake .. "\n4) Cleanings: " .. clean .. "/" .. num_loops .. "\n----------------------------------------------\n\nFlax Processed: " .. (loop_count-1)*per_rake .. "\nFlax Remaining: " .. (num_loops*per_rake) - straw .. "\nRepair Attempts: " .. repairAttempt .. "\n\nElapsed Time: " .. getElapsedTime(startTime);
 
