@@ -42,11 +42,11 @@ items = {
             "Long Sharp Stick",
             "Rawhide Strips",
             "Sharpened Stick",
-            "Tinder"
+            "Tinder",
+            "Clay Lamp"
         --[[
             "Barrel Tap",
             "Bottle Stopper",
-            "Clay Lamp",
             "Crudely Carved Handle",
             "Large Crude Handle",
             "Personal Chit",
@@ -185,15 +185,23 @@ function weave(clothType)
 end
 
 function carve(item)
+
   if item == "Tinder" then
-    carveItem = srFindImage("statclicks/carve_tinder.png");
+      srcImg = "tinder";
   elseif item == "Rawhide Strips" then
-    carveItem = srFindImage("statclicks/carve_rawhide.png");
+      srcImg = "rawhide";
   elseif item == "Long Sharp Stick" then
-    carveItem = srFindImage("statclicks/carve_longSharpStick.png");
+      srcImg = "longSharpStick";
   elseif item == "Sharp Stick" then
-    carveItem = srFindImage("statclicks/carve_sharpStick.png");
+      srcImg = "sharpStick";
+  elseif item == "Silk" then
+      srcImg = "silk";
+  elseif item == "Clay Lamp" then
+      srcImg = "clayLamp";
   end
+
+  srReadScreen();
+  carveItem = srFindImage("statclicks/carve_" .. srcImg .. ".png");
 
   if carveItem ~= nil then
       safeClick(carveItem[0],carveItem[1]);
@@ -496,6 +504,8 @@ function doTasks()
                   carve(curTask);
                 elseif curTask == "Sharpened Stick" then
                     carve(curTask);
+                elseif curTask == "Clay Lamp" then
+                    carve(curTask);
                 elseif curTask == "Flax Comb" then
                     combFlax();
                 elseif curTask == "Oil (Flax Seed)" then
@@ -525,8 +535,6 @@ function doTasks()
                 elseif curTask == "Churn Butter" then
                     churnButter();
                 elseif curTask == "Barrel Tap" then
-                    carve(curTask);
-                elseif curTask == "Clay Lamp" then
                     carve(curTask);
                 elseif curTask == "Bottle Stopper" then
                     carve(curTask);
