@@ -218,3 +218,51 @@ function getInventoryText()
 
   return nil
 end
+
+-------------------------------------------------------------------------------
+-- copyAll()
+--
+-- Executes /copy1 in chat and returns the result from the clipboard
+-- This is an alternative method of accessing chat when OCR is not suitable
+-------------------------------------------------------------------------------
+function copyAllChat()
+  srReadScreen();
+  local min = srFindImage("chat/chat_min.png", 7000);
+  if min then
+    srKeyDown(VK_RETURN);
+    srKeyUp(VK_RETURN);
+  end
+
+  if waitForNoImage("chat/chat_min.png", 2000) then
+    lsPrintln("No Chat");
+    return;
+  end
+
+  srKeyDown(VK_DIVIDE);
+  lsSleep(10);
+  srKeyUp(VK_DIVIDE);
+  lsSleep(10);
+  srKeyEvent("copy");
+  lsSleep(10);
+  srKeyDown(VK_RETURN);
+  lsSleep(10);
+  srKeyUp(VK_RETURN);
+  lsSleep(200);
+  return lsClipboardGet();
+end
+
+function copyAllChatLines()
+  local contents = copyAllChat();
+  if not contents then
+    return;
+  end
+
+  local lines = explode("\n", contents);
+  for i = 1, #lines do
+    --lsPrintln("Line " .. i .. ": " .. lines[i]);
+    lines[i] = {[0] = 0, [1] = 0, [2] = lines[i]};
+  end
+  table.remove(lines);
+
+  return lines;
+end
