@@ -238,6 +238,7 @@ function copyAllChat()
     return;
   end
 
+  lsSleep(100);
   srKeyDown(VK_DIVIDE);
   lsSleep(10);
   srKeyUp(VK_DIVIDE);
