@@ -141,6 +141,12 @@ function weave(clothType)
         srcQty = "50";
     end
 
+    srReadScreen();
+    local consume = srFindImage("consume.png");
+    if consume then
+        eatOnion();
+    end
+
     if clothType == "Basket" then
         weaveImage = srFindImage("statclicks/weave_papyrus.png");
     else
@@ -289,13 +295,15 @@ end
 
 function eatOnion()
   srReadScreen();
-  local buffed = srFindImage("stats/enduranceBuff.png")
+  buffed = srFindImage("stats/enduranceBuff.png")
     if not buffed then
       srReadScreen();
       local consumeOnion = srFindImage("consume.png")
       lsSleep(75);
       safeClick(consumeOnion[0],consumeOnion[1]);
-      waitforImage("stats/enduranceBuff.png")
+        if not buffed then
+          sleepWithStatus(1500,"Waiting for the green endurance icon to appear")
+        end
     end
 end
 
