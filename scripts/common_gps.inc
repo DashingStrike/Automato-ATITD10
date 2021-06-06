@@ -20,7 +20,7 @@ function findCoords()
     end
   end
 
-  local start, stop = string.find(str, "%-?[0-9]+, %-?[0-9]+");
+  local start, stop = string.find(str, "%-?[0-9]+, ?%-?[0-9]+");
   if start ~= nil then
     -- Strip everything except the coords
     str = string.sub(str, start, stop);
