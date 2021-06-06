@@ -22,11 +22,16 @@ function findStuff()
   local scale = 0.9;
 
   srReadScreen();
-  --local regions = findAllTextRegions();
-  --regions = regions[1];
 
-  local regions = findChatRegionReplacement();
-  local chatBox = makeBox(regions[0],regions[1], lsScreenX, lsScreenY);
+  --use this region for training windows
+  local regions = findAllTextRegions();
+  regions = regions[1];
+
+  --use this region and colors for training chat
+  --local regions = findChatRegionReplacement();
+  --local chatBox = makeBox(regions[0],regions[1], lsScreenX, lsScreenY);
+  --srSetWindowInvertColorRange(0x1e2e31, 0x263539);
+  --srSetWindowBackgroundColorRange(0x797070,0xFFFFFF);
 
   --sleepWithStatus(5000, regions[0] .. ", " .. regions[1] .. ", " .. regions[2] .. ", " .. regions[3]);
 
