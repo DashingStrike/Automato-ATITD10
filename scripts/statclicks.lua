@@ -198,7 +198,7 @@ function carve(item)
       srcImg = "rawhide";
   elseif item == "Long Sharp Stick" then
       srcImg = "longSharpStick";
-  elseif item == "Sharp Stick" then
+  elseif item == "Sharpened Stick" then
       srcImg = "sharpStick";
   elseif item == "Silk" then
       srcImg = "silk";
