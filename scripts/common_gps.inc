@@ -19,8 +19,9 @@ function findCoords()
       str = string.gsub(str, " ?1 ?","1");
     end
   end
+  lsPrintln(str);
 
-  local start, stop = string.find(str, "%-?[0-9]+, %-?[0-9]+");
+  local start, stop = string.find(str, "%-?[0-9]+, ?%-?[0-9]+");
   if start ~= nil then
     -- Strip everything except the coords
     str = string.sub(str, start, stop);

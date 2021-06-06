@@ -59,7 +59,7 @@ function getDowseResult()
     onMain = checkIfMain();
   end
 
-  local chatText = copyAllChatLines();
+  local chatText = getChatText();
   while not chatText or not chatText[#chatText] do
     checkBreak();
     sleepWithStatus(100, "Copying chat", nil, 0.7);
@@ -77,7 +77,7 @@ function getDowseResult()
   if (region) then
     if ((x ~= lastX) or (y ~= lastY)) then
       writeDowseLog(x , y, region, "sand", true);
-      status = "Sand at " .. x .. "," .. y;
+      status = "Sand at " .. x .. ", " .. y;
       lastX = x;
       lastY = y;
     end
@@ -89,7 +89,7 @@ function getDowseResult()
     if ((x ~= lastX) or (y ~= lastY)) then
       lsPlaySound("cymbals.wav");
       writeDowseLog(x , y, region, foundOre, true);
-      status = foundOre .. " at " .. x .. "," .. y;
+      status = foundOre .. " at " .. x .. ", " .. y;
       lastX = x;
       lastY = y;
     end
@@ -100,7 +100,7 @@ function getDowseResult()
   if (foundOre) then
     if ((x ~= lastX) or (y ~= lastY)) then
       lsPlaySound("cymbals.wav");
-      status = foundOre .. " near " .. x .. "," .. y;
+      status = foundOre .. " near " .. x .. ", " .. y;
       lastX = x;
       lastY = y;
     end
@@ -127,8 +127,6 @@ end
 function doit()
   askForWindow([[
 Dowses With Ducks
-
-WARNING: This macro currency uses the /copy command in chat to get the chat log from main.
 
 This program will record each dowsing from main chat, and log them to dowsing.txt
 

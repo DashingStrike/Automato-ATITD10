@@ -8,23 +8,25 @@
 -- List of colors which mark the edge of a window.
 -- T8: WINDOW_COLORS = {0x72502EFF, 0x714f2eff, 0x6f4e2dff, 0x785431ff};
 
-
--- The following 3 functions were just added with version 2.41
-lsRequireVersion(2,41);
+--This version includes changes to how OCR works
+lsRequireVersion(2,59);
 
 -- The colors used by srFindFirst/NextTextRegion and srGetWindowBorders to determine
 -- the innermost border pixels
-srSetWindowBorderColorRange(0x806144, 0x886952);
+minWindowBorderColorRange = 0x806144;
+maxWindowBorderColorRange = 0x886952;
+srSetWindowBorderColorRange(minWindowBorderColorRange, maxWindowBorderColorRange);
 
 -- The colors that srStripRegion/Screen() looks for to decide it should invert (and
 -- treat as background when stripping)
 minSetWindowInvertColorRange = 0x1E2E31;
 maxSetWindowInvertColorRange = 0x929DA0;
-
 srSetWindowInvertColorRange(minSetWindowInvertColorRange, maxSetWindowInvertColorRange);
 
 -- The color range that is treated as window background and stripped in srStripRegion()
-srSetWindowBackgroundColorRange(0x283C42,0xFFFFFA);
+minWindowBackgroundColorRange = 0x283C42;
+maxWindowBackgroundColorRange = 0xFFFFFA;
+srSetWindowBackgroundColorRange(minWindowBackgroundColorRange,maxWindowBackgroundColorRange);
 
 -------------------------------------------------------------------------------
 -- findAllImages(image_name, range, tol)
@@ -440,17 +442,23 @@ end
 -- replacement for srFindChatRegion() for ATITD T9
 function findChatRegionReplacement()
   local pos = findChatRegionSub();
-  if pos then
-    local borders = srGetWindowBorders(pos[0], pos[1]+20);
-    -- Offset past blue background into text area
-    borders[0] = borders[0] + 5;
-    borders[1] = borders[1] + 5;
-    borders[2] = borders[2] - 22; -- in past scroll bar
-    borders[3] = borders[3] - 29; -- above text entry
-    borders[2] = borders[2] - borders[0]; -- return "width", not "right"
-    borders[3] = borders[3] - borders[1]; -- return "height", not "bottom"
-    return borders;
+  if not pos then
+    return;
   end
+
+  srSetWindowBorderColorRange(0x644026, 0x6d472a);
+
+  local borders = srGetWindowBorders(pos[0], pos[1]+20);
+  -- Offset past blue background into text area
+  borders[0] = borders[0] + 5;
+  borders[1] = borders[1] + 5;
+  borders[2] = borders[2] - 22; -- in past scroll bar
+  borders[3] = borders[3] - 29; -- above text entry
+  borders[2] = borders[2] - borders[0]; -- return "width", not "right"
+  borders[3] = borders[3] - borders[1]; -- return "height", not "bottom"
+
+  srSetWindowBorderColorRange(minWindowBorderColorRange, maxWindowBorderColorRange);
+  return borders;
 end
 
 function findChatRegionSub()

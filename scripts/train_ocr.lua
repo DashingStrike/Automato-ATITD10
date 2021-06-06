@@ -22,10 +22,10 @@ function findStuff()
   local scale = 0.9;
 
   srReadScreen();
-  local regions = findAllTextRegions();
-  regions = regions[2];
+  --local regions = findAllTextRegions();
+  --regions = regions[1];
 
-  --local regions = findChatRegionReplacement();
+  local regions = findChatRegionReplacement();
   local chatBox = makeBox(regions[0],regions[1], lsScreenX, lsScreenY);
 
   --sleepWithStatus(5000, regions[0] .. ", " .. regions[1] .. ", " .. regions[2] .. ", " .. regions[3]);
