@@ -8,18 +8,18 @@ local mapColors = {
   ["Zinc Ore"] = "DotVi",
   ["Aluminum Ore"] = "DotBl",
   ["Lead Ore"] = "DotPk",
-  unrecognized = "DotYe",
 };
 
 local lastX = 0;
 local lastY = 0;
 local status = "";
 local wikiMapFormat = true;
+local autorun = false;
 
 function writeDowseLog(x, y, region, name, exact)
   local color = mapColors[name];
   if not color then
-    color = "Dot";
+    color = "DotYe";
   end
 
   if not exact then
@@ -28,7 +28,10 @@ function writeDowseLog(x, y, region, name, exact)
 
   local text;
   if wikiMapFormat then
-    text = "(" .. color .. ") " .. x .. "," .. y .. " ," .. name .. " @ (" .. x .. ", " .. y .. ") " .. region;
+    text = "(" .. color .. ") " ..
+      string.gsub(x, "%.[0-9]", "") .. "," ..
+      string.gsub(y, "%.[0-9]", "") .. " ," ..
+      name .. " @ (" .. x .. ", " .. y .. ") " .. region;
   else
     text = x .. "," .. y .. "," .. region .. "," .. name;
   end
@@ -73,7 +76,7 @@ function getDowseResult()
   local x;
   local y;
 
-  region, x, y = string.match(lastLine, "You detect nothing but sand at (%D+) ([-0-9]+) ([-0-9]+)");
+  region, x, y = string.match(lastLine, ".+ detect nothing but sand at (%D+) ([-0-9]+%.[0-9]) ([-0-9]+%.[0-9])");
   if (region) then
     if ((x ~= lastX) or (y ~= lastY)) then
       writeDowseLog(x , y, region, "sand", true);
@@ -84,7 +87,7 @@ function getDowseResult()
     return;
   end
 
-  foundOre, region, x, y = string.match(lastLine, "You detect an underground vein of (%D+) at (%D+) ([-0-9]+) ([-0-9]+)");
+  foundOre, region, x, y = string.match(lastLine, ".+ detect an underground vein of (%D+) at (%D+) ([-0-9]+%.[0-9]) ([-0-9]+%.[0-9])");
   if (foundOre) then
     if ((x ~= lastX) or (y ~= lastY)) then
       lsPlaySound("cymbals.wav");
@@ -96,7 +99,7 @@ function getDowseResult()
     return;
   end
 
-  foundOre, region, x, y = string.match(lastLine, "You detect a vein of (%D+), somewhere nearby (%D+) ([-0-9]+) ([-0-9]+)");
+  foundOre, region, x, y = string.match(lastLine, ".+ detect a vein of (%D+), somewhere nearby (%D+) ([-0-9]+%.[0-9]) ([-0-9]+%.[0-9])");
   if (foundOre) then
     if ((x ~= lastX) or (y ~= lastY)) then
       lsPlaySound("cymbals.wav");
@@ -114,6 +117,8 @@ function doDisplay()
   y = y + 25;
   wikiMapFormat = CheckBox(10, y, 0, 0xFFFFFFff, "Log Wiki Map Format", wikiMapFormat, 0.7, 0.7);
   y = y + 25;
+  autorun = CheckBox(10, y, 0, 0xFFFFFFff, "Auto Run", autorun, 0.7, 0.7);
+  y = y + 25;
 
   lsPrint(10, y, 0, 0.7, 0.7, 0xB0B0B0ff, status);
 
@@ -130,14 +135,20 @@ Dowses With Ducks
 
 This program will record each dowsing from main chat, and log them to dowsing.txt
 
+Autorun just clicks in the upper part of the screen occasionally, so keep it clear.
+
 Hover over the ATITD window and press shift.
 ]]);
-  windowSize = srGetWindowSize();
+  local xyScreenSize = srGetWindowSize();
   local i = 0;
   while true do
     if (i % 10) == 0 then
       srReadScreen();
       getDowseResult();
+    end
+
+    if autorun and (i % 30) == 0 then
+      safeClick(xyScreenSize[0] / 2, xyScreenSize[1] / 3);
     end
 
     checkBreak();
