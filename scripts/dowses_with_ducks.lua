@@ -55,7 +55,7 @@ function writeDowseLog(x, y, region, name, exact)
 end
 
 function checkIfMain()
-  if not srFindImage("chat/main_chat.png") then
+  if not srFindImage("chat/main_chat.png", 7000) then
     return false;
   end
 
