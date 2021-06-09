@@ -90,7 +90,7 @@ function getDowseResult()
   local x;
   local y;
 
-  region, x, y = string.match(lastLine, ".+ detect nothing but sand at (%D+) ([-0-9]+%.[0-9]+) ([-0-9]+%.[0-9]+)");
+  region, x, y = string.match(lastLine, ".+ but sand at (%D+) ([-0-9]+%.[0-9]+) ([-0-9]+%.[0-9]+)");
   if (region) then
     if ((x ~= lastX) or (y ~= lastY)) then
       writeDowseLog(x , y, region, "Sand", true);
@@ -101,7 +101,7 @@ function getDowseResult()
     return;
   end
 
-  foundOre, region, x, y = string.match(lastLine, ".+ detect an underground vein of (%D+) at (%D+) ([-0-9]+%.[0-9]+) ([-0-9]+%.[0-9]+)");
+  foundOre, region, x, y = string.match(lastLine, ".+ vein of (%D+) at (%D+) ([-0-9]+%.[0-9]+) ([-0-9]+%.[0-9]+)");
   if (foundOre) then
     if ((x ~= lastX) or (y ~= lastY)) then
       lsPlaySound("cymbals.wav");
@@ -113,7 +113,7 @@ function getDowseResult()
     return;
   end
 
-  foundOre, region, x, y = string.match(lastLine, ".+ detect a vein of (%D+), somewhere nearby (%D+) ([-0-9]+%.[0-9]+) ([-0-9]+%.[0-9]+)");
+  foundOre, region, x, y = string.match(lastLine, ".+ vein of (%D+), somewhere nearby (%D+) ([-0-9]+%.[0-9]+) ([-0-9]+%.[0-9]+)");
   if (foundOre) then
     if ((x ~= lastX) or (y ~= lastY)) then
       lsPlaySound("cymbals.wav");
