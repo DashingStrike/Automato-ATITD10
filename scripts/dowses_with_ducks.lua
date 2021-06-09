@@ -42,6 +42,7 @@ function writeDowseLog(x, y, region, name, exact)
   elseif format == 2 then
     text = string.gsub(x, "%.[0-9]+", "") .. "," ..
       string.gsub(y, "%.[0-9]+", "") .. "," ..
+      region .. "," ..
       name;
   else
     text = x .. "," ..
