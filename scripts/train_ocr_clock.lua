@@ -1,4 +1,4 @@
--- Console will output last character in each line (when training). 
+-- Console will output last character in each line (when training).
 -- Also check https://www.atitd.org/wiki/tale6/User:Skyfeather/VT_OCR for more info on OCR
 
 dofile("common.inc");
@@ -60,21 +60,18 @@ function findStuff()
     lsPrint(10, lsScreenY - 60, 10, 0.7, 0.7, 0xFFFFFFff, "Replace ? with the character you are training");
 
 
+  srStripRegion(clockRegion.x, clockRegion.y, clockRegion.width, clockRegion.height)
   if lsButtonText(0, lsScreenY - 30, z, 100,
                   0xFFFFFFff, "Train") then
 
-    srStripRegion(clockRegion.x, clockRegion.y, clockRegion.width, clockRegion.height)
     --Console will output ??? as last character in each line (when training). Replace ??? with the correct number of letter (case sensitive)
     srTrainTextReader(clockRegion.x+offsetX,clockRegion.y+offsetY, '?')
-  else
-    srStripRegion(clockRegion.x+offsetX,clockRegion.y+offsetY,   8, 12)
   end
 
-  srMakeImage("clock-region", clockRegion.x, clockRegion.y, clockRegion.width, clockRegion.height);
-  srShowImageDebug("clock-region", 5, 5, 1, zoomLevel);
+  srMakeImage("clock-region", clockRegion.x, clockRegion.y, clockRegion.width, clockRegion.height, true);
+  srShowImageDebug("clock-region", 0, 0, 1, zoomLevel);
 
-  srMakeImage("clock-region2", clockRegion.x+offsetX, clockRegion.y+offsetY, 8, 12);
-  srShowImageDebug("clock-region2", 20, 140, 1, zoomLevel);
+  lsDrawLine(offsetX * zoomLevel, offsetY * zoomLevel, offsetX * zoomLevel, (offsetY + 12) * zoomLevel, 2, 1 + zoomLevel, 1, 0x66FF66FF);
 
   if lsButtonText(lsScreenX - 110, lsScreenY - 30, z, 100,
                   0xFFFFFFff, "End Script") then
