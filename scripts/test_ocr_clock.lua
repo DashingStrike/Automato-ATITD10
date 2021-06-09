@@ -15,11 +15,11 @@ function doit()
   local clockRegion = findClockRegion();
 
   while 1 do
-    checkBreak();	
+    checkBreak();
     srReadScreen();
 
     srStripRegion(clockRegion.x, clockRegion.y, clockRegion.width, clockRegion.height);
-    srMakeImage("clock-region", clockRegion.x, clockRegion.y, clockRegion.width, clockRegion.height);
+    srMakeImage("clock-region", clockRegion.x, clockRegion.y, clockRegion.width, clockRegion.height, true);
     srShowImageDebug("clock-region", 5, 150, 1, zoomLevel);
 
     if lsButtonText(lsScreenX - 110, lsScreenY - 30, z, 100, 0xFFFFFFff,
@@ -39,8 +39,8 @@ function doit()
     lsPrint(10, lsScreenY - 28, 0, 0.7, 0.7, 0xFFFFFFff, "Zoom:");
 
     lsPrintWrapped(10, 10, 0, lsScreenX-15, 0.7, 0.7, 0xFFFFFFff,
-             "Screen Size: " .. x .. " x " .. y .. "\nCenterX/Y: " .. math.floor(centerX) .. ", " .. math.floor(centerY) .. 
-             "\nClock Region: " .. math.floor(clockRegion.x) .. ", " .. math.floor(clockRegion.y) .. ", " .. math.floor(clockRegion.width) .. ", " .. 
+             "Screen Size: " .. x .. " x " .. y .. "\nCenterX/Y: " .. math.floor(centerX) .. ", " .. math.floor(centerY) ..
+             "\nClock Region: " .. math.floor(clockRegion.x) .. ", " .. math.floor(clockRegion.y) .. ", " .. math.floor(clockRegion.width) .. ", " ..
               math.floor(clockRegion.height) .. "\nFaction Detected: " .. faction .. "\nZoom Level: " .. zoomLevel  );
 
     lsDoFrame();

@@ -24,14 +24,14 @@ function findStuff()
   srReadScreen();
 
   --use this region for training windows
-  local regions = findAllTextRegions();
-  regions = regions[1];
+  --local regions = findAllTextRegions();
+  --regions = regions[1];
 
   --use this region and colors for training chat
-  --local regions = findChatRegionReplacement();
-  --local chatBox = makeBox(regions[0],regions[1], lsScreenX, lsScreenY);
-  --srSetWindowInvertColorRange(0x1e2e31, 0x263539);
-  --srSetWindowBackgroundColorRange(0x797070,0xFFFFFF);
+  local regions = findChatRegionReplacement();
+  local chatBox = makeBox(regions[0],regions[1], lsScreenX, lsScreenY);
+  srSetWindowInvertColorRange(0x1e2e31, 0x263539);
+  srSetWindowBackgroundColorRange(0x797070,0xFFFFFF);
 
   --sleepWithStatus(5000, regions[0] .. ", " .. regions[1] .. ", " .. regions[2] .. ", " .. regions[3]);
 
@@ -70,20 +70,17 @@ function findStuff()
     lsPrint(10, lsScreenY - 60, 10, 0.7, 0.7, 0xFFFFFFff, "Replace ? with the character you are training");
 
 
+  srStripRegion(regions[0], regions[1], regions[2], regions[3]);
   if lsButtonText(0, lsScreenY - 30, z, 100, 0xFFFFFFff, "Train") then
-    srStripRegion(regions[0], regions[1], regions[2], regions[3]);
     --Console will output ??? as last character in each line (when training). Replace ??? with the correct number of letter (case sensitive)
     srTrainTextReader(regions[0]+offsetX,regions[1]+offsetY, '?')
   else
-    --srStripRegion(regions[0], regions[1], regions[2], regions[3]);
-    srStripRegion(regions[0]+offsetX,regions[1]+offsetY,   8, 12)
   end
 
-  srMakeImage("current-region", regions[0], regions[1], lsScreenX, lsScreenY);
-  srShowImageDebug("current-region", 5, 5, 1, zoomLevel);
-  --srSetMousePos(regions[0]+offsetX,regions[1]+offsetY);
+  srMakeImage("current-region", regions[0], regions[1], lsScreenX, lsScreenY, true);
+  srShowImageDebug("current-region", 0, 0, 1, zoomLevel);
 
-
+  lsDrawLine(offsetX * zoomLevel, offsetY * zoomLevel, offsetX * zoomLevel, (offsetY + 12) * zoomLevel, 2, 1 + zoomLevel, 1, 0x66FF66FF);
 
   if lsButtonText(lsScreenX - 110, lsScreenY - 30, z, 100,
                   0xFFFFFFff, "End Script") then

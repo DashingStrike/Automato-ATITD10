@@ -20,7 +20,7 @@ function doit()
       end
     end
     local creg = findChatRegionReplacement();
-    srMakeImage("current-region", creg[0], creg[1], creg[2], creg[3]);
+    srMakeImage("current-region", creg[0], creg[1], creg[2], creg[3], true);
     srShowImageDebug("current-region", 5, y + 10, 1, 2);
 
     if lsButtonText(lsScreenX - 110, lsScreenY - 30, z, 100, 0xFFFFFFff, "End script") then
@@ -33,7 +33,7 @@ function doit()
 end
 
 function checkIfMain()
-  if not srFindImage("chat/main_chat.png") then
+  if not srFindImage("chat/main_chat.png", 7000) then
     return false;
   end
 

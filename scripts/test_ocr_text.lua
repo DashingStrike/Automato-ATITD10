@@ -11,7 +11,7 @@ function doit()
   while true do
     checkBreak();
     findStuff();
-    
+
     checkBreak();
     lsDoFrame();
     lsSleep(10);
@@ -35,8 +35,8 @@ function pointToLocation()
 
       for i=#findBlah, 1, -1 do
         srSetMousePos(findBlah[i][0]+xOffset,findBlah[i][1]+yOffset);
-        sleepWithStatus(pointingSpeed, "Pointing to Location " .. window .. "/" .. #findBlah .. "\n\nX Offset: " 
-          .. xOffset .. "\nY Offset: " .. yOffset .. "\n\nMouse Location: " .. findBlah[i][0]+xOffset .. ", " .. 
+        sleepWithStatus(pointingSpeed, "Pointing to Location " .. window .. "/" .. #findBlah .. "\n\nX Offset: "
+          .. xOffset .. "\nY Offset: " .. yOffset .. "\n\nMouse Location: " .. findBlah[i][0]+xOffset .. ", " ..
         findBlah[i][1]+yOffset, nil, 0.7, "Moving Mouse");
         window = window + 1;
       end
@@ -47,7 +47,7 @@ function pointToLocation()
 end
 
 function showDebugInRange(name, screenx, screeny, imgw, imgh, x, y, z, w, h)
-  srMakeImage(name, screenx, screeny, imgw, imgh);
+  srMakeImage(name, screenx, screeny, imgw, imgh, true);
   local scale = 1;
   local border = 1;
   for stest=2,10 do

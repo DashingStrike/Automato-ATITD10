@@ -14,9 +14,9 @@ function doit()
 
   while true do
     checkBreak();
-    srMakeImage("clock-region", clockRegion.x, clockRegion.y, clockRegion.width, clockRegion.height);
-    srShowImageDebug("clock-region", 5, 5, 1, zoomLevel);
     findStuff();
+    srMakeImage("clock-region", clockRegion.x, clockRegion.y, clockRegion.width, clockRegion.height, true);
+    srShowImageDebug("clock-region", 5, 5, 1, zoomLevel);
     lsDoFrame();
     lsSleep(10);
   end
@@ -51,7 +51,7 @@ function pointToLocation()
 end
 
 function showDebugInRange(name, screenx, screeny, imgw, imgh, x, y, z, w, h)
-  srMakeImage(name, screenx, screeny, imgw, imgh);
+  srMakeImage(name, screenx, screeny, imgw, imgh, true);
   local scale = 1;
   local border = 1;
   for stest=2,10 do
