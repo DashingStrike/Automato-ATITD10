@@ -1,8 +1,3 @@
--- boards.lua v1.1 -- Revised by Tallow, Rewrite by Manon to also click repair and use mostly OCR.
--- Run a set of Sawmills or Wood Planes to generate boards.
--- Reverted by Talion to use images till OCR is sorted.
---
-
 dofile("common.inc");
 dofile("settings.inc");
 
@@ -18,12 +13,10 @@ function doit()
 
   boards = 0;  --Total boards planed
   brokeplane = 0;
-  if(arrangeWindows) then
-    arrangeInGrid(false, false, 360, 130, nil, 60);
-  end
-
+    if(arrangeWindows) then
+      arrangeInGrid(false, false, 360, 130, nil, 60);
+    end
   planeBoards(); -- Planes Boards
-
 end
 
 function promptParameters()
@@ -38,9 +31,7 @@ function promptParameters()
   while not is_done do
     -- Make sure we don't lock up with no easy way to escape!
     checkBreak();
-
     local y = 5;
-
     lsSetCamera(0,0,lsScreenX*scale,lsScreenY*scale);
 
     lsPrint(10, y, 0, scale, scale, 0xd0d0d0ff, "Blade:");
@@ -89,101 +80,101 @@ function promptParameters()
     lsDoFrame();
     lsSleep(100);
   end
-  if(unpinWindows) then
-    setCleanupCallback(cleanup); -- unpin all open windows
-  end
+    if(unpinWindows) then
+      setCleanupCallback(cleanup); -- unpin all open windows
+    end
 end
 
 function refreshWindows()
   srReadScreen();
   this = findAllImages("ThisIs.png");
-  for i=1,#this do
-    clickText(this[i]);
-  end
+    for i=1,#this do
+      clickText(this[i]);
+    end
   lsSleep(100);
 end
 
 function repairBoards()
   srReadScreen();
-  if not carpShop then
-	clickrepair = findAllImages("boards/RepairWoodPlane.png");
-    for i=1,#clickrepair do
-      clickText(clickrepair[i]);
-      lsSleep(100);
+    if not carpShop then
+  	clickrepair = findAllImages("boards/RepairWoodPlane.png");
+      for i=1,#clickrepair do
+        clickText(clickrepair[i]);
+        lsSleep(100);
+      end
     end
-  end
 end
 
 function planeBoards()
   srReadScreen();
 
-    while 1 do
-      -- Click pin ups to refresh the window
-      clickAllImages("ThisIs.png");
-      sleepWithStatus(500, "Refreshing\nBoards Planed: " .. boards);
+  while 1 do
+  -- Click pin ups to refresh the window
+  clickAllImages("ThisIs.png");
+  sleepWithStatus(500, "Refreshing\nBoards Planed: " .. boards);
 
-    srReadScreen();
-    local clickCount = 0;
-    local ThisIsList = findAllImages("ThisIs.png");
+  srReadScreen();
+  local clickCount = 0;
+  local ThisIsList = findAllImages("ThisIs.png");
     for i=1,#ThisIsList do
-      local x = ThisIsList[i][0]-75;
-      local y = ThisIsList[i][1];
-      local width = 285;
-      local height = 250;
-        if not carpShop then
-		  srReadScreen();
-          p = srFindImageInRange("boards/planeWood.png", x, y, width, height, 5000);
-          repairBoards();
+    local x = ThisIsList[i][0]-75;
+    local y = ThisIsList[i][1];
+    local width = 285;
+    local height = 250;
+      if not carpShop then
+      srReadScreen();
+      p = srFindImageInRange("boards/planeWood.png", x, y, width, height, 5000);
+      repairBoards();
+      else
+      p = srFindImageInRange("boards/carpWood.png", x, y, width, height, 5000);
+      end
+        if(p) then
+        closePopUp();
+        waitForStats();
+        safeClick(p[0]+10,p[1]+2);
+        clickCount = clickCount + 1;
+        boards = boards + 1;
+        srReadScreen();
         else
-          p = srFindImageInRange("boards/carpWood.png", x, y, width, height, 5000);
-        end
+        p = srFindImageInRange("boards/upgrade.png", x, y, width, height, 5000);
           if(p) then
-            closePopUp();
-            --waitForStats();
-            safeClick(p[0]+10,p[1]+2);
-            clickCount = clickCount + 1;
-            boards = boards + 1;
-            srReadScreen();
-          else
-            p = srFindImageInRange("boards/upgrade.png", x, y, width, height, 5000);
-            if(p) then
+          safeClick(p[0]+15,p[1]+8);
+          lsSleep(75);
+          srReadScreen();
+            if bladeName == "Slate Blade" then
+            p = srFindImage("boards/installASlateBlade.png", 5000);
+            elseif bladeName == "Flint Blade" then
+            p = srFindImage("boards/installAFlintBlade.png", 5000);
+            elseif bladeName == "Bone Blade" then
+            p = srFindImage("boards/installABoneBlade.png", 5000);
+            elseif bladeName == "Carpentry Blade" then
+            p = srFindImage("boards/installACarpentryBlade.png", 5000);
+            end
+              if(p) then
+              safeClick(p[0]+10,p[1]+10);
+              lsSleep(click_delay);
+              if bladeName == "Carpentry Blade" then
+              srReadScreen();
+              p = srFindImage("boards/quality.png", 5000);
+              if(p) then
               safeClick(p[0]+4,p[1]+4);
               lsSleep(click_delay);
               srReadScreen();
-                if bladeName == "Slate Blade" then
-                  p = srFindImage("boards/installASlateBlade.png", 5000);
-                elseif bladeName == "Flint Blade" then
-                  p = srFindImage("boards/installAFlintBlade.png", 5000);
-                elseif bladeName == "Bone Blade" then
-                  p = srFindImage("boards/installABoneBlade.png", 5000);
-                elseif bladeName == "Carpentry Blade" then
-                  p = srFindImage("boards/installACarpentryBlade.png", 5000);
-                end
-                if(p) then
-                  safeClick(p[0]+10,p[1]+10);
-                  lsSleep(click_delay);
-                  if bladeName == "Carpentry Blade" then
-                    srReadScreen();
-                    p = srFindImage("boards/quality.png", 5000);
-                    if(p) then
-                      safeClick(p[0]+4,p[1]+4);
-                      lsSleep(click_delay);
-                      srReadScreen();
-                    end
-                end
               end
             end
           end
         end
+      end
     end
+  end
 end
 
 function waitForStats()
   while 1 do
     checkBreak();
     srReadScreen();
-    local stats = srFindImage("statclicks/endurance_black_small.png");
-    if not stats then
+    local stats = srFindImage("stats/endurance.png");
+    if stats then
       sleepWithStatus(999, "Waiting for Endurance timer to be visible and white");
     else
       break;
