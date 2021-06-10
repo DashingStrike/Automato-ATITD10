@@ -213,8 +213,6 @@ function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offse
         screen[0] = screen[0] - lsGetWindowSize()[0];
  end
 
-  -- Changing this from 0 to 3 which should prevent it from being put at the far left of the screen, which
-  -- makes the border poof and the window becomes unrecognizable as a window.
   local currentX = 3;
   local currentY = 0;
   if waterGap then
@@ -226,8 +224,7 @@ function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offse
   local yMax = 0;
   local counter = 0
   srReadScreen();
-  -- NOTE: Might be worth changing this to findAllText?
-  local window = findImageInWindow("ThisIs.png", bottomRightX, bottomRightY);
+  local window = findImageInWindow("windowCorner.png", bottomRightX, bottomRightY, 100);
   while window and (window[0] > lastX or window[1] > lastY) do
     counter = counter + 1
     safeClick(window[0], window[1]);
@@ -263,7 +260,6 @@ function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offse
       end
     else
       if currentX + width >= screen[0] then
-        -- Like above, changed from 0 to 3 to avoid being pinned to the exact left edge.
         currentX = 3;
         currentY = currentY + yMax;
         yMax = 0;
@@ -293,7 +289,7 @@ function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offse
     yMax = math.max(yMax, height);
     lsSleep(tick_delay);
     srReadScreen();
-    window = findImageInWindow("ThisIs.png", bottomRightX, bottomRightY);
+    window = findImageInWindow("windowCorner.png", bottomRightX, bottomRightY, 100);
     statusScreen("Arranging Windows " .. counter);
   end
 end
