@@ -12,6 +12,7 @@
 -------------------------------------------------------------------------------
 
 function drag(sourceX, sourceY, destX, destY)
+  local timeout;
   if not sourceX or not sourceY or not destX or not destY then
     error("Incorrect number of arguments for drag()");
   end
