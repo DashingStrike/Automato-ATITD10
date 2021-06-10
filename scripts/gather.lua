@@ -5,6 +5,15 @@ dofile("serialize.inc");
 dofile("settings.inc");
 dofile("constants.inc");
 
+local stashList = {
+  grass    = {"Grass ("},
+  slate    = {"Slate ("},
+  clay     = {"Clay ("},
+  flint    = {"Flint ("},
+  tadpoles = {"Tadpoles ("},
+  insect   = {"Insect.", "All Insect"}
+};
+
 routeFileName = "gather_routes.txt";
 defaultRoutesFileName = "default_routes.inc";
 routes = {};
@@ -906,11 +915,7 @@ function followRoute(route)
                 stashWood();
             end
         elseif(r[curr][3] == Warehouse) then
-            srReadScreen()
-            local stash = findImage("stash/stash.png", nil,7000);
-            if stash then
-                stashAllButWood();
-            end
+            stashAllButWood();
         elseif(papy and r[curr][3] ~= Waypoint) then
             plantPapy();
         elseif(r[curr][3] == Water) then
@@ -1533,92 +1538,39 @@ function plantPapy()
     return false;
 end
 
-function stashAllButWood()
-  local needMax;
-  local count = 0;
-  local stashedSomething = true;
-  while(stashedSomething) do
-    stashedSomething = false;
-    needMax = true;
-    lsSleep(150);
+function clickMenus(menus)
+  for _, menu in pairs(menus) do
+    checkBreak();
     srReadScreen();
-    local pos = findImage("stash/stash.png", nil, 7000);
-    if(pos) then
-      safeClick(pos[0] + 10, pos[1] + 5);
-      lsSleep(250);
-      srReadScreen();
-      pos = findImage("stash/grass.png", nil, 7000);
-      if(pos) then
-        stashItem(pos,true);
-        stashedSomething = true;
-      else
-        pos = findImage("stash/slate.png", nil, 7000);
-        if(pos) then
-          stashItem(pos,true);
-          stashedSomething = true;
-          else
-          pos = findImage("stash/clay.png", nil, 7000);
-          if(pos) then
-            stashItem(pos,true);
-            stashedSomething = true;
-          else
-            pos = findImage("stash/flint.png", nil, 7000);
-            if(pos) then
-              stashItem(pos,true);
-              stashedSomething = true;
-            else
---[[          Disabled for T10
-              pos = findText("Tadpoles");
-              if(pos) then
-                stashItem(pos,true);
-                stashedSomething = true;
-              else
-                pos = findText("Wood (");
-                if(pos) then
-                  stashItem(pos,true);
-                  stashedSomething = true;
-                else
-                  pos = findText("Insect...");
-                  if(pos) then
-                    safeClick(pos[0] + 10, pos[1] + 5);
-                    lsSleep(150);
-                    srReadScreen();
-                    pos = findText("All Insect");
-                    if(pos) then
-                      stashItem(pos,false);
-                      stashedSomething = true;
 
-                    end
-                  end
-                end
-              end]]
-            end
-          end
-        end
-      end
-      if(stashedSomething) then
-        clickWaypoint(Warehouse);
-      else
-        safeClick(10,200);
-      end
+    local found = findText(menu);
+    if found then
+      clickText(found);
+      lsSleep(200);
     else
-      if(count < 1) then
-        fatalError("Unable to find the Stash menu item.");
-      end
+      return false;
     end
-    count = count + 1;
   end
+
+  return true;
 end
 
-function stashItem(pos,clickMaxButton)
-    safeClick(pos[0] + 20, pos[1] + 5);
-    if(clickMaxButton) then
-        lsSleep(150);
-        srReadScreen();
+function stashAllButWood()
+  clickMenus({"Stash."});
+  local stash = true;
+  for name, menus in pairs(stashList) do
+    checkBreak();
+    if clickMenus(menus) then
+      if name ~= 'insect' then
         clickMax();
+        clickMenus({"Stash."});
+      end
     end
-    lsSleep(150);
-    srReadScreen();
+  end
+
+  srKeyDown(VK_ESCAPE);
+  lsSleep(100);
+  srKeyUp(VK_ESCAPE);
 end
 
 local prepareForWalkingInitialized = false;
