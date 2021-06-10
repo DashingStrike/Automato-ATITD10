@@ -81,7 +81,7 @@ function getDowseResult()
   while not chatText or not chatText[#chatText] do
     checkBreak();
     sleepWithStatus(100, "Copying chat", nil, 0.7);
-    chatText = copyAllChatLines();
+    chatText = getChatText();
   end
 
   lastLine = chatText[#chatText][2];
