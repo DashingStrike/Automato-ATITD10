@@ -964,12 +964,17 @@ function sleepWithStatusHarvest(delay_time, message, color, scale, waitMessage)
     lsPrintWrapped(10, 50, 0, lsScreenX - 20, scale, scale, 0xd0d0d0ff,
                    newWaitMessage .. waitChars[frame]);
 
-    if finish_up == 0 and tonumber(loop_count) ~= tonumber(num_loops) then
-      if lsButtonText(lsScreenX - 110, lsScreenY - 60, nil, 100, 0xFFFFFFff, "Finish up") then
-        finish_up = 1;
-        finish_up_message = "\n\nFinishing up..."
-      end
-    end
+	if finish_up == 0 and tonumber(loop_count) ~= tonumber(num_loops) then
+		if lsButtonText(lsScreenX - 110, lsScreenY - 60, z, 100, 0xFFFFFFff, "Finish up") then
+	  	  finish_up = 1;
+	  	  finish_up_message = "\n\nFinishing up ..."
+		end
+	else
+		if lsButtonText(lsScreenX - 110, lsScreenY - 60, z, 100, 0xff6251ff, "Cancel Finish Up") then
+	  	  finish_up = 0;
+	  	  finish_up_message = ""
+		end
+	end
 
     statusScreen(message, color, nil, scale);
     lsSleep(tick_delay);
