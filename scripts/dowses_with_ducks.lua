@@ -250,7 +250,9 @@ Hover over the ATITD window and press shift.
     setCameraView(CARTOGRAPHER2CAM);
   end
 
-  dowse();
+  if spacing > 0 then
+    dowse();
+  end
 
   local i = 0;
   while true do
