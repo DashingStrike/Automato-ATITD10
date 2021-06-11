@@ -230,7 +230,7 @@ function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offse
     safeClick(window[0], window[1]);
     lsSleep(click_delay);
     srReadScreen();
-    local bounds = srGetWindowBorders(window[0], window[1]);
+    local bounds = srGetWindowBorders(window[0] + 5, window[1] + 5);
     local width, height;
     if not varWidth then
       width = bounds[2] - bounds[0] + 7; -- The +7 offset is due to bigger borders in T9. Prevent touching/overlapping.
