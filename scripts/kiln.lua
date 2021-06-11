@@ -114,12 +114,12 @@ function takeFromKilns()
     local y = kilnRegions[i][1];
     local width = 491;
     local height = 216;
-    local p = srFindImageInRange("kilns/take.png", x, y, width, height);
+    local p = srFindImageInRange("take.png", x, y, width, height);
       if (p) then
   		safeClick(p[0]+4,p[1]+4);
   		lsSleep(refresh_time);
   		srReadScreen();
-  		local e = srFindImage("kilns/everything.png");
+  		local e = srFindImage("everything.png");
       		if (e) then
       			safeClick(e[0]+4,e[1]+4);
       			lsSleep(refresh_time);
