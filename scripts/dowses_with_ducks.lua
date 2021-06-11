@@ -17,11 +17,22 @@ local formats = {
   "Standard"
 }
 
+local directions = {
+  "Off",
+  "North",
+  "South",
+  "East",
+  "West",
+}
+
 local lastX = 0;
 local lastY = 0;
-local status = "";
+local status = "Starting";
 local format = 1;
-local autorun = false;
+local autorun = 0;
+local nearby = false;
+local spacing = 0;
+local file = "dowsing.txt"
 
 function writeDowseLog(x, y, region, name, exact)
   local color = mapColors[name];
@@ -50,7 +61,7 @@ function writeDowseLog(x, y, region, name, exact)
       region .. "," ..
       name;
   end
-  logfile = io.open("dowsing.txt","a+");
+  logfile = io.open(file,"a+");
   logfile:write(text .. "\n");
   logfile:close();
 end
@@ -80,7 +91,8 @@ function getDowseResult()
   local chatText = getChatText();
   while not chatText or not chatText[#chatText] do
     checkBreak();
-    sleepWithStatus(100, "Copying chat", nil, 0.7);
+    srReadScreen();
+    sleepWithStatus(100, "Waiting for chat", nil, 0.7);
     chatText = getChatText();
   end
 
@@ -118,6 +130,9 @@ function getDowseResult()
   if (foundOre) then
     if ((x ~= lastX) or (y ~= lastY)) then
       lsPlaySound("cymbals.wav");
+      if nearby then
+        writeDowseLog(x , y, region, foundOre, false);
+      end
       status = foundOre .. " near " .. x .. ", " .. y;
       lastX = x;
       lastY = y;
@@ -125,28 +140,94 @@ function getDowseResult()
   end
 end
 
-function doDisplay()
-  local y = 5;
+function displayConfig()
+  while true do
+    checkBreak();
 
-  lsPrint(10, y, 0, 0.7, 0.7, 0xB0B0B0ff, "This will write a log to dowsing.txt");
-  y = y + 25;
+    local y = 5;
 
-  format = readSetting("dowse_format", format);
-  lsPrint(10, y, 0, 1, 1, 0xFFFFFFff, "Log Format:");
-  format = lsDropdown("dowse_format", 125, y, 0, 150, format, formats);
-  writeSetting("dowse_format", format);
-  y = y + 35;
+    lsPrint(10, y, 0, 0.7, 0.7, 0xB0B0B0ff, "This will write a log to dowsing.txt");
+    y = y + 25;
 
-  autorun = CheckBox(10, y, 0, 0xFFFFFFff, "Auto Run", autorun, 0.7, 0.7);
-  y = y + 25;
+    file = readSetting("file", file);
+    lsPrint(10, y, 0, 1, 1, 0xFFFFFFff, "File Name:");
+    done, file = lsEditBox("file", 125, y, 0, 150, 0, 1, 1, 0x000000ff, file)
+    writeSetting("file", file);
+    y = y + 35;
 
-  lsPrint(10, y, 0, 0.7, 0.7, 0xB0B0B0ff, status);
+    format = readSetting("format", format);
+    lsPrint(10, y, 0, 1, 1, 0xFFFFFFff, "Log Format:");
+    format = lsDropdown("format", 125, y, 0, 150, format, formats);
+    writeSetting("format", format);
+    y = y + 35;
 
-  if lsButtonText(lsScreenX - 110, lsScreenY - 30, z, 100, 0xFFFFFFff, "End script") then
+    nearby = readSetting("nearby", nearby);
+    lsPrint(10, y, 0, 1, 1, 0xFFFFFFff, "Log Nearby");
+    nearby = CheckBox(125, y, 0, 0xFFFFFFff, "", nearby, 1, 1);
+    writeSetting("nearby", nearby)
+    y = y + 35;
+
+    lsPrint(10, y, 0, 1, 1, 0xFFFFFFff, "Auto Run:");
+    autorun = lsDropdown("autorun", 125, y, 0, 150, autorun, directions);
+    y = y + 35;
+
+    if autorun > 1 then
+      spacing = readSetting("spacing", spacing);
+      lsPrint(10, y, 0, 1, 1, 0xFFFFFFff, "Auto Dowse");
+      done, spacing = lsEditBox("spacing", 125, y, 0, 55, 0, 1, 1, 0x000000ff, spacing)
+      spacing = tonumber(spacing);
+      lsPrint(190, y, 0, 1, 1, 0xFFFFFFff, "coords");
+      writeSetting("spacing", spacing);
+    end
+    y = y + 35;
+
+    if lsButtonText(10, lsScreenY - 30, 0, 100, 0x00FF00ff, "Start") then
+      return;
+    end
+    if lsButtonText(lsScreenX - 110, lsScreenY - 30, 0, 100, 0xFFFFFFff, "End script") then
+      error("Clicked End Script button");
+    end
+
+    lsDoFrame();
+  end
+end
+
+function displayStatus()
+  lsPrint(10, 10, 0, 0.7, 0.7, 0xB0B0B0ff, status);
+
+  if lsButtonText(lsScreenX - 110, lsScreenY - 30, 0, 100, 0xFFFFFFff, "End script") then
     error "Clicked End Script button";
   end
 
   lsDoFrame();
+end
+
+function walk(distance)
+  local coords = findCoords();
+  if autorun == 2 then
+    coords[1] = coords[1] + distance;
+    walkTo(coords);
+  elseif autorun == 3 then
+    coords[1] = coords[1] - distance;
+    walkTo(coords);
+  elseif autorun == 4 then
+    coords[0] = coords[0] + distance;
+    walkTo(coords);
+  elseif autorun == 5 then
+    coords[0] = coords[0] - distance;
+    walkTo(coords);
+  end
+end
+
+function dowse()
+  srReadScreen();
+  local button = waitForImage("dowsing.png", 72000, "Waiting to dowse\n\n Last Log: " .. status, nil, 6000);
+  if not button then
+    fatalError("Unable to find dowsing button");
+  end
+  safeClick(button[0], button[1]);
+  srReadScreen();
+  getDowseResult();
 end
 
 function doit()
@@ -155,30 +236,36 @@ Dowses With Ducks
 
 This program will record each dowsing from main chat, and log them to dowsing.txt
 
-Autorun just clicks in the upper part of the screen occasionally, so keep it clear.
+With Auto Run Off, you must manually move and dowse.
+
+With Auto Run On, it will run in the selected direction, stopping every "Auto Dowse" coords to dowse.
 
 Hover over the ATITD window and press shift.
 ]]);
-  local xyScreenSize = srGetWindowSize();
+
+  displayConfig();
+  lsDoFrame();
+
+  if autorun > 1 then
+    setCameraView(CARTOGRAPHER2CAM);
+  end
+
+  dowse();
+
   local i = 0;
   while true do
-    if (i % 10) == 0 then
+    displayStatus();
+
+    if spacing > 0 then
+      walk(spacing);
+      dowse();
+    else
+      walk(1);
       srReadScreen();
       getDowseResult();
     end
 
-    if autorun and (i % 30) == 0 then
-      safeClick(xyScreenSize[0] / 2, xyScreenSize[1] / 3);
-    end
-
     checkBreak();
     lsSleep(50);
-    doDisplay();
-
-    if not lastAuto and auto then
-      i = 0;
-    else
-      i = i + 1;
-    end
   end
 end
