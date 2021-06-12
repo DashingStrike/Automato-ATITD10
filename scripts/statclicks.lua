@@ -50,7 +50,9 @@ items = {
             "Large Crude Handle",
             "Personal Chit",
             "Wooden Peg",
-            "Wooden Pestle"
+            "Wooden Pestle",
+            "Tackle Block".
+            "Wooden Cog"
         --[[
             "Search Rotten Wood",
             "Tap Rods",
@@ -516,6 +518,10 @@ function doTasks()
                 elseif curTask == "Wooden Pestle" then
                   carve(curTask);
                 elseif curTask == "Clay Lamp" then
+                  carve(curTask);
+                elseif curTask == "Tackle Block" then
+                  carve(curTask);
+                elseif curTask == "Wooden Cog" then
                   carve(curTask);
                 elseif curTask == "Flax Comb" then
                   combFlax();
