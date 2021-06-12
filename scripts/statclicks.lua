@@ -51,7 +51,7 @@ items = {
             "Personal Chit",
             "Wooden Peg",
             "Wooden Pestle",
-            "Tackle Block".
+            "Tackle Block",
             "Wooden Cog"
         --[[
             "Search Rotten Wood",
