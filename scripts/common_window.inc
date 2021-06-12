@@ -214,7 +214,7 @@ function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offse
  end
 
   local currentX = 3;
-  local currentY = 0;
+  local currentY = 5;
   if waterGap then
     currentY = 95;
   end
@@ -252,7 +252,7 @@ function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offse
     if cascade then
       if currentY + height >= screen[1] then
         currentX = currentX + xMax;
-        currentY = 0;
+        currentY = 5;
         xMax = 0;
       end
       if currentX + width >= screen[0] then
