@@ -593,7 +593,6 @@ function workMine(skipSettle)
 	sleepWithStatus(1000, "Working mine (Fetching new nodes)", nil, 0.7, "Please Wait");
 	findClosePopUp(1);
 end
-by
 
 function TakeGemWindowRefresh()
  srReadScreen();
