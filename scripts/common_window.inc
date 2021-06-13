@@ -202,7 +202,7 @@ end
 
 -------------------------------------------------------------------------------
 
-function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight)
+function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight, windowCap)
   local screen = srGetWindowSize();
   local bottomRightX = screen[0] - 20;
   local bottomRightY = screen[1] - 20;
@@ -227,6 +227,11 @@ function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offse
   local window = findImageInWindow("windowCorner.png", bottomRightX, bottomRightY, 100);
   while window and (window[0] > lastX or window[1] > lastY) do
     counter = counter + 1
+
+    if (windowCap ~= nil and counter > windowCap) then
+      break;
+    end
+
     safeClick(window[0], window[1]);
     lsSleep(click_delay);
     srReadScreen();
