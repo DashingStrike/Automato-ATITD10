@@ -602,7 +602,7 @@ function checkButtons()
 
 	if (menuButtonSelected == 2) then
 		-- User has clicked the M button, so click all Melt Materials buttons
-		clickAllText("Melt Materials...");
+		clickAllText("Melt Materials");
 	end
 
 	if (menuButtonSelected == 3) then
