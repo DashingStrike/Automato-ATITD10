@@ -518,9 +518,9 @@ function findClockRegion()
   end
 
   if faction ~= "Clock not detected" then
-    local clockUpperLeftX = clockUpperLeftX - 30;
+    local clockUpperLeftX = clockUpperLeftX - 40;
     local clockUpperLeftY = clockUpperLeftY - 10;
-    local clockWidth = 250;
+    local clockWidth = 270;
     local clockHeight = 55;
     clockRegion = makeBox(clockUpperLeftX, clockUpperLeftY, clockWidth, clockHeight);
   end
