@@ -119,7 +119,7 @@ function gatherSlate()
 	while 1 do
 		checkBreak();
 		srReadScreen();
-		local slate = srFindImage("slate.png");
+		local slate = srFindImage("slate.png", 7000);
 			if slate then
 			srClickMouseNoMove(slate[0]+5,slate[1]);
 			sleepWithStatus(postClickDelay, "Clicking Slate Icon\n\nSlate Collected: " .. tostring(counter) .. "\n\n\nElapsed Time: " .. getElapsedTime(timeStarted));
@@ -159,7 +159,7 @@ function gatherClay()
 
 		checkBreak();
 		srReadScreen();
-		local clay = srFindImage("clay.png");
+		local clay = srFindImage("clay.png", 7000);
 
 			if autoMove then
 				checkElapsedTime();
