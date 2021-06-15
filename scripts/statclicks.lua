@@ -5,9 +5,7 @@ dofile("hackling_rake.lua");
 items = {
         --strength
         {"",
-        --[[
             "Coconuts",
-            ]]--
         },
         --end
         {"",
@@ -67,9 +65,10 @@ lagBound["Survey (Uncover)"] = true;
 -- Due to a window refresh bug (T9) rods can be lost when auto retrieve is enabled
 -- disabling it and manually refreshing the rod window bypasses this bug.
 retrieveRods = true;
---[[
+
 local textLookup = {};
 textLookup["Coconuts"] = "Harvest the Coconut Meat";
+--[[
 textLookup["Gun Powder"] = "Gunpowder";
 textLookup["Ink"] = "Ink";
 textLookup["Pump Aqueduct"] = "Pump the Aqueduct";
@@ -535,6 +534,8 @@ function doTasks()
                   weave("Wool");
                 elseif curTask == "Weave Papy Basket" then
                   weave("Basket");
+                else
+                  clickText(findText(textLookup[curTask]));
                 end
                 --[[
                 elseif curTask == "Hackling Rake" then
@@ -553,8 +554,7 @@ function doTasks()
                     churnButter();
                 elseif curTask == "Search Rotten Wood" then
                     searchRottenWood();
-                else
-                    clickText(findText(textLookup[curTask]));
+
                 end
                 ]]--
                 statTimer[i] = lsGetTimer();
