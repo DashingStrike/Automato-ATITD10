@@ -123,92 +123,77 @@ local gpsStep;
 -- Returns nil if the date cannot be obtained
 ---------------------------------------------------------------
 function getTime(fmt)
-   local str = nil;
-   local datetime = nil;
-   local date = nil;
-   local time = nil;
-   local datetime2 = nil;
-   local t = findAllText("Year", findClockRegion());
+  local str = nil;
+  local datetime = nil;
+  local date = nil;
+  local time = nil;
+  local datetime2 = nil;
+  local t = findAllText("Year", findClockRegion());
 
-   if #t == 0 then
-      return nil;
-   end
+  if #t == 0 then
+    return nil;
+  end
+  -- Strip spaces - Fixes issue where one's (1) will show as a space before and after it. ie 11 shows as 1 1
+  str = string.gsub(t[1][2], " ?1 ?","1");
 
-    for i=1,#t do
-      --lsPrintln("LINE " .. i .. " : " .. table.concat(t[i], ","));
-	if i == 1 then
-	  str = t[i][2];
-	end
+  local year, season, month, day, hour, minute, ampm = string.match(str, "Year ?(%d+), (%a+) (%a+)-(%d+), ?(%d+):(%d+)(%a+)");
+  if year and season and month and day and hour and minute then
+    datetime = "Year " .. year .. ", " .. season .. " " .. month .. "-" .. day .. ", " .. hour .. ":" .. minute .. ampm
+    date = season .. " " .. month .. "-" .. day
+    time = hour .. ":" .. minute .. ampm
+    time2 = hour .. "_" .. minute .. ampm
+    datetime2 = season .. "_" .. month .. "-" .. day .. "_" .. hour .. "_" .. minute .. ampm
+    datetime3 = year .. "_" .. season .. "_" .. month .. "-" .. day .. "_" .. hour .. "_" .. minute .. ampm
+    -- perform data validation
+    local seasonIndex = {};
+    seasonIndex["Akhet"] = 1;
+    seasonIndex["Peret"] = 2;
+    seasonIndex["Shemu"] = 3;
+    local monthIndex = {};
+    monthIndex["I"] = 1;
+    monthIndex["II"] = 2;
+    monthIndex["III"] = 3;
+    monthIndex["IV"] = 4;
+    year = tonumber(year);
+    day = tonumber(day);
+    hour = tonumber(hour);
+    minute = tonumber(minute);
+    season = seasonIndex[season];
+    month = monthIndex[month];
+    if ampm == "AM" then
+      ampm = 0;
+    elseif ampm == "PM" then
+      ampm = 12;
+    else
+      ampm = nil;
     end
-
-   -- Strip spaces - Fixes issue where one's (1) will show as a space before and after it. ie 11 shows as 1 1
-   str = string.gsub(str, " 1", "1");
-   str = string.gsub(str, "1 ", "1");
-   str = string.gsub(str, "AMl", "AM");
-   str = string.gsub(str, "PMl", "PM");
-   str = string.gsub(str, "Axet", "Akhet");
-   str = string.gsub(str, "l~", "lV");
-
-      local year, season, month, day, hour, minute, ampm = string.match(str, "Year (%d+) (%a+) (%a+)-(%d+) (%d+):(%d+)(%a+)");
-      if year and season and month and day and hour and minute then
-         month = string.gsub(month, "l", "I"); -- Change small "L" (misinterpreted) back to capital I
-         datetime = "Year " .. year .. ", " .. season .. " " .. month .. "-" .. day .. ", " .. hour .. ":" .. minute .. ampm
-         date = season .. " " .. month .. "-" .. day
-         time = hour .. ":" .. minute .. ampm
-         time2 = hour .. "_" .. minute .. ampm
-         datetime2 = season .. "_" .. month .. "-" .. day .. "_" .. hour .. "_" .. minute .. ampm
-         datetime3 = year .. "_" .. season .. "_" .. month .. "-" .. day .. "_" .. hour .. "_" .. minute .. ampm
-         -- perform data validation
-         local seasonIndex = {};
-         seasonIndex["Akhet"] = 1;
-         seasonIndex["Peret"] = 2;
-         seasonIndex["Shemu"] = 3;
-         local monthIndex = {};
-         --Beware on T9, the clock reads "I" as lower cased "L" or "l"
-         monthIndex["I"] = 1;
-         monthIndex["II"] = 2;
-         monthIndex["III"] = 3;
-         monthIndex["IV"] = 4;
-         year = tonumber(year);
-         day = tonumber(day);
-         hour = tonumber(hour);
-         minute = tonumber(minute);
-         season = seasonIndex[season];
-         month = monthIndex[month];
-         if ampm == "AM" then
-            ampm = 0;
-         elseif ampm == "PM" then
-            ampm = 12;
-         else
-            ampm = nil;
-         end
-         if year and season and month and day and hour and minute and ampm then
-            if fmt == "date" then
-               return date;
-            elseif fmt == "time" then
-               return time;
-            elseif fmt == "time2" then
-               return time2;
-            elseif fmt == "datetime2" then
-               return datetime2;
-            elseif fmt == "datetime3" then
-               return datetime3;
-            elseif fmt ~= nil then
-               return datetime;
-            end
-            if hour == 12 then
-               hour = 0;
-            end
-            hour = hour + ampm;
-            local seasons = (year - 1)*3 + season;
-            local months = (seasons - 1)*4 + month;
-            local days = (months - 1)*30 + day;
-            local hours = (days - 1)*24 + hour;
-            local minutes = hours*60 +  minute;
-            return minutes;
-         end
+    if year and season and month and day and hour and minute and ampm then
+      if fmt == "date" then
+        return date;
+      elseif fmt == "time" then
+        return time;
+      elseif fmt == "time2" then
+        return time2;
+      elseif fmt == "datetime2" then
+        return datetime2;
+      elseif fmt == "datetime3" then
+        return datetime3;
+      elseif fmt ~= nil then
+        return datetime;
       end
-   return nil;
+      if hour == 12 then
+        hour = 0;
+      end
+      hour = hour + ampm;
+      local seasons = (year - 1)*3 + season;
+      local months = (seasons - 1)*4 + month;
+      local days = (months - 1)*30 + day;
+      local hours = (days - 1)*24 + hour;
+      local minutes = hours*60 +  minute;
+      return minutes;
+    end
+  end
+  return nil;
 end
 
 function initStep()

@@ -39,7 +39,7 @@ askForWindow("Test OCR on ATITD Clock.\n\nReturn Coordinates and Lookup Regions"
         end
     end
 
-    sleepWithStatus(250, message, nil, 0.7, "Reading ATID Clock");
+    sleepWithStatus(250, message, nil, 0.7, "Reading ATITD Clock");
     lsSleep(10);
   end
 end

@@ -60,7 +60,8 @@ function findStuff()
     lsPrint(10, lsScreenY - 60, 10, 0.7, 0.7, 0xFFFFFFff, "Replace ? with the character you are training");
 
 
-  srStripRegion(clockRegion.x, clockRegion.y, clockRegion.width, clockRegion.height)
+  --Using findAllText to do the stripping, because it tweaks the region bounds a bit
+  findAllText(text, clockRegion);
   if lsButtonText(0, lsScreenY - 30, z, 100,
                   0xFFFFFFff, "Train") then
 
