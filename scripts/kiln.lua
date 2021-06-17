@@ -79,27 +79,26 @@ function start()
   takeFromKilns();
 
     for i=1, kilnPasses do
-      refreshWindows();
       checkRepair();
       srReadScreen();
-
-
       clickAllImages("kilns/loadWood.png");
+      lsSleep(refresh_time);
+      refreshWindows();
       lsSleep(refresh_time);
     	clickAllImages("kilns/" .. productImages[typeOfProduct]);
     	print("clicking: " .. productImages[typeOfProduct]);
+      refreshWindows();
       lsSleep(refresh_time)
       clickAllImages("kilns/fireKiln.png");
-      lsSleep(refresh_time)
+      lsSleep(refresh_time);
       --Check Repair for any that failed this round then fire any that were broken.
       checkRepair();
+      refreshWindows();
       lsSleep(refresh_time)
       clickAllImages("kilns/fireKiln.png");
       lsSleep(refresh_time)
-
       closePopUp();
       checkFiring();
-      refreshWindows();
       takeFromKilns();
     end
   lsPlaySound("Complete.wav");
@@ -140,6 +139,7 @@ function refreshWindows()
 end
 
 function checkRepair()
+  refreshWindows();
   lsSleep(refresh_time);
   closePopUp();
   srReadScreen();
@@ -155,7 +155,7 @@ function checkFiring()
     if #firing == 0 then
         break; --We break this while statement because Making is not detect, hence we're done with this round
     end
-    sleepWithStatus(999, "Waiting for " .. productNames[typeOfProduct] .. " to finish", nil, 0.7);
+    sleepWithStatus(999, "Waiting for " .. productNames[typeOfProduct] .. " to finish", nil, 0.7, "Monitoring / Refreshing Windows")
   end
 end
 
