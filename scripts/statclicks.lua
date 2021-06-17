@@ -217,6 +217,25 @@ function digHole()
       lsSleep(per_tick);
     end
 end
+
+function gather(resource)
+  if resource == "Limestone" then
+    srcImg = "limestone.png"
+  elseif resource == "Dirt" then
+    srcImg = "dirt.png"
+  end
+
+  srReadScreen();
+  local material = srFindImage(srcImg, 7000);
+    if material ~= nil then
+      if consume then
+          eatOnion();
+      end
+      safeClick(material[0], material[1])
+      lsSleep(100);
+    end
+end
+
 --[[
 function searchRottenWood()
     woodForBugs = findText("Wood for Bugs");
@@ -534,6 +553,10 @@ function doTasks()
                   weave("Wool");
                 elseif curTask == "Weave Papy Basket" then
                   weave("Basket");
+                elseif curTask == "Limestone" then
+                  gather("Limestone");
+                elseif curTask == "Dirt" then
+                  gather("Dirt");
                 else
                   clickText(findText(textLookup[curTask]));
                 end
