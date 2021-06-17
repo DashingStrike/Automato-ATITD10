@@ -562,7 +562,7 @@ function findClosePopUpOld()
         lsSleep(10);
         OK = srFindImage("OK.png");
         if OK then
-            srClickMouseNoMove(OK[0]+2,OK[1]+2, true);
+            srClickMouseNoMove(OK[0]+2,OK[1]+2);
             lsSleep(clickDelay);
         else
             break;
