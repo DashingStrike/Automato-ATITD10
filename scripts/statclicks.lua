@@ -15,7 +15,9 @@ items = {
             "Weave Linen",
             "Weave Papy Basket",
             "Weave Wool Cloth",
-            "Oil (Flax Seed)"
+            "Oil (Flax Seed)",
+            "Limestone",
+            "Dirt"
             --[[
             "Churn Butter",
             "Excavate Blocks",
