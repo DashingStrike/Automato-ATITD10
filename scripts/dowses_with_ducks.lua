@@ -30,8 +30,9 @@ local lastY = 0;
 local status = "Starting";
 local format = 1;
 local autorun = 0;
-local nearby = false;
+local autodowse = 0;
 local spacing = 0;
+local nearby = false;
 local file = "dowsing.txt"
 
 function writeDowseLog(x, y, region, name, exact)
@@ -151,33 +152,37 @@ function displayConfig()
 
     file = readSetting("file", file);
     lsPrint(10, y, 0, 1, 1, 0xFFFFFFff, "File Name:");
-    done, file = lsEditBox("file", 125, y, 0, 150, 0, 1, 1, 0x000000ff, file)
+    done, file = lsEditBox("file", 130, y, 0, 150, 0, 1, 1, 0x000000ff, file)
     writeSetting("file", file);
     y = y + 35;
 
     format = readSetting("format", format);
     lsPrint(10, y, 0, 1, 1, 0xFFFFFFff, "Log Format:");
-    format = lsDropdown("format", 125, y, 0, 150, format, formats);
+    format = lsDropdown("format", 130, y, 0, 150, format, formats);
     writeSetting("format", format);
     y = y + 35;
 
     nearby = readSetting("nearby", nearby);
-    lsPrint(10, y, 0, 1, 1, 0xFFFFFFff, "Log Nearby");
-    nearby = CheckBox(125, y, 0, 0xFFFFFFff, "", nearby, 1, 1);
+    lsPrint(10, y, 0, 1, 1, 0xFFFFFFff, "Log Nearby:");
+    nearby = CheckBox(130, y, 0, 0xFFFFFFff, "", nearby, 1, 1);
     writeSetting("nearby", nearby)
     y = y + 35;
 
     lsPrint(10, y, 0, 1, 1, 0xFFFFFFff, "Auto Run:");
-    autorun = lsDropdown("autorun", 125, y, 0, 150, autorun, directions);
+    autorun = lsDropdown("autorun", 130, y, 0, 150, autorun, directions);
     y = y + 35;
 
+    lsPrint(10, y, 0, 1, 1, 0xFFFFFFff, "Auto Dowse:");
     if autorun > 1 then
       spacing = readSetting("spacing", spacing);
-      lsPrint(10, y, 0, 1, 1, 0xFFFFFFff, "Auto Dowse");
-      done, spacing = lsEditBox("spacing", 125, y, 0, 55, 0, 1, 1, 0x000000ff, spacing)
+      done, spacing = lsEditBox("spacing", 130, y, 0, 55, 0, 1, 1, 0x000000ff, spacing)
       spacing = tonumber(spacing);
       lsPrint(190, y, 0, 1, 1, 0xFFFFFFff, "coords");
       writeSetting("spacing", spacing);
+      autodowse = true;
+    else
+      lsPrint(10, y, 0, 1, 1, 0xFFFFFFff, "Auto Dowse");
+      autodowse = CheckBox(130, y, 0,0xFFFFFFff, "", autodowse, 1, 1)
     end
     y = y + 35;
 
@@ -226,7 +231,6 @@ function dowse()
     fatalError("Unable to find dowsing button");
   end
   safeClick(button[0], button[1]);
-  srReadScreen();
   getDowseResult();
 end
 
@@ -254,7 +258,6 @@ Hover over the ATITD window and press shift.
     dowse();
   end
 
-  local i = 0;
   while true do
     displayStatus();
 
@@ -263,9 +266,11 @@ Hover over the ATITD window and press shift.
       dowse();
     else
       walk(1);
-      srReadScreen();
-      getDowseResult();
+      if autodowse and srFindImage("dowsing.png") then
+        dowse();
+      end
     end
+    getDowseResult();
 
     checkBreak();
     lsSleep(50);
