@@ -133,7 +133,7 @@ function findMoves()
   for i=1,#moveNames do
     checkBreak();
     srReadScreen();
-    local found = srFindImage("acro/" .. moveImages[i]);
+    local found = srFindImage("acro/" .. moveImages[i], 500);
     if found then
       moveY = found[1];
     end
@@ -223,7 +223,7 @@ function doMoves()
 
           acroTimer = false;
           srReadScreen();
-          clickMove = srFindImage("acro/" .. checkedMovesImage[i]);
+          clickMove = srFindImage("acro/" .. checkedMovesImage[i], 500);
 
 
           if clickMove and barFound and (clickMove[1] > acroY) then
