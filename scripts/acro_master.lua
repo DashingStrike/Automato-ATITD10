@@ -447,7 +447,7 @@ function displayMoves()
       y = y + 20;
     end
 
-    if lsControlHeld() then
+    if lsAltHeld() then
       askAcro();
     end
 
