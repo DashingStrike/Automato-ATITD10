@@ -98,7 +98,7 @@ function doit()
 		end
 
 		-- Look for num_workers rows of Work This text
-		local x0 = quarry[0] - 5;
+		local x0 = quarry[0] - 135;
 		local y0 = quarry[1];
 		local positions = {};
 		local directions = {{}, {}, {}, {}};
