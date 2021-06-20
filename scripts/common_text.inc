@@ -205,6 +205,12 @@ function parseText(x, y, w, h)
     newTable[i][0] = table[(i-1)*3];
     newTable[i][1] = table[(i-1)*3+1];
     newTable[i][2] = table[(i-1)*3+2];
+
+    local first, last = string.find(newTable[i][2], "%d 1");
+    while first ~= nil do
+      newTable[i][2] = string.sub(newTable[i][2], 1, first) .. string.sub(newTable[i][2], last);
+      first, last = string.find(newTable[i][2], "%d 1");
+    end
   end
   return newTable;
 end
