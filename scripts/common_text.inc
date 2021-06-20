@@ -206,13 +206,28 @@ function parseText(x, y, w, h)
     newTable[i][1] = table[(i-1)*3+1];
     newTable[i][2] = table[(i-1)*3+2];
 
-    local first, last = string.find(newTable[i][2], "%d 1");
-    while first ~= nil do
-      newTable[i][2] = string.sub(newTable[i][2], 1, first) .. string.sub(newTable[i][2], last);
-      first, last = string.find(newTable[i][2], "%d 1");
-    end
+    newTable[i][2] = fixSpaces(newTable[i][2], "%d", "1");
+    newTable[i][2] = fixSpaces(newTable[i][2], "%.", ".");
   end
   return newTable;
+end
+
+-------------------------------------------------------------------------------
+-- fixSpaces(line, prefix, suffix)
+--
+-- searches the string for extra spaces between the prefix and suffix, and removes them
+-- helpful for the extra spaces that OCR puts between "1"s and "."s
+--
+-- returns a string
+-------------------------------------------------------------------------------
+
+function fixSpaces(line, prefix, suffix)
+  local first, last = string.find(line, prefix.." "..suffix);
+  while first ~= nil do
+    line = string.sub(line, 1, first) .. string.sub(line, last);
+    first, last = string.find(line, prefix.." "..suffix);
+  end
+  return line;
 end
 
 
