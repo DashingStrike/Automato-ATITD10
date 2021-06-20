@@ -194,11 +194,11 @@ function weave(clothType)
     end
 end
 
-function assemble(item)
+function carve(item)
   srReadScreen();
-  assembleItem = findText(item);
-  if assembleItem ~= nil then
-      safeClick(assembleItem[0]+5,assembleItem[1]+3);
+  carveItem = findText(item);
+  if carveItem ~= nil then
+      safeClick(carveItem[0]+5,carveItem[1]+3);
       lsSleep(per_tick);
       srReadScreen();
       closePopUp();
@@ -515,35 +515,35 @@ function doTasks()
                 if curtask == "Dig Hole" then
                   digHole();
                 elseif curTask == "Tinder" then
-                  assemble(curTask);
+                  carve(curTask);
                 elseif curTask == "Rawhide Strips" then
-                  assemble(curTask);
+                  carve(curTask);
                 elseif curTask == "Long Sharp Stick" then
-                  assemble(curTask);
+                  carve(curTask);
                 elseif curTask == "Sharpened Stick" then
-                  assemble(curTask);
+                  carve(curTask);
                 elseif curTask == "Barrel Tap" then
-                  assemble(curTask);
+                  carve(curTask);
                 elseif curTask == "Bottle Stopper" then
-                  assemble(curTask);
+                  carve(curTask);
                 elseif curTask == "Crudely Carved Handle" then
-                  assemble(curTask);
+                  carve(curTask);
                 elseif curTask == "Large Crude Handle" then
-                  assemble(curTask);
+                  carve(curTask);
                 elseif curTask == "Personal Chit" then
-                  assemble(curTask);
+                  carve(curTask);
                 elseif curTask == "Flint Hammer" then
-                  assemble(curTask);
+                  carve(curTask);
                 elseif curTask == "Wooden Peg" then
-                  assemble(curTask);
+                  carve(curTask);
                 elseif curTask == "Wooden Pestle" then
-                  assemble(curTask);
+                  carve(curTask);
                 elseif curTask == "Clay Lamp" then
-                  assemble(curTask);
+                  carve(curTask);
                 elseif curTask == "Tackle Block" then
-                  assemble(curTask);
+                  carve(curTask);
                 elseif curTask == "Wooden Cog" then
-                  assemble(curTask);
+                  carve(curTask);
                 elseif curTask == "Flax Comb" then
                   combFlax();
                 elseif curTask == "Oil (Flax Seed)" then
