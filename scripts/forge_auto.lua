@@ -558,9 +558,9 @@ function doit()
         if cc and cc <= 10 then
           t = findText("Fill this ", windows[i]);
           clickText(t);
-          waitForText("Add how much Charcoal?", nil, "Waiting for charcoal topoff");
+          waitForImage("max.png", nil, "Waiting for charcoal topoff");
           srKeyEvent("10\n");
-          waitForNoText("Add how much Charcoal?");
+          waitForNoImage("max.png");
         end
       end
       t = findText("is cooling", windows[i]);
