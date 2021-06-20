@@ -424,7 +424,7 @@ function displayMoves()
     y = y + 20;
     lsPrint(120, y+35, z, 0.8, 0.8, 0xf0f0f0ff, " Last Acro Session: " .. lastSession);
     y = y + 80;
-    lsPrint(15, y, 0, 0.9, 0.9, 0xffff00ff, "Hover Mouse over Partner and Tap Alt to Ask Acro!");
+    lsPrint(15, y, 0, 0.9, 0.9, 0xffff00ff, "Hover Mouse over Partner and Tap Shift to Ask Acro!");
 
     y = y + 35;
 
@@ -447,7 +447,7 @@ function displayMoves()
       y = y + 20;
     end
 
-    if lsAltHeld() then
+    if lsShiftHeld() then
       askAcro();
     end
 
