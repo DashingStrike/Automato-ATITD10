@@ -7,6 +7,7 @@ dofile("settings.inc");
 -- times are in minutes.  They are converted to ms and daffy/teppy time is also adjusted later
 jugTimer = 1;
 mortarTimer = 1;
+cookpotTimer = 1;
 duckTeppyOffset = 10; -- How many extra seconds to add (to each real-life minute) to compensate for game time
 timer = 0;   -- Just a default to prevent error
 arrangeWindows = true;
@@ -144,11 +145,14 @@ function config()
 		writeSetting("cookpot",cookpot);
 
 	if jug then
-      product = "Wet Clay Jug";
+		product = "Wet Clay Jug";
 	  timer = jugTimer;
-    elseif mortar then
-      product = "Wet Clay Mortar";
+  elseif mortar then
+	  product = "Wet Clay Mortar";
 	  timer = mortarTimer;
+	elseif cookpot then
+		product = "Wet Clay Cookpot";
+		timer = cookpotTimer;
 	end
 
     timerTeppyDuckOffset = (duckTeppyOffset * timer) * 1000 -- Add extra time to compensate for duck/teppy time
