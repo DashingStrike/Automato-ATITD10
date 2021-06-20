@@ -44,6 +44,7 @@ items = {
             "Sharpened Stick",
             "Tinder",
             "Clay Lamp",
+            "Flint Hammer",
             "Barrel Tap",
             "Bottle Stopper",
             "Crudely Carved Handle",
@@ -193,13 +194,11 @@ function weave(clothType)
     end
 end
 
-function carve(item)
-
+function assemble(item)
   srReadScreen();
-  carveItem = findText(item);
-
-  if carveItem ~= nil then
-      safeClick(carveItem[0]+5,carveItem[1]+3);
+  assembleItem = findText(item);
+  if assembleItem ~= nil then
+      safeClick(assembleItem[0]+5,assembleItem[1]+3);
       lsSleep(per_tick);
       srReadScreen();
       closePopUp();
@@ -516,33 +515,35 @@ function doTasks()
                 if curtask == "Dig Hole" then
                   digHole();
                 elseif curTask == "Tinder" then
-                  carve(curTask);
+                  assemble(curTask);
                 elseif curTask == "Rawhide Strips" then
-                  carve(curTask);
+                  assemble(curTask);
                 elseif curTask == "Long Sharp Stick" then
-                  carve(curTask);
+                  assemble(curTask);
                 elseif curTask == "Sharpened Stick" then
-                  carve(curTask);
+                  assemble(curTask);
                 elseif curTask == "Barrel Tap" then
-                  carve(curTask);
+                  assemble(curTask);
                 elseif curTask == "Bottle Stopper" then
-                  carve(curTask);
+                  assemble(curTask);
                 elseif curTask == "Crudely Carved Handle" then
-                  carve(curTask);
+                  assemble(curTask);
                 elseif curTask == "Large Crude Handle" then
-                  carve(curTask);
+                  assemble(curTask);
                 elseif curTask == "Personal Chit" then
-                  carve(curTask);
+                  assemble(curTask);
+                elseif curTask == "Flint Hammer" then
+                  assemble(curTask);
                 elseif curTask == "Wooden Peg" then
-                  carve(curTask);
+                  assemble(curTask);
                 elseif curTask == "Wooden Pestle" then
-                  carve(curTask);
+                  assemble(curTask);
                 elseif curTask == "Clay Lamp" then
-                  carve(curTask);
+                  assemble(curTask);
                 elseif curTask == "Tackle Block" then
-                  carve(curTask);
+                  assemble(curTask);
                 elseif curTask == "Wooden Cog" then
-                  carve(curTask);
+                  assemble(curTask);
                 elseif curTask == "Flax Comb" then
                   combFlax();
                 elseif curTask == "Oil (Flax Seed)" then
@@ -579,7 +580,6 @@ function doTasks()
                     churnButter();
                 elseif curTask == "Search Rotten Wood" then
                     searchRottenWood();
-
                 end
                 ]]--
                 statTimer[i] = lsGetTimer();
