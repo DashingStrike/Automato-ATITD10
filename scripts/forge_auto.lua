@@ -390,11 +390,11 @@ boxTypes = {"Student's Forge", "Student's Casting Box", "Master's Forge", "Maste
 
 function doit()
   local t;
-  success, forgeItems = deserialize("data/forge_items.txt");
+  success, forgeItems = deserialize("forge_items.txt");
   if success == false then
     error("Could not read forge info");
   end
-  success, castingItems = deserialize("data/casting_items.txt");
+  success, castingItems = deserialize("casting_items.txt");
   if success == false then
     error("Could not read casting box info");
   end
