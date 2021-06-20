@@ -44,6 +44,7 @@ items = {
             "Sharpened Stick",
             "Tinder",
             "Clay Lamp",
+            "Flint Hammer",
             "Barrel Tap",
             "Bottle Stopper",
             "Crudely Carved Handle",
@@ -194,10 +195,8 @@ function weave(clothType)
 end
 
 function carve(item)
-
   srReadScreen();
   carveItem = findText(item);
-
   if carveItem ~= nil then
       safeClick(carveItem[0]+5,carveItem[1]+3);
       lsSleep(per_tick);
@@ -533,6 +532,8 @@ function doTasks()
                   carve(curTask);
                 elseif curTask == "Personal Chit" then
                   carve(curTask);
+                elseif curTask == "Flint Hammer" then
+                  carve(curTask);
                 elseif curTask == "Wooden Peg" then
                   carve(curTask);
                 elseif curTask == "Wooden Pestle" then
@@ -579,7 +580,6 @@ function doTasks()
                     churnButter();
                 elseif curTask == "Search Rotten Wood" then
                     searchRottenWood();
-
                 end
                 ]]--
                 statTimer[i] = lsGetTimer();
