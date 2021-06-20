@@ -10,7 +10,6 @@ SkipCommon = false; --Skips to next lure if fish caught is a common (Choose True
 LogFails = false;  	-- Do you want to add Failed Catches to log file? 'Failed to catch anything' or 'No fish bit'. Note the log will still add an entry if you lost lure.
 LogStrangeUnusual = false; 	-- Do you want to add Strange and Unusual fish to the log file? Note the log will still add an entry if you lost lure.
 LogOdd = false; 	-- Do you want to add Odd fish to the log file? Note the log will still add an entry if you lost lure.
-AutoFillet = true; -- Do you want to auto-fillet fish if menu is pinned?
 
 function setOptions()
 
@@ -43,17 +42,11 @@ function setOptions()
         lsPrint(5, y, 0, 0.6, 0.6, 0xffff80ff, "Display fishing lures in sub-menus: CHECKED");
         y = y + 16;
         lsPrint(5, y, 0, 0.6, 0.6, 0xc0c0ffff, "Main chat MUST be wide enough so no lines wrap!");
-
         y = y + 25;
-        AutoFillet = readSetting("AutoFillet",AutoFillet);
-        AutoFillet = CheckBox(10, y, 10, 0xFFFFFFff, " Automatically Fillet Fish", AutoFillet, 0.7, 0.7);
-        writeSetting("AutoFillet",AutoFillet);
-        y = y + 20;
 
         muteSoundEffects = readSetting("muteSoundEffects",muteSoundEffects);
         muteSoundEffects = CheckBox(10, y, 10, 0xFFFFFFff, " Mute Sound Effects", muteSoundEffects, 0.7, 0.7);
         writeSetting("muteSoundEffects",muteSoundEffects);
-
         y = y + 20;
         SkipCommon = readSetting("SkipCommon",SkipCommon);
         SkipCommon = CheckBox(10, y, 10, 0xFFFFFFff, " Skip Common Fish", SkipCommon, 0.7, 0.7);
@@ -114,7 +107,7 @@ function SetupLureGroup()
       if test then
         LureType = Lure_Types[i];
           if not muteSoundEffects then
-              lsPlaySound("high_rise.wav");
+            lsPlaySound("high_rise.wav");
           end
         --Click it!
         srClickMouseNoMove(test[0]+12,test[1]+5);
@@ -317,21 +310,6 @@ function UseLure()
     if lure then
         srClickMouseNoMove(lure[0]+12,lure[1]+5);
         lsSleep(200);
-        srReadScreen();
-
-        -- Find Lure Type
-        for i = 1, #Lure_Types, 1 do
-            test = findText(Lure_Types[i]);
-            if test then
-                LureType = Lure_Types[i];
-                if not muteSoundEffects then
-                    lsPlaySound("high_rise.wav");
-                end
-                --Click it!
-                srClickMouseNoMove(test[0]+12,test[1]+5);
-                break;
-            end
-        end
     end
 end
 
@@ -620,7 +598,9 @@ end
 
 function doit()
 
-    askForWindow("Fishing v2.0.7 (by Tutmault, revised by KasumiGhia, Cegaiel, and Skyfeather)\n\nMAIN chat tab MUST be showing and wide enough so that each line doesn't wrap.\n\nRequired: Pin Lures Menu (Self, Skills, Fishing, Use Lures). History will be recorded in FishLog.txt and stats in FishStats.txt.\n\nOptional: Pin Fillet Menu (Self, Skills, Fishing, Fillet). 'All Fish' will be clicked after each caught fish (empty windows are refreshed).\n\nSelf, Options, Interface Options (Menu:) \"Display available fishing lures in submenus\" MUST BE CHECKED!\n\nMost problems can be fixed by adjusting main chat window! Ensure that your chat displays timestamps");
+    askForWindow("MAIN chat tab MUST be showing and wide enough so that each line doesn't wrap.\n\n"
+    .. "Required: Pin Lures Menu (Click the lure health bar).\n\n"
+    .. "History will be recorded in FishLog.txt and stats in FishStats.txt.");
 
     ----------------------------------------
     --Variables Used By Program -- Don't Edit Unless you know what you're doing!
@@ -749,6 +729,7 @@ function doit()
             srReadScreen();
             local cancel = srFindImage("cancel.png")
             if cancel then
+              castcount=0;
               safeClick(cancel[0],cancel[1])
             end
             startTime = lsGetTimer();
@@ -905,8 +886,6 @@ function doit()
                         --lsPlaySound("applause.wav");
                         --end
                         --end
-
-                        filletFish();  -- Search for "All Fish" pinned up. If so, fillet.
                         end
                     end
 
@@ -945,24 +924,4 @@ end
 function round(num, numDecimalPlaces)
     local mult = 10^(numDecimalPlaces or 0)
     return math.floor(num * mult + 0.5) / mult
-end
-
-
-function filletFish()
-    if AutoFillet then
-        -- Pin your Skills, Fishing, Fillet menu, and we will fillet fish every catch (so they don't go rotten). You need to have at least 1 whole fish in inventory for this menu to appear!
-        srReadScreen();
-        emptyWindow = srFindImage("WindowEmpty.png");
-        fillet = findText("All Fish");
-
-        if emptyWindow then
-            --refresh any empty windows; just in case a previous fillet All Fish caused window to become empty
-            clickAllImages("WindowEmpty.png", 5, 5, nil, nil);
-            lsSleep(150);
-        end
-
-        if fillet then
-            clickAllText("All Fish");
-        end
-    end
 end
