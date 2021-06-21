@@ -506,7 +506,7 @@ function findClockRegion()
   end
 
   if faction ~= "Clock not detected" then
-    local clockUpperLeftX = clockUpperLeftX - 44;
+    local clockUpperLeftX = clockUpperLeftX - 39;
     local clockUpperLeftY = clockUpperLeftY - 10;
     local clockWidth = 270;
     local clockHeight = 55;
