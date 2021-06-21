@@ -2,9 +2,7 @@ dofile("common.inc");
 dofile("settings.inc");
 
 kilnList = {"True Kiln"};
-kilnImage = { "trueKiln.png" };
 productNames = { "Wet Clay Bricks", "Wet Clay Mortars", "Wet Firebricks", "Wet Jugs", "Wet Claypots" };
-productImages = { "loadClayBricks.png", "loadClayMortars.png", "loadFirebricks.png", "loadJugs.png", "loadClaypot.png" };
 arrangeWindows = true;
 
 -- Tweakable delay values
@@ -81,21 +79,20 @@ function start()
     for i=1, kilnPasses do
       checkRepair();
       srReadScreen();
-      clickAllImages("kilns/loadWood.png");
+      clickAllText("Load the Kiln with Wood");
       lsSleep(refresh_time);
       refreshWindows();
       lsSleep(refresh_time);
-    	clickAllImages("kilns/" .. productImages[typeOfProduct]);
-    	print("clicking: " .. productImages[typeOfProduct]);
+    	clickAllText("Load the Kiln with " .. productNames[typeOfProduct]);
       refreshWindows();
       lsSleep(refresh_time)
-      clickAllImages("kilns/fireKiln.png");
+      clickAllText("Fire  the Kiln");
       lsSleep(refresh_time);
       --Check Repair for any that failed this round then fire any that were broken.
       checkRepair();
       refreshWindows();
       lsSleep(refresh_time)
-      clickAllImages("kilns/fireKiln.png");
+      clickAllText("Fire the Kiln");
       lsSleep(refresh_time)
       closePopUp();
       checkFiring();
@@ -106,23 +103,21 @@ end
 
 function takeFromKilns()
   srReadScreen();
-  kilnRegions = findAllImages("kilns/" .. kilnImage[kiln]);
+   kilnRegions = findAllText("This is [A-Za-z]+ [A-Za-z]+ Kiln", nil, REGION + REGEX);
   for i = 1, #kilnRegions do
     checkBreak();
-    local x = kilnRegions[i][0]-165;
+    local x = kilnRegions[i][0];
     local y = kilnRegions[i][1];
     local width = 491;
     local height = 216;
-    local p = srFindImageInRange("take.png", x, y, width, height);
+    local p = findText("Take...", kilnRegions[i]);
       if (p) then
   		safeClick(p[0]+4,p[1]+4);
   		lsSleep(refresh_time);
   		srReadScreen();
-  		local e = srFindImage("everything.png");
+  		local e = findText("Everything");
       		if (e) then
       			safeClick(e[0]+4,e[1]+4);
-      			lsSleep(refresh_time);
-      			safeClick(kilnRegions[i][0]+4, kilnRegions[i][1]+4);
       			lsSleep(refresh_time);
       	 end
   	   end
@@ -131,7 +126,7 @@ end
 
 function refreshWindows()
   srReadScreen();
-  this = findAllImages("kilns/" .. kilnImage[kiln]);
+  this = findAllText("This");
     for i = 1, #this do
       safeClick(this[i][0]+4,this[i][1]+4);
     end
@@ -143,7 +138,7 @@ function checkRepair()
   lsSleep(refresh_time);
   closePopUp();
   srReadScreen();
-  clickAllImages("kilns/repairKiln.png");
+  clickAllText("Repair");
   lsSleep(refresh_time);
 end
 
@@ -151,7 +146,7 @@ function checkFiring()
   while 1 do
     refreshWindows();
     srReadScreen();
-    firing = findAllImages("kilns/isFiring.png");;
+    firing = findAllText("Firing");;
     if #firing == 0 then
         break; --We break this while statement because Making is not detect, hence we're done with this round
     end
