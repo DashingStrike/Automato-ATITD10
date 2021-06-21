@@ -600,9 +600,9 @@ function closeEmptyAndErrorWindows()
     for i = 1, #windows do
       temp = makeBox(windows[i].x + 7, windows[i].y + 4,
           windows[i].width -35, windows[i].height - 7);
-      p = parseWindow(temp);
+      fr = parseWindow(temp);
 
-      if #p == 0 then
+      if #fr == 0 then
         unpinWindow(windows[i]);
         closed = closed + 1;
       end
