@@ -461,6 +461,7 @@ function gatherVeggies(config)
   end
 
   local stop_after_this_run = false
+  local pause_after_this_run = false
   for run_number = 1, config.num_runs do
     local firstRun = run_number == 1
     srReadScreen();
@@ -532,7 +533,10 @@ function gatherVeggies(config)
           j = 1
         end
       end
-      stop_after_this_run = display_plants(plants, config, run_number, stop_after_this_run)
+      local result = display_plants(plants, config, run_number, stop_after_this_run, pause_after_this_run)
+      stop_after_this_run = result.stop_after_this_run
+      pause_after_this_run = result.pause_after_this_run
+
       checkBreakIfNotSpeed()
     end
 
@@ -552,6 +556,24 @@ function gatherVeggies(config)
     local total = math.floor((3600 / ((stop - start) / 1000)) * config.num_plants * yield) -- default 3, currently 9 veggie yield with pyramids bonus
     if stop_after_this_run then
       break
+    end
+    if pause_after_this_run then
+      local continue = false
+      while not (lsShiftHeld() and lsAltHeld()) and not continue do
+        current_y = 10
+        drawTextUsingCurrent("Veg Janitor is paused. Press and hold Shift and Alt at once to unpause and continue", WHITE)
+        drawTextUsingCurrent("DO NOT MOVE DURING THIS PAUSE, IF YOU DO AFTER UNPAUSING IT WILL BREAK, JUST EXIT THE SCRIPT AND RESTART IF YOU MOVE.", RED)
+        if drawBottomButton(lsScreenX-5, "Continue", GREEN) then
+          continue = true
+        end
+        if drawBottomButton(110, "Exit Script", RED) then
+          error "Script exited by user"
+        end
+        lsSleep(tick_delay)
+        checkBreak();
+        lsDoFrame()
+      end
+      sleepWithStatus(3000, "WARNING VEG JANITOR IS ABOUT TO START DO NOT USE MOUSE OR KEYBOARD")
     end
     sleepWithStatus(config.end_of_run_wait, "Running at " .. total .. " veg per hour. ")
     for k = 1, config.num_plants do
@@ -597,7 +619,7 @@ function sort_plants(plants)
   end)
 end
 
-function display_plants(plants, config, run_number, stop_end_of_run)
+function display_plants(plants, config, run_number, stop_end_of_run, pause_after_this_run)
   current_y = 10
   local num_left = config.num_runs - run_number + 1
   if stop_end_of_run then
@@ -610,13 +632,19 @@ function display_plants(plants, config, run_number, stop_end_of_run)
   end
   if stop_end_of_run then
     drawTextUsingCurrent('STOPPING AFTER THIS RUN', RED)
+  elseif pause_after_this_run then
+    drawTextUsingCurrent('PAUSING AFTER THIS RUN', YELLOW)
   else
+    drawTextUsingCurrent('Press and hold Shift-Alt to pause veg janitor after this run finishes.', YELLOW)
     drawTextUsingCurrent('Press and hold Ctrl-Alt to stop veg janitor after this run finishes.', RED)
   end
   drawTextUsingCurrent('Press Ctrl-Shift to exit immediately.', WHITE)
-  if not stop_end_of_run then
+  if not stop_end_of_run  and not pause_after_this_run then
     if lsControlHeld() and lsAltHeld() then
       stop_end_of_run = true
+    end
+    if lsShiftHeld() and lsAltHeld() then
+      pause_after_this_run = true
     end
   end
   for index, plant in ipairs(plants) do
@@ -644,7 +672,10 @@ function display_plants(plants, config, run_number, stop_end_of_run)
     end
   end
   lsDoFrame()
-  return stop_end_of_run
+  local result = {}
+  result.stop_after_this_run = stop_end_of_run
+  result.pause_after_this_run = pause_after_this_run
+  return result
 end
 
 -- Simple container object which constructs N plants and allows iteration over them.
