@@ -11,7 +11,7 @@ local stashList = {
   clay     = {"Clay ("},
   flint    = {"Flint ("},
   tadpoles = {"Tadpoles ("},
-  tadpoles = {"Silt ("},
+  silt     = {"Silt ("},
   insect   = {"Insect.", "All Insect"}
 };
 
@@ -1443,13 +1443,13 @@ function checkSilt()
 
   if isWithinSiltRange(cluster[0], cluster[1]) then
     safeClick(cluster[0] + 5, cluster[1]);
-    lsSleep(100);
+    lsSleep(1000);
 
     srReadScreen();
     if findText("Silt") or findText("Tests...") then
       srKeyEvent("\27"); --escape to close window
     end
-    lsSleep(2500);
+    lsSleep(1500);
 
     return true;
   end
