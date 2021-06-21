@@ -253,8 +253,20 @@ end
 -------------------------------------------------------------------------------
 
 function parseWindow(window)
+  local result = {};
   srStripRegion(window.x, window.y, window.width, window.height);
-  return parseText(window.x, window.y, window.width, window.height);
+  local table = srParseTextRegion(window.x, window.y,
+          window.width, window.height);
+  if table then
+    local count = math.floor((#table + 1) / 3);
+    for i = 1, count do
+      result[i] = {};
+      result[i][0] = table[(i-1)*3];
+      result[i][1] = table[(i-1)*3+1];
+      result[i][2] = table[(i-1)*3+2];
+    end
+  end
+  return result;
 end
 
 -------------------------------------------------------------------------------
