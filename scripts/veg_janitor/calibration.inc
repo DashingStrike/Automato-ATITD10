@@ -1,0 +1,146 @@
+dofile("veg_janitor/io.inc")
+dofile("veg_janitor/binsert.inc")
+CALIBRATION_LOG_FILE_NAME = "calibration_data_log"
+
+function calibration_log_header()
+  local row = {}
+  table.insert(row, "version")
+  table.insert(row, "row_type")
+  table.insert(row, "config_name")
+  table.insert(row, "plant_number")
+  table.insert(row, "plant_time")
+  table.insert(row, "prev_stage")
+  table.insert(row, "new_stage")
+  table.insert(row, "now")
+  table.insert(row, "time_since_plant")
+  table.insert(row, "time_since_prev_stage")
+  table.insert(row, "config_num_runs")
+  table.insert(row, "config_num_plants")
+  table.insert(row, "config_seed_type")
+  table.insert(row, "config_seed_name")
+  return row
+end
+
+function create_calibration_stage_time_log_row(config,
+                                               plant_number,
+                                               plant_time,
+                                               prev_stage,
+                                               new_stage,
+                                               now,
+                                               time_since_plant,
+                                               time_since_prev_stage
+)
+  local row = {}
+  table.insert(row, "v0.1")
+  table.insert(row, "STAGE_TIME")
+  table.insert(row, config.name)
+  table.insert(row, plant_number)
+  table.insert(row, plant_time)
+  table.insert(row, prev_stage)
+  table.insert(row, new_stage)
+  table.insert(row, now)
+  table.insert(row, time_since_plant)
+  table.insert(row, time_since_prev_stage)
+  table.insert(row, config.num_runs)
+  table.insert(row, config.num_plants)
+  table.insert(row, config.seed_type)
+  table.insert(row, config.seed_name)
+  return row
+end
+function calibration_stage_time_row_to_table(row)
+  local table = {}
+  for i, value in ipairs(calibration_log_header()) do
+    local possibly_a_number = tonumber(row[i])
+    if possibly_a_number == nil then
+      table[value] = row[i]
+    else
+      table[value] = possibly_a_number
+    end
+  end
+  return table
+end
+
+function filter_table_by_config_and_seed(csv_table, config, config_seed_type, config_seed_name)
+  local rows_per_stage = {}
+  for i = #csv_table, 1, -1 do
+    if i == 1 then
+      -- Ignore header row
+      break
+    end
+    local row = csv_table[i]
+    local row_table = calibration_stage_time_row_to_table(row)
+    local config_name = row_table["config_name"]
+    local seed_type = row_table["config_seed_type"]
+    local seed_name = row_table["config_seed_name"]
+    if config.name == config_name and config_seed_type == seed_type and config_seed_name == seed_name then
+      local row_type = row_table["row_type"]
+      if row_type == "RESET" then
+        break
+      end
+      local new_stage = row_table["new_stage"]
+      if not rows_per_stage[new_stage] then
+        rows_per_stage[new_stage] = {}
+      end
+      local fcomp = function(a, b)
+        return a["time_since_prev_stage"] < b["time_since_prev_stage"]
+      end
+      table.binsert(rows_per_stage[new_stage], row_table, fcomp)
+    end
+  end
+  return rows_per_stage
+end
+
+function quantile(t, key, q)
+  local rank = (#t - 1) * (q / 100) + 1
+  local floored_rank = math.floor(rank)
+  local rem = rank - floored_rank
+  if rem == 0 then
+    return t[floored_rank][key]
+  else
+    return t[floored_rank][key] + rem * (t[floored_rank + 1][key] - t[floored_rank][key])
+  end
+end
+
+
+function calculate_and_update_calibration_settings(config, seed_type, seed_name)
+  -- Reload the config from file to ensure we dont write out any in-memory only config values
+
+  local csv_table = readCsvFrom(CALIBRATION_LOG_FILE_NAME)
+  local filtered_table_stages = filter_table_by_config_and_seed(csv_table, config, seed_type, seed_name)
+  local stages = config.plants[seed_type][seed_name].stages + 1
+  local timings = config.plants[seed_type][seed_name].stage_advance_timings or {}
+  config.plants[seed_type][seed_name].stage_advance_timings = timings
+  if not filtered_table_stages[2] then
+    timings["calibrated"] = false
+    timings["data_points"] = 0
+  else
+    for i = 2, stages do
+      local q = quantile(filtered_table_stages[i], "time_since_prev_stage", config.calibration_mode_percentile)
+      local timing = q + config.calibration_mode_buffer_ms
+      timings[i - 1] = timing
+    end
+    timings["calibrated"] = true
+    timings["data_points"] = #filtered_table_stages[2]
+  end
+  write_config(config)
+  return config
+end
+
+function calibration_insert_reset_row(config_name, seed_type, seed_name)
+  local row = {}
+  table.insert(row, "v0.1")
+  table.insert(row, "RESET")
+  table.insert(row, config_name)
+  table.insert(row, "")
+  table.insert(row, "")
+  table.insert(row, "")
+  table.insert(row, "")
+  table.insert(row, "")
+  table.insert(row, "")
+  table.insert(row, "")
+  table.insert(row, "")
+  table.insert(row, "")
+  table.insert(row, seed_type)
+  table.insert(row, seed_name)
+  writeCsvFileTo(CALIBRATION_LOG_FILE_NAME, { [1] = row }, true)
+end
