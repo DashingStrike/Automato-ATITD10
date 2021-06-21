@@ -32,7 +32,7 @@ function findAllTextRegions()
 end
 
 function showDebugInRange(name, screenx, screeny, imgw, imgh, x, y, z, w, h)
-  srMakeImage(name, screenx, screeny, imgw, imgh);
+  srMakeImage(name, screenx, screeny, imgw, imgh, true);
   local scale = 1;
   local border = 1;
   for stest=2,10 do

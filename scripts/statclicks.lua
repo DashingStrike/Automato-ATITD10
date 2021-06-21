@@ -5,9 +5,7 @@ dofile("hackling_rake.lua");
 items = {
         --strength
         {"",
-        --[[
             "Coconuts",
-            ]]--
         },
         --end
         {"",
@@ -17,7 +15,9 @@ items = {
             "Weave Linen",
             "Weave Papy Basket",
             "Weave Wool Cloth",
-            "Oil (Flax Seed)"
+            "Oil (Flax Seed)",
+            "Limestone",
+            "Dirt"
             --[[
             "Churn Butter",
             "Excavate Blocks",
@@ -43,17 +43,20 @@ items = {
             "Rawhide Strips",
             "Sharpened Stick",
             "Tinder",
-            "Clay Lamp"
-        --[[
+            "Clay Lamp",
+            "Flint Hammer",
             "Barrel Tap",
             "Bottle Stopper",
             "Crudely Carved Handle",
             "Large Crude Handle",
             "Personal Chit",
+            "Wooden Peg",
+            "Wooden Pestle",
+            "Tackle Block",
+            "Wooden Cog"
+        --[[
             "Search Rotten Wood",
             "Tap Rods",
-            "Wooden Peg",
-            "Wooden Pestle"
             ]]--
         },
 };
@@ -65,9 +68,10 @@ lagBound["Survey (Uncover)"] = true;
 -- Due to a window refresh bug (T9) rods can be lost when auto retrieve is enabled
 -- disabling it and manually refreshing the rod window bypasses this bug.
 retrieveRods = true;
---[[
+
 local textLookup = {};
 textLookup["Coconuts"] = "Harvest the Coconut Meat";
+--[[
 textLookup["Gun Powder"] = "Gunpowder";
 textLookup["Ink"] = "Ink";
 textLookup["Pump Aqueduct"] = "Pump the Aqueduct";
@@ -141,6 +145,12 @@ function weave(clothType)
         srcQty = "50";
     end
 
+    srReadScreen();
+    local consume = srFindImage("consume.png");
+    if consume then
+        eatOnion();
+    end
+
     if clothType == "Basket" then
         weaveImage = srFindImage("statclicks/weave_papyrus.png");
     else
@@ -185,26 +195,10 @@ function weave(clothType)
 end
 
 function carve(item)
-
-  if item == "Tinder" then
-      srcImg = "tinder";
-  elseif item == "Rawhide Strips" then
-      srcImg = "rawhide";
-  elseif item == "Long Sharp Stick" then
-      srcImg = "longSharpStick";
-  elseif item == "Sharp Stick" then
-      srcImg = "sharpStick";
-  elseif item == "Silk" then
-      srcImg = "silk";
-  elseif item == "Clay Lamp" then
-      srcImg = "clayLamp";
-  end
-
   srReadScreen();
-  carveItem = srFindImage("statclicks/carve_" .. srcImg .. ".png");
-
+  carveItem = findText(item);
   if carveItem ~= nil then
-      safeClick(carveItem[0],carveItem[1]);
+      safeClick(carveItem[0]+5,carveItem[1]+3);
       lsSleep(per_tick);
       srReadScreen();
       closePopUp();
@@ -224,6 +218,25 @@ function digHole()
       lsSleep(per_tick);
     end
 end
+
+function gather(resource)
+  if resource == "Limestone" then
+    srcImg = "limestone.png"
+  elseif resource == "Dirt" then
+    srcImg = "dirt.png"
+  end
+
+  srReadScreen();
+  local material = srFindImage(srcImg, 7000);
+    if material ~= nil then
+      if consume then
+          eatOnion();
+      end
+      safeClick(material[0], material[1])
+      lsSleep(100);
+    end
+end
+
 --[[
 function searchRottenWood()
     woodForBugs = findText("Wood for Bugs");
@@ -289,13 +302,15 @@ end
 
 function eatOnion()
   srReadScreen();
-  local buffed = srFindImage("stats/enduranceBuff.png")
+  buffed = srFindImage("stats/enduranceBuff.png")
     if not buffed then
       srReadScreen();
       local consumeOnion = srFindImage("consume.png")
       lsSleep(75);
       safeClick(consumeOnion[0],consumeOnion[1]);
-      waitforImage("stats/enduranceBuff.png")
+        if not buffed then
+          sleepWithStatus(1500,"Waiting for the green endurance icon to appear")
+        end
     end
 end
 
@@ -506,21 +521,47 @@ function doTasks()
                 elseif curTask == "Long Sharp Stick" then
                   carve(curTask);
                 elseif curTask == "Sharpened Stick" then
-                    carve(curTask);
+                  carve(curTask);
+                elseif curTask == "Barrel Tap" then
+                  carve(curTask);
+                elseif curTask == "Bottle Stopper" then
+                  carve(curTask);
+                elseif curTask == "Crudely Carved Handle" then
+                  carve(curTask);
+                elseif curTask == "Large Crude Handle" then
+                  carve(curTask);
+                elseif curTask == "Personal Chit" then
+                  carve(curTask);
+                elseif curTask == "Flint Hammer" then
+                  carve(curTask);
+                elseif curTask == "Wooden Peg" then
+                  carve(curTask);
+                elseif curTask == "Wooden Pestle" then
+                  carve(curTask);
                 elseif curTask == "Clay Lamp" then
-                    carve(curTask);
+                  carve(curTask);
+                elseif curTask == "Tackle Block" then
+                  carve(curTask);
+                elseif curTask == "Wooden Cog" then
+                  carve(curTask);
                 elseif curTask == "Flax Comb" then
-                    combFlax();
+                  combFlax();
                 elseif curTask == "Oil (Flax Seed)" then
-                    flaxOil();
+                  flaxOil();
                 elseif curTask == "Weave Canvas" then
-                    weave("Canvas");
+                  weave("Canvas");
                 elseif curTask == "Weave Linen" then
-                    weave("Linen");
+                  weave("Linen");
                 elseif curTask == "Weave Wool Cloth" then
-                    weave("Wool");
+                  weave("Wool");
                 elseif curTask == "Weave Papy Basket" then
-                    weave("Basket");
+                  weave("Basket");
+                elseif curTask == "Limestone" then
+                  gather("Limestone");
+                elseif curTask == "Dirt" then
+                  gather("Dirt");
+                else
+                  clickText(findText(textLookup[curTask]));
                 end
                 --[[
                 elseif curTask == "Hackling Rake" then
@@ -537,24 +578,8 @@ function doTasks()
                     stirCement();
                 elseif curTask == "Churn Butter" then
                     churnButter();
-                elseif curTask == "Barrel Tap" then
-                    carve(curTask);
-                elseif curTask == "Bottle Stopper" then
-                    carve(curTask);
-                elseif curTask == "Crudely Carved Handle" then
-                    carve(curTask);
-                elseif curTask == "Large Crude Handle" then
-                    carve(curTask);
-                elseif curTask == "Personal Chit" then
-                    carve(curTask);
-                elseif curTask == "Wooden Peg" then
-                    carve(curTask);
-                elseif curTask == "Wooden Pestle" then
-                    carve(curTask);
                 elseif curTask == "Search Rotten Wood" then
                     searchRottenWood();
-                else
-                    clickText(findText(textLookup[curTask]));
                 end
                 ]]--
                 statTimer[i] = lsGetTimer();

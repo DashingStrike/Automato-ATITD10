@@ -1,7 +1,3 @@
--- autorun "plus" v1.1 by Ashen
---
--- Auto run, dig for shards, inspect weeds, and forage.
-
 dofile("common.inc");
 
 askText = singleLine([[
@@ -46,17 +42,14 @@ function doit()
   local ctr = 0;
   local xyScreenSize = srGetWindowSize();
   while true do
-  --[[ THIS HAS BEEN TEMPORARILY COMMENTED OUT UNTIL THE OCR FUNCTIONALITY IS FIXED FOR T10
     if ((ctr % 10) == 0) then
       srReadScreen();
-      clickAllText("Dig under");
       clickAllText("Forage this");
       clickAllText("Inspect this");
       if (clickAllText("Eat this mushroom") == 0) then
         clickAllText("Pick up the");
       end
     end
-  ]]--
 
     if (lsControlHeld()) then
       autorun = not autorun;

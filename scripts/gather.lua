@@ -5,6 +5,16 @@ dofile("serialize.inc");
 dofile("settings.inc");
 dofile("constants.inc");
 
+local stashList = {
+  grass    = {"Grass ("},
+  slate    = {"Slate ("},
+  clay     = {"Clay ("},
+  flint    = {"Flint ("},
+  tadpoles = {"Tadpoles ("},
+  silt     = {"Silt ("},
+  insect   = {"Insect.", "All Insect"}
+};
+
 routeFileName = "gather_routes.txt";
 defaultRoutesFileName = "default_routes.inc";
 routes = {};
@@ -330,6 +340,7 @@ wood = false;
 slate = false;
 grass = false;
 clay = false;
+silt = false;
 papy = false;
 repeatForever = true;
 juglessGather = false;
@@ -408,6 +419,10 @@ function queryRoute()
     clay = readSetting("clay",clay);
     clay = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather clay and flint", clay);
     writeSetting("clay",clay);
+    y = y + 36;
+    silt = readSetting("silt",clay);
+    silt = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather silt", silt);
+    writeSetting("silt",silt);
     y = y + 36;
     wood = readSetting("wood",wood);
     wood = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather wood", wood);
@@ -693,7 +708,6 @@ function clearScrollArea(area)
 end
 
 function alreadyExists(name)
-    local i;
     for i = 1, #routes do
         if(name == routes[i][0]) then
             return true;
@@ -737,7 +751,6 @@ end
 
 function insertWaypointAfter(where,thisRoute)
     local temp = {};
-    local i;
     local coords = getCoords();
     for i = 1, ((#thisRoute[1]) + 1) do
         temp[i] = {};
@@ -775,7 +788,6 @@ function deleteWaypoint(where,thisRoute)
     end
 
     local temp = {};
-    local i;
     for i = 1, #thisRoute[1] do
         if(i < where) then
             temp[i] = {};
@@ -805,7 +817,6 @@ function saveRoute(thisRoute,route)
     routes[r][0] = thisRoute[0];
     routes[r][1] = {};
     routes[r][2] = {};
-    local i;
     for i = 1, #thisRoute[1] do
         routes[r][1][i] = {};
         routes[r][1][i][1] = thisRoute[1][i][1];
@@ -852,9 +863,8 @@ function routeTo(waypoint,thisRoute)
 end
 
 function followRoute(route)
-    if(slate or clay or grass or wood or papy) then
+    if(slate or clay or grass or silt or wood or papy) then
         local haveWarehouse = false;
-        local i;
         for i = 1, #routes[route][1] do
             if(routes[route][1][i][3] == Warehouse) then
                 haveWarehouse = true;
@@ -870,7 +880,7 @@ function followRoute(route)
             end
         end
     else
-        if(not wood or slate or clay or grass or papy) then
+        if(not wood or slate or clay or grass or silt or papy) then
             if(not promptOkay("You have not specified any resources to gather.  Are you sure that's what you want?")) then
                 return;
             end
@@ -906,11 +916,7 @@ function followRoute(route)
                 stashWood();
             end
         elseif(r[curr][3] == Warehouse) then
-            srReadScreen()
-            local stash = findImage("stash/stash.png", nil,7000);
-            if stash then
-                stashAllButWood();
-            end
+            stashAllButWood();
         elseif(papy and r[curr][3] ~= Waypoint) then
             plantPapy();
         elseif(r[curr][3] == Water) then
@@ -986,7 +992,6 @@ end
 
 function ensureClickWaypoint(route,waypoint)
     lsSleep(300);
-    local typeOfWaypoint = route[waypoint][3];
     local lastWaypoint;
     if(waypoint > 1) then
         lastWaypoint = waypoint - 1;
@@ -1009,8 +1014,7 @@ function ensureClickWaypoint(route,waypoint)
             direction = 4;
         end
     end
-    local fails;
-    for fails = 1, 4 do
+    for i = 1, 4 do
         if(clickWaypoint(route[waypoint][3])) then
             return true;
         end
@@ -1047,10 +1051,6 @@ function clickWaypoint(typeOfWaypoint)
     mid[0] = xyWindowSize[0] / 2;
     mid[1] = xyWindowSize[1] / 2;
     --srSetMousePos(mid[0],mid[1]);
-    local dx;
-    local dy;
-    local delta;
-    local offset = {};
     setStatus("Looking for " .. WaypointTypes[typeOfWaypoint]);
     srReadScreen();
     local xyWindowSize = srGetWindowSize();
@@ -1191,18 +1191,14 @@ function pixelBlockCheck(x, y, color, rgbTol, hueTol, roughness, size)
     local startY = y - size;
     local endX = x + size;
     local endY = y + size;
-    local i;
     for i = startX, endX do
-        local j;
         for j = startY, endY do
             local currColor = srReadPixelFromBuffer(x, y);
             if(not compareColorEx(color,currColor,rgbTol,hueTol)) then
                 return false;
             end
             local totalRoughness = 0;
-            local dx;
             for dx = -1, 1 do
-                local dy;
                 for dy = -1, 1 do
                     if(dx ~= 0 or dy ~= 0) then
                         local neighbor = srReadPixelFromBuffer(x + dx, y + dy);
@@ -1230,7 +1226,6 @@ function walkTo(x, y, showStatus, promptIfNotMoving)
     if(promptIfNotMoving == nil) then
         promptIfNotMoving = true;
     end
-    local moveDelay = 1; -- 25;
     local movingRight = false;
     local movingLeft = false;
     local movingUp = false;
@@ -1254,7 +1249,7 @@ function walkTo(x, y, showStatus, promptIfNotMoving)
     while(1) do
         updateStatus();
         srReadScreen();
-        if(checkSlate() or checkClay() or checkGrass()) then
+        if(checkSlate() or checkClay() or checkGrass() or checkSilt()) then
             moving = true;
             lastMoveTime = lsGetTimer();
         end
@@ -1427,10 +1422,6 @@ function checkClay()
     if(not clay) then
         return false;
     end
-    local xyWindowSize = srGetWindowSize();
-    local midX = xyWindowSize[0] / 2;
-    local xyWindowSize = srGetWindowSize();
-    local midX = xyWindowSize[0] / 2;
     local pos = srFindImage("clay.png",7000);
     if(pos) then
         safeClick(pos[0] + 3, pos[1] + 3);
@@ -1440,16 +1431,37 @@ function checkClay()
     return false;
 end
 
+function checkSilt()
+  srReadScreen();
+
+  local xyWindowSize = srGetWindowSize();
+  local clusters = lsAnalyzeCustom(10, 50, false, xyWindowSize[0] * 0.5, 0xAB6A0B6FF, 0xD2CbBFFF, true);
+  if not clusters then
+    return false;
+  end
+  local cluster = clusters[1];
+
+  if isWithinSiltRange(cluster[0], cluster[1]) then
+    safeClick(cluster[0] + 5, cluster[1]);
+    lsSleep(1000);
+
+    srReadScreen();
+    if findText("Silt") or findText("Tests...") then
+      srKeyEvent("\27"); --escape to close window
+    end
+    lsSleep(1500);
+
+    return true;
+  end
+
+  return false;
+end
+
 function clickColor(color)
     local xyWindowSize = srGetWindowSize();
     local mid = {};
     mid[0] = xyWindowSize[0] / 2;
     mid[1] = xyWindowSize[1] / 2;
-    --srSetMousePos(mid[0],mid[1]);
-    local dx;
-    local dy;
-    local delta;
-    local offset = {};
     setStatus("Searching...");
     srReadScreen();
     for delta = 1, 300, 2 do
@@ -1533,92 +1545,46 @@ function plantPapy()
     return false;
 end
 
-function stashAllButWood()
-  local needMax;
-  local count = 0;
-  local stashedSomething = true;
-  while(stashedSomething) do
-    stashedSomething = false;
-    needMax = true;
-    lsSleep(150);
-    srReadScreen();
-    local pos = findImage("stash/stash.png", nil, 7000);
-    if(pos) then
-      safeClick(pos[0] + 10, pos[1] + 5);
-      lsSleep(250);
-      srReadScreen();
-      pos = findImage("stash/grass.png", nil, 7000);
-      if(pos) then
-        stashItem(pos,true);
-        stashedSomething = true;
-      else
-        pos = findImage("stash/slate.png", nil, 7000);
-        if(pos) then
-          stashItem(pos,true);
-          stashedSomething = true;
-          else
-          pos = findImage("stash/clay.png", nil, 7000);
-          if(pos) then
-            stashItem(pos,true);
-            stashedSomething = true;
-          else
-            pos = findImage("stash/flint.png", nil, 7000);
-            if(pos) then
-              stashItem(pos,true);
-              stashedSomething = true;
-            else
---[[          Disabled for T10
-              pos = findText("Tadpoles");
-              if(pos) then
-                stashItem(pos,true);
-                stashedSomething = true;
-              else
-                pos = findText("Wood (");
-                if(pos) then
-                  stashItem(pos,true);
-                  stashedSomething = true;
-                else
-                  pos = findText("Insect...");
-                  if(pos) then
-                    safeClick(pos[0] + 10, pos[1] + 5);
-                    lsSleep(150);
-                    srReadScreen();
-                    pos = findText("All Insect");
-                    if(pos) then
-                      stashItem(pos,false);
-                      stashedSomething = true;
-
-                    end
-                  end
-                end
-              end]]
-            end
-          end
-        end
-      end
-      if(stashedSomething) then
-        clickWaypoint(Warehouse);
-      else
-        safeClick(10,200);
-      end
-    else
-      if(count < 1) then
-        fatalError("Unable to find the Stash menu item.");
-      end
-    end
-    count = count + 1;
-  end
+function isWithinSiltRange(x, y)
+  local xyWindowSize = srGetWindowSize();
+  local radius = xyWindowSize[0] / 0.25;
+  local dx = x - xyWindowSize[0] / 2;
+  local dy = y - xyWindowSize[0] / 2;
+  return dx*dx + dy*dy <= radius*radius;
 end
 
-function stashItem(pos,clickMaxButton)
-    safeClick(pos[0] + 20, pos[1] + 5);
-    if(clickMaxButton) then
-        lsSleep(150);
-        srReadScreen();
-        clickMax();
-    end
-    lsSleep(150);
+function clickMenus(menus)
+  for _, menu in pairs(menus) do
+    checkBreak();
     srReadScreen();
+
+    local found = findText(menu);
+    if found then
+      clickText(found);
+      lsSleep(200);
+    else
+      return false;
+    end
+  end
+
+  return true;
+end
+
+function stashAllButWood()
+  clickMenus({"Stash."});
+  for name, menus in pairs(stashList) do
+    checkBreak();
+    if clickMenus(menus) then
+      if name ~= 'insect' then
+        clickMax();
+        clickMenus({"Stash."});
+      end
+    end
+  end
+
+  srKeyDown(VK_ESCAPE);
+  lsSleep(100);
+  srKeyUp(VK_ESCAPE);
 end
 
 local prepareForWalkingInitialized = false;
@@ -1634,7 +1600,6 @@ function prepareForWalking()
     local mid = {};
     mid[0] = xyWindowSize[0] / 2;
     mid[1] = xyWindowSize[1] / 2;
-    --srSetMousePos(mid[0],mid[1]);
     lsSleep(150);
     setCameraView(CARTOGRAPHER2CAM);
 end
@@ -1687,7 +1652,6 @@ function updateStatus()
         local hours = math.floor(duration / 60 / 60);
         local minutes = math.floor((duration - hours * 60 * 60) / 60);
         local seconds = duration - hours * 60 * 60 - minutes * 60;
---        lsPrint(10, 38, 0, 0.7, 0.7, 0xB0B0B0ff,"Elapsed: " .. hours .. ":" .. minutes .. ":" .. seconds);
         lsPrint(10, 38, 0, 0.7, 0.7, 0xB0B0B0ff,string.format("Elapsed: %02d:%02d:%02d",hours,minutes,seconds));
     end
 
@@ -1714,7 +1678,6 @@ function getCoords()
 end
 
 function findWaypointOrder(wpType)
-    local i;
     for i = 1, #WaypointTypes do
         if(WaypointOrder[i] == wpType) then
             return i;
@@ -1745,7 +1708,6 @@ end
 
 function insertMenuTextAfter(where,thisRoute)
     local temp = {};
-    local i;
     for i = 1, ((#thisRoute[2]) + 1) do
         temp[i] = {};
         if(i <= where) then
@@ -1770,7 +1732,6 @@ function deleteMenuText(where,thisRoute)
     end
 
     local temp = {};
-    local i;
     for i = 1, #thisRoute[2] do
         if(i < where) then
             temp[i] = thisRoute[2][i];

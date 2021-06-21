@@ -29,7 +29,6 @@ askText =
 
 -- Global parameters set by prompt box.
 is_plant = true
-extraGridSpacing = false
 readClock = false
 num_loops = 5
 grid_w = 4
@@ -53,8 +52,8 @@ water_location[0] = 0
 water_location[1] = 0
 
 -- Tweakable delay values
-refresh_time = 100 -- Time to wait for windows to update
-walk_time = 750 -- Reduce to 300 if you're fast.
+refresh_time = 75 -- Time to wait for windows to update
+walk_time = 550 -- Reduce to 300 if you're fast.
 
 -- Don't touch. These are set according to Jimbly's black magic.
 walk_px_x = 355
@@ -66,9 +65,6 @@ xyFlaxMenu = {}
 
 -- The flax bed window
 window_h = 120
-
---This is only used when Extra Grid Spacing checkbox is UN checked. The additional spacing between pinned up windows.
-min_width_offset = 75
 
 --[[
 How much of the ATITD screen to ignore (protect the right side of screen from closing windows when finished
@@ -315,16 +311,11 @@ function promptFlaxNumbers()
     writeSetting("clearUI",clearUI);
     y = y + 2
 
-    extraGridSpacing = readSetting("extraGridSpacing", extraGridSpacing)
-    extraGridSpacing = CheckBox(120, y + 33, z + 10, 0xFFFFFFff, " Extra Spacing on Grid", extraGridSpacing, 0.7, 0.7)
-    writeSetting("extraGridSpacing", extraGridSpacing)
-    y = y + 2
-
     is_plant = readSetting("is_plant", is_plant)
-    is_plant = CheckBox(120, y + 47, z + 10, 0xFFFFFFff, " Grow Flax", is_plant, 0.7, 0.7)
+    is_plant = CheckBox(120, y + 33, z + 10, 0xFFFFFFff, " Grow Flax", is_plant, 0.7, 0.7)
     writeSetting("is_plant", is_plant)
-
     y = y + 50
+
     if ButtonText(10, y - 33, z, 100, 0x00ff00ff, "Start !", 0.9, 0.9) then
       is_done = 1
     end
@@ -684,15 +675,10 @@ function dragWindows(loop_count)
     0.7
   )
 
-  if not extraGridSpacing and is_plant then
-    window_w = nil
-    offsetWidth = min_width_offset
-  end
-
   if clearUI then
-    arrangeStashed(nil, true, window_w, window_h, space_to_leave, offsetWidth, offsetHeight);
+    arrangeStashed(nil, true, window_w, window_h, space_to_leave, 35, 20);
   else
-    arrangeStashed(nil, waterGap, window_w, window_h, space_to_leave, offsetWidth, offsetHeight);
+    arrangeStashed(nil, nil, window_w, window_h, space_to_leave, 35, 20);
   end
 
 end
@@ -964,12 +950,17 @@ function sleepWithStatusHarvest(delay_time, message, color, scale, waitMessage)
     lsPrintWrapped(10, 50, 0, lsScreenX - 20, scale, scale, 0xd0d0d0ff,
                    newWaitMessage .. waitChars[frame]);
 
-    if finish_up == 0 and tonumber(loop_count) ~= tonumber(num_loops) then
-      if lsButtonText(lsScreenX - 110, lsScreenY - 60, nil, 100, 0xFFFFFFff, "Finish up") then
-        finish_up = 1;
-        finish_up_message = "\n\nFinishing up..."
-      end
-    end
+	if finish_up == 0 and tonumber(loop_count) ~= tonumber(num_loops) then
+		if lsButtonText(lsScreenX - 110, lsScreenY - 60, z, 100, 0xFFFFFFff, "Finish up") then
+	  	  finish_up = 1;
+	  	  finish_up_message = "\n\nFinishing up ..."
+		end
+	else
+		if lsButtonText(lsScreenX - 110, lsScreenY - 60, z, 100, 0xff6251ff, "Cancel Finish Up") then
+	  	  finish_up = 0;
+	  	  finish_up_message = ""
+		end
+	end
 
     statusScreen(message, color, nil, scale);
     lsSleep(tick_delay);

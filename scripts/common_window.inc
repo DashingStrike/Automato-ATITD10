@@ -202,7 +202,7 @@ end
 
 -------------------------------------------------------------------------------
 
-function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight)
+function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight, windowCap)
   local screen = srGetWindowSize();
   local bottomRightX = screen[0] - 20;
   local bottomRightY = screen[1] - 20;
@@ -213,24 +213,30 @@ function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offse
         screen[0] = screen[0] - lsGetWindowSize()[0];
  end
 
-  local currentX = 0;
-  local currentY = 0;
+  local currentX = 3;
+  local currentY = 5;
   if waterGap then
     currentY = 95;
   end
+  local initY = currentY;
   local lastX = 0;
   local lastY = 0;
   local xMax = 0;
   local yMax = 0;
   local counter = 0
   srReadScreen();
-  local window = findImageInWindow("ThisIs.png", bottomRightX, bottomRightY);
-  while window and (window[0] > lastX or window[1] > lastY) do
+  local window = findImageInWindow("windowCorner.png", bottomRightX, bottomRightY, 100);
+  while window and (window[0] > lastX or window[1] > lastY) and window[1] > initY do
     counter = counter + 1
+
+    if (windowCap ~= nil and counter > windowCap) then
+      break;
+    end
+
     safeClick(window[0], window[1]);
     lsSleep(click_delay);
     srReadScreen();
-    local bounds = srGetWindowBorders(window[0], window[1]);
+    local bounds = srGetWindowBorders(window[0] + 5, window[1] + 5);
     local width, height;
     if not varWidth then
       width = bounds[2] - bounds[0] + 7; -- The +7 offset is due to bigger borders in T9. Prevent touching/overlapping.
@@ -252,7 +258,7 @@ function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offse
     if cascade then
       if currentY + height >= screen[1] then
         currentX = currentX + xMax;
-        currentY = 0;
+        currentY = 5;
         xMax = 0;
       end
       if currentX + width >= screen[0] then
@@ -260,7 +266,7 @@ function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offse
       end
     else
       if currentX + width >= screen[0] then
-        currentX = 0;
+        currentX = 3;
         currentY = currentY + yMax;
         yMax = 0;
       end
@@ -289,7 +295,7 @@ function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offse
     yMax = math.max(yMax, height);
     lsSleep(tick_delay);
     srReadScreen();
-    window = findImageInWindow("ThisIs.png", bottomRightX, bottomRightY);
+    window = findImageInWindow("windowCorner.png", bottomRightX, bottomRightY, 100);
     statusScreen("Arranging Windows " .. counter);
   end
 end

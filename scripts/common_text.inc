@@ -82,6 +82,10 @@ function getChatText()
     creg = findChatRegionReplacement();
     sleepWithStatus(100,"Can\'t find \'Main\' Chat Tab.\n\nTry moving the chat window so that all four borders are visible.\n\nAlso make sure Automato or no other windows are partially covering the chat region.", nil, 0.7, "Searching for Main Chat");
   end
+
+  srSetWindowInvertColorRange(0x1e2e31, 0x263539);
+  srSetWindowBackgroundColorRange(0x797070,0xFFFFFF);
+
   -- The below line is a hack introduced for T7 to handle the fact that
   -- there isn't as much of a buffer below chat as there was in T6 and prior.
   creg[3] = creg[3] + 1;
@@ -112,6 +116,10 @@ function getChatText()
       end
     end
   end
+
+  srSetWindowInvertColorRange(minSetWindowInvertColorRange, maxSetWindowInvertColorRange);
+  srSetWindowBackgroundColorRange(minWindowBackgroundColorRange,maxWindowBackgroundColorRange);
+
   return p2;
 end
 
@@ -197,8 +205,29 @@ function parseText(x, y, w, h)
     newTable[i][0] = table[(i-1)*3];
     newTable[i][1] = table[(i-1)*3+1];
     newTable[i][2] = table[(i-1)*3+2];
+
+    newTable[i][2] = fixSpaces(newTable[i][2], "%d", "1");
+    newTable[i][2] = fixSpaces(newTable[i][2], "%.", ".");
   end
   return newTable;
+end
+
+-------------------------------------------------------------------------------
+-- fixSpaces(line, prefix, suffix)
+--
+-- searches the string for extra spaces between the prefix and suffix, and removes them
+-- helpful for the extra spaces that OCR puts between "1"s and "."s
+--
+-- returns a string
+-------------------------------------------------------------------------------
+
+function fixSpaces(line, prefix, suffix)
+  local first, last = string.find(line, prefix.." "..suffix);
+  while first ~= nil do
+    line = string.sub(line, 1, first) .. string.sub(line, last);
+    first, last = string.find(line, prefix.." "..suffix);
+  end
+  return line;
 end
 
 
@@ -217,4 +246,53 @@ function getInventoryText()
   end
 
   return nil
+end
+
+-------------------------------------------------------------------------------
+-- copyAll()
+--
+-- Executes /copy1 in chat and returns the result from the clipboard
+-- This is an alternative method of accessing chat when OCR is not suitable
+-------------------------------------------------------------------------------
+function copyAllChat()
+  srReadScreen();
+  local min = srFindImage("chat/chat_min.png", 7000);
+  if min then
+    srKeyDown(VK_RETURN);
+    srKeyUp(VK_RETURN);
+  end
+
+  if waitForNoImage("chat/chat_min.png", 2000) then
+    lsPrintln("No Chat");
+    return;
+  end
+
+  lsSleep(100);
+  srKeyDown(VK_DIVIDE);
+  lsSleep(10);
+  srKeyUp(VK_DIVIDE);
+  lsSleep(10);
+  srKeyEvent("copy");
+  lsSleep(10);
+  srKeyDown(VK_RETURN);
+  lsSleep(10);
+  srKeyUp(VK_RETURN);
+  lsSleep(200);
+  return lsClipboardGet();
+end
+
+function copyAllChatLines()
+  local contents = copyAllChat();
+  if not contents then
+    return;
+  end
+
+  local lines = explode("\n", contents);
+  for i = 1, #lines do
+    --lsPrintln("Line " .. i .. ": " .. lines[i]);
+    lines[i] = {[0] = 0, [1] = 0, [2] = lines[i]};
+  end
+  table.remove(lines);
+
+  return lines;
 end

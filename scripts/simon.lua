@@ -90,7 +90,7 @@ function promptRun()
     if not is_stats then
       lsPrint(5, y, 0, scale, scale, 0xffffffff, "Click Delay (ms):");
       clickDelay = readSetting("clickDelay",clickDelay);
-      is_done, clickDelay = lsEditBox("delay", 140, y-5, 0, 50, 30, scale, scale,
+      is_done, clickDelay = lsEditBox("delay", 140, y-5, 0, 90, 30, scale, scale,
         0x000000ff, clickDelay);
       clickDelay = tonumber(clickDelay);
       if not clickDelay then
