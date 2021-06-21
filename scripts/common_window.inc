@@ -218,6 +218,7 @@ function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offse
   if waterGap then
     currentY = 95;
   end
+  local initY = currentY;
   local lastX = 0;
   local lastY = 0;
   local xMax = 0;
@@ -225,7 +226,7 @@ function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offse
   local counter = 0
   srReadScreen();
   local window = findImageInWindow("windowCorner.png", bottomRightX, bottomRightY, 100);
-  while window and (window[0] > lastX or window[1] > lastY) do
+  while window and (window[0] > lastX or window[1] > lastY) and window[1] > initY do
     counter = counter + 1
 
     if (windowCap ~= nil and counter > windowCap) then
