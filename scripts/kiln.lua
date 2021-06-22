@@ -83,11 +83,12 @@ function start()
       lsSleep(refresh_time);
       refreshWindows();
       lsSleep(refresh_time);
-    	clickAllText("Load the Kiln with " .. productNames[typeOfProduct]);
+      clickAllText("Load the Kiln with " .. productNames[typeOfProduct]);
       refreshWindows();
       lsSleep(refresh_time)
       clickAllText("Fire  the Kiln");
       lsSleep(refresh_time);
+      closePopUp();
       --Check Repair for any that failed this round then fire any that were broken.
       checkRepair();
       refreshWindows();
