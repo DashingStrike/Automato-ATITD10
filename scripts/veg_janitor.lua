@@ -445,9 +445,10 @@ function gatherVeggies(config)
   safeBegin()
   srReadScreen()
   closeEmptyAndErrorWindows()
-  drawWater()
+  local drawResult = drawWater()
+  srReadScreen()
   local r = srFindImage('veg_janitor/no_water.png')
-  if not r then
+  if not r and not drawResult then
     playErrorSoundAndExit('Cant see water button please make sure it is visible for rewaters')
   end
   local plants = Plants:new { num_plants = config.num_plants, seed_type = config.seed_type,
@@ -563,7 +564,7 @@ function gatherVeggies(config)
         current_y = 10
         drawTextUsingCurrent("Veg Janitor is paused. Press and hold Shift and Alt at once to unpause and continue", WHITE)
         drawTextUsingCurrent("DO NOT MOVE DURING THIS PAUSE, IF YOU DO AFTER UNPAUSING IT WILL BREAK, JUST EXIT THE SCRIPT AND RESTART IF YOU MOVE.", RED)
-        if drawBottomButton(lsScreenX-5, "Continue", GREEN) then
+        if drawBottomButton(10, "Continue", GREEN) then
           continue = true
         end
         if drawBottomButton(110, "Exit Script", RED) then
@@ -582,6 +583,7 @@ function gatherVeggies(config)
       end
       plants[k]:partiallyResetState()
     end
+    srReadScreen()
     local not_suitables = findAllImages('veg_janitor/not_suitable.png')
     if #not_suitables > 0 then
       lsPlaySound("error.wav");

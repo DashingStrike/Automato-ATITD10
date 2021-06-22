@@ -250,6 +250,9 @@ function edit_config_screen(config)
           single_attribute_edit_screen(config, "Edit Num Plant Snapshots", "The number of plant snapshots taken at the start of each run.", "num_plant_snaps", 10)
           single_attribute_edit_screen(config, "Edit Num Character Snapshots", "The number of character snapshots taken at the start of each run.", "num_char_snaps", 10)
           single_attribute_edit_screen(config, "Edit Num Calibration Runs", "The number runs done in a calibration session.", "num_calibration_runs", 10)
+          single_attribute_edit_screen(config, "Edit Calibration Mode Onion Threshold", "The number of pixels required to change at once for the calibration mode to think an onion has grown a stage.", "onion_calibration_mode_change_threshold", 4000)
+          single_attribute_edit_screen(config, "Edit Calibration Mode Non Onion Threshold", "The number of pixels required to change at once for the calibration mode to think an non onion has grown a stage.", "non_onion_calibration_mode_change_threshold", 150)
+
         end
       }
       sub_screen {
@@ -1194,6 +1197,8 @@ function default_deep_config()
     ["sorting_mode"] = true,
     ["search_for_seed_bags"] = true,
     ["end_of_run_wait"] = 3000,
+    ["onion_calibration_mode_change_threshold"] = 4000,
+    ["non_onion_calibration_mode_change_threshold"] = 150,
     ["num_char_snaps"] = 10,
     ["num_plant_snaps"] = 10,
     ["planting_batch_size"] = {
@@ -1228,7 +1233,7 @@ function drawPosNumberEditBox(key, text, default)
 end
 
 function drawEditBox(key, text, default, validation_type, width)
-  drawTextUsingCurrent(text, WHITE)
+  drawWrappedTextUsingCurrent(text, WHITE)
   if not width then
     width = lsPrint(-100, -100, 10, 0.7, 0.7, WHITE, text)
   end
@@ -1275,7 +1280,7 @@ function drawTextUsingCurrent(text, colour)
   current_y = current_y + 25
 end
 function drawWrappedTextUsingCurrent(text, colour)
-  current_y = current_y + lsPrintWrapped(X_PADDING, current_y, 10, lsScreenX - 10, 0.6, 0.6, colour, text)
+  current_y = current_y + lsPrintWrapped(X_PADDING, current_y, 10, lsGetWindowSize()[0] - 10, 0.6, 0.6, colour, text)
 end
 
 function drawText(text, colour, x, y)
@@ -1283,11 +1288,11 @@ function drawText(text, colour, x, y)
 end
 
 function drawWrappedText(text, colour, x, y)
-  current_y = current_y + lsPrintWrapped(x, y, 10, lsScreenX - 10, 0.6, 0.6, colour, text)
+  current_y = current_y + lsPrintWrapped(x, y, 10, lsGetWindowSize()[0] - 10, 0.6, 0.6, colour, text)
 end
 
 function drawBottomButton(xOffset, text, colour)
-  return lsButtonText(lsScreenX - xOffset, lsScreenY - 30, z, 100, colour or WHITE, text)
+  return lsButtonText(lsScreenX - xOffset, lsGetWindowSize()[1] - 30, z, 100, colour or WHITE, text)
 end
 
 function string:split(inSplitPattern, outResults)
