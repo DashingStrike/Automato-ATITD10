@@ -11,6 +11,7 @@ items = {
         {"",
             "Dig Hole",
             "Flax Comb",
+            "Hackling Rake",
             "Weave Canvas",
             "Weave Linen",
             "Weave Papy Basket",
@@ -21,7 +22,6 @@ items = {
             --[[
             "Churn Butter",
             "Excavate Blocks",
-            "Hackling Rake",
             "Pump Aqueduct",
             "Push Pyramid",
             "Stir Cement",
@@ -546,6 +546,8 @@ function doTasks()
                   carve(curTask);
                 elseif curTask == "Flax Comb" then
                   combFlax();
+                elseif curTask == "Hackling Rake" then
+                  hacklingRake();
                 elseif curTask == "Oil (Flax Seed)" then
                   flaxOil();
                 elseif curTask == "Weave Canvas" then
@@ -564,8 +566,6 @@ function doTasks()
                   clickText(findText(textLookup[curTask]));
                 end
                 --[[
-                elseif curTask == "Hackling Rake" then
-                    hacklingRake();
                 elseif curTask == "Weave Silk" then
                     weave("Silk");
                 elseif curTask == "Push Pyramid" then
