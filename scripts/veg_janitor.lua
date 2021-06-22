@@ -575,6 +575,7 @@ function gatherVeggies(config)
         lsDoFrame()
       end
       sleepWithStatus(3000, "WARNING VEG JANITOR IS ABOUT TO START DO NOT USE MOUSE OR KEYBOARD")
+      pause_after_this_run = false
     end
     sleepWithStatus(config.end_of_run_wait, "Running at " .. total .. " veg per hour. ")
     for k = 1, config.num_plants do
