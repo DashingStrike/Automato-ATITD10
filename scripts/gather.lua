@@ -1392,7 +1392,7 @@ function walkTo(x, y, showStatus, promptIfNotMoving)
 end
 
 function checkSlate()
-    if(not slate) then
+    if not slate then
         return false;
     end
     local pos = srFindImage("slate.png",7000);
@@ -1406,7 +1406,7 @@ function checkSlate()
 end
 
 function checkGrass()
-    if(not grass) then
+    if not grass then
         return false;
     end
     local pos = srFindImage("grass.png",7000);
@@ -1419,7 +1419,7 @@ function checkGrass()
 end
 
 function checkClay()
-    if(not clay) then
+    if not clay then
         return false;
     end
     local pos = srFindImage("clay.png",7000);
@@ -1431,18 +1431,33 @@ function checkClay()
     return false;
 end
 
-function checkSilt()
+function getSiltClusters()
   srReadScreen();
-
   local xyWindowSize = srGetWindowSize();
-  local clusters = lsAnalyzeCustom(10, 50, false, xyWindowSize[0] * 0.5, 0xAB6A0B6FF, 0xD2CbBFFF, true);
+  return lsAnalyzeCustom(25, 300, false, xyWindowSize[0] * 0.5, 0xB0B0A0FF, 0xC0C0B0FF, true);
+end
+
+function checkSilt()
+  if not silt then
+    return false;
+  end
+
+  local clusters = getSiltClusters();
+  if not clusters then
+    return false;
+  end
+  --If we find silt, stop moving, scan again, and click it.
+  srKeyUp(VK_ALL);
+  lsSleep(50);
+
+  clusters = getSiltClusters();
   if not clusters then
     return false;
   end
   local cluster = clusters[1];
 
   if isWithinSiltRange(cluster[0], cluster[1]) then
-    safeClick(cluster[0] + 5, cluster[1]);
+    safeClick(cluster[0], cluster[1]);
     lsSleep(1000);
 
     srReadScreen();
