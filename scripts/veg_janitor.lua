@@ -65,9 +65,6 @@ function askForWindowAndSetupGlobals(config)
     config.pre_look = true
     config.search_for_seed_bags = true
     config.record_plant_animation = false
-    if config.selected_seed_type == 'Onions' then
-      config.record_plant_animation = true
-    end
   end
 
   local min_jugs = config.num_waterings * config.num_plants * config.num_stages
@@ -176,7 +173,7 @@ end
 
 function PlantLocation:show()
   lsPrintln("shOWing")
-  displayBox(self.box, false, 3000)
+  displayBox(self.box, false, 6000)
 end
 
 function displayBox(box, forever, time)
@@ -198,6 +195,7 @@ end
 
 function displayBoxes(boxes, forever)
   while forever do
+    current_y = 10
     for i, v in ipairs(boxes) do
       srShowImageDebug(v, 0, (i - 1) * 200, 0, 1)
     end
@@ -235,15 +233,18 @@ function debugSearchBoxes(config, plants)
     local buildButton = clickPlantButton(config.seed_name)
     srReadScreen()
 
+    current_y = 10
     plants[i].location:move()
     plants[i].location:show()
     safeClick(buildButton[0] + 70, buildButton[1])
   end
 end
 
-function preLocatePlants(config, plants, seed_finder)
+function preLocatePlants(config, plants, seed_finder, dead_player_box)
   local box = makeLargeSearchBoxAroundPlayer()
   local plantSearcher = PlantFinder:new(box)
+  plantSearcher:excludeDeadBox(dead_player_box)
+  --plantSearcher:drawLayers()
   for i = 1, config.num_plants do
     srReadScreen()
     local buildButton = clickPlantButton(config.seed_name)
@@ -252,9 +253,12 @@ function preLocatePlants(config, plants, seed_finder)
     plants[i].location:move()
     lsSleep(500)
     plantSearcher:findChangedRegions(i)
+    plants[i]:set_search_box(plantSearcher:getSearchBoxForPlant(i))
 
     safeClick(buildButton[0] + 70, buildButton[1])
   end
+
+  --debugSearchBoxes(config, plants)
 
   local numSnapsRequired = config.num_plant_snaps or 10
   local numSnapsSoFar = 0
@@ -374,6 +378,7 @@ function recordMovement(searcher, config)
       (num_snaps - i) .. ' snapshots left');
     lsDoFrame()
   end
+  return searcher:dead_box()
 end
 
 function findSeedAndPickupIfThere(searcher, num_dead)
@@ -472,11 +477,12 @@ function gatherVeggies(config)
         repositionAvatar()
       end
     end
-    if config.search_for_seed_bags then
+    local dead_player_box = false
+    if config.search_for_seed_bags or config.pre_look then
       if firstRun or movementExpected then
         local xyScreenSize = srGetWindowSize();
         seed_searcher = SeedSearcher:new(makeLargeSearchBoxAroundPlayer((xyScreenSize[0] / 4)))
-        recordMovement(seed_searcher, config)
+        dead_player_box = recordMovement(seed_searcher, config)
       else
         -- Resnapshot the empty floor at the start of runs. Otherwise the seed finder will think all pixels have
         -- changed as the lighting changes slowly over the time if we just use an initial snapshot from the very first
@@ -486,7 +492,7 @@ function gatherVeggies(config)
     end
     if config.pre_look then
       if firstRun or movementExpected then
-        preLocatePlants(config, plants, seed_searcher)
+        preLocatePlants(config, plants, seed_searcher, dead_player_box)
       end
     end
     local batch_size = config.planting_batch_size[config.seed_type] or config.planting_batch_size["Default"]
@@ -555,6 +561,12 @@ function gatherVeggies(config)
     local stop = lsGetTimer() + config.end_of_run_wait
     local yield = config.plant_yield_bonus + config.plants[config.seed_type][config.seed_name].yield
     local total = math.floor((3600 / ((stop - start) / 1000)) * config.num_plants * yield) -- default 3, currently 9 veggie yield with pyramids bonus
+    for k = 1, config.num_plants do
+      if config.calibration_mode then
+        plants[k]:output_calibration_data()
+      end
+      plants[k]:partiallyResetState()
+    end
     if stop_after_this_run then
       break
     end
@@ -576,13 +588,8 @@ function gatherVeggies(config)
       end
       sleepWithStatus(3000, "WARNING VEG JANITOR IS ABOUT TO START DO NOT USE MOUSE OR KEYBOARD")
       pause_after_this_run = false
-    end
-    sleepWithStatus(config.end_of_run_wait, "Running at " .. total .. " veg per hour. ")
-    for k = 1, config.num_plants do
-      if config.calibration_mode then
-        plants[k]:output_calibration_data()
-      end
-      plants[k]:partiallyResetState()
+    else
+      sleepWithStatus(config.end_of_run_wait, "Running at " .. total .. " veg per hour. ")
     end
     srReadScreen()
     local not_suitables = findAllImages('veg_janitor/not_suitable.png')
@@ -731,14 +738,17 @@ end
 -- TODO: Make debuging this easier, figure out pixel scaling for different resolutions, get rid of magic numbers.
 function makeSearchBox(direction, seed_type)
   local xyWindowSize = srGetWindowSize()
-  local search_size = (seed_type == "Onions") and 125 or 75
+  local screen_size_percentage = (seed_type == "Onions") and 0.1 or 0.06
+  local move_step_screen_size_percentage = 0.02
+  local search_size = xyWindowSize[0] * screen_size_percentage
+  local step_size = xyWindowSize[0] * move_step_screen_size_percentage
   local mid = getScreenMiddle()
 
   local centre_of_plant = direction * 40 + mid
   --    local offset_mid = mid - { math.floor(search_size / 3), math.floor(search_size / 3) }
   --
   --    local top_left = offset_mid + direction * 40 - Vector:new { 25, 20 }
-  local top_left = mid + direction * 40 - { math.floor(search_size / 2), math.floor(search_size / 2) }
+  local top_left = mid + direction * step_size - { math.floor(search_size / 2), math.floor(search_size / 2) }
 
   local box = makeBox(top_left.x, top_left.y, search_size, search_size)
   box.direction = direction

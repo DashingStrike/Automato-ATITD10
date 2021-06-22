@@ -49,6 +49,9 @@ function PlantController:new(index, location, alternate_drag, window_pos, seed_n
   o.harvested = false
   o.existing_unpin_locations = existing_unpin_locations
   o.open_attempts = 0
+  o.searcher = nil
+  o.snapshoting_water_animations = false
+  o.watered_at = nil
 
   return newObject(self, o)
 end
@@ -67,6 +70,9 @@ function PlantController:partiallyResetState()
   self.prevCheckPixels = nil
   self.harvested = false
   self.change_count_log = {}
+  self.searcher = nil
+  self.snapshoting_water_animations = false
+  self.watered_at = nil
   self.open_attempts = 0
 end
 
@@ -142,6 +148,16 @@ function PlantController:tick()
   elseif self.state == "growing" then
     if self.plant:tick() ~= "growing" then
       self.state = "complete"
+    else
+      if self.snapshoting_water_animations then
+        if self.watered_at and lsGetTimer() - self.watered_at > 3000 then
+          --print('DISPLAYING IGNORED')
+          --self.searcher:display_ignored_regions(self.location.box)
+          self.snapshoting_water_animations = false
+        else
+          self.searcher:ignore_changed_pixels(self.prevCheckPixels, self.location.box)
+        end
+      end
     end
   elseif self.state == "complete" then
     self:close()
@@ -200,8 +216,12 @@ function PlantController:grow_plant()
   safeClick(buildButton[0], buildButton[1])
   self.plant_time = lsGetTimer()
   self.plant = Plant:new(self.index, self.plant_time, self, self.config)
+  if self.config.calibration_mode then
+    self.prevCheckPixels = getBoxPixels(self.location.box)
+    self.searcher = ScreenSearcher:new(self.index, self.seed_type, false, self.config, self.location.box)
+    self.snapshoting_water_animations = true
+  end
 end
-
 
 function clickPlantButton(seed_name)
   local build_menu_opened = false
@@ -267,17 +287,19 @@ function PlantController:water()
     click(water_vec)
     lsSleep(20)
   end
+  if self.snapshoting_water_animations then
+    self.watered_at = lsGetTimer()
+  end
   return true
 end
 function PlantController:check_how_many_plant_pixels_changed()
-  if not self.prevCheckPixels then
-    self.prevCheckPixels = getBoxPixels(self.location.box)
+  if self.snapshoting_water_animations then
+    return 0
   end
-  local searcher = ScreenSearcher:new(self.index, self.seed_type, false, self.config, self.search_box)
-  local change_count = searcher:count_number_of_changed(self.prevCheckPixels, self.location.box)
-  self.prevCheckPixels = searcher.new_pixels
-  table.insert(self.change_count_log, change_count)
-  return change_count
+  local results = self.searcher:count_number_of_changed(self.prevCheckPixels)
+  self.prevCheckPixels = results.pixels
+  table.insert(self.change_count_log, results.num_changed)
+  return results.num_changed
 end
 
 function PlantController:search()
@@ -346,8 +368,7 @@ function PlantController:openBedWindow()
   end
 end
 
-function PlantController:set_search_box(box, area)
-  self.search_box = { box = box, area = area }
+function PlantController:set_search_box(box)
   self.location.box = box
 end
 
@@ -363,25 +384,71 @@ function ScreenSearcher:new(index, seed_type, previous_plants, config, search_bo
   o.search_box = search_box
   o.seed_type = seed_type
   o.previous_plants = previous_plants
+  o.ignore_pixels = {}
   return newObject(self, o)
 end
 
-function ScreenSearcher:count_number_of_changed(pixels, box)
+function ScreenSearcher:count_number_of_changed(pixels)
 
   srReadScreen()
 
   local num_changed = 0
+  local num_ignored = 0
+  local box = self.search_box
+  local new_pixels = {}
 
   for y = 0, box.height, 1 do
-    self.new_pixels[y] = self.new_pixels[y] or {}
+    new_pixels[y] = new_pixels[y] or {}
     for x = 0, box.width do
-      self:getAndCacheNewPixels(box, x, y)
-      if self:pixelDiffSimple(pixels, x, y, box) then
-        num_changed = num_changed + 1
+      local new_pixel = srReadPixelFromBuffer(box.left + x, box.top + y)
+      new_pixels[y][x] = new_pixel
+      local same = compareColorEx(new_pixel, pixels[y][x], 1000, 1000)
+      if not same then
+        if self.ignore_pixels[y][x] then
+          num_ignored = num_ignored + 1
+        else
+          num_changed = num_changed + 1
+        end
       end
     end
   end
-  return num_changed
+  local results = {}
+  results.pixels = new_pixels
+  results.num_changed = num_changed
+  return results
+end
+
+function ScreenSearcher:ignore_changed_pixels(pixels, box)
+  srReadScreen()
+  for y = 0, box.height, 1 do
+    self.ignore_pixels[y] = self.ignore_pixels[y] or {}
+    for x = 0, box.width do
+      local new_pixel = srReadPixelFromBuffer(box.left + x, box.top + y)
+      local same = compareColorEx(new_pixel, pixels[y][x], 1000, 1000)
+      if not same then
+        self.ignore_pixels[y][x] = true
+      end
+    end
+  end
+
+end
+
+function ScreenSearcher:display_ignored_regions(box)
+
+  lsDoFrame()
+  local start = lsGetTimer()
+  while lsGetTimer() - start < 5000 do
+    for y = 0, box.height, 1 do
+      for x = 0, box.width do
+        if self.ignore_pixels[y][x] then
+          lsDisplaySystemSprite(1, x, y, 1, 1, 1, RED)
+        end
+      end
+    end
+    lsDoFrame()
+    checkBreak()
+    lsSleep(tick_delay)
+  end
 
 end
 
