@@ -147,7 +147,7 @@ function checkFiring()
   while 1 do
     refreshWindows();
     srReadScreen();
-    firing = findAllText("Firing");;
+    firing = findAllText("Firing");
     if #firing == 0 then
         break; --We break this while statement because Making is not detect, hence we're done with this round
     end
