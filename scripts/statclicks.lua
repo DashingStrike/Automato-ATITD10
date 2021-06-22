@@ -314,7 +314,6 @@ function eatOnion()
     end
 end
 
---[[
 function hacklingRake()
     expressionToFind = "This is [a-z]+[ Improved]* Hackling Rake";
     flaxReg = findText(expressionToFind, nil, REGION + REGEX);
@@ -329,8 +328,9 @@ function hacklingRake()
     if (fix) then
         repairRake();
     end
-    grilledOnion = findText("Grilled Onions");
-    if grilledOnion then
+    srReadScreen();
+    local consume = srFindImage("consume.png");
+    if consume then
         eatOnion();
     end
     s1 = findText("Separate Rotten", flaxReg);
@@ -357,7 +357,7 @@ function hacklingRake()
         lsSleep(2000);
     end
 end
-
+--[[
 function pyramidPush()
    local curCoords = findCoords();
    local t, u;
