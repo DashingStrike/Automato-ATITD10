@@ -43,19 +43,31 @@ end
 function PlantFinder:markAnyChangedRegionsAsDeadZone()
   self:findChangedRegions(-1)
 end
+function PlantFinder:excludeDeadBox(dead_box)
+  local box = self.search_box
+
+  for y = box.top, box.bottom do
+    self.pixels[y-box.top] = self.pixels[y-box.top] or {}
+    for x = box.left, box.right do
+      if dead_box.left <= x and dead_box.right >= x and dead_box.top <= y and dead_box.bottom >= y then
+        self.pixels[y-box.top][x-box.left] = -1
+      end
+    end
+  end
+end
 
 function PlantFinder:findChangedRegions(plant_index)
   srReadScreen()
 
   local box = self.search_box
 
-  for y = 0, box.height, 1 do
+  for y = 0, box.height do
     self.pixels[y] = self.pixels[y] or {}
     for x = 0, box.width do
       local new_pixel = srReadPixelFromBuffer(box.left + x, box.top + y)
       local same = compareColorEx(self.initial_box_pixels[y][x], new_pixel, self.tolerance, self.tolerance)
 
-      if not same then
+      if not same and self.pixels[y][x] ~= -1 then
         self.pixels[y][x] = plant_index
         local tracker = self.plant_min_maxes[plant_index]
         if tracker then
@@ -66,6 +78,14 @@ function PlantFinder:findChangedRegions(plant_index)
       end
     end
   end
+end
+function PlantFinder:getSearchBoxForPlant(plant_index)
+  local tracker = self.plant_min_maxes[plant_index]
+  local xyScreenSize = srGetWindowSize();
+  local extra_width = xyScreenSize[0] * 0.02
+  local extra_height = xyScreenSize[0] * 0.02
+
+  return makeBox(tracker.min_x + self.search_box.x - extra_width, tracker.min_y + self.search_box.y - extra_height, tracker:width() + extra_width*2, tracker:height() + extra_height*2)
 end
 
 function PlantFinder:findFurthestPixelFromEdgeForPlant(plant_index, debug)

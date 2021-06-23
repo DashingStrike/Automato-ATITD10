@@ -92,12 +92,22 @@ function Plant:tick()
         self:update_stage_times()
         self.inserted_first_stage_time = true
       end
+      local xyWindowSize = srGetWindowSize();
       local change_count = self.controller:check_how_many_plant_pixels_changed()
-      local limit = 1000
+      local limit = self.config.non_onion_calibration_mode_change_threshold or 1
       if self.config.seed_type == 'Onions' then
-        limit = 4000
+        limit = self.config.onion_calibration_mode_change_threshold or 4
       end
-      if change_count > limit then
+      local limit_percent = limit / 100
+      local pixel_limit = xyWindowSize[0] * limit_percent
+      pixel_limit = pixel_limit * pixel_limit
+      if change_count ~= 0 then
+        --print(' count = ' .. change_count .. ' vs ' .. pixel_limit)
+      end
+      if change_count > pixel_limit then
+        --print('-------------------------')
+        --print('BIG CHANGE ' .. change_count)
+        --print('-------------------------')
         self:change_stage(1)
         self:update_stage_times()
       end

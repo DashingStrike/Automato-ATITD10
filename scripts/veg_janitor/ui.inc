@@ -55,13 +55,17 @@ function sub_screen(o, config)
     end
   end
 end
-function single_attribute_edit_screen(config, title, descriptive_name, name, default)
+function single_attribute_edit_screen(config, title, descriptive_name, name, default, thing_type, width)
   sub_screen {
     config = config,
     done_button_text = "Back",
     open_button = title,
     draw_screen = function()
-      config[name] = drawEditBox(name .. config.name, descriptive_name, config[name] or default, type(default) == "number")
+      if not thing_type then
+        thing_type = type(default) == "default"
+      end
+
+      config[name] = drawEditBox(name .. config.name, descriptive_name, config[name] or default, thing_type, width)
     end
   }
 
@@ -171,7 +175,8 @@ on to any growth times calculated as an extra buffer to prevent watering too soo
         GREY,
         X_PADDING,
         current_y)
-      local reset = lsButtonText(lsScreenX - 300, current_y, z, 300, RED, "Reset calibration data")
+      local reset = lsButtonText(X_PADDING, current_y, z, 300, RED, "Reset calibration data")
+      current_y = current_y + 30
       if reset then
         timings.calibrated = false
         timings.data_points = 0
@@ -250,6 +255,11 @@ function edit_config_screen(config)
           single_attribute_edit_screen(config, "Edit Num Plant Snapshots", "The number of plant snapshots taken at the start of each run.", "num_plant_snaps", 10)
           single_attribute_edit_screen(config, "Edit Num Character Snapshots", "The number of character snapshots taken at the start of each run.", "num_char_snaps", 10)
           single_attribute_edit_screen(config, "Edit Num Calibration Runs", "The number runs done in a calibration session.", "num_calibration_runs", 10)
+          single_attribute_edit_screen(config, "Edit Calibration Mode Onion Threshold", "The percentage pixels required to change at once for the calibration mode to think an onion has grown a stage.", "onion_calibration_mode_change_threshold", 5, "percentage", 200)
+          single_attribute_edit_screen(config, "Edit Calibration Mode Non Onion Threshold",
+            "The percentage of pixels required to change at once for the calibration mode to think an non onion has grown a stage.",
+            "non_onion_calibration_mode_change_threshold", 1, "percentage", 200)
+
         end
       }
       sub_screen {
@@ -1194,6 +1204,8 @@ function default_deep_config()
     ["sorting_mode"] = true,
     ["search_for_seed_bags"] = true,
     ["end_of_run_wait"] = 3000,
+    ["onion_calibration_mode_change_threshold"] = 4,
+    ["non_onion_calibration_mode_change_threshold"] = 1,
     ["num_char_snaps"] = 10,
     ["num_plant_snaps"] = 10,
     ["planting_batch_size"] = {
@@ -1228,7 +1240,7 @@ function drawPosNumberEditBox(key, text, default)
 end
 
 function drawEditBox(key, text, default, validation_type, width)
-  drawTextUsingCurrent(text, WHITE)
+  drawWrappedTextUsingCurrent(text, WHITE)
   if not width then
     width = lsPrint(-100, -100, 10, 0.7, 0.7, WHITE, text)
   end
@@ -1275,7 +1287,7 @@ function drawTextUsingCurrent(text, colour)
   current_y = current_y + 25
 end
 function drawWrappedTextUsingCurrent(text, colour)
-  current_y = current_y + lsPrintWrapped(X_PADDING, current_y, 10, lsScreenX - 10, 0.6, 0.6, colour, text)
+  current_y = current_y + lsPrintWrapped(X_PADDING, current_y, 10, lsGetWindowSize()[0] - 10, 0.6, 0.6, colour, text)
 end
 
 function drawText(text, colour, x, y)
@@ -1283,11 +1295,11 @@ function drawText(text, colour, x, y)
 end
 
 function drawWrappedText(text, colour, x, y)
-  current_y = current_y + lsPrintWrapped(x, y, 10, lsScreenX - 10, 0.6, 0.6, colour, text)
+  current_y = current_y + lsPrintWrapped(x, y, 10, lsGetWindowSize()[0] - 10, 0.6, 0.6, colour, text)
 end
 
 function drawBottomButton(xOffset, text, colour)
-  return lsButtonText(lsScreenX - xOffset, lsScreenY - 30, z, 100, colour or WHITE, text)
+  return lsButtonText(lsScreenX - xOffset, lsGetWindowSize()[1] - 30, z, 100, colour or WHITE, text)
 end
 
 function string:split(inSplitPattern, outResults)

@@ -84,6 +84,10 @@ function SeedSearcher:new(search_box)
   o.regions = {}
   o.pixel_to_region = {}
   o.dead_pixel_to_region = {}
+  o.dead_min_x = 99999999
+  o.dead_min_y = 99999999
+  o.dead_max_x = -1
+  o.dead_max_y = -1
   return newObject(self, o)
 end
 function SeedSearcher:markAnyChangedRegionsAsDeadZone()
@@ -97,6 +101,14 @@ end
 
 function SeedSearcher:resnapshot()
   self.initial_box_pixels = getBoxPixels(self.search_box)
+end
+
+function SeedSearcher:dead_box()
+  local fudge = 5
+  return makeBox(self.dead_min_x + self.search_box.x - fudge,
+    self.dead_min_y + self.search_box.y - fudge,
+    self.dead_max_x - self.dead_min_x + 1 + fudge * 2,
+    self.dead_max_y - self.dead_min_y + 1 + fudge * 2)
 end
 
 function SeedSearcher:findChangedRegions(size_filter, top_x, mark_as_dead, drawSeen)
@@ -113,6 +125,12 @@ function SeedSearcher:findChangedRegions(size_filter, top_x, mark_as_dead, drawS
 
       if not same then
         self:connectChangedPixelToSurroundingRegions(x, y, mark_as_dead)
+        if mark_as_dead then
+          self.dead_min_x = math.min(self.dead_min_x, x)
+          self.dead_min_y = math.min(self.dead_min_y, y)
+          self.dead_max_x = math.max(self.dead_max_x, x)
+          self.dead_max_y = math.max(self.dead_max_y, y)
+        end
       end
     end
   end
