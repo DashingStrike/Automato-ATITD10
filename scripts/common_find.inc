@@ -469,7 +469,7 @@ function findChatRegionSub()
 end
 
 function findClockRegion()
-  local factionTolerance = 1500;
+  local factionTolerance = 1000;
   local clockUpperLeftX;
   local clockUpperLeftY;
   local neutral = srFindImage("faction/faction_neutral.png", factionTolerance);
