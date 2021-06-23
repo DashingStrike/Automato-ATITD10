@@ -36,6 +36,8 @@ WARNING = [[
 9. Make sure on the previous screen you have selected the same seed name as the open seed window.
 10. Open the Main chat tab to automatically stop the macro when the ground is not suitable.
 11. Do not use the mouse whilst the macro is running.
+12. DO NOT STAND NEAR WATER OR ANY OTHER ANIMATED OBJECTS. IF WATER IS WITHIN HALF A SCREEN SIZE DISTANCE FROM YOUR
+    CHARACTER BAD THINGS WILL HAPPEN.
 ]]
 
 RED = 0xFF2020ff
@@ -182,8 +184,7 @@ function PlantLocation:move()
 end
 
 function PlantLocation:show()
-  lsPrintln("shOWing")
-  displayBox(self.box, false, 6000)
+  displayBox(self.box, false, 3000)
 end
 
 function displayBox(box, forever, time)
@@ -251,10 +252,12 @@ function debugSearchBoxes(config, plants)
 end
 
 function preLocatePlants(config, plants, seed_finder, dead_player_box)
-  local box = makeLargeSearchBoxAroundPlayer()
+  local box = makeLargeSearchBoxAroundPlayer((srGetWindowSize()[0] / 4))
   local plantSearcher = PlantFinder:new(box)
   plantSearcher:excludeDeadBox(dead_player_box)
-  --plantSearcher:drawLayers()
+  if config.debug then
+    plantSearcher:drawLayers()
+  end
   for i = 1, config.num_plants do
     srReadScreen()
     local buildButton = clickPlantButton(config.seed_name)
@@ -268,7 +271,9 @@ function preLocatePlants(config, plants, seed_finder, dead_player_box)
     safeClick(buildButton[0] + 70, buildButton[1])
   end
 
-  --debugSearchBoxes(config, plants)
+  if config.debug then
+    debugSearchBoxes(config, plants)
+  end
 
   local numSnapsRequired = config.num_plant_snaps or 10
   local numSnapsSoFar = 0
