@@ -833,32 +833,32 @@ if not skipWork then
                 -- 1st Node
                 checkBreak();
                 checkAbort();
-                srClickMouseNoMove(clickList[i][1], clickList[i][2], 1);
+                srClickMouseNoMove(clickList[i][1], clickList[i][2]);
                 lsSleep(clickDelay);
-                clickAllText("[A]", 20, 2, 1); -- offsetX, offsetY, rightClick (1 = true)
+                clickAllText("[A]", 20, 2);
 
                 srReadScreen();
-                clickAllText("Ore Stone", 20, 2, 1)
+                clickAllText("Ore Stone", 20, 2)
 
                 -- 2nd Node
                 checkBreak();
                 checkAbort();
-                srClickMouseNoMove(clickList[j][1], clickList[j][2], 1);
+                srClickMouseNoMove(clickList[j][1], clickList[j][2]);
                 lsSleep(clickDelay);
-                clickAllText("[A]", 20, 2, 1); -- offsetX, offsetY, rightClick (1 = true)
+                clickAllText("[A]", 20, 2);
 
                 srReadScreen();
-                clickAllText("Ore Stone", 20, 2, 1)
+                clickAllText("Ore Stone", 20, 2)
 
                 -- 3rd Node
                 checkBreak();
                 checkAbort();
-                srClickMouseNoMove(clickList[k][1], clickList[k][2], 1);
+                srClickMouseNoMove(clickList[k][1], clickList[k][2]);
                 lsSleep(clickDelay);
-                clickAllText("[S]", 20, 2, 1); -- offsetX, offsetY, rightClick (1 = true)
+                clickAllText("[S]", 20, 2);
 
                 srReadScreen();
-                clickAllText("Ore Stone", 20, 2, 1)
+                clickAllText("Ore Stone", 20, 2)
 
                 else -- noMouseMove is false
 
@@ -956,28 +956,28 @@ if not skipWork then
                 --lsSleep(100);
                 srClickMouseNoMove(clickList[oreNodes4[a][1]][1], clickList[oreNodes4[a][1]][2]);
                 lsSleep(clickDelay);
-                clickAllText("[A]", 20, 2, 1); -- offsetX, offsetY, rightClick (1 = true)
+                clickAllText("[A]", 20, 2);
 
                 -- 2nd Node
                 checkBreak();
                 checkAbort();
                 srClickMouseNoMove(clickList[oreNodes4[a][2]][1], clickList[oreNodes4[a][2]][2]);
                 lsSleep(clickDelay);
-                clickAllText("[A]", 20, 2, 1); -- offsetX, offsetY, rightClick (1 = true)
+                clickAllText("[A]", 20, 2);
 
                 -- 3rd Node
                 checkBreak();
                 checkAbort();
                 srClickMouseNoMove(clickList[oreNodes4[a][3]][1], clickList[oreNodes4[a][3]][2]);
                 lsSleep(clickDelay);
-                clickAllText("[A]", 20, 2, 1); -- offsetX, offsetY, rightClick (1 = true)
+                clickAllText("[A]", 20, 2);
 
                  -- 4th Node
                 checkBreak();
                 checkAbort();
                 srClickMouseNoMove(clickList[oreNodes4[a][4]][1], clickList[oreNodes4[a][4]][2]);
                 lsSleep(clickDelay);
-                clickAllText("[S]", 20, 2, 1); -- offsetX, offsetY, rightClick (1 = true)
+                clickAllText("[S]", 20, 2);
 
                 else -- noMouseMove is false
 

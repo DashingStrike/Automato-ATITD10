@@ -11,6 +11,7 @@ items = {
         {"",
             "Dig Hole",
             "Flax Comb",
+            "Hackling Rake",
             "Weave Canvas",
             "Weave Linen",
             "Weave Papy Basket",
@@ -21,7 +22,6 @@ items = {
             --[[
             "Churn Butter",
             "Excavate Blocks",
-            "Hackling Rake",
             "Pump Aqueduct",
             "Push Pyramid",
             "Stir Cement",
@@ -314,7 +314,6 @@ function eatOnion()
     end
 end
 
---[[
 function hacklingRake()
     expressionToFind = "This is [a-z]+[ Improved]* Hackling Rake";
     flaxReg = findText(expressionToFind, nil, REGION + REGEX);
@@ -329,8 +328,9 @@ function hacklingRake()
     if (fix) then
         repairRake();
     end
-    grilledOnion = findText("Grilled Onions");
-    if grilledOnion then
+    srReadScreen();
+    local consume = srFindImage("consume.png");
+    if consume then
         eatOnion();
     end
     s1 = findText("Separate Rotten", flaxReg);
@@ -357,7 +357,7 @@ function hacklingRake()
         lsSleep(2000);
     end
 end
-
+--[[
 function pyramidPush()
    local curCoords = findCoords();
    local t, u;
@@ -546,6 +546,8 @@ function doTasks()
                   carve(curTask);
                 elseif curTask == "Flax Comb" then
                   combFlax();
+                elseif curTask == "Hackling Rake" then
+                  hacklingRake();
                 elseif curTask == "Oil (Flax Seed)" then
                   flaxOil();
                 elseif curTask == "Weave Canvas" then
@@ -564,8 +566,6 @@ function doTasks()
                   clickText(findText(textLookup[curTask]));
                 end
                 --[[
-                elseif curTask == "Hackling Rake" then
-                    hacklingRake();
                 elseif curTask == "Weave Silk" then
                     weave("Silk");
                 elseif curTask == "Push Pyramid" then

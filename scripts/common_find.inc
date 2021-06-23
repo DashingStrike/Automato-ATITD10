@@ -253,20 +253,11 @@ end
 -------------------------------------------------------------------------------
 
 function parseWindow(window)
-  local result = {};
-  srStripRegion(window.x, window.y, window.width, window.height);
-  local table = srParseTextRegion(window.x, window.y,
-          window.width, window.height);
-  if table then
-    local count = math.floor((#table + 1) / 3);
-    for i = 1, count do
-      result[i] = {};
-      result[i][0] = table[(i-1)*3];
-      result[i][1] = table[(i-1)*3+1];
-      result[i][2] = table[(i-1)*3+2];
-    end
+  local text = parseText(window.x, window.y, window.width, window.height);
+  if text == nil then
+    text = {};
   end
-  return result;
+  return text;
 end
 
 -------------------------------------------------------------------------------
@@ -478,11 +469,9 @@ function findChatRegionSub()
 end
 
 function findClockRegion()
-  local factionTolerance = 2500;
+  local factionTolerance = 1000;
   local clockUpperLeftX;
   local clockUpperLeftY;
-  local clockWidth;
-  local clockHeight;
   local neutral = srFindImage("faction/faction_neutral.png", factionTolerance);
   local hyksos = srFindImage("faction/faction_hyksos.png", factionTolerance);
   local kush = srFindImage("faction/faction_kush.png", factionTolerance);
@@ -518,10 +507,9 @@ function findClockRegion()
   end
 
   if faction ~= "Clock not detected" then
-    local clockUpperLeftX = clockUpperLeftX - 39;
-    local clockUpperLeftY = clockUpperLeftY - 10;
-    local clockWidth = 270;
-    local clockHeight = 55;
+    clockUpperLeftX = clockUpperLeftX - 4;
+    local clockWidth = 275;
+    local clockHeight = 65;
     clockRegion = makeBox(clockUpperLeftX, clockUpperLeftY, clockWidth, clockHeight);
   end
   return clockRegion;

@@ -224,6 +224,7 @@ end
 
 function claySteep()
   for i=1, passCount do
+    drawWater();
       -- refresh windows
     statusScreen("Refreshing Windows");
     refreshWindows();
@@ -245,7 +246,7 @@ function claySteep()
 
     lsSleep(500);
     srReadScreen();
-    noResources = srFindImage("tubs/dontHave.png");
+    noResources = srFindImage("youDont.png");
       if noResources then
         closePopUp();
         error("Out of resources");
@@ -339,7 +340,7 @@ function evaporateWaterType()
   if hotkeyTask == 3 then
     srKeyEvent('w');
     srReadScreen();
-      noWater = srFindImage("tubs/dontHave.png");
+      noWater = srFindImage("youDont.png");
         if noWater then
           closePopUp();
           error("You do not have any water")
@@ -351,7 +352,7 @@ function evaporateWaterType()
   if hotkeyTask == 4 then
     srKeyEvent('w');
     srReadScreen();
-      noWater = srFindImage("tubs/dontHave.png");
+      noWater = srFindImage("youDont.png");
         if noWater then
           closePopUp();
           error("You do not have any water")
@@ -363,7 +364,7 @@ function evaporateWaterType()
   if hotkeyTask == 5 then
     srKeyEvent('w');
     srReadScreen();
-      noWater = srFindImage("tubs/dontHave.png");
+      noWater = srFindImage("youDont.png");
         if noWater then
           closePopUp();
           error("You do not have any water")

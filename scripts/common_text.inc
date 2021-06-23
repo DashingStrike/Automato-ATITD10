@@ -89,7 +89,6 @@ function getChatText()
   -- The below line is a hack introduced for T7 to handle the fact that
   -- there isn't as much of a buffer below chat as there was in T6 and prior.
   creg[3] = creg[3] + 1;
-  stripRegion(creg);
   local p = parseRegion(creg);
   local count = 1;
   local first = nil;
@@ -140,7 +139,6 @@ function getAllText()
     local retText = {};
     local count = 1;
     for i = 1, #r do
-      stripRegion(r[i]);
       p = parseRegion(r[i]);
       local numP;
       if p then
@@ -194,6 +192,7 @@ end
 -------------------------------------------------------------------------------
 
 function parseText(x, y, w, h)
+  srStripRegion(x, y, w, h);
   local table = srParseTextRegion(x, y, w, h);
   if table == nil then
     return nil;
@@ -206,6 +205,7 @@ function parseText(x, y, w, h)
     newTable[i][1] = table[(i-1)*3+1];
     newTable[i][2] = table[(i-1)*3+2];
 
+    newTable[i][2] = fixSpaces(newTable[i][2], " ", ".");
     newTable[i][2] = fixSpaces(newTable[i][2], "%d", "1");
     newTable[i][2] = fixSpaces(newTable[i][2], "%.", ".");
   end
@@ -223,7 +223,7 @@ end
 
 function fixSpaces(line, prefix, suffix)
   local first, last = string.find(line, prefix.." "..suffix);
-  while first ~= nil do
+  while first ~= nil and last ~= nil do
     line = string.sub(line, 1, first) .. string.sub(line, last);
     first, last = string.find(line, prefix.." "..suffix);
   end
@@ -239,7 +239,6 @@ end
 function getInventoryText()
   local inventoryRegion = srFindInvRegion()
   if inventoryRegion then
-    stripRegion(inventoryRegion);
     local table = parseRegion(inventoryRegion);
 
     return table

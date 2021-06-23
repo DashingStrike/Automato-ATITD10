@@ -83,11 +83,12 @@ function start()
       lsSleep(refresh_time);
       refreshWindows();
       lsSleep(refresh_time);
-    	clickAllText("Load the Kiln with " .. productNames[typeOfProduct]);
+      clickAllText("Load the Kiln with " .. productNames[typeOfProduct]);
       refreshWindows();
       lsSleep(refresh_time)
       clickAllText("Fire  the Kiln");
       lsSleep(refresh_time);
+      closePopUp();
       --Check Repair for any that failed this round then fire any that were broken.
       checkRepair();
       refreshWindows();
@@ -146,7 +147,7 @@ function checkFiring()
   while 1 do
     refreshWindows();
     srReadScreen();
-    firing = findAllText("Firing");;
+    firing = findAllText("Firing");
     if #firing == 0 then
         break; --We break this while statement because Making is not detect, hence we're done with this round
     end
