@@ -161,6 +161,7 @@ function calculate_and_update_calibration_settings(config, seed_type, seed_name)
     timings["calibrated"] = true
     timings["data_points"] = #filtered_table_stages[2]
   end
+  timings["calibration_version"] = 1
   write_config(config)
   return config
 end

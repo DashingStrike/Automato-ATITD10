@@ -65,7 +65,17 @@ function askForWindowAndSetupGlobals(config)
     config.pre_look = true
     config.search_for_seed_bags = true
     config.record_plant_animation = false
+  else
+    local plant_config = config.plants[config.seed_type][config.seed_name]
+    if plant_config and plant_config.stage_advance_timings and plant_config.stage_advance_timings.calibrated then
+      local calibration_version = plant_config.stage_advance_timings.calibration_version
+      if not calibration_version or calibration_version < 1 then
+        print('Forcing re-calculation of calibration data due to version update!')
+        calculate_and_update_calibration_settings(config, config.seed_type, config.seed_name)
+      end
+    end
   end
+
 
   local min_jugs = config.num_waterings * config.num_plants * config.num_stages
   local min_seeds = config.num_plants
