@@ -255,7 +255,7 @@ function edit_config_screen(config)
           single_attribute_edit_screen(config, "Edit Num Plant Snapshots", "The number of plant snapshots taken at the start of each run.", "num_plant_snaps", 10)
           single_attribute_edit_screen(config, "Edit Num Character Snapshots", "The number of character snapshots taken at the start of each run.", "num_char_snaps", 10)
           single_attribute_edit_screen(config, "Edit Num Calibration Runs", "The number runs done in a calibration session.", "num_calibration_runs", 10)
-          single_attribute_edit_screen(config, "Edit Calibration Mode Onion Threshold", "The percentage pixels required to change at once for the calibration mode to think an onion has grown a stage.", "onion_calibration_mode_change_threshold", 5, "percentage", 200)
+          single_attribute_edit_screen(config, "Edit Calibration Mode Onion Threshold", "The percentage pixels required to change at once for the calibration mode to think an onion has grown a stage.", "onion_calibration_mode_change_threshold", 4.5, "percentage", 200)
           single_attribute_edit_screen(config, "Edit Calibration Mode Non Onion Threshold",
             "The percentage of pixels required to change at once for the calibration mode to think an non onion has grown a stage.",
             "non_onion_calibration_mode_change_threshold", 1, "percentage", 200)
@@ -431,6 +431,8 @@ function edit_config_screen(config)
       config.search_for_seed_bags = CheckBox(X_PADDING, current_y, 10, WHITE, " Pickup dead plant seed bags after each run?", config.search_for_seed_bags)
       current_y = current_y + 30
       config.debug = CheckBox(X_PADDING, current_y, 10, WHITE, " Show pretty debug pictures?", config.debug)
+      current_y = current_y + 30
+      config.debug_log = CheckBox(X_PADDING, current_y, 10, WHITE, "Print debug logs?", config.debug_log)
       current_y = current_y + 60
       local copy_to_clipboard = button("Copy config to clipboard")
       if copy_to_clipboard then
@@ -887,6 +889,13 @@ function getUserParams()
       error "Script exited by user"
     end
 
+    if config.onion_calibration_mode_change_threshold == 4 and not config.fudged_onion then
+      config.onion_calibration_mode_change_threshold = 4.5
+      config.fudged_onion = true
+      print("Fudging onion to be a better number from previous default config value.")
+    end
+
+
     write_config(config)
     lsDoFrame()
     lsSleep(10)
@@ -1204,7 +1213,7 @@ function default_deep_config()
     ["sorting_mode"] = true,
     ["search_for_seed_bags"] = true,
     ["end_of_run_wait"] = 3000,
-    ["onion_calibration_mode_change_threshold"] = 4,
+    ["onion_calibration_mode_change_threshold"] = 4.5,
     ["non_onion_calibration_mode_change_threshold"] = 1,
     ["num_char_snaps"] = 10,
     ["num_plant_snaps"] = 10,
