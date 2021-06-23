@@ -333,7 +333,7 @@ function PlantController:openBedWindow()
         self.last_clicked_plant_at = lsGetTimer()
         click(self.saved_plant_location, false, true)
         lsSleep(click_delay)
-        click(self.saved_plant_location, true)
+        click(self.saved_plant_location, true, true)
         lsSleep(click_delay)
       else
         lsPrintln("Pixel doesn't match " .. click_colour .. " instead it's " .. new_colour)

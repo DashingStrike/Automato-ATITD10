@@ -62,7 +62,7 @@ function single_attribute_edit_screen(config, title, descriptive_name, name, def
     open_button = title,
     draw_screen = function()
       if not thing_type then
-        thing_type = type(default) == "default"
+        thing_type = type(default)
       end
 
       config[name] = drawEditBox(name .. config.name, descriptive_name, config[name] or default, thing_type, width)
