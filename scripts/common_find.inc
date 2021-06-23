@@ -253,7 +253,6 @@ end
 -------------------------------------------------------------------------------
 
 function parseWindow(window)
-  srStripRegion(window.x, window.y, window.width, window.height);
   local text = parseText(window.x, window.y, window.width, window.height);
   if text == nil then
     text = {};
