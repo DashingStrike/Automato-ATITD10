@@ -206,8 +206,8 @@ function parseText(x, y, w, h)
     newTable[i][2] = table[(i-1)*3+2];
 
     newTable[i][2] = fixSpaces(newTable[i][2], " ", ".");
-    --newTable[i][2] = fixSpaces(newTable[i][2], "%d", "1");
-    --newTable[i][2] = fixSpaces(newTable[i][2], "%.", ".");
+    newTable[i][2] = fixSpaces(newTable[i][2], "%d", "1");
+    newTable[i][2] = fixSpaces(newTable[i][2], "%.", ".");
   end
   return newTable;
 end
