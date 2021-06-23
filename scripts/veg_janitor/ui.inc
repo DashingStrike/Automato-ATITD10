@@ -175,7 +175,8 @@ on to any growth times calculated as an extra buffer to prevent watering too soo
         GREY,
         X_PADDING,
         current_y)
-      local reset = lsButtonText(lsScreenX - 300, current_y, z, 300, RED, "Reset calibration data")
+      local reset = lsButtonText(X_PADDING, current_y, z, 300, RED, "Reset calibration data")
+      current_y = current_y + 30
       if reset then
         timings.calibrated = false
         timings.data_points = 0

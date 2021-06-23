@@ -89,6 +89,40 @@ function filter_table_by_config_and_seed(csv_table, config, config_seed_type, co
   end
   return rows_per_stage
 end
+function filter_stages_by_std_dev_from_mean(stages, num_of_std_devs_from_mean_for_max)
+  local total = 0
+  for i = 1, #stages do
+    local stage = stages[i]
+    local time_since_prev_stage = stage["time_since_prev_stage"]
+    total = total + time_since_prev_stage
+  end
+  local mean = total / #stages
+  local total_square_diffs = 0
+  for i = 1, #stages do
+    local stage = stages[i]
+    local time_since_prev_stage = stage["time_since_prev_stage"]
+    local diff = time_since_prev_stage - mean
+    total_square_diffs = total_square_diffs + diff * diff
+  end
+  local mean_of_squared_diffs = total_square_diffs / #stages
+  local std_dev = math.sqrt(mean_of_squared_diffs)
+
+  local filtered_stages = {}
+  local max_distance = std_dev * num_of_std_devs_from_mean_for_max
+  print('Mean is ' .. mean)
+  print('Std Dev is ' .. std_dev)
+  print('Only allowing values between ' .. mean - max_distance .. ' and ' .. mean + max_distance )
+  for i = 1, #stages do
+    local stage = stages[i]
+    local time_since_prev_stage = stage["time_since_prev_stage"]
+    if math.abs(time_since_prev_stage - mean) <= max_distance then
+      table.insert(filtered_stages, stage)
+    else
+      print('Filtering ' .. time_since_prev_stage)
+    end
+  end
+  return filtered_stages
+end
 
 function quantile(t, key, q)
   local rank = (#t - 1) * (q / 100) + 1
@@ -110,12 +144,17 @@ function calculate_and_update_calibration_settings(config, seed_type, seed_name)
   local stages = config.plants[seed_type][seed_name].stages + 1
   local timings = config.plants[seed_type][seed_name].stage_advance_timings or {}
   config.plants[seed_type][seed_name].stage_advance_timings = timings
+  print('Calibration Run Details for ' .. seed_type .. ' - ' .. seed_name)
   if not filtered_table_stages[2] then
+    print('No data points found')
     timings["calibrated"] = false
     timings["data_points"] = 0
   else
     for i = 2, stages do
-      local q = quantile(filtered_table_stages[i], "time_since_prev_stage", config.calibration_mode_percentile)
+      local data_points = filtered_table_stages[i]
+      local data_points_with_2_std_dev_of_mean = filter_stages_by_std_dev_from_mean(data_points, 2)
+      print('Started with ' .. #data_points .. ' data points, filtered down to ' .. #data_points_with_2_std_dev_of_mean)
+      local q = quantile(data_points_with_2_std_dev_of_mean, "time_since_prev_stage", config.calibration_mode_percentile)
       local timing = q + config.calibration_mode_buffer_ms
       timings[i - 1] = timing
     end
