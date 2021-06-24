@@ -841,7 +841,8 @@ function loadRoutes()
     local success = false;
     if(pcall(dofile,routeFileName)) then
         success, routes = deserialize(routeFileName);
-    else
+    end
+    if #routes == 0 then
         if(pcall(dofile,defaultRoutesFileName)) then
             success, routes = deserialize(defaultRoutesFileName);
         end
