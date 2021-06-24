@@ -1,5 +1,5 @@
 dofile("lime_janitor/firepit_manager_widget.inc")
-dofile("lime_janitor/ui/check_box.inc")
+dofile("lime_janitor/ui/widgets.inc")
 FirepitMacroWidget = class { class_name = "FirepitMacroWidget" }
 function FirepitMacroWidget:init(macro)
     self.macro = macro
@@ -9,10 +9,10 @@ function FirepitMacroWidget:init(macro)
     self.stoke_time = EditBox { key = "stoke_time", initial_text = 22000, type = "number", use_settings = true }
     self.firepit_box_size = EditBox { key = "firepit_box_size", initial_text = 20, type = "number", use_settings = true }
     self.time_to_run_edit_box = EditBox { key = "time_to_run", initial_text = 65, type = "number", use_settings = true }
-    self.limestone = CheckBox { key = "limestone", value = true, text = "Auto load limestone?" }
-    self.restart_on_completion = CheckBox { key = "restart_on_completion", value = true, text = "Restart on completion?" }
-    self.light = CheckBox { key = "light", value = true, text = "Auto light fires?" }
-    self.output_logs = CheckBox { key = "output_logs", value = true, text = "Write log files to data folder?" }
+    self.limestone = CheckBoxWidget { key = "limestone", value = true, text = "Auto load limestone?" }
+    self.restart_on_completion = CheckBoxWidget { key = "restart_on_completion", value = true, text = "Restart on completion?" }
+    self.light = CheckBoxWidget { key = "light", value = true, text = "Auto light fires?" }
+    self.output_logs = CheckBoxWidget { key = "output_logs", value = true, text = "Write log files to data folder?" }
 end
 
 function concat(a, b)
