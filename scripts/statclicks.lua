@@ -271,7 +271,7 @@ function combFlax()
     srReadScreen();
     local fix = srFindImage("repair.png", 6000);
     if (fix) then
-        repairRake();
+        repairRake("comb");
         lsSleep(75);
         srReadScreen();
         safeClick(comb[0],comb[1]);
@@ -326,7 +326,7 @@ function hacklingRake()
     srReadScreen();
     local fix = findText("Repair", flaxReg);
     if (fix) then
-        repairRake();
+        repairRake("rake");
     end
     srReadScreen();
     local consume = srFindImage("consume.png");
@@ -616,6 +616,73 @@ function closePopUp()
           break;
       end
   end
+end
+
+function repairRake(type)
+  step = 1;
+  lsPlaySound("error.wav");
+  repairAttempt = repairAttempt + 1;
+  sleepWithStatus(1000, "Attempting to Repair Rake !")
+  local repair = srFindImage("repair.png")
+  local material;
+  local plusButtons;
+  local maxButton;
+
+  if repair then
+    clickText(repair);
+		lsSleep(500);
+
+		srReadScreen();
+		local loadMaterials = srFindImage("loadMaterials.png")
+    clickText(loadMaterials);
+
+    lsSleep(500);
+    srReadScreen();
+    plusButtons = findAllImages("plus.png");
+
+	for i=1,#plusButtons do
+		local x = plusButtons[i][0];
+		local y = plusButtons[i][1];
+             srClickMouseNoMove(x, y);
+
+		if i == 1 then
+		  material = "Boards";
+		elseif i == 2 then
+		  material = "Bricks";
+		elseif i == 3 and type == "comb" then
+		  material = "Thorns";
+    elseif i == 3 and type == "rake" then
+		  material = "Nails";
+		else
+		  material = "What the heck?";
+		end
+
+    sleepWithStatus(1000,"Loading " .. material, nil, 0.7);
+
+		srReadScreen();
+		OK = srFindImage("ok.png")
+
+		if OK then
+		  sleepWithStatus(5000, "You don\'t have any \'" .. material .. "\', Aborting !\n\nClosing Build Menu and Popups ...", nil, 0.7)
+		  srClickMouseNoMove(OK[0], OK[1]);
+		  srReadScreen();
+		  blackX = srFindImage("blackX.png");
+		  srClickMouseNoMove(blackX[0], blackX[1]);
+		  num_loops = nil;
+		  break;
+
+		else -- No OK button, Load Material
+
+		  srReadScreen();
+		  maxButton = srFindImage("max.png");
+		  if maxButton then
+		    srClickMouseNoMove(maxButton[0], maxButton[1]);
+		  end
+
+		  sleepWithStatus(1000,"Loaded " .. material, nil, 0.7);
+		end -- if OK
+	end -- for loop
+  end -- if repair
 end
 
 function doit()
