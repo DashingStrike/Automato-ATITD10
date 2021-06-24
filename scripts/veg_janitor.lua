@@ -93,6 +93,7 @@ function askForWindowAndSetupGlobals(config)
       ["type"] = "Cucumbers",
       ["yield"] = 4,
     }
+    write_config(config)
   else
     if not isis_bounty["stage_advance_timings"] or #isis_bounty["stage_advance_timings"] ~= 4 then
       isis_bounty["stage_advance_timings"] = {
@@ -101,6 +102,7 @@ function askForWindowAndSetupGlobals(config)
         [3] = 13000,
         [4] = 13000,
       }
+      write_config(config)
     end
   end
 
