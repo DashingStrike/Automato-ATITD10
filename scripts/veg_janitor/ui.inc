@@ -677,10 +677,17 @@ function plant_creator(config)
       config.plants[plant_type][seed_name] = org_seed
     end
     config.plants[plant_type] = config.plants[plant_type] or {}
-    print('SETTING???')
-    config.plants[plant_type][seed_name] = config.plants[plant_type][seed_name] or default_seed_config(plant_type)
+    if not config.plants[plant_type][seed_name] then
+      config.plants[plant_type][seed_name] = default_seed_config(plant_type)
+    end
     for key, value in pairs(new_config) do
       config.plants[plant_type][seed_name][key] = value
+    end
+    local conf = config.plants[plant_type][seed_name]
+    if #conf.stage_advance_timings < conf.stages then
+      for i=#conf.stage_advance_timings+1, conf.stages do
+        conf.stage_advance_timings[i] = 16000
+      end
     end
     write_config(config)
     dropdown_index = dropdown_index + 1
@@ -1000,6 +1007,18 @@ function default_deep_config()
             [1] = 16000,
             [2] = 13000,
             [3] = 13000,
+          }
+        },
+        ["Isis' Bounty"] = {
+          ["type"] = "Cucumbers",
+          ["waters"] = 3,
+          ["stages"] = 4,
+          ["yield"] = 4,
+          ["stage_advance_timings"] = {
+            [1] = 16000,
+            [2] = 13000,
+            [3] = 13000,
+            [4] = 13000,
           }
         },
       },

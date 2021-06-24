@@ -78,6 +78,31 @@ function askForWindowAndSetupGlobals(config)
     end
   end
 
+  local isis_bounty = config.plants['Cucumbers']["Isis' Bounty"]
+  if not isis_bounty then
+    config.plants['Cucumbers']["Isis' Bounty"] = {
+      ["stages"] = 4,
+      ["stage_advance_timings"] = {
+        [1] = 16000,
+        [2] = 13000,
+        [3] = 13000,
+        [4] = 13000,
+      }
+    ,
+      ["waters"] = 3,
+      ["type"] = "Cucumbers",
+      ["yield"] = 4,
+    }
+  else
+    if not isis_bounty["stage_advance_timings"] or #isis_bounty["stage_advance_timings"] ~= 4 then
+      isis_bounty["stage_advance_timings"] = {
+        [1] = 16000,
+        [2] = 13000,
+        [3] = 13000,
+        [4] = 13000,
+      }
+    end
+  end
 
   local min_jugs = config.num_waterings * config.num_plants * config.num_stages
   local min_seeds = config.num_plants
@@ -138,7 +163,7 @@ function setupGlobals(config)
   -- TODO FIX HORRIBLE GLOBAL HACK
   seed_type = config.seed_type
   local order = config.default_plant_location_order
-  local seed_order = config.plants[config.seed_type][config.seed_name].plant_location_order
+  local seed_order = config.plants[config.seed_type] and config.plants[config.seed_type][config.seed_name] and config.plants[config.seed_type][config.seed_name].plant_location_order
   if seed_order and #seed_order > 0 then
     order = seed_order
   end
@@ -300,7 +325,6 @@ function preLocatePlants(config, plants, seed_finder, dead_player_box)
       findSeedAndPickupIfThere(seed_finder, config.num_plants)
     end
   end
-
 
   if config.debug then
     plantSearcher:drawLayers()
@@ -664,7 +688,7 @@ function display_plants(plants, config, run_number, stop_end_of_run, pause_after
     drawTextUsingCurrent('Press and hold Ctrl-Alt to stop veg janitor after this run finishes.', RED)
   end
   drawTextUsingCurrent('Press Ctrl-Shift to exit immediately.', WHITE)
-  if not stop_end_of_run  and not pause_after_this_run then
+  if not stop_end_of_run and not pause_after_this_run then
     if lsControlHeld() and lsAltHeld() then
       stop_end_of_run = true
     end
