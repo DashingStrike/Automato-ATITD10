@@ -1,7 +1,6 @@
 dofile("lime_janitor/ui/app_widget.inc")
 dofile("lime_janitor/ui/column_widget.inc")
 dofile("lime_janitor/ui/text_widget.inc")
-dofile("lime_janitor/ui/graph_widget.inc")
 dofile("lime_janitor/ui/padding_widget.inc")
 dofile("lime_janitor/ui/scroll_widget.inc")
 dofile("lime_janitor/ui/row_widget.inc")
