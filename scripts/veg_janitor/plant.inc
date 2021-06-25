@@ -104,14 +104,28 @@ function Plant:tick()
       if (self.config.debug or self.config.debug_log) and change_count ~= 0 then
         print(' count = ' .. change_count .. ' vs ' .. pixel_limit)
       end
+      if lsGetTimer() - self.previous_stage_ended_at > 25000 then
+        print("CALIBRATION STAGE TIMED OUT")
+        self.controller.bad_calibration = true
+        apply_calibration_fix(self.config, -0.5)
+        return "wait-till-dead"
+      end
       if change_count > pixel_limit then
         if self.config.debug or self.config.debug_log then
           print('-------------------------')
           print('BIG CHANGE ' .. change_count)
           print('-------------------------')
         end
-        self:change_stage(1)
-        self:update_stage_times()
+        if lsGetTimer() - self.previous_stage_ended_at < 6000 then
+          print("DETECTED TOO EARLY CHANGE IN CALIBRATION")
+          self.controller.bad_calibration = true
+          apply_calibration_fix(self.config, 0.5)
+          return "wait-till-dead"
+        else
+          self.previous_stage_ended_at = lsGetTimer()
+          self:change_stage(1)
+          self:update_stage_times()
+        end
       end
     else
       if lsGetTimer() > self.next_stage_starts_at then

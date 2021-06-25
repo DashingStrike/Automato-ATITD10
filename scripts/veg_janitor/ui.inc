@@ -65,7 +65,12 @@ function single_attribute_edit_screen(config, title, descriptive_name, name, def
         thing_type = type(default)
       end
 
-      config[name] = drawEditBox(name .. config.name, descriptive_name, config[name] or default, thing_type, width)
+      local before = config[name]
+      if before == nil then
+        before = default
+      end
+
+      config[name] = drawEditBox(name .. config.name, descriptive_name,  before, thing_type, width)
     end
   }
 
