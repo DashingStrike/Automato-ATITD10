@@ -1,6 +1,5 @@
 dofile("common.inc");
 dofile("settings.inc");
-dofile("hackling_rake.lua");
 
 items = {
         --strength
