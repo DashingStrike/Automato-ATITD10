@@ -54,7 +54,7 @@ WINDOW_OFFSET_Y = 150
 function doit()
   lsRequireVersion(2, 54);
   while true do
-    local config = makeReadOnly(getUserParams())
+    local config = getUserParams()
     askForWindowAndSetupGlobals(config)
     gatherVeggies(config)
   end
