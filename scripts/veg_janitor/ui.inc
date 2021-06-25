@@ -1245,10 +1245,10 @@ function default_deep_config()
       ["Default"] = 1,
     },
     ["default_plant_location_order"] = {
-      { direction = "WEST", number_of_moves = 2 },
-      { direction = "EAST", number_of_moves = 2 },
-      { direction = "NORTH", number_of_moves = 2 },
       { direction = "SOUTH", number_of_moves = 2 },
+      { direction = "NORTH", number_of_moves = 2 },
+      { direction = "EAST", number_of_moves = 2 },
+      { direction = "WEST", number_of_moves = 2 },
       { direction = "SOUTH_EAST", number_of_moves = 1 },
       { direction = "NORTH_WEST", number_of_moves = 1 },
       { direction = "NORTH_EAST", number_of_moves = 1 },

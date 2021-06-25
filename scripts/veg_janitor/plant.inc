@@ -130,6 +130,9 @@ function Plant:tick()
     else
       if lsGetTimer() > self.next_stage_starts_at then
         self.previous_stage_ended_at = self.next_stage_starts_at
+        if not self.current_stage_watered and self.stage == 1 then
+          return "dead"
+        end
         self:change_stage(self.current_stage_watered and 1 or -1)
       end
     end
