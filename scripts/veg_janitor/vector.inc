@@ -4,7 +4,6 @@ function findImageInWindowVec(image_name, vec)
     srReadScreen()
     local this_loc = findImage("veg_janitor/" .. image_name .. ".png", window_search_box(vec), 7000)
     if not this_loc then
-      lsPrintln("Failed to find: " .. image_name .. " at " .. vec.x .. ", " .. vec.y);
         return false
     end
 

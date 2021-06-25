@@ -54,7 +54,7 @@ WINDOW_OFFSET_Y = 150
 function doit()
   lsRequireVersion(2, 54);
   while true do
-    local config = makeReadOnly(getUserParams())
+    local config = getUserParams()
     askForWindowAndSetupGlobals(config)
     gatherVeggies(config)
   end
@@ -509,7 +509,9 @@ function gatherVeggies(config)
 
   local stop_after_this_run = false
   local pause_after_this_run = false
-  for run_number = 1, config.num_runs do
+  local run_number = 0
+  while run_number <= config.num_runs do
+    run_number = run_number + 1
     local firstRun = run_number == 1
     srReadScreen();
     checkPlantButton()
@@ -604,7 +606,12 @@ function gatherVeggies(config)
     local total = math.floor((3600 / ((stop - start) / 1000)) * config.num_plants * yield) -- default 3, currently 9 veggie yield with pyramids bonus
     for k = 1, config.num_plants do
       if config.calibration_mode then
-        plants[k]:output_calibration_data()
+        if plants[k].bad_calibration then
+          print('IGNORING DATA DUE TO BAD CALIBRATION')
+          config.num_runs = config.num_runs + 1
+        else
+          plants[k]:output_calibration_data()
+        end
       end
       plants[k]:partiallyResetState()
     end

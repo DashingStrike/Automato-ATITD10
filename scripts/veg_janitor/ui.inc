@@ -65,7 +65,12 @@ function single_attribute_edit_screen(config, title, descriptive_name, name, def
         thing_type = type(default)
       end
 
-      config[name] = drawEditBox(name .. config.name, descriptive_name, config[name] or default, thing_type, width)
+      local before = config[name]
+      if before == nil then
+        before = default
+      end
+
+      config[name] = drawEditBox(name .. config.name, descriptive_name,  before, thing_type, width)
     end
   }
 
@@ -1240,10 +1245,10 @@ function default_deep_config()
       ["Default"] = 1,
     },
     ["default_plant_location_order"] = {
-      { direction = "WEST", number_of_moves = 2 },
-      { direction = "EAST", number_of_moves = 2 },
-      { direction = "NORTH", number_of_moves = 2 },
       { direction = "SOUTH", number_of_moves = 2 },
+      { direction = "NORTH", number_of_moves = 2 },
+      { direction = "EAST", number_of_moves = 2 },
+      { direction = "WEST", number_of_moves = 2 },
       { direction = "SOUTH_EAST", number_of_moves = 1 },
       { direction = "NORTH_WEST", number_of_moves = 1 },
       { direction = "NORTH_EAST", number_of_moves = 1 },

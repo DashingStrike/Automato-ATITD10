@@ -52,6 +52,8 @@ function PlantController:new(index, location, alternate_drag, window_pos, seed_n
   o.searcher = nil
   o.snapshoting_water_animations = false
   o.watered_at = nil
+  o.bad_calibration = true
+  o.bad_calibration_config_change = 0.5
 
   return newObject(self, o)
 end
@@ -74,6 +76,8 @@ function PlantController:partiallyResetState()
   self.snapshoting_water_animations = false
   self.watered_at = nil
   self.open_attempts = 0
+  self.bad_calibration = true
+  self.bad_calibration_config_change = 0.5
 end
 
 function PlantController:output_calibration_data()
@@ -91,6 +95,8 @@ function PlantController:time_till_death()
     return self.plant:time_till_death()
   elseif self.state == "complete" then
     return 100000
+  elseif self.state == "wait-till-death" then
+    return self.plant:time_till_death()
   elseif self.state == "closed" then
     return 100000
   else
@@ -106,6 +112,8 @@ function PlantController:status()
     return "opening"
   elseif self.state == "growing" then
     return self.plant:status()
+  elseif self.state == "wait-till-dead" then
+    return "waiting till plant dies"
   elseif self.state == "complete" then
     return "complete"
   elseif self.state == "closed" then
@@ -145,9 +153,17 @@ function PlantController:tick()
       self.window_open = true
       self.state = "growing"
     end
+  elseif self.state == 'wait-till-dead' then
+    -- Refresh the window so we can see when the plant dies.
+    self:harvest()
   elseif self.state == "growing" then
-    if self.plant:tick() ~= "growing" then
-      self.state = "complete"
+    local plant_state = self.plant:tick()
+    if plant_state ~= "growing" then
+      if plant_state == "wait-till-dead" then
+        self.state = plant_state
+      else
+        self.state = "complete"
+      end
     else
       if self.snapshoting_water_animations then
         if self.watered_at and lsGetTimer() - self.watered_at > 3000 then
@@ -264,6 +280,7 @@ function PlantController:harvest()
     click(harvest_vec)
     lsSleep(click_delay / 2)
     self.harvested = true
+    self.bad_calibration = false
     return self:dead()
   else
     return false
