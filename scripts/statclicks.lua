@@ -620,7 +620,8 @@ end
 function repairRake(type)
   step = 1;
   lsPlaySound("error.wav");
-  repairAttempt = repairAttempt + 1;
+  --Commented repair attempt is a vestige from hackling rake script. Left in if wanted in the future.
+  --repairAttempt = repairAttempt + 1;
   sleepWithStatus(1000, "Attempting to Repair Rake !")
   local repair = srFindImage("repair.png")
   local material;
