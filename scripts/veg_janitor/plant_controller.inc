@@ -346,7 +346,7 @@ function PlantController:openBedWindow()
       local new_colour = current_pixel
       local click_colour = self.saved_plant_pixel
       local pixel_same = new_colour == click_colour
-      if not pixel_same then
+      if true then
         self.last_clicked_plant_at = lsGetTimer()
         click(self.saved_plant_location, false, true)
         lsSleep(click_delay)

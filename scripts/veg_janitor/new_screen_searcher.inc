@@ -110,6 +110,18 @@ function SeedSearcher:dead_box()
     self.dead_max_x - self.dead_min_x + 1 + fudge * 2,
     self.dead_max_y - self.dead_min_y + 1 + fudge * 2)
 end
+function SeedSearcher:excludeDeadBox(dead_box)
+  local box = self.search_box
+
+  for y = box.top, box.bottom do
+    self.dead_pixel_to_region[y-box.top] = self.dead_pixel_to_region[y-box.top] or {}
+    for x = box.left, box.right do
+      if dead_box.left <= x and dead_box.right >= x and dead_box.top <= y and dead_box.bottom >= y then
+        self:connectChangedPixelToSurroundingRegions(x-box.left, y-box.top, true)
+      end
+    end
+  end
+end
 
 function SeedSearcher:findChangedRegions(size_filter, top_x, mark_as_dead, drawSeen)
   srReadScreen()
