@@ -421,7 +421,7 @@ function queryRoute()
     clay = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather clay and flint", clay);
     writeSetting("clay",clay);
     y = y + 36;
-    silt = readSetting("silt",clay);
+    silt = readSetting("silt",silt);
     silt = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather silt", silt);
     writeSetting("silt",silt);
     y = y + 36;
