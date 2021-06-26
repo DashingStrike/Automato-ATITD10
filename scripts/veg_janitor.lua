@@ -203,7 +203,25 @@ function PlantLocation:move()
   -- TODO Only search in the top left region of the screen to improve performance
   local build_arrows = findImage("veg_janitor/build_arrows.png", nil, 7000)
   if not build_arrows then
-    playErrorSoundAndExit("Failed to find the build arrows")
+    srReadScreen()
+    local attempts = 0
+    while attempts < 5 and not build_arrows do
+      attempts = attempts + 1
+      if findImage("veg_janitor/patching.png") then
+        while findImage("veg_janitor/patching.png") do
+          current_y = 10
+          srReadScreen()
+          checkBreak()
+          drawWrappedTextUsingCurrent("Waiting for patching icon to disappear...", WHITE)
+          lsDoFrame()
+          lsSleep(tick_delay)
+        end
+      end
+      build_arrows = findImage("veg_janitor/build_arrows.png", nil, 7000)
+    end
+    if not build_arrows then
+      playErrorSoundAndExit("Failed to find the build arrows")
+    end
   end
   for step = 1, self.num_move_steps do
     click(self.move_btn + Vector:new { build_arrows[0], build_arrows[1] }, false, false)
@@ -492,10 +510,12 @@ function gatherVeggies(config)
   srReadScreen()
   closeEmptyAndErrorWindows()
   local drawResult = drawWater()
-  srReadScreen()
-  local r = srFindImage('veg_janitor/no_water.png')
-  if not r and not drawResult then
-    playErrorSoundAndExit('Cant see water button please make sure it is visible for rewaters')
+  if config.check_for_water_button then
+    srReadScreen()
+    local r = srFindImage('veg_janitor/no_water.png')
+    if not r and not drawResult then
+      playErrorSoundAndExit('Cant see water button please make sure it is visible for rewaters')
+    end
   end
   local plants = Plants:new { num_plants = config.num_plants, seed_type = config.seed_type,
                               seed_name = config.seed_name,
