@@ -70,7 +70,7 @@ function single_attribute_edit_screen(config, title, descriptive_name, name, def
         before = default
       end
 
-      config[name] = drawEditBox(name .. config.name, descriptive_name,  before, thing_type, width)
+      config[name] = drawEditBox(name .. config.name, descriptive_name, before, thing_type, width)
     end
   }
 
@@ -692,7 +692,7 @@ function plant_creator(config)
     end
     local conf = config.plants[plant_type][seed_name]
     if #conf.stage_advance_timings < conf.stages then
-      for i=#conf.stage_advance_timings+1, conf.stages do
+      for i = #conf.stage_advance_timings + 1, conf.stages do
         conf.stage_advance_timings[i] = 16000
       end
     end
@@ -908,8 +908,13 @@ function getUserParams()
       config.onion_calibration_mode_change_threshold = 4.5
       config.fudged_onion = true
       print("Fudging onion to be a better number from previous default config value.")
+    elseif not config.onion_calibration_mode_change_threshold then
+      config.onion_calibration_mode_change_threshold = 4.5
+      config.fudged_onion = true
     end
-
+    if not config.non_onion_calibration_mode_change_threshold then
+      config.non_onion_calibration_mode_change_threshold = 1
+    end
 
     write_config(config)
     lsDoFrame()

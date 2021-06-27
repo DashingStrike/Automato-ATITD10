@@ -5,19 +5,6 @@ dofile("veg_janitor/screen.inc")
 dofile("veg_janitor/calibration.inc")
 dofile("veg_janitor/new_screen_searcher.inc")
 
-BLACK = 0x000000ff
-WHITE = 0xFFFFFFff
-GREY = 0x808080ff
-RED = 0xFF2020ff
-GREEN = 0x66CD00ff
-ORANGE = 0xFFA500ff
-YELLOW = 0xffff00ff
-PINK = 0xffc0cbff
-BROWN = 0xFFEBCDff
-BLUE = 0x0000ffff
-PURPLE = 0xcd00ffff
-LIGHT_BLUE = 0x00ffe4ff
-
 PlantController = {}
 function PlantController:new(index, location, alternate_drag, window_pos, seed_name, seed_type, num_water_times, config, existing_unpin_locations)
   if index == nil or location == nil or alternate_drag == nil or window_pos == nil or num_water_times == nil or config == nil then

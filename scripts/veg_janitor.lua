@@ -823,9 +823,3 @@ function makeSearchBox(direction, seed_type)
   return box
 end
 
-function makeLargeSearchBoxAroundPlayer(size)
-  local search_size = size or 500
-  local mid = getScreenMiddle()
-  local top_left = mid - { math.floor(search_size / 2), math.floor(search_size / 2) }
-  return makeBox(top_left.x, top_left.y, search_size, search_size)
-end
