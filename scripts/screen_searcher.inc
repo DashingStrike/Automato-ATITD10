@@ -3,6 +3,7 @@ dofile("veg_janitor/screen.inc")
 dofile("veg_janitor/binsert.inc")
 dofile("veg_janitor/io.inc")
 
+-------------------------------------------------------------------------------
 -- ScreenSearcher is a utility class that detects areas of changed pixels in a box on the screen. For example you can
 -- use it to find a plant placed on the screen by your macro, or ore nodes which have appeared. It can then identify
 -- the best places to click inside of these areas of changed pixels. Finally it provides an easy way of filtering out
@@ -23,15 +24,16 @@ dofile("veg_janitor/io.inc")
 -- Then you can take a snapshot of the screen's pixels in the box, which will be stored inside the ScreenSearcher
 -- using the name you provide:
 --
--- screenSearcher:snapshot('before')
+-- screenSearcher:snapshotScreen('before')
 --
 -- Finally you can then using the previous snapshot find and identify all the areas of pixels which have changed in
 -- the ScreenSearcher's box.
 --
 -- triggerSomeObjectToAppearOnScreen()
--- screenSearcher:markChangesAsRegion('before', 'myObject')
+-- screenSearcher:markAllChangesAsRegion('before', 'myObject')
 -- local myObjectsLocationOnScreen = screenSearcher:findPointInRegionFurthestFromEdge('myObject')
 -- click(myObjectsLocationOnScreen)
+-------------------------------------------------------------------------------
 
 ScreenSearcher = {}
 function ScreenSearcher:new(search_box, comparisonMode)
@@ -49,22 +51,29 @@ function ScreenSearcher:new(search_box, comparisonMode)
   return newObject(self, o)
 end
 
+-------------------------------------------------------------------------------
+-- Takes and stores a snapshot of the pixels inside this ScreenSearcher's box under the provided name.
+-------------------------------------------------------------------------------
 function ScreenSearcher:snapshotScreen(newSnapshotName)
-  -- Takes and stores a snapshot of the pixels inside this ScreenSearcher's box under the provided name.
   self.snapshots[newSnapshotName] = getBoxPixels(self.box)
 end
+
+-------------------------------------------------------------------------------
+-- Comparing against a previous snapshot reads the screen and marks any changed pixels in the box as "dead"
+-- A "dead" pixel can never be used by another region and so will prevent clicks etc occurring in these areas.
+-------------------------------------------------------------------------------
 function ScreenSearcher:markChangesAsDeadZone(snapshotToCompareAgainst,
                                               optionalSnapshotToSaveNewPixelsIn)
-  -- Comparing against a previous snapshot reads the screen and marks any changed pixels in the box as "dead"
-  -- A "dead" pixel can never be used by another region and so will prevent clicks etc occurring in these areas.
 
-  self:markAllChangesAsRegion(snapshotToCompareAgainst, self.deadRegionName, optionalSnapshotToSaveNewPixelsIn)
+  self:_searchChangedPixelsAndSetupRegions(snapshotToCompareAgainst, self.deadRegionName, optionalSnapshotToSaveNewPixelsIn)
 end
 
+-------------------------------------------------------------------------------
+-- Comparing against a previous snapshot marks every changed pixel as the region called regionName.
+-------------------------------------------------------------------------------
 function ScreenSearcher:markAllChangesAsRegion(snapshotToCompareAgainst,
                                                regionName,
                                                optionalSnapshotToSaveNewPixelsIn)
-  -- Comparing against a previous snapshot marks every changed pixel as the region called regionName.
 
   if not regionName then
     playErrorSoundAndExit('A Region Name must be provided when calling markAllChangesAsRegion')
@@ -75,10 +84,12 @@ function ScreenSearcher:markAllChangesAsRegion(snapshotToCompareAgainst,
   self:_searchChangedPixelsAndSetupRegions(snapshotToCompareAgainst, regionName, optionalSnapshotToSaveNewPixelsIn)
 end
 
+-------------------------------------------------------------------------------
+-- Comparing against a previous snapshot groups together connected changes areas into new regions called
+-- 'connectedRegion_1' , 'connectedRegion_2' and so on.
+-------------------------------------------------------------------------------
 function ScreenSearcher:markConnectedAreasAsNewRegions(snapshotToCompareAgainst,
                                                        optionalSnapshotToSaveNewPixelsIn)
-  -- Comparing against a previous snapshot groups together connected changes areas into new regions called
-  -- 'connectedRegion_1' , 'connectedRegion_2' and so on.
 
   self:_searchChangedPixelsAndSetupRegions(
     snapshotToCompareAgainst,
@@ -86,8 +97,10 @@ function ScreenSearcher:markConnectedAreasAsNewRegions(snapshotToCompareAgainst,
     optionalSnapshotToSaveNewPixelsIn)
 end
 
+-------------------------------------------------------------------------------
+-- Returns the regions optionally filtered by a minimum size and/or returning only the largest N regions.
+-------------------------------------------------------------------------------
 function ScreenSearcher:getRegions(minRegionSizeFilter, keepLargestNRegionFilter)
-  -- Returns the regions optionally filtered by a minimum size and/or returning only the largest N regions.
   local regionsPassingFilter
   if minRegionSizeFilter or keepLargestNRegionFilter then
     regionsPassingFilter = {}
@@ -117,8 +130,10 @@ function ScreenSearcher:getRegions(minRegionSizeFilter, keepLargestNRegionFilter
   return result
 end
 
+-------------------------------------------------------------------------------
+-- Returns the regions optionally filtered by a minimum size and/or returning only the largest N regions.
+-------------------------------------------------------------------------------
 function ScreenSearcher:drawRegions(displayTime, minRegionSizeFilter)
-  -- Draws the regions on the screen coloured semi-unqiuely (the colouring will wrap around for the 9th region onwards)
   local startTime = lsGetTimer()
   if not displayTime then
     displayTime = 3000
@@ -169,8 +184,10 @@ function ScreenSearcher:drawRegions(displayTime, minRegionSizeFilter)
   end
 end
 
+-------------------------------------------------------------------------------
+-- Returns the box encompassing all pixels for the given regionName, optionally expanded by the parameters.
+-------------------------------------------------------------------------------
 function ScreenSearcher:getRegionBox(regionName, optionalScreenSizePercentageToExpandBy, optionalFixedValueToExpandBy)
-  -- Returns the box encompassing all pixels for the given regionName, optionally expanded by the parameters.
 
   self._errorIfNotARegion(regionName)
 
@@ -188,9 +205,11 @@ function ScreenSearcher:getRegionBox(regionName, optionalScreenSizePercentageToE
   return region:getBox(self.box.left, self.box.top, extraWidth, extraHeight)
 end
 
+-------------------------------------------------------------------------------
+-- For a given region finds the point in that region which is furthest in distance from the edges of that region
+-- Great for calculating the best place to click on a region.
+-------------------------------------------------------------------------------
 function ScreenSearcher:findFurthestPointFromEdgeForRegion(regionName)
-  -- For a given region finds the point in that region which is furthest in distance from the edges of that region
-  -- Great for calculating the best place to click on a region.
 
   local slightlyExpandedOddBox = self:getRegionBox(regionName, nil, 2)
   local c_result = chamfer_distance(slightlyExpandedOddBox, self.screenToRegionMap, regionName)
@@ -203,18 +222,20 @@ end
 --- PRIVATE SCREEN SEARCHER FUNCTIONS, DO NOT CALL THESE DIRECTLY, INSTEAD USE THE ONES ABOVE
 ---------------------------------------------------------------------------------------------
 
+-------------------------------------------------------------------------------
+-- This is an internal function which reads the screen and compares the new pixel values to the ones in the specified
+-- snapshot. If optionalRegionNameToMarkChangesIn is provided then all changed pixels will be put into a region with
+-- that name if they are not already dead pixels. If a location is already marked for a region the new region will
+-- override and replace the old one.
+-- If optionalRegionNameToMarkChangesIn is not provided instead this method will create a new region for every
+-- continuously connected area of pixels with an automatically generated name beginning with 'connectedRegion_'
+-- and followed by a unique number. This will also override any existing regions, and will also ignore dead areas.
+-- However it is possible to end up with 'connectedRegions_' which are not actually connected if you call this
+-- multiple times, where one of the subsequent calls overrides an old connected region changing the pixels for it.
+-------------------------------------------------------------------------------
 function ScreenSearcher:_searchChangedPixelsAndSetupRegions(snapshotToCompareAgainst,
                                                             optionalRegionNameToMarkChangesIn,
                                                             optionalSnapshotToSaveNewPixelsIn)
-  -- This is an internal function which reads the screen and compares the new pixel values to the ones in the specified
-  -- snapshot. If optionalRegionNameToMarkChangesIn is provided then all changed pixels will be put into a region with
-  -- that name if they are not already dead pixels. If a location is already marked for a region the new region will
-  -- override and replace the old one.
-  -- If optionalRegionNameToMarkChangesIn is not provided instead this method will create a new region for every
-  -- continuously connected area of pixels with an automatically generated name beginning with 'connectedRegion_'
-  -- and followed by a unique number. This will also override any existing regions, and will also ignore dead areas.
-  -- However it is possible to end up with 'connectedRegions_' which are not actually connected if you call this
-  -- multiple times, where one of the subsequent calls overrides an old connected region changing the pixels for it.
   self:_errorIfSnapshotDoesntExist(snapshotToCompareAgainst)
 
   srReadScreen()
@@ -253,18 +274,24 @@ function ScreenSearcher:_errorIfNotARegion(regionName)
   end
 end
 
-function ScreenSearcher:_isNotDeadRegion(regionName)
-  return regionName ~= self.deadRegionName
+
+
+function ScreenSearcher:_isInDeadRegion(x, y)
+  return self.screenToRegionMap[y] and self.screenToRegionMap[y][x] and self.screenToRegionMap[y][x]:name() == self.deadRegionName
 end
 
-function ScreenSearcher:_isDeadRegion(regionName)
-  return regionName == self.deadRegionName
+function ScreenSearcher:_isNotDeadRegion(x,y)
+  return not self:_isInDeadRegion(x,y)
 end
 
 function ScreenSearcher:_markLocationForRegion(x, y, regionName)
   self.screenToRegionMap[y] = self.screenToRegionMap[y] or {}
-  if self:_isNotDeadRegion(self.screenToRegionMap[y][x]) or regionName == self.deadRegionName then
+  if self:_isNotDeadRegion(x,y) or regionName == self.deadRegionName then
     local region = self.regions[regionName]
+    local existingRegion = self.screenToRegionMap[y][x]
+    if existingRegion then
+      existingRegion:delete(x,y)
+    end
     if not region then
       region = RegionProxy:new(x, y, regionName)
     else
@@ -284,25 +311,31 @@ function ScreenSearcher:_pixelsAreDifferent(oldPixel, newPixel)
   end
 end
 
+-------------------------------------------------------------------------------
+-- Given a newly changed pixel at (x,y) this function will check to see if there is an existing
+-- region immediately above it or to the left of it. If so it will extend that region to include this new (x,y)
+-- co-ordinate. If (x,y) connects two currently separate regions it will join them into one big single region.
+-- Will ignore any dead areas.
+-------------------------------------------------------------------------------
 function ScreenSearcher:_connectChangedPixelToSurroundingRegions(x, y)
-  -- Given a newly changed pixel at (x,y) this function will check to see if there is an existing
-  -- region immediately above it or to the left of it. If so it will extend that region to include this new (x,y)
-  -- co-ordinate. If (x,y) connects two currently separate regions it will join them into one big single region.
-  -- Will ignore any dead areas.
 
   local aboveRegion = false
   local leftRegion = false
-  if self:_isDeadRegion(x, y) then
+  if self:_isInDeadRegion(x, y) then
     return
   end
 
-  if y - 1 >= 0 and self.screenToRegionMap[y-1] then
+  if y - 1 >= 0 and self.screenToRegionMap[y - 1] then
     aboveRegion = self.screenToRegionMap[y - 1][x]
   end
   if x - 1 >= 0 and self.screenToRegionMap[y] then
     leftRegion = self.screenToRegionMap[y][x - 1]
   end
 
+  local existingRegion = self.screenToRegionMap[y][x]
+  if existingRegion then
+    existingRegion:delete(x,y)
+  end
   local resultingRegion = nil
   if aboveRegion and leftRegion then
     aboveRegion:connect(leftRegion, x, y)
@@ -322,10 +355,12 @@ function ScreenSearcher:_connectChangedPixelToSurroundingRegions(x, y)
   self.screenToRegionMap[y][x] = resultingRegion
 end
 
+-------------------------------------------------------------------------------
+-- RegionProxy wraps a real Region object. We use a proxy so we can easily change the underlying Region object
+-- without having to say, loop over all the screenToRegionMap locations where a region is currently set.
+-------------------------------------------------------------------------------
 RegionProxy = {}
 function RegionProxy:new(x, y, name)
-  --- RegionProxy wraps a real Region object. We use a proxy so we can easily change the underlying Region object
-  --- without having to say, loop over all the screenToRegionMap locations where a region is currently set.
   local o = {}
   o.region = Region:new(x, y, name)
   return newObject(self, o)
@@ -359,28 +394,38 @@ end
 function RegionProxy:name()
   return self.region.name
 end
+
 function RegionProxy:getBox(xOffset, yOffset, extraWidth, extraHeight)
   return self.region:getBox(xOffset, yOffset, extraWidth, extraHeight)
 end
+
+-------------------------------------------------------------------------------
+-- A Region tracks size and the min and max co-ordinates of an area of changed pixels.
+-------------------------------------------------------------------------------
 Region = {}
 function Region:new(x, y, name)
-  --- A Region tracks size and the min and max co-ordinates of an area of changed pixels.
   local o = {}
   o.size = 1
   o.min_y = y
   o.max_y = y
   o.min_x = x
   o.max_x = x
-  o.x_counts = {}
-  o.y_counts = {}
+  o.x_counts = {[x] = 1}
+  o.y_counts = {[y] = 1}
   o.name = name
   return newObject(self, o)
 end
 
 function Region:add(x, y)
   self.size = self.size + 1
-  self.x_counts[x] = (self.x_counts[x] or 0) + 1
-  self.x_counts[y] = (self.x_counts[y] or 0) + 1
+  if not self.x_counts[x] then
+    self.x_counts[x] = 0
+  end
+  if not self.y_counts[y] then
+    self.y_counts[y] = 0
+  end
+  self.x_counts[x] = self.x_counts[x]  + 1
+  self.y_counts[y] = self.y_counts[y]  + 1
   self.min_x = math.min(self.min_x, x)
   self.min_y = math.min(self.min_y, y)
   self.max_x = math.max(self.max_x, x)
@@ -390,7 +435,7 @@ end
 function Region:delete(x, y)
   self.size = self.size - 1
   self.x_counts[x] = self.x_counts[x] - 1
-  self.x_counts[y] = self.x_counts[y] - 1
+  self.y_counts[y] = self.y_counts[y] - 1
   if self.size == 0 then
     self.min_x = nil
     self.max_x = nil
@@ -439,6 +484,18 @@ function Region:connect(other_region, connecting_x, connecting_y)
   self.min_y = math.min(self.min_y, connecting_y, other_region.min_y)
   self.max_x = math.max(self.max_x, connecting_x, other_region.max_x)
   self.max_y = math.max(self.max_y, connecting_y, other_region.max_y)
+  for x, count in pairs(other_region.x_counts) do
+    if not self.x_counts[x] then
+      self.x_counts[x] = 0
+    end
+    self.x_counts[x] = self.x_counts[x] + count
+  end
+  for y, count in pairs(other_region.y_counts) do
+    if not self.y_counts[y] then
+      self.y_counts[y] = 0
+    end
+    self.y_counts[y] = self.y_counts[y] + count
+  end
 end
 
 function Region:get_center(x_offset, y_offset)
@@ -458,10 +515,14 @@ function isInRegion(y, x, screenToRegionMap, regionName)
   return screenToRegionMap[y] and screenToRegionMap[y][x] and regionName == screenToRegionMap[y][x]
 end
 
+-------------------------------------------------------------------------------
+-- Calculates in two passes the distance for each pixel in the regionName region to the edge of that region.
+-- Returns a result object with max_x, max_y and max_dt where the x and y are the co-ordinates local to the box
+-- which are furthest from the edge in the region. max_dt is the distance for this pixel to the edge.
+-- See https://stackoverflow.com/questions/53678520/speed-up-computation-for-distance-transform-on-image-in-python
+-- for the implementation this copies.
+-------------------------------------------------------------------------------
 function chamfer_distance(box, screenToRegionMap, regionName)
-  -- Calculates in two passes the distance for each pixel in the regionName region to the edge of that region.
-  -- Returns a result object with max_x, max_y and max_dt where the x and y are the co-ordinates local to the box
-  -- which are furthest from the edge in the region. max_dt is the distance for this pixel to the edge.
 
   function fr(r)
     if r == nil then
