@@ -495,6 +495,8 @@ end
 
 
 function askAcro()
+  local escape = "\27"
+
   lsDoFrame();
   statusScreen("Asking to Acro...", nil, 0.7);
   local pos = getMousePos();
@@ -505,5 +507,5 @@ function askAcro()
   clickText(waitForText("Test of the Acrobat", 500));
   clickText(waitForText("Ask to Acro", 500));
   lsSleep(100);
-  srClickMouseNoMove(pos[0]+20, pos[1], 1); -- Right click to close out possible pinned menu.
+  srKeyEvent(escape) -- Hit ESC to force avatar to close any unpinned windows.
 end
