@@ -226,6 +226,7 @@ function gather(resource)
   end
 
   srReadScreen();
+  local consume = srFindImage("consume.png");
   local material = srFindImage(srcImg, 7000);
     if material ~= nil then
       if consume then
