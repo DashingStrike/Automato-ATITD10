@@ -644,7 +644,7 @@ function doit()
 
         checkBreak();
         srReadScreen();
-        cast = srFindImage("fishing/fishicon.png");
+        cast = srFindImage("fishing/fishicon.png", 100);
         OK = srFindImage("OK.png");
         if ignoreOK then
           OK = nil;  -- We got a popup box while examining isis ship pieces recently, prevent potential reindexing lures (No lure found, refreshing.. Below)
@@ -660,7 +660,7 @@ function doit()
         while not cast do
             checkBreak();
             srReadScreen();
-            cast = srFindImage("fishing/fishicon.png");
+            cast = srFindImage("fishing/fishicon.png", 100);
             sleepWithStatus(500, "Can\'t find Fishing icon ...");
         end
 
@@ -731,7 +731,10 @@ function doit()
             if cancel then
               castcount=0;
               safeClick(cancel[0],cancel[1])
+              lsSleep(1500); -- Wait for the fishing animation to finish
+              UseLure(); -- The lure broke, switch to the next one
             end
+
             startTime = lsGetTimer();
             ignoreOK = nil;
 
