@@ -1,6 +1,6 @@
 dofile("common.inc");
 
-askText = "Acrobat Master v2.1 by Cegaiel\n \nWait until you have Acrobat window open, from a partner, (won\'t work with Self Click, Acrobat, Show Moves) before you start macro! It will memorize your moves for future partners (even if you close acro window). You can move acro window while its running. You do not need to quit/restart macro between each partner. Click \"Menu\" button, when you are done acroing the current player. Optionally, click \"Refresh\" button when your next partner\'s acro window is open. Make sure you resize the acro window so all the buttons you know are showing (above divider bar). Press Shift over ATITD window to continue.";
+askText = "Wait until you have Acrobat window open, from a partner, (won\'t work with Self Click, Acrobat, Show Moves) before you start macro! It will memorize your moves for future partners (even if you close acro window). You can move acro window while its running. You do not need to quit/restart macro between each partner. Click \"Menu\" button, when you are done acroing the current player. Optionally, click \"Refresh\" button when your next partner\'s acro window is open. Make sure you resize the acro window so all the buttons you know are showing (above divider bar). Press Shift over ATITD window to continue.";
 
 moveImages = {
 "Asianinfluence.png",
@@ -507,5 +507,5 @@ function askAcro()
   clickText(waitForText("Test of the Acrobat", 500));
   clickText(waitForText("Ask to Acro", 500));
   lsSleep(100);
-  srKeyEvent(escape) -- Hit ESC to force avatar to close any unpinned windows.
+  srKeyEvent(escape) -- Hit ESC to close any unpinned windows.
 end
