@@ -324,7 +324,7 @@ function hacklingRake()
     clickText(flaxText);
     lsSleep(per_tick);
     srReadScreen();
-    local fix = findText("Repair", flaxReg);
+    local fix = findText("Repair");
     if (fix) then
         repairRake("rake");
     end
@@ -333,8 +333,8 @@ function hacklingRake()
     if consume then
         eatOnion();
     end
-    s1 = findText("Separate Rotten", flaxReg);
-    s23 = findText("Continue processing", flaxReg);
+    s1 = findText("Separate Rotten");
+    s23 = findText("Continue processing");
     clean = findText("Clean the");
     if s1 then
         clickText(s1);
@@ -342,7 +342,7 @@ function hacklingRake()
         clickText(s23);
     elseif clean then
         if takeAllWhenCombingFlax == true then
-            clickText(findText("Take...", flaxReg));
+            clickText(findText("Take..."));
             everythingObj = waitForText("Everything", 1000);
             if everythingObj == nil then
                 return;
