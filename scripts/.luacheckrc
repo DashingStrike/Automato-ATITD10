@@ -153,8 +153,12 @@ stds.common = {
 }
 stds.automato = {
   read_globals = {
-	"MB_YES",
-	"MB_NO",
+    "tick_delay",
+    "MB_YES",
+    "MB_NO",
+    "BOTTOM_RIGHT",
+    "BOTTOM_LEFT",
+    "CARTOGRAPHER2CAM",
     "lsAltHeld",
     "lsAnalyzeCustom",
     "lsAnalyzePapyrus",

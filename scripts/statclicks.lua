@@ -1,6 +1,5 @@
 dofile("common.inc");
 dofile("settings.inc");
-dofile("hackling_rake.lua");
 
 items = {
         --strength
@@ -9,6 +8,7 @@ items = {
         },
         --end
         {"",
+            "Churn Butter",
             "Dig Hole",
             "Flax Comb",
             "Hackling Rake",
@@ -20,7 +20,6 @@ items = {
             "Limestone",
             "Dirt"
             --[[
-            "Churn Butter",
             "Excavate Blocks",
             "Pump Aqueduct",
             "Push Pyramid",
@@ -227,6 +226,7 @@ function gather(resource)
   end
 
   srReadScreen();
+  local consume = srFindImage("consume.png");
   local material = srFindImage(srcImg, 7000);
     if material ~= nil then
       if consume then
@@ -271,7 +271,7 @@ function combFlax()
     srReadScreen();
     local fix = srFindImage("repair.png", 6000);
     if (fix) then
-        repairRake();
+        repairRake("comb");
         lsSleep(75);
         srReadScreen();
         safeClick(comb[0],comb[1]);
@@ -324,17 +324,17 @@ function hacklingRake()
     clickText(flaxText);
     lsSleep(per_tick);
     srReadScreen();
-    local fix = findText("Repair", flaxReg);
+    local fix = findText("Repair");
     if (fix) then
-        repairRake();
+        repairRake("rake");
     end
     srReadScreen();
     local consume = srFindImage("consume.png");
     if consume then
         eatOnion();
     end
-    s1 = findText("Separate Rotten", flaxReg);
-    s23 = findText("Continue processing", flaxReg);
+    s1 = findText("Separate Rotten");
+    s23 = findText("Continue processing");
     clean = findText("Clean the");
     if s1 then
         clickText(s1);
@@ -342,7 +342,7 @@ function hacklingRake()
         clickText(s23);
     elseif clean then
         if takeAllWhenCombingFlax == true then
-            clickText(findText("Take...", flaxReg));
+            clickText(findText("Take..."));
             everythingObj = waitForText("Everything", 1000);
             if everythingObj == nil then
                 return;
@@ -482,14 +482,14 @@ local function excavateBlocks()
     end
     return;
 end
+]]--
 
 function churnButter()
-    local t = srFindImage("statclicks/churn.png");
+    local t = findText("Churn");
     if t then
-        srClickMouseNoMove(t[0]+5, t[1]);
+      clickText(t);
     end
 end
-]]--
 
 function doTasks()
     didTask = false;
@@ -562,6 +562,8 @@ function doTasks()
                   gather("Limestone");
                 elseif curTask == "Dirt" then
                   gather("Dirt");
+                elseif curTask == "Churn Butter" then
+                    churnButter();
                 else
                   clickText(findText(textLookup[curTask]));
                 end
@@ -576,8 +578,7 @@ function doTasks()
                     tapRods();
                 elseif curTask == "Stir Cement" then
                     stirCement();
-                elseif curTask == "Churn Butter" then
-                    churnButter();
+
                 elseif curTask == "Search Rotten Wood" then
                     searchRottenWood();
                 end
@@ -616,6 +617,74 @@ function closePopUp()
           break;
       end
   end
+end
+
+function repairRake(type)
+  step = 1;
+  lsPlaySound("error.wav");
+  --Commented repair attempt is a vestige from hackling rake script. Left in if wanted in the future.
+  --repairAttempt = repairAttempt + 1;
+  sleepWithStatus(1000, "Attempting to Repair Rake !")
+  local repair = srFindImage("repair.png")
+  local material;
+  local plusButtons;
+  local maxButton;
+
+  if repair then
+    clickText(repair);
+		lsSleep(500);
+
+		srReadScreen();
+		local loadMaterials = srFindImage("loadMaterials.png")
+    clickText(loadMaterials);
+
+    lsSleep(500);
+    srReadScreen();
+    plusButtons = findAllImages("plus.png");
+
+	for i=1,#plusButtons do
+		local x = plusButtons[i][0];
+		local y = plusButtons[i][1];
+             srClickMouseNoMove(x, y);
+
+		if i == 1 then
+		  material = "Boards";
+		elseif i == 2 then
+		  material = "Bricks";
+		elseif i == 3 and type == "comb" then
+		  material = "Thorns";
+    elseif i == 3 and type == "rake" then
+		  material = "Nails";
+		else
+		  material = "What the heck?";
+		end
+
+    sleepWithStatus(1000,"Loading " .. material, nil, 0.7);
+
+		srReadScreen();
+		OK = srFindImage("ok.png")
+
+		if OK then
+		  sleepWithStatus(5000, "You don\'t have any \'" .. material .. "\', Aborting !\n\nClosing Build Menu and Popups ...", nil, 0.7)
+		  srClickMouseNoMove(OK[0], OK[1]);
+		  srReadScreen();
+		  blackX = srFindImage("blackX.png");
+		  srClickMouseNoMove(blackX[0], blackX[1]);
+		  num_loops = nil;
+		  break;
+
+		else -- No OK button, Load Material
+
+		  srReadScreen();
+		  maxButton = srFindImage("max.png");
+		  if maxButton then
+		    srClickMouseNoMove(maxButton[0], maxButton[1]);
+		  end
+
+		  sleepWithStatus(1000,"Loaded " .. material, nil, 0.7);
+		end -- if OK
+	end -- for loop
+  end -- if repair
 end
 
 function doit()

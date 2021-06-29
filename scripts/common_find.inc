@@ -376,11 +376,11 @@ function ocrNumber(startX, startY, characterSet)
   while digit do
     if decimal == false then
       result = result * 10 + digit;
-      x = x + sizeX + 1;
+      x = x + sizeX;
     else
       result = result + digit/10^ afterDecimal;
       afterDecimal = afterDecimal + 1;
-      x = x + sizeX + 1;
+      x = x + sizeX;
     end
     digit = findDigit(x, y, sizeX, sizeY, prefix);
     if digit == "." then
@@ -394,40 +394,27 @@ function ocrNumber(startX, startY, characterSet)
 end
 
 function findDigit(x, y, sizeX, sizeY, prefix)
-  local result = nil;
   for i=0, 9 do
-    if srFindImageInRange(prefix .. i .. ".png", x, y,
-                          sizeX, sizeY, 5000)
-    then
-      result = i;
-      break;
-    end
-    if prefix == "ocr/" then
-      if srFindImageInRange(prefix .. "decimals.png", x, y,
-                            sizeX, sizeY, 5000)
-      then
-        result = ".";
-        break;
-      end
+    if srFindImageInRange(prefix .. i .. ".png", x, y, sizeX, sizeY, 5000) then
+      return i;
     end
   end
-  return result;
+
+  if prefix == "ocr/" then
+    if srFindImageInRange("ocr/decimals.png", x, y, sizeX, sizeY, 5000) then
+      return ".";
+    end
+  end
 end
 
 function getCharacterSet(characterSet)
-  local prefix = "ocr/";
-  local sizeX = 6;
-  local sizeY = 9;
-  if characterSet and characterSet == BOLD_SET then
-    prefix = "ocr/bold_";
-    sizeX = 7;
-    sizeY = 9;
-  elseif characterSet and characterSet == SMALL_SET then
-    prefix = "ocr/small_";
-    sizeX = 5;
-    sizeY = 8;
+  if characterSet == BOLD_SET then
+    return "ocr/bold/", 7, 9;
+  elseif characterSet == SMALL_SET then
+    return "ocr/small/", 6, 8;
+  else
+    return "ocr/default/", 6, 9;
   end
-  return prefix, sizeX, sizeY;
 end
 
 -- replacement for srFindChatRegion() for ATITD T9

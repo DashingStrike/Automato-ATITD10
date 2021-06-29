@@ -137,7 +137,7 @@ end
 -- 0% = 56, 100% = 249, each % = 1.94
 
 minHeat = makePoint(199, 15); --80%
-minHeatProgress = makePoint(152, 15); --60%
+minHeatProgress = makePoint(172, 15); --60%
 minOxy = makePoint(80, 33); --32%
 maxOxy = makePoint(116, 33); --47%
 maxOxyLowHeat = makePoint(160, 33); --64%

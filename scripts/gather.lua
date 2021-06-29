@@ -12,7 +12,8 @@ local stashList = {
   flint    = {"Flint ("},
   tadpoles = {"Tadpoles ("},
   silt     = {"Silt ("},
-  insect   = {"Insect.", "All Insect"}
+  insect   = {"Insect.", "All Insect"},
+  wood     = {"Wood ("}
 };
 
 routeFileName = "gather_routes.txt";
@@ -420,7 +421,7 @@ function queryRoute()
     clay = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather clay and flint", clay);
     writeSetting("clay",clay);
     y = y + 36;
-    silt = readSetting("silt",clay);
+    silt = readSetting("silt",silt);
     silt = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather silt", silt);
     writeSetting("silt",silt);
     y = y + 36;
@@ -841,13 +842,14 @@ function loadRoutes()
     local success = false;
     if(pcall(dofile,routeFileName)) then
         success, routes = deserialize(routeFileName);
-    else
+    end
+    if #routes == 0 then
         if(pcall(dofile,defaultRoutesFileName)) then
             success, routes = deserialize(defaultRoutesFileName);
         end
     end
     if(not success) then
-        error("Cannot find any routes.  Please try updating the macros again.");
+        error("Cannot find any routes. Please try updating the macros again.");
     end
     local i;
     for k,v in pairs(routes) do
@@ -916,7 +918,7 @@ function followRoute(route)
                 stashWood();
             end
         elseif(r[curr][3] == Warehouse) then
-            stashAllButWood();
+            stashAll();
         elseif(papy and r[curr][3] ~= Waypoint) then
             plantPapy();
         elseif(r[curr][3] == Water) then
@@ -1171,12 +1173,6 @@ function clickWaypointPixel(x, y, typeOfWaypoint)
         if(pos) then
             safeClick(x-5,y);
             lsPrintln("Found a plant, but didn't want that.");
-            return false;
-        end
-        pos = findText("This is");
-        if(pos) then
-            safeClick(x-5,y);
-            lsPrintln("Found something other than " .. WaypointTypes[typeOfWaypoint]);
             return false;
         end
         setStatus(WaypointTypes[typeOfWaypoint] .. " clicked");
@@ -1585,7 +1581,7 @@ function clickMenus(menus)
   return true;
 end
 
-function stashAllButWood()
+function stashAll()
   clickMenus({"Stash."});
   for name, menus in pairs(stashList) do
     checkBreak();
