@@ -65,7 +65,7 @@ end
 function ScreenSearcher:markChangesAsDeadZone(snapshotToCompareAgainst,
                                               optionalSnapshotToSaveNewPixelsIn)
 
-  self:_searchChangedPixelsAndSetupRegions(snapshotToCompareAgainst, self.deadRegionName, optionalSnapshotToSaveNewPixelsIn)
+  return self:_searchChangedPixelsAndSetupRegions(snapshotToCompareAgainst, self.deadRegionName, optionalSnapshotToSaveNewPixelsIn)
 end
 
 -------------------------------------------------------------------------------
@@ -81,7 +81,20 @@ function ScreenSearcher:markAllChangesAsRegion(snapshotToCompareAgainst,
   if regionName == self.deadRegionName then
     playErrorSoundAndExit('The provided name clashes with the dead regions name, please use another.')
   end
-  self:_searchChangedPixelsAndSetupRegions(snapshotToCompareAgainst, regionName, optionalSnapshotToSaveNewPixelsIn)
+  return self:_searchChangedPixelsAndSetupRegions(snapshotToCompareAgainst, regionName, optionalSnapshotToSaveNewPixelsIn)
+end
+
+-------------------------------------------------------------------------------
+-- Returns the number of changed pixels on the screen without changing any regions, excluding pixels in dead areas.
+-------------------------------------------------------------------------------
+function ScreenSearcher:countNumberChanged(snapshotToCompareAgainst,
+                                           optionalSnapshotToSaveNewPixelsIn)
+
+  return self:_searchChangedPixelsAndSetupRegions(
+    snapshotToCompareAgainst,
+    nil,
+    optionalSnapshotToSaveNewPixelsIn,
+    false)
 end
 
 -------------------------------------------------------------------------------
@@ -89,12 +102,33 @@ end
 -- 'connectedRegion_1' , 'connectedRegion_2' and so on.
 -------------------------------------------------------------------------------
 function ScreenSearcher:markConnectedAreasAsNewRegions(snapshotToCompareAgainst,
-                                                       optionalSnapshotToSaveNewPixelsIn)
+                                                       optionalSnapshotToSaveNewPixelsIn,
+                                                       resetOldRegions)
 
-  self:_searchChangedPixelsAndSetupRegions(
+  return self:_searchChangedPixelsAndSetupRegions(
     snapshotToCompareAgainst,
     nil,
-    optionalSnapshotToSaveNewPixelsIn)
+    optionalSnapshotToSaveNewPixelsIn,
+    true,
+    resetOldRegions)
+end
+
+-------------------------------------------------------------------------------
+-- Marks the provided box as being in the dead region.
+-------------------------------------------------------------------------------
+function ScreenSearcher:markBoxAsDead(deadBox)
+  local box = self.box
+
+  for y = box.top, box.bottom do
+    local searcherY = y - box.top
+    self.screenToRegionMap[searcherY] = self.screenToRegionMap[searcherY] or {}
+    for x = box.left, box.right do
+      local searcherX = x - box.left
+      if deadBox.left <= x and deadBox.right >= x and deadBox.top <= y and deadBox.bottom >= y then
+        self:_markLocationForRegion(searcherX, searcherY, self.deadRegionName)
+      end
+    end
+  end
 end
 
 -------------------------------------------------------------------------------
@@ -158,7 +192,6 @@ function ScreenSearcher:drawRegions(displayTime, minRegionSizeFilter)
         if screenToRegionMap[y] and screenToRegionMap[y][x] then
           local colours = { GREEN, BLUE, YELLOW, PINK, BROWN, PURPLE, LIGHT_BLUE, GREEN, BLUE }
           local region = screenToRegionMap[y][x]
-          print(region)
           local colour = regionToColour[region:name()]
           if not colour then
             colour = colours[nextFreeColour]
@@ -189,7 +222,7 @@ end
 -------------------------------------------------------------------------------
 function ScreenSearcher:getRegionBox(regionName, optionalScreenSizePercentageToExpandBy, optionalFixedValueToExpandBy)
 
-  self._errorIfNotARegion(regionName)
+  self:_errorIfNotARegion(regionName)
 
   local region = self.regions[regionName]
   if not optionalScreenSizePercentageToExpandBy then
@@ -213,9 +246,12 @@ function ScreenSearcher:findFurthestPointFromEdgeForRegion(regionName)
 
   local slightlyExpandedOddBox = self:getRegionBox(regionName, nil, 2)
   local c_result = chamfer_distance(slightlyExpandedOddBox, self.screenToRegionMap, regionName)
-  return makePoint(
+  local p = makePoint(
     c_result.max_x + slightlyExpandedOddBox.left + self.box.left,
     c_result.max_y + slightlyExpandedOddBox.top + self.box.top)
+  p.x = p[0]
+  p.y = p[1]
+  return p
 end
 
 ---------------------------------------------------------------------------------------------
@@ -235,23 +271,44 @@ end
 -------------------------------------------------------------------------------
 function ScreenSearcher:_searchChangedPixelsAndSetupRegions(snapshotToCompareAgainst,
                                                             optionalRegionNameToMarkChangesIn,
-                                                            optionalSnapshotToSaveNewPixelsIn)
+                                                            optionalSnapshotToSaveNewPixelsIn,
+                                                            createNewConnectedRegions,
+                                                            resetOldRegions)
   self:_errorIfSnapshotDoesntExist(snapshotToCompareAgainst)
+
+  if createNewConnectedRegions and optionalRegionNameToMarkChangesIn then
+    playErrorSoundAndExit('Cannot set both createNewConnectedRegions and an optionalRegionNameToMarkChangesIn.')
+  end
 
   srReadScreen()
 
+  if resetOldRegions then
+    for name, _ in pairs(self.regions) do
+      if name ~= self.deadRegionName then
+        self.regions[name] = nil
+      end
+    end
+  end
+
   local newSnapshotPixels = {}
+  local changedCount = 0
   for y = 0, self.box.height do
     newSnapshotPixels[y] = newSnapshotPixels[y] or {}
     for x = 0, self.box.width do
       local newPixel = srReadPixelFromBuffer(self.box.left + x, self.box.top + y)
       local originalPixel = self.snapshots[snapshotToCompareAgainst][y][x]
       self.screenToRegionMap[y] = self.screenToRegionMap[y] or {}
+      if resetOldRegions and self.screenToRegionMap[y][x] then
+        self.screenToRegionMap[y][x]:delete(x,y)
+        self.screenToRegionMap[y][x] = nil
+      end
       if newPixel ~= originalPixel then
         if optionalRegionNameToMarkChangesIn then
-          self:_markLocationForRegion(x, y, optionalRegionNameToMarkChangesIn)
-        else
-          self:_connectChangedPixelToSurroundingRegions(x, y)
+          changedCount = changedCount + self:_markLocationForRegion(x, y, optionalRegionNameToMarkChangesIn)
+        elseif createNewConnectedRegions then
+          changedCount = changedCount + self:_connectChangedPixelToSurroundingRegions(x, y)
+        elseif not self:_isInDeadRegion(x, y) then
+          changedCount = changedCount + 1
         end
       end
     end
@@ -260,6 +317,7 @@ function ScreenSearcher:_searchChangedPixelsAndSetupRegions(snapshotToCompareAga
       self.snapshots[optionalSnapshotToSaveNewPixelsIn] = newSnapshotPixels
     end
   end
+  return changedCount
 end
 
 function ScreenSearcher:_errorIfSnapshotDoesntExist(newSnapshotName)
@@ -274,31 +332,33 @@ function ScreenSearcher:_errorIfNotARegion(regionName)
   end
 end
 
-
-
 function ScreenSearcher:_isInDeadRegion(x, y)
   return self.screenToRegionMap[y] and self.screenToRegionMap[y][x] and self.screenToRegionMap[y][x]:name() == self.deadRegionName
 end
 
-function ScreenSearcher:_isNotDeadRegion(x,y)
-  return not self:_isInDeadRegion(x,y)
+function ScreenSearcher:_isNotDeadRegion(x, y)
+  return not self:_isInDeadRegion(x, y)
 end
 
 function ScreenSearcher:_markLocationForRegion(x, y, regionName)
   self.screenToRegionMap[y] = self.screenToRegionMap[y] or {}
-  if self:_isNotDeadRegion(x,y) or regionName == self.deadRegionName then
+  if self:_isNotDeadRegion(x, y) or regionName == self.deadRegionName then
     local region = self.regions[regionName]
     local existingRegion = self.screenToRegionMap[y][x]
     if existingRegion then
-      existingRegion:delete(x,y)
+      existingRegion:delete(x, y)
     end
     if not region then
       region = RegionProxy:new(x, y, regionName)
+      self.regions[regionName] = region
     else
+      print('Adding to ' .. regionName)
       region:add(x, y)
     end
     self.screenToRegionMap[y][x] = region
+    return 1
   end
+  return 0
 end
 
 function ScreenSearcher:_pixelsAreDifferent(oldPixel, newPixel)
@@ -322,7 +382,7 @@ function ScreenSearcher:_connectChangedPixelToSurroundingRegions(x, y)
   local aboveRegion = false
   local leftRegion = false
   if self:_isInDeadRegion(x, y) then
-    return
+    return 0
   end
 
   if y - 1 >= 0 and self.screenToRegionMap[y - 1] then
@@ -334,7 +394,7 @@ function ScreenSearcher:_connectChangedPixelToSurroundingRegions(x, y)
 
   local existingRegion = self.screenToRegionMap[y][x]
   if existingRegion then
-    existingRegion:delete(x,y)
+    existingRegion:delete(x, y)
   end
   local resultingRegion = nil
   if aboveRegion and leftRegion then
@@ -351,8 +411,10 @@ function ScreenSearcher:_connectChangedPixelToSurroundingRegions(x, y)
     self.nextFreeConnectedRegionId = self.nextFreeConnectedRegionId + 1
     local newConnectedRegion = RegionProxy:new(x, y, newConnectedRegionName)
     resultingRegion = newConnectedRegion
+    self.regions[newConnectingRegionName] = resultingRegion
   end
   self.screenToRegionMap[y][x] = resultingRegion
+  return 1
 end
 
 -------------------------------------------------------------------------------
@@ -410,8 +472,8 @@ function Region:new(x, y, name)
   o.max_y = y
   o.min_x = x
   o.max_x = x
-  o.x_counts = {[x] = 1}
-  o.y_counts = {[y] = 1}
+  o.x_counts = { [x] = 1 }
+  o.y_counts = { [y] = 1 }
   o.name = name
   return newObject(self, o)
 end
@@ -424,8 +486,8 @@ function Region:add(x, y)
   if not self.y_counts[y] then
     self.y_counts[y] = 0
   end
-  self.x_counts[x] = self.x_counts[x]  + 1
-  self.y_counts[y] = self.y_counts[y]  + 1
+  self.x_counts[x] = self.x_counts[x] + 1
+  self.y_counts[y] = self.y_counts[y] + 1
   self.min_x = math.min(self.min_x, x)
   self.min_y = math.min(self.min_y, y)
   self.max_x = math.max(self.max_x, x)

@@ -3,7 +3,7 @@ dofile("veg_janitor/plant.inc")
 dofile("veg_janitor/vector.inc")
 dofile("veg_janitor/screen.inc")
 dofile("veg_janitor/calibration.inc")
-dofile("veg_janitor/new_screen_searcher.inc")
+dofile("screen_searcher.inc")
 
 PlantController = {}
 function PlantController:new(index, location, alternate_drag, window_pos, seed_name, seed_type, num_water_times, config, existing_unpin_locations)
@@ -154,11 +154,9 @@ function PlantController:tick()
     else
       if self.snapshoting_water_animations then
         if self.watered_at and lsGetTimer() - self.watered_at > 3000 then
-          --print('DISPLAYING IGNORED')
-          --self.searcher:display_ignored_regions(self.location.box)
           self.snapshoting_water_animations = false
         else
-          self.searcher:ignore_changed_pixels(self.prevCheckPixels, self.location.box)
+          self.searcher:markChangesAsDeadZone('before')
         end
       end
     end
@@ -192,26 +190,13 @@ function PlantController:close()
   end
 end
 
-function PlantController:snapshot()
-  self.beforePlantPixels = getBoxPixels(self.location.box)
-end
 
 function PlantController:grow_plant()
   -- Take of a snapshot of the area in which we are guessing the plant will be placed before we actually create
   -- and place it.
-  if not self.saved_plant_location then
-    lsSleep(click_delay)
-    lsPrintln("Haven't got a saved plant location, taking snapshot of before pixels now at " .. tostring(self.location))
-    self:snapshot()
-  else
-    print("HAVE SAVED LOCATION")
-  end
 
   if self.saved_plant_location then
-    print('SETTING SAVED PLANT PIXEL')
     self.saved_plant_pixel = srReadPixel(self.saved_plant_location.x, self.saved_plant_location.y)
-  else
-    print('NOT SETTING SAVED PLANT PIXEL')
   end
 
   local buildButton = clickPlantButton(self.seed_name)
@@ -220,8 +205,8 @@ function PlantController:grow_plant()
   self.plant_time = lsGetTimer()
   self.plant = Plant:new(self.index, self.plant_time, self, self.config)
   if self.config.calibration_mode then
-    self.prevCheckPixels = getBoxPixels(self.location.box)
-    self.searcher = ScreenSearcher:new(self.index, self.seed_type, false, self.config, self.location.box)
+    self.searcher = ScreenSearcher:new(self.location.box, 'compareColorEx')
+    self.searcher:snapshotScreen('before')
     self.snapshoting_water_animations = true
   end
 end
@@ -300,28 +285,7 @@ function PlantController:check_how_many_plant_pixels_changed()
   if self.snapshoting_water_animations then
     return 0
   end
-  local results = self.searcher:count_number_of_changed(self.prevCheckPixels)
-  self.prevCheckPixels = results.pixels
-  table.insert(self.change_count_log, results.num_changed)
-  return results.num_changed
-end
-
-function PlantController:search()
-  if not self.saved_plant_location then
-    local searcher = ScreenSearcher:new(self.index, self.seed_type, false, self.config, self.search_box)
-    local vec_and_pix = searcher:findChangedRow(self.beforePlantPixels, self.location.box)
-    if vec_and_pix then
-      print('SEARCHED AND SET')
-      self.saved_plant_location = vec_and_pix.vector
-      self.saved_plant_pixel = vec_and_pix.pixel
-      return true
-    else
-      --self.beforePlantPixels = searcher.new_pixels
-      return false
-    end
-  else
-    return true
-  end
+  return self.searcher:countNumberChanged(self.prevCheckPixels, 'before')
 end
 
 function PlantController:openBedWindow()
@@ -333,14 +297,14 @@ function PlantController:openBedWindow()
       local new_colour = current_pixel
       local click_colour = self.saved_plant_pixel
       local pixel_same = new_colour == click_colour
-      if true then
+      if pixel_same or not self.config.only_click_when_pixel_changes_mode then
         self.last_clicked_plant_at = lsGetTimer()
         click(self.saved_plant_location, false, true)
         lsSleep(click_delay)
         click(self.saved_plant_location, true, true)
         lsSleep(click_delay)
       else
-        lsPrintln("Pixel doesn't match " .. click_colour .. " instead it's " .. new_colour)
+        lsPrintln("Pixel matches recorded before planting colour of " .. click_colour .. ", not clicking.")
       end
       self.open_attempts = self.open_attempts + 1
     end
@@ -374,329 +338,6 @@ end
 
 function PlantController:set_search_box(box)
   self.location.box = box
-end
-
-ScreenSearcher = {}
-function ScreenSearcher:new(index, seed_type, previous_plants, config, search_box)
-  local o = {}
-  o.config = config
-  o.index = index
-  o.labels = {}
-  o.current_label = 1
-  o.total_changed = 0
-  o.new_pixels = {}
-  o.search_box = search_box
-  o.seed_type = seed_type
-  o.previous_plants = previous_plants
-  o.ignore_pixels = {}
-  return newObject(self, o)
-end
-
-function ScreenSearcher:count_number_of_changed(pixels)
-
-  srReadScreen()
-
-  local num_changed = 0
-  local num_ignored = 0
-  local box = self.search_box
-  local new_pixels = {}
-
-  for y = 0, box.height, 1 do
-    new_pixels[y] = new_pixels[y] or {}
-    for x = 0, box.width do
-      local new_pixel = srReadPixelFromBuffer(box.left + x, box.top + y)
-      new_pixels[y][x] = new_pixel
-      local same = compareColorEx(new_pixel, pixels[y][x], 1000, 1000)
-      if not same then
-        if self.ignore_pixels[y][x] then
-          num_ignored = num_ignored + 1
-        else
-          num_changed = num_changed + 1
-        end
-      end
-    end
-  end
-  local results = {}
-  results.pixels = new_pixels
-  results.num_changed = num_changed
-  return results
-end
-
-function ScreenSearcher:ignore_changed_pixels(pixels, box)
-  srReadScreen()
-  for y = 0, box.height, 1 do
-    self.ignore_pixels[y] = self.ignore_pixels[y] or {}
-    for x = 0, box.width do
-      local new_pixel = srReadPixelFromBuffer(box.left + x, box.top + y)
-      local same = compareColorEx(new_pixel, pixels[y][x], 1000, 1000)
-      if not same then
-        self.ignore_pixels[y][x] = true
-      end
-    end
-  end
-
-end
-
-function ScreenSearcher:display_ignored_regions(box)
-
-  lsDoFrame()
-  local start = lsGetTimer()
-  while lsGetTimer() - start < 5000 do
-    for y = 0, box.height, 1 do
-      for x = 0, box.width do
-        if self.ignore_pixels[y][x] then
-          lsDisplaySystemSprite(1, x, y, 1, 1, 1, RED)
-        end
-      end
-    end
-    lsDoFrame()
-    checkBreak()
-    lsSleep(tick_delay)
-  end
-
-end
-
-function ScreenSearcher:findChangedRow(pixels, box)
-  return self:findChangedRowRaw(pixels, box, self:should_classify(), false)
-end
-
-function ScreenSearcher:findChangedRowRaw(pixels, box, classify, tolerance_compare, include_player_box)
-
-  srReadScreen()
-
-  if self.search_box then
-    box = self.search_box.box
-  end
-  lsPrintln("Using :" .. box.left .. " top:" .. box.top .. " width : " .. box.width .. " height " .. box.height)
-
-  local max_label_queue
-  local max_label
-  local max_count = 0
-  self.label_widths = {}
-
-  for y = 0, box.height, 1 do
-    self.new_pixels[y] = self.new_pixels[y] or {}
-    self.labels[y] = self.labels[y] or {}
-    for x = 0, box.width do
-      self:getAndCacheNewPixels(box, x, y)
-      if not self.labels[y][x] then
-        if self:pixelDiff(pixels, x, y, box, classify, tolerance_compare, include_player_box) then
-
-
-          local queue = List.new()
-          local current_label_queue = List.new()
-          self.labels[y][x] = self.current_label
-          local current_label_count = 1
-          List.pushright(queue, { y = y, x = x })
-
-          self.label_widths[self.current_label] = { widths = {}, min_x = {} }
-          self.label_widths[self.current_label].widths[y] = 1
-          self.label_widths[self.current_label].min_x[y] = x
-          repeat
-            local next_pixel = List.popright(queue)
-            if next_pixel then
-              current_label_count = current_label_count + 1
-              List.pushright(current_label_queue, { y = next_pixel.y, x = next_pixel.x })
-              self.total_changed = self.total_changed + 1
-              self:update(queue, pixels, next_pixel.y - 1, next_pixel.x, box)
-              self:update(queue, pixels, next_pixel.y + 1, next_pixel.x, box)
-              self:update(queue, pixels, next_pixel.y, next_pixel.x + 1, box)
-              self:update(queue, pixels, next_pixel.y, next_pixel.x - 1, box)
-            end
-            if current_label_count > max_count then
-              max_label_queue = current_label_queue
-              max_label = self.current_label
-              max_count = current_label_count
-            end
-          until not next_pixel
-
-          self.current_label = self.current_label + 1
-
-        else
-          self.labels[y][x] = -1
-        end
-      end
-
-      if self.previous_plants and self:pixelDiff(pixels, x, y, box, classify, tolerance_compare) then
-        if not self.previous_plants[y] then
-          self.previous_plants[y] = {}
-        end
-        self.previous_plants[y][x] = (self.previous_plants[y][x] or 0) | (1 << self.index)
-      end
-    end
-  end
-
-  lsPrintln("TOTAL CHANGED " .. self.total_changed .. " MAX " .. (max_label or "no max") .. " has changed size " .. (max_count or " no max "))
-
-  if self:number_of_changed_pixels_is_large_enough(max_label, max_count) then
-    local innermost_pixel = self:find_innermost_pixel_for_label(max_label_queue, max_label)
-    local x = box.left + innermost_pixel.x
-    local y = box.top + innermost_pixel.y
-    return { vector = Vector:new { x, y }, pixel = srReadPixelFromBuffer(x, y) }
-  else
-    return false
-  end
-end
-
-function ScreenSearcher:find_innermost_pixel_for_label(queue, label)
-  local last_pixel
-  local edge_pixels = {}
-  local i = 1
-  local inner_pixels = List.new()
-  local start = lsGetTimer()
-  repeat
-    repeat
-      local next_pixel = List.popright(queue)
-      if next_pixel then
-        local is_edge = false
-        is_edge = is_edge or self:get_label(next_pixel.x, next_pixel.y - 1, edge_pixels, i) ~= label
-        is_edge = is_edge or self:get_label(next_pixel.x, next_pixel.y + 1, edge_pixels, i) ~= label
-        is_edge = is_edge or self:get_label(next_pixel.x + 1, next_pixel.y, edge_pixels, i) ~= label
-        is_edge = is_edge or self:get_label(next_pixel.x - 1, next_pixel.y, edge_pixels, i) ~= label
-        if not is_edge then
-          List.pushright(inner_pixels, next_pixel)
-        else
-          edge_pixels[next_pixel.y] = edge_pixels[next_pixel.y] or {}
-          edge_pixels[next_pixel.y][next_pixel.x] = i
-        end
-        last_pixel = next_pixel
-      end
-    until not next_pixel
-    i = i + 1
-    queue = inner_pixels
-    inner_pixels = List.new()
-  until List.empty(queue) or i > 4
-  print("Found click for " .. self.index .. " in " .. (lsGetTimer() - start))
-  return last_pixel
-end
-
-function ScreenSearcher:get_label(x, y, edge_pixels, i)
-  if edge_pixels[y] and edge_pixels[y][x] and i > edge_pixels[y][x] then
-    return "-1"
-  else
-    return self.labels[y] and self.labels[y][x]
-  end
-end
-
-function ScreenSearcher:number_of_changed_pixels_is_large_enough(label, count)
-  if self.config.required_number_of_changed_pixels_before_clicking[self.seed_type] then
-    return label > 0 and count > self.config.required_number_of_changed_pixels_before_clicking[self.seed_type]
-  else
-    return label > 0 and count > self.config.required_number_of_changed_pixels_before_clicking["Default"]
-  end
-end
-
-function ScreenSearcher:update(queue, pixels, y, x, box)
-  if (not self.labels[y] or not self.labels[y][x]) then
-    self.labels[y] = self.labels[y] or {}
-    if self:pixelDiff(pixels, x, y, box, self:should_classify()) then
-      self.labels[y][x] = self.current_label
-      if not self.label_widths[self.current_label].widths[y] then
-        self.label_widths[self.current_label].widths[y] = 1
-        self.label_widths[self.current_label].min_x[y] = x
-      else
-        self.label_widths[self.current_label].widths[y] = self.label_widths[self.current_label].widths[y] + 1
-        if self.label_widths[self.current_label].min_x[y] > x then
-          self.label_widths[self.current_label].min_x[y] = x
-        end
-      end
-      List.pushright(queue, { y = y, x = x })
-    else
-      self.labels[y][x] = -1
-    end
-  end
-end
-
-function ScreenSearcher:getAndCacheNewPixels(box, x, y)
-  if not self.new_pixels[y] then
-    self.new_pixels[y] = {}
-  end
-  if not self.new_pixels[y][x] then
-    self.new_pixels[y][x] = srReadPixelFromBuffer(box.left + x, box.top + y)
-  end
-  return self.new_pixels[y][x]
-end
-
-function boxesOverlap(a, b)
-  return a.left <= b.right and a.right >= b.left and a.top <= b.bottom and a.bottom >= b.top
-end
-
-function classifyColour(colourRGBA, seed_type)
-  local colour = toColour(colourRGBA)
-  local r = colour[1]
-  local g = colour[2]
-  local b = colour[3]
-  if seed_type == "Onions" then
-    --        lsPrintln("R " .. r .. " G " .. g .. " B " .. b)
-    if b < 40 then
-      return "G"
-    elseif g >= r and b > 120 then
-      return "W"
-    else
-      return "Y"
-    end
-  else
-    return colourRGBA
-  end
-end
-
-function ScreenSearcher:should_classify()
-  return self.seed_type == "Onions"
-end
-
-function ScreenSearcher:pixelDiff(pixels, x, y, box, classify, tolerance_compare, include_player_box)
-  if not self.search_box or (y >= 0 and y <= box.height and x >= 0 and x <= box.width and self.search_box.area[y][x]) then
-    local inside_player = inside(Vector:new { box.left + x, box.top + y }, PLAYER_BOX)
-    if not inside_player or include_player_box then
-      if classify then
-        local old_colour = "Y"
-        local new_colour = "W"
-        if (pixels[y] and pixels[y][x] and classifyColour(pixels[y][x], self.seed_type)) == old_colour then
-          local new_pixel = self:getAndCacheNewPixels(box, x, y)
-          return classifyColour(new_pixel, self.seed_type) == new_colour
-        end
-      elseif tolerance_compare then
-        if pixels[y] and pixels[y][x] then
-          local new_pixel = self:getAndCacheNewPixels(box, x, y)
-          local pixel = pixels[y][x]
-          local same = compareColorEx(pixel, new_pixel, tolerance_compare, tolerance_compare)
-          return not same
-        end
-      else
-        if pixels[y] and pixels[y][x] then
-          local new_pixel = self:getAndCacheNewPixels(box, x, y)
-          return new_pixel ~= pixels[y][x]
-        end
-      end
-    end
-  end
-  return false
-end
-function ScreenSearcher:pixelDiffSimple(pixels, x, y, box)
-  local inside_player = inside(Vector:new { box.left + x, box.top + y }, PLAYER_BOX)
-  if not inside_player then
-    if pixels[y] and pixels[y][x] then
-      local new_pixel = self:getAndCacheNewPixels(box, x, y)
-      local pixel = pixels[y][x]
-      local same = compareColorEx(pixel, new_pixel, 1000, 1000)
-      return not same
-    end
-  end
-  return false
-end
-
-function toColour(pixelRGBA)
-  local rgb = math.floor(pixelRGBA / 256)
-  local red = (rgb >> 16) & 0xFF;
-  local green = (rgb >> 8) & 0xFF;
-  local blue = rgb & 0xFF;
-  --  lsPrintln("White R=" .. red .. " G=" .. green .. " B=" .. blue)
-  return { red, green, blue }
-end
-
-function inside(vector, box)
-  local x, y = vector.x, vector.y
-  return (x >= box.left and x <= box.right) and (y >= box.top and y <= box.bottom)
 end
 
 
