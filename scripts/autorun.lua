@@ -60,7 +60,8 @@ function doit()
       if (autorun) then
         safeClick(xyScreenSize[0] / 2, xyScreenSize[1] / 3);
       else
-        safeClick(xyScreenSize[0] / 2, xyScreenSize[1] / 3, true);
+        local escape = "\27"
+        srKeyEvent(escape) -- Hit ESC to close out possible pinned menu.
       end
     end
 

@@ -65,7 +65,12 @@ function single_attribute_edit_screen(config, title, descriptive_name, name, def
         thing_type = type(default)
       end
 
-      config[name] = drawEditBox(name .. config.name, descriptive_name, config[name] or default, thing_type, width)
+      local before = config[name]
+      if before == nil then
+        before = default
+      end
+
+      config[name] = drawEditBox(name .. config.name, descriptive_name,  before, thing_type, width)
     end
   }
 
@@ -428,6 +433,8 @@ function edit_config_screen(config)
         end
       }
       config.click_delay = drawNumberEditBox("click_delay", "What should the click delay be? ", 100)
+      config.check_for_water_button = CheckBox(X_PADDING, current_y, 10, WHITE, " Error if the water button can't be seen at start?", config.check_for_water_button)
+      current_y = current_y + 30
       config.search_for_seed_bags = CheckBox(X_PADDING, current_y, 10, WHITE, " Pickup dead plant seed bags after each run?", config.search_for_seed_bags)
       current_y = current_y + 30
       config.debug = CheckBox(X_PADDING, current_y, 10, WHITE, " Show pretty debug pictures?", config.debug)
@@ -752,6 +759,7 @@ function is_boolean_config_key(key)
     ["reposition_avatar"] = true,
     ["sorting_mode"] = true,
     ["search_for_seed_bags"] = true,
+    ["check_for_water_button"] = true,
   }
   return boolean_config_keys[key]
 end
@@ -1231,6 +1239,7 @@ function default_deep_config()
     ["reposition_avatar"] = true,
     ["sorting_mode"] = true,
     ["search_for_seed_bags"] = true,
+    ["check_for_water_button"] = false,
     ["end_of_run_wait"] = 3000,
     ["onion_calibration_mode_change_threshold"] = 4.5,
     ["non_onion_calibration_mode_change_threshold"] = 1,
@@ -1240,10 +1249,10 @@ function default_deep_config()
       ["Default"] = 1,
     },
     ["default_plant_location_order"] = {
-      { direction = "WEST", number_of_moves = 2 },
-      { direction = "EAST", number_of_moves = 2 },
-      { direction = "NORTH", number_of_moves = 2 },
       { direction = "SOUTH", number_of_moves = 2 },
+      { direction = "NORTH", number_of_moves = 2 },
+      { direction = "EAST", number_of_moves = 2 },
+      { direction = "WEST", number_of_moves = 2 },
       { direction = "SOUTH_EAST", number_of_moves = 1 },
       { direction = "NORTH_WEST", number_of_moves = 1 },
       { direction = "NORTH_EAST", number_of_moves = 1 },
