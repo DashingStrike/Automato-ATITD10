@@ -8,6 +8,7 @@ items = {
         },
         --end
         {"",
+            "Churn Butter",
             "Dig Hole",
             "Flax Comb",
             "Hackling Rake",
@@ -19,7 +20,6 @@ items = {
             "Limestone",
             "Dirt"
             --[[
-            "Churn Butter",
             "Excavate Blocks",
             "Pump Aqueduct",
             "Push Pyramid",
@@ -482,14 +482,14 @@ local function excavateBlocks()
     end
     return;
 end
+]]--
 
 function churnButter()
-    local t = srFindImage("statclicks/churn.png");
+    local t = findText("Churn");
     if t then
-        srClickMouseNoMove(t[0]+5, t[1]);
+      clickText(t);
     end
 end
-]]--
 
 function doTasks()
     didTask = false;
@@ -562,6 +562,8 @@ function doTasks()
                   gather("Limestone");
                 elseif curTask == "Dirt" then
                   gather("Dirt");
+                elseif curTask == "Churn Butter" then
+                    churnButter();
                 else
                   clickText(findText(textLookup[curTask]));
                 end
@@ -576,8 +578,7 @@ function doTasks()
                     tapRods();
                 elseif curTask == "Stir Cement" then
                     stirCement();
-                elseif curTask == "Churn Butter" then
-                    churnButter();
+
                 elseif curTask == "Search Rotten Wood" then
                     searchRottenWood();
                 end
