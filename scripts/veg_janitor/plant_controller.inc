@@ -264,7 +264,7 @@ function PlantController:harvest()
     click(harvest_vec)
     lsSleep(click_delay / 2)
     self.harvested = true
-    return self:dead()
+    return true
   else
     return false
   end
