@@ -303,7 +303,7 @@ function preLocatePlants(config, plants, seed_finder, dead_player_box)
   if config.debug then
     plantSearcher:drawLayers()
   end
-  for i = 1, config.num_plants do
+  for i = config.num_plants, 1, -1 do
     srReadScreen()
     local buildButton = clickPlantButton(config.seed_name)
     srReadScreen()
