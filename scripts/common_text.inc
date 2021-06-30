@@ -192,6 +192,10 @@ end
 -------------------------------------------------------------------------------
 
 function parseText(x, y, w, h)
+  if w < 1 or h < 1 then
+    return nil;
+  end
+
   srStripRegion(x, y, w, h);
   local table = srParseTextRegion(x, y, w, h);
   if table == nil then
@@ -206,7 +210,7 @@ function parseText(x, y, w, h)
     newTable[i][2] = table[(i-1)*3+2];
 
     newTable[i][2] = fixSpaces(newTable[i][2], " ", ".");
-    newTable[i][2] = fixSpaces(newTable[i][2], "%d", "1");
+    newTable[i][2] = fixSpaces(newTable[i][2], "%d", "%d");
     newTable[i][2] = fixSpaces(newTable[i][2], "%.", ".");
   end
   return newTable;
