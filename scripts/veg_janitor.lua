@@ -297,6 +297,7 @@ function debugSearchBoxes(config, plants)
 end
 
 function preLocatePlants(config, plants, seedScreenSearcher, dead_player_box)
+  local box = makeLargeSearchBoxAroundPlayer((srGetWindowSize()[0] / 4))
   local plantSearcher = ScreenSearcher:new(box)
   plantSearcher:snapshotScreen('before')
   plantSearcher:markBoxAsDead(dead_player_box)

@@ -253,7 +253,7 @@ function PlantController:harvest()
     lsSleep(click_delay / 2)
     self.harvested = true
     self.bad_calibration = false
-    return self:dead()
+    return true
   else
     return false
   end
