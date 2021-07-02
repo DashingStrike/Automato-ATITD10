@@ -23,6 +23,24 @@ actions = {
     matLabels = {"Ash", "Water", "Wood"},
     matCounts = {5, 25, 28}
   },
+  {
+    label = "Sulfur",
+    buttonPos = makePoint(30, 130);
+    stoked = true,
+    menuImage = "kettle/sulfur.png",
+    output = 25,
+    matLabels = {"Sulphurous Water", "Wood"},
+    matCounts = {25, 28}
+  },
+  {
+    label = "Salt",
+    buttonPos = makePoint(30, 160);
+    stoked = true,
+    menuImage = "kettle/salt.png",
+    output = 3,
+    matLabels = {"Salt Water", "Wood"},
+    matCounts = {25, 28}
+  },
   --[[
     {
       label = "Flower Fert",
@@ -50,24 +68,6 @@ actions = {
       output = 50,
       matLabels = {"Toad Skin Mushrooms", "Water", "Wood"},
       matCounts = {1, 5, 5}
-    },
-    {
-      label = "Sulfur",
-      buttonPos = makePoint(30, 130);
-      stoked = true,
-      menuImage = "kettle/sulfur.png",
-      output = 25,
-      matLabels = {"Sulphurous Water", "Wood"},
-      matCounts = {25, 28}
-    },
-    {
-      label = "Salt",
-      buttonPos = makePoint(30, 160);
-      stoked = true,
-      menuImage = "kettle/salt.png",
-      output = 3,
-      matLabels = {"Salt Water", "Wood"},
-      matCounts = {25, 28}
     },
     {
       label = "Acid",
