@@ -13,7 +13,9 @@ local stashList = {
   tadpoles = {"Tadpoles ("},
   silt     = {"Silt ("},
   insect   = {"Insect.", "All Insect"},
-  wood     = {"Wood ("}
+  wood     = {"Wood ("},
+  medium   = {"Medium Stone ("},
+  cuttable = {"Cuttable Stone ("},
 };
 
 routeFileName = "gather_routes.txt";
@@ -342,6 +344,7 @@ slate = false;
 grass = false;
 clay = false;
 silt = false;
+stone = false;
 papy = false;
 repeatForever = true;
 juglessGather = false;
@@ -424,6 +427,9 @@ function queryRoute()
     silt = readSetting("silt",silt);
     silt = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather silt", silt);
     writeSetting("silt",silt);
+    y = y + 36; stones = readSetting("stones", stones);
+    stones = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather stones", stones);
+    writeSetting("stones", stones);
     y = y + 36;
     wood = readSetting("wood",wood);
     wood = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather wood", wood);
@@ -865,7 +871,7 @@ function routeTo(waypoint,thisRoute)
 end
 
 function followRoute(route)
-    if(slate or clay or grass or silt or wood or papy) then
+    if(slate or clay or grass or silt or stones or wood or papy) then
         local haveWarehouse = false;
         for i = 1, #routes[route][1] do
             if(routes[route][1][i][3] == Warehouse) then
@@ -882,7 +888,7 @@ function followRoute(route)
             end
         end
     else
-        if(not wood or slate or clay or grass or silt or papy) then
+        if(not wood or slate or clay or grass or silt or stones or papy) then
             if(not promptOkay("You have not specified any resources to gather.  Are you sure that's what you want?")) then
                 return;
             end
@@ -1245,7 +1251,7 @@ function walkTo(x, y, showStatus, promptIfNotMoving)
     while(1) do
         updateStatus();
         srReadScreen();
-        if(checkSlate() or checkClay() or checkGrass() or checkSilt()) then
+        if(checkSlate() or checkClay() or checkGrass() or checkSilt() or checkStones()) then
             moving = true;
             lastMoveTime = lsGetTimer();
         end
@@ -1452,7 +1458,7 @@ function checkSilt()
   end
   local cluster = clusters[1];
 
-  if isWithinSiltRange(cluster[0], cluster[1]) then
+  if isInMiddleOfScreen(cluster[0], cluster[1]) then
     safeClick(cluster[0], cluster[1]);
     lsSleep(1000);
 
@@ -1466,6 +1472,65 @@ function checkSilt()
   end
 
   return false;
+end
+
+--Things that look too stone like (such as the stone textured terrain, stone floors in CPs, etc) will throw this off.
+function checkStones()
+  if not stones then
+    return false;
+  end
+
+  local moved = false;
+  while true do
+    checkBreak();
+
+    if srFindImage("unpinnedPin.png") then
+      srKeyEvent("\27"); --escape to close any open window
+    end
+
+    local xyWindowSize = srGetWindowSize();
+    local clusters = lsAnalyzeCustom(20, 600, 0, xyWindowSize[0] * 0.5, 0x909090FF, 0xC5C5C5FF, true);
+    local found = false;
+    if clusters then
+      srKeyUp(VK_ALL);
+      setStatus("Gathering stones");
+      for i = 1, #clusters do
+        checkBreak();
+        if isInMiddleOfScreen(clusters[i][0], clusters[i][1]) then
+          found = true;
+          moved = true;
+          safeClick(clusters[i][0], clusters[i][1]);
+          lsSleep(200);
+
+          srReadScreen();
+          local stone = findText("Pick up the [A-z]+ Stone", nil, REGEX);
+          if stone then
+            safeClick(stone[0], stone[1]);
+          end
+          local gravel = findText("Scoop up the Gravel");
+          if gravel then
+            safeClick(gravel[0], gravel[1]);
+          end
+
+          if findText("(0)") then
+            srKeyEvent("\27"); --escape to close window
+          end
+
+          lsSleep(3000);
+          break;
+        end
+      end
+    end
+
+    if not found then
+      if moved then
+        lastMoveTime = lsGetTimer();
+      end
+      return;
+    end
+
+    lsSleep(10);
+  end
 end
 
 function clickColor(color)
@@ -1556,12 +1621,13 @@ function plantPapy()
     return false;
 end
 
-function isWithinSiltRange(x, y)
+function isInMiddleOfScreen(x, y)
   local xyWindowSize = srGetWindowSize();
-  local radius = xyWindowSize[0] / 0.25;
-  local dx = x - xyWindowSize[0] / 2;
-  local dy = y - xyWindowSize[0] / 2;
-  return dx*dx + dy*dy <= radius*radius;
+  return
+  x > xyWindowSize[0] * 0.25 and
+    x < xyWindowSize[0] * 0.75 and
+    y > xyWindowSize[1] * 0.25 and
+    y < xyWindowSize[1] * 0.75;
 end
 
 function clickMenus(menus)
