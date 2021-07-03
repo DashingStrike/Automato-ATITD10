@@ -4,59 +4,57 @@ dofile("settings.inc");
 items = {
         --strength
         {"",
-            "Coconuts",
+          "Coconuts",
         },
         --end
         {"",
-            "Churn Butter",
-            "Dig Hole",
-            "Flax Comb",
-            "Hackling Rake",
-            "Weave Canvas",
-            "Weave Linen",
-            "Weave Papy Basket",
-            "Weave Wool Cloth",
-            "Oil (Flax Seed)",
-            "Limestone",
-            "Dirt"
-            --[[
-            "Excavate Blocks",
-            "Pump Aqueduct",
-            "Push Pyramid",
-            "Stir Cement",
-            "Weave Silk",
+          "Churn Butter",
+          "Dig Hole",
+          "Flax Comb",
+          "Hackling Rake",
+          "Weave Canvas",
+          "Weave Linen",
+          "Weave Papy Basket",
+          "Weave Wool Cloth",
+          "Oil (Flax Seed)",
+          "Limestone",
+          "Dirt"
+          --[[
+          "Excavate Blocks",
+          "Pump Aqueduct",
+          "Push Pyramid",
+          "Stir Cement",
+          "Weave Silk",
 
-            "Water Insects",
-            ]]--
+          "Water Insects",
+          ]]--
         },
         --con
         {"",
-        --[[
-            "Gun Powder",
-            "Ink",
-            ]]--
+          "Gun Powder",
+          "Ink",
         },
         --foc
         {"",
-            "Long Sharp Stick",
-            "Rawhide Strips",
-            "Sharpened Stick",
-            "Tinder",
-            "Clay Lamp",
-            "Flint Hammer",
-            "Barrel Tap",
-            "Bottle Stopper",
-            "Crudely Carved Handle",
-            "Large Crude Handle",
-            "Personal Chit",
-            "Wooden Peg",
-            "Wooden Pestle",
-            "Tackle Block",
-            "Wooden Cog"
-        --[[
-            "Search Rotten Wood",
-            "Tap Rods",
-            ]]--
+          "Long Sharp Stick",
+          "Rawhide Strips",
+          "Sharpened Stick",
+          "Tinder",
+          "Clay Lamp",
+          "Flint Hammer",
+          "Barrel Tap",
+          "Bottle Stopper",
+          "Crudely Carved Handle",
+          "Large Crude Handle",
+          "Personal Chit",
+          "Wooden Peg",
+          "Wooden Pestle",
+          "Tackle Block",
+          "Wooden Cog"
+          --[[
+          "Search Rotten Wood",
+          "Tap Rods",
+          ]]--
         },
 };
 
@@ -70,9 +68,9 @@ retrieveRods = true;
 
 local textLookup = {};
 textLookup["Coconuts"] = "Harvest the Coconut Meat";
---[[
 textLookup["Gun Powder"] = "Gunpowder";
 textLookup["Ink"] = "Ink";
+--[[
 textLookup["Pump Aqueduct"] = "Pump the Aqueduct";
 ]]--
 statNames = {"strength", "endurance", "constitution", "focus"};
