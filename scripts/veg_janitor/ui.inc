@@ -1,4 +1,5 @@
 dofile("veg_janitor/io.inc")
+dofile("veg_janitor/logger.inc")
 dofile("screen_reader_common.inc")
 -- Used to place gui elements sucessively.
 current_y = 0
@@ -436,11 +437,12 @@ function edit_config_screen(config)
       config.check_for_water_button = CheckBox(X_PADDING, current_y, 10, WHITE, " Error if the water button can't be seen at start?", config.check_for_water_button)
       current_y = current_y + 30
       config.search_for_seed_bags = CheckBox(X_PADDING, current_y, 10, WHITE, " Pickup dead plant seed bags after each run?", config.search_for_seed_bags)
-      current_y = current_y + 30
-      config.debug = CheckBox(X_PADDING, current_y, 10, WHITE, " Show pretty debug pictures?", config.debug)
-      current_y = current_y + 30
-      config.debug_log = CheckBox(X_PADDING, current_y, 10, WHITE, "Print debug logs?", config.debug_log)
-      current_y = current_y + 60
+      current_y = current_y + 100
+      config.debug_log_level = dropdown("debug_log_level", INFO, LOG_LEVEL_TO_NAME, "Debug Log Level:", LOG_LEVEL_TO_LEVEL)
+      local copy_log_to_clipboard = button("Copy last runs debug log to clipboard", YELLOW)
+      if copy_log_to_clipboard then
+        lsClipboardSet(get_veg_log())
+      end
       local copy_to_clipboard = button("Copy config to clipboard")
       if copy_to_clipboard then
         lsClipboardSet(serializeToString(config))
@@ -915,6 +917,9 @@ function getUserParams()
     if not config.non_onion_calibration_mode_change_threshold then
       config.non_onion_calibration_mode_change_threshold = 1
     end
+    if not config.debug_log_level then
+      config.debug_log_level = INFO
+    end
 
     write_config(config)
     lsDoFrame()
@@ -1239,6 +1244,7 @@ function default_deep_config()
     ["click_delay"] = 100,
     ["alternate_drag"] = true,
     ["pre_look"] = true,
+    ["debug_log_level"] = NAME_TO_LOG_LEVEL['INFO'],
     ["num_calibration_runs"] = 10,
     ["record_plant_animation"] = true,
     ["reposition_avatar"] = true,

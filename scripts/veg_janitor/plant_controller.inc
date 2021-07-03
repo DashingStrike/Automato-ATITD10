@@ -129,14 +129,10 @@ function PlantController:tick()
   end
   if self.state == "unplanted" then
     self:grow_plant()
-    self.state = "searching"
-  elseif self.state == "searching" then
-    if self:search() then
-      self.state = "opening"
-    end
+    self.state = "opening"
   elseif self.state == "opening" then
     if self:openBedWindow() then
-      local pin = find_and_click_image("pin", self.window_pos)
+      find_and_click_image("pin", self.window_pos)
       self.window_open = true
       self.state = "growing"
     end
@@ -168,7 +164,7 @@ function PlantController:tick()
 end
 
 function PlantController:dead()
-  local search_box = makeBox(self.window_pos.x - 15, self.window_pos.y - 15, 150, 70)
+  local search_box = makeBox(self.window_pos.x - 15, self.window_pos.y - 15, 200, 70)
   srReadScreen()
   local dead = findImage("veg_janitor/dead.png", search_box)
   --lsPrintln("Dead? " .. (dead and 'dead' or 'alive') .. " | " .. self.window_pos.x .. ", " .. self.window_pos.y);
@@ -205,7 +201,7 @@ function PlantController:grow_plant()
   self.plant_time = lsGetTimer()
   self.plant = Plant:new(self.index, self.plant_time, self, self.config)
   if self.config.calibration_mode then
-    self.searcher = ScreenSearcher:new(self.location.box, 'compareColorEx')
+    self.searcher = ScreenSearcher:new(self.location.box, 'compareColorEx', self.config.debug_log_level)
     self.searcher:snapshotScreen('before')
     self.snapshoting_water_animations = true
   end
@@ -253,7 +249,7 @@ function PlantController:harvest()
     lsSleep(click_delay / 2)
     self.harvested = true
     self.bad_calibration = false
-    return true
+    return self:dead()
   else
     return false
   end

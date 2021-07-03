@@ -15,6 +15,7 @@ dofile("veg_janitor/list.inc")
 dofile("veg_janitor/vector.inc")
 dofile("veg_janitor/screen.inc")
 dofile("veg_janitor/calibration.inc")
+dofile("veg_janitor/logger.inc")
 
 WARNING = [[
 1. In Options -> Interface Options
@@ -55,6 +56,8 @@ function doit()
   lsRequireVersion(2, 54);
   while true do
     local config = getUserParams()
+    reset_log()
+    veg_log(NONE, NONE, 'veg_janitor', 'Starting run in log level ' .. LOG_LEVEL_TO_NAME[config.debug_log_level])
     askForWindowAndSetupGlobals(config)
     gatherVeggies(config)
   end
@@ -228,16 +231,20 @@ function PlantLocation:move()
   end
 end
 
-function PlantLocation:show()
-  displayBox(self.box, false, 3000)
+function PlantLocation:show(title)
+  displayBox(self.box, false, 3000, title)
 end
 
-function displayBox(box, forever, time)
+function displayBox(box, forever, time, title)
   local start = lsGetTimer()
   moveMouse(Vector:new { box.left, box.top })
   while forever or (time and (lsGetTimer() - start) < time) do
+    current_y = 10
     srReadScreen()
     srMakeImage("box", box.left, box.top, box.width, box.height)
+    if title then
+      drawTextUsingCurrent(title, WHITE)
+    end
     srShowImageDebug("box", 0, current_y, 0, 1)
     checkBreak()
     if forever or time then
@@ -291,30 +298,40 @@ function debugSearchBoxes(config, plants)
 
     current_y = 10
     plants[i].location:move()
-    plants[i].location:show()
+    plants[i].location:show('Showing the search box for plant ' .. i)
     safeClick(buildButton[0] + 70, buildButton[1])
   end
 end
 
 function preLocatePlants(config, plants, seedScreenSearcher, dead_player_box)
+  veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'Prelocating plants...')
   local box = makeLargeSearchBoxAroundPlayer((srGetWindowSize()[0] / 4))
-  local plantSearcher = ScreenSearcher:new(box)
+  local plantSearcher = ScreenSearcher:new(box, 'compareColorEx', config.debug_log_level)
   plantSearcher:snapshotScreen('before')
   plantSearcher:markBoxAsDead(dead_player_box)
+  veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'Snapshotted screen and marked player area as dead...')
+  if config.debug_log_level >= DEBUG then
+    plantSearcher:drawRegions(2000, nil, 'Showing excluded player box')
+  end
   for i = config.num_plants, 1, -1 do
+    veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'Pre-locating plant ' .. i)
     srReadScreen()
     local buildButton = clickPlantButton(config.seed_name)
     srReadScreen()
 
     plants[i].location:move()
     lsSleep(500)
-    plantSearcher:markAllChangesAsRegion('before', i)
+    veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'Marking screen changes as plant ' .. i)
+    local numChanged = plantSearcher:markAllChangesAsRegion('before', i)
+    veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'For plant ' .. i .. ' found it has ' .. numChanged .. ' pixels!')
+    veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'Setting search box for plant ' .. i)
     plants[i]:set_search_box(plantSearcher:getRegionBox(i, 0.02))
 
     safeClick(buildButton[0] + 70, buildButton[1])
+    veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'Done pre-locating plant ' .. i)
   end
 
-  if config.debug then
+  if config.debug_log_level >= DEBUG then
     debugSearchBoxes(config, plants)
   end
 
@@ -322,6 +339,7 @@ function preLocatePlants(config, plants, seedScreenSearcher, dead_player_box)
   local numSnapsSoFar = 0
 
   if config.record_plant_animation then
+    veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'Recording plant animations.')
     while numSnapsRequired > numSnapsSoFar do
       for i = 1, config.num_plants do
         srReadScreen()
@@ -331,27 +349,33 @@ function preLocatePlants(config, plants, seedScreenSearcher, dead_player_box)
         lsSleep(200)
         safeClick(buildButton[0], buildButton[1])
       end
+      veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'Snapshotting now that all plants are on the screen so we only detect moving plant pixels.')
       plantSearcher:snapshotScreen('before')
       local first_stage_time = config.plants[config.seed_type][config.seed_name].stage_advance_timings[1]
-      local snapsTaken = recordPlantMovement(plantSearcher, first_stage_time * 0.5)
+      local snapsTaken = recordPlantMovement(plantSearcher, first_stage_time * 0.5, config)
       numSnapsSoFar = numSnapsSoFar + snapsTaken
       lsDoFrame()
       lsPrintWrapped(10, 50, 0, lsScreenX - 20, 1, 1, 0xd0d0d0ff,
         'Waiting for plants to die, ' .. numSnapsRequired - numSnapsSoFar .. ' snapshots left.');
       lsDoFrame()
       lsSleep(first_stage_time * 0.5)
-      findSeedAndPickupIfThere(seedScreenSearcher, config.num_plants)
+      findSeedAndPickupIfThere(seedScreenSearcher, config.num_plants, config)
     end
   end
 
   for i = 1, config.num_plants do
     local point = plantSearcher:findFurthestPointFromEdgeForRegion(i)
+    veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'Saving click location for plant ' .. i .. ' as '.. point.x .. ' , ' .. point.y)
     plants[i].saved_plant_location = point
+  end
+
+  if config.debug_log_level >= DEBUG then
+    plantSearcher:drawRegions(10000, nil, 'Plant regions:')
   end
 end
 
 function displayDebugImages(config, plants, box)
-  if config.debug then
+  if config.debug_log_level >= DEBUG then
     for i = 1, config.num_plants do
       for y = box.top, box.top + box.height, 1 do
         for x = box.left, box.left + box.width do
@@ -400,7 +424,7 @@ function displayDebugImages(config, plants, box)
 
 end
 
-function recordPlantMovement(searcher, watchTime)
+function recordPlantMovement(plantSearcher, watchTime, config)
   local elapsedTime = 0
   local start = lsGetTimer()
   local numSnaps = 0
@@ -408,13 +432,15 @@ function recordPlantMovement(searcher, watchTime)
 
   while elapsedTime < watchTime do
     current_y = 10
-    searcher:markChangesAsDeadZone('before')
+    veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'SNAPSHOT Number ' .. numSnaps)
+    plantSearcher:markChangesAsDeadZone('before')
     elapsedTime = lsGetTimer() - start
     current_y = current_y + lsPrintWrapped(10, current_y, 0, lsScreenX - 20, 1, 1, 0xd0d0d0ff,
       [[Recording the plants movement to reduce click errors, please do not interfere the macro wants this first set of plants to die and will pickup itself...]]);
     lsPrintWrapped(10, current_y, 0, lsScreenX - 20, 1, 1, 0xd0d0d0ff,
       (watchTime - elapsedTime) .. ' ms left, ' .. numSnaps .. ' snapshots taken... ');
     lsDoFrame()
+    checkBreak(true)
     numSnaps = numSnaps + 1
   end
   return numSnaps
@@ -424,17 +450,20 @@ function recordMovement(searcher, config)
 
   local num_snaps = config.num_char_snaps or 10
   for i = 1, num_snaps do
-    searcher:markChangesAsDeadZone('before')
+    searcher:markChangesAsDeadZone('beforeSeeds')
     lsPrintWrapped(10, 50, 0, lsScreenX - 20, 1, 1, 0xd0d0d0ff,
       [[Recording your characters movement to reduce click errors...]]);
     lsPrintWrapped(10, 100, 0, lsScreenX - 20, 1, 1, 0xd0d0d0ff,
       (num_snaps - i) .. ' snapshots left');
     lsDoFrame()
   end
+  if config.debug_log_level >= DEBUG then
+    searcher:drawRegions(3000, false, 'Seed searcher dead zones for player:')
+  end
   return searcher:getRegionBox(searcher.deadRegionName, nil, 2.5)
 end
 
-function findSeedAndPickupIfThere(searcher, num_dead)
+function findSeedAndPickupIfThere(searcher, num_dead, config)
   lsPrintWrapped(10, 100, 0, lsScreenX - 20, 1, 1, 0xd0d0d0ff, 'Searching for ' .. num_dead .. ' seed bags left over on the floor from failed plants.');
   lsDoFrame()
   srReadScreen()
@@ -452,10 +481,16 @@ function findSeedAndPickupIfThere(searcher, num_dead)
   local expected_seed_bag_pixel_size = expected_seed_bag_height * expected_seed_bag_width
   local fudge_factor = 0.1
   local pixel_change = math.floor(expected_seed_bag_pixel_size * fudge_factor)
-  searcher:markConnectedAreasAsNewRegions('before', nil, true)
+  veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Looking for ' .. num_dead .. ' seeds which must have a region pixel size greater than ' .. pixel_change)
+  searcher:markConnectedAreasAsNewRegions('beforeSeeds', nil, true)
   local regions = searcher:getRegions(pixel_change, num_dead + 3)
+  veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Found ' .. #regions .. ' changed regions.')
+  if config.debug_log_level >= DEBUG then
+    searcher:drawRegions(6000, pixel_change, 'Potential Seed Bag Locations:')
+  end
   local seeds_picked_up = 0
-  for _, region in ipairs(regions) do
+  for i, region in ipairs(regions) do
+    veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Looking for seed ' .. i .. '.')
     local clickLoc = searcher:findFurthestPointFromEdgeForRegion(region:name())
     lsSleep(click_delay)
     srClickMouse(clickLoc.x, clickLoc.y, 1)
@@ -463,15 +498,22 @@ function findSeedAndPickupIfThere(searcher, num_dead)
     srReadScreen()
     local seed_box_found = srFindImage("veg_janitor/seeds.png",
       4800);
-    findRemoveNewWindows(existing_unpin_locs)
     if seed_box_found then
+      veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Found seed!')
       seeds_picked_up = seeds_picked_up + 1
       lsSleep(click_delay)
       srClickMouse(clickLoc.x - 1, clickLoc.y - 1, 0)
+      lsSleep(click_delay)
+      srClickMouse(clickLoc.x - 1, clickLoc.y - 1, 0)
       sleepWithStatus(3500, "Waiting for pickup animation...", nil, 0.7, "Please standby");
+    else
+      veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Failed to find seed closing window!')
+      lsSleep(click_delay)
+      srClickMouse(clickLoc.x - 1, clickLoc.y - 1, 0)
     end
   end
   if seeds_picked_up < num_dead then
+    veg_log(INFO, config.debug_log_level, 'findSeedAndPickupIfThere', 'Failed to pickup all seeds, ' .. num_dead - seeds_picked_up .. ' left to pickup...')
     lsPlaySound("fail.wav");
     local exit = false
     while not lsShiftHeld() and not exit do
@@ -540,14 +582,14 @@ function gatherVeggies(config)
     if config.search_for_seed_bags or config.pre_look then
       if firstRun or movementExpected then
         local xyScreenSize = srGetWindowSize();
-        seed_searcher = ScreenSearcher:new(makeLargeSearchBoxAroundPlayer((xyScreenSize[0] / 4)))
-        seed_searcher:snapshotScreen('before')
+        seed_searcher = ScreenSearcher:new(makeLargeSearchBoxAroundPlayer((xyScreenSize[0] / 4)), 'compareColorEx', config.debug_log_level)
+        seed_searcher:snapshotScreen('beforeSeeds')
         dead_player_box = recordMovement(seed_searcher, config)
       else
         -- Resnapshot the empty floor at the start of runs. Otherwise the seed finder will think all pixels have
         -- changed as the lighting changes slowly over the time if we just use an initial snapshot from the very first
         -- run.
-        seed_searcher:snapshotScreen('before')
+        seed_searcher:snapshotScreen('beforeSeeds')
       end
     end
     if config.pre_look then
@@ -615,7 +657,7 @@ function gatherVeggies(config)
     closeEmptyAndErrorWindows()
 
     if config.search_for_seed_bags and num_dead > 0 then
-      findSeedAndPickupIfThere(seed_searcher, num_dead)
+      findSeedAndPickupIfThere(seed_searcher, num_dead, config)
     end
 
     local stop = lsGetTimer() + config.end_of_run_wait

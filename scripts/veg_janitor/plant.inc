@@ -70,6 +70,10 @@ function Plant:update_stage_times()
   table.insert(self.measured_stage_times, row)
 end
 
+function Plant:_log(level, message)
+  veg_log(level, self.config.debug_log_level, 'plant.inc', message)
+end
+
 function Plant:tick()
   if self:dead() then
     return "dead"
@@ -101,23 +105,19 @@ function Plant:tick()
       local limit_percent = limit / 100
       local pixel_limit = xyWindowSize[0] * limit_percent
       pixel_limit = pixel_limit * pixel_limit * (self.stage / 1.5)
-      if (self.config.debug or self.config.debug_log) and change_count ~= 0 then
-        print(' count = ' .. change_count .. ' vs ' .. pixel_limit)
+      if change_count ~= 0 then
+        self:_log(TRACE, ' count = ' .. change_count .. ' vs ' .. pixel_limit)
       end
       if lsGetTimer() - self.previous_stage_ended_at > 25000 then
-        print("CALIBRATION STAGE TIMED OUT")
+        self:_log(INFO, ' CALIBRATION TIMEOUT - Calibration stage timed out after 25000 MS. Marking this run as a bad calibration and applying a calibration fix of -0.5')
         self.controller.bad_calibration = true
         apply_calibration_fix(self.config, -0.5)
         return "wait-till-dead"
       end
       if change_count > pixel_limit then
-        if self.config.debug or self.config.debug_log then
-          print('-------------------------')
-          print('BIG CHANGE ' .. change_count)
-          print('-------------------------')
-        end
+          self:_log(INFO, 'A big change of ' .. change_count .. ' pixels was detected on screen.')
         if lsGetTimer() - self.previous_stage_ended_at < 6000 then
-          print("DETECTED TOO EARLY CHANGE IN CALIBRATION")
+          self:_log(INFO, ' CALIBRATION TOO EARLY - Veg janitor detected the plant growing less than 6000 ms into its current stage. Marking this run as a bad calibration and applying a calibration fix of 0.5')
           self.controller.bad_calibration = true
           apply_calibration_fix(self.config, 0.5)
           return "wait-till-dead"

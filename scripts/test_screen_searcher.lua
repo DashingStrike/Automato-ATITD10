@@ -8,7 +8,7 @@ function doit()
 
   local quarterScreenWidth = srGetWindowSize()[0] / 4
   local yourBoxToSearch = makeLargeSearchBoxAroundPlayer(quarterScreenWidth)
-  local screenSearcher = ScreenSearcher:new(yourBoxToSearch)
+  local screenSearcher = ScreenSearcher:new(yourBoxToSearch, 'compareColorEx')
 
   while true do
     checkBreak();

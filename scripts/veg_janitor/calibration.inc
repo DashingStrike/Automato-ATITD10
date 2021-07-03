@@ -187,7 +187,6 @@ end
 
 
 function apply_calibration_fix(config, change)
-  print('BAD CALIBRATION, MODIFYING TRESHOLD BY ' .. change)
   if config.seed_type == 'Onions' then
     config.onion_calibration_mode_change_threshold = config.onion_calibration_mode_change_threshold + change
   else

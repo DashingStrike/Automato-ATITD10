@@ -2,6 +2,8 @@ dofile("veg_janitor/util.inc")
 dofile("veg_janitor/screen.inc")
 dofile("veg_janitor/binsert.inc")
 dofile("veg_janitor/io.inc")
+dofile("veg_janitor/logger.inc")
+dofile("screen_reader_common.inc")
 
 -------------------------------------------------------------------------------
 -- ScreenSearcher is a utility class that detects areas of changed pixels in a box on the screen. For example you can
@@ -36,7 +38,7 @@ dofile("veg_janitor/io.inc")
 -------------------------------------------------------------------------------
 
 ScreenSearcher = {}
-function ScreenSearcher:new(search_box, comparisonMode)
+function ScreenSearcher:new(search_box, comparisonMode, logLevel)
   local o = {}
   o.box = search_box
   o.snapshots = {} -- A Map from snapshot name to a 2d table of pixel values for that snapshot
@@ -48,6 +50,7 @@ function ScreenSearcher:new(search_box, comparisonMode)
   o.rgbTolerance = 1000
   o.hueTolerance = 1000
   o.deadRegionName = -1 -- A built in region which forces all other regions to ignore locations in this region.
+  o.logLevel = logLevel
   return newObject(self, o)
 end
 
@@ -136,24 +139,21 @@ end
 -------------------------------------------------------------------------------
 function ScreenSearcher:getRegions(minRegionSizeFilter, keepLargestNRegionFilter)
   local regionsPassingFilter
-  if minRegionSizeFilter or keepLargestNRegionFilter then
-    regionsPassingFilter = {}
-    local seenRegions = {}
-    for _, region in ipairs(self.regions) do
-      if not seenRegions[region:name()] then
-        seenRegions[region:name()] = true
-        if region:size() >= minRegionSizeFilter or not minRegionSizeFilter then
-          local fcomp = function(a, b)
-            return a:size() > b:size()
-          end
-          table.binsert(regionsPassingFilter, region, fcomp)
-        end
+  local fcomp = function(a, b)
+    return a:size() > b:size()
+  end
+  regionsPassingFilter = {}
+  local seenRegions = {}
+  for name, region in pairs(self.regions) do
+    if not seenRegions[name] and name ~= self.deadRegionName then
+      seenRegions[name] = true
+      if region:size() >= minRegionSizeFilter or not minRegionSizeFilter then
+        table.binsert(regionsPassingFilter, region, fcomp)
       end
     end
-  else
-    regionsPassingFilter = self.regions
   end
-  local result
+
+  local result = {}
   if keepLargestNRegionFilter then
     for i = 1, math.min(#regionsPassingFilter, keepLargestNRegionFilter) do
       table.insert(result, regionsPassingFilter[i])
@@ -167,26 +167,29 @@ end
 -------------------------------------------------------------------------------
 -- Returns the regions optionally filtered by a minimum size and/or returning only the largest N regions.
 -------------------------------------------------------------------------------
-function ScreenSearcher:drawRegions(displayTime, minRegionSizeFilter)
-  local startTime = lsGetTimer()
+function ScreenSearcher:drawRegions(displayTime, minRegionSizeFilter, title)
   if not displayTime then
     displayTime = 3000
   end
   local furthestResults = {}
   for name, _ in pairs(self.regions) do
-    local result = self:findFurthestPointFromEdgeForRegion(name)
-    local x = result.max_x
-    local y = result.max_y
-    furthestResults[y] = furthestResults[y] and {}
-    furthestResults[y][x] = true
+    if name ~= self.deadRegionName then
+      local result = self:findFurthestPointFromEdgeForRegion(name)
+      local x = result.x - self.box.left
+      local y = result.y - self.box.top
+      furthestResults[y] = furthestResults[y] or {}
+      furthestResults[y][x] = true
+    end
   end
+  local startTime = lsGetTimer()
   lsDoFrame()
+  local tickColour = RED
   while lsGetTimer() - startTime < displayTime do
     local box = self.box
     local screenToRegionMap = self.screenToRegionMap
     local regionToColour = { [self.deadRegionName] = RED }
     local nextFreeColour = 1
-    lsPrint(10, 0, 10, 1, 1, 0xFFFFFFff, "Displaying all regions:");
+    lsPrint(10, 0, 10, 1, 1, 0xFFFFFFff, title or "Displaying all regions:");
     for y = 0, box.height, 1 do
       for x = 0, box.width do
         if screenToRegionMap[y] and screenToRegionMap[y][x] then
@@ -205,11 +208,30 @@ function ScreenSearcher:drawRegions(displayTime, minRegionSizeFilter)
             colour = BLACK
           end
           if furthestResults[y] and furthestResults[y][x] then
-            colour = RED
+            colour = tickColour
+          end
+          if furthestResults[y - 1] and furthestResults[y - 1][x] then
+            colour = tickColour
+          end
+          if furthestResults[y + 1] and furthestResults[y + 1][x] then
+            colour = tickColour
+          end
+          if furthestResults[y] and furthestResults[y][x - 1] then
+            colour = tickColour
+          end
+          if furthestResults[y] and furthestResults[y][x + 1] then
+            colour = tickColour
           end
           lsDisplaySystemSprite(1, x, y, 1, 1, 1, colour)
         end
       end
+    end
+    if tickColour == RED then
+      tickColour = BLUE
+    elseif tickColour == BLUE then
+      tickColour = GREEN
+    else
+      tickColour = RED
     end
     lsDoFrame()
     lsSleep(tick_delay)
@@ -224,10 +246,14 @@ function ScreenSearcher:getRegionBox(regionName, optionalScreenSizePercentageToE
 
   self:_errorIfNotARegion(regionName)
 
-  local region = self.regions[regionName]
   if not optionalScreenSizePercentageToExpandBy then
     optionalScreenSizePercentageToExpandBy = 0
   end
+  if not optionalFixedValueToExpandBy then
+    optionalFixedValueToExpandBy = 0
+  end
+
+  local region = self.regions[regionName]
   local xyScreenSize = srGetWindowSize();
   local extraWidth = xyScreenSize[0] * optionalScreenSizePercentageToExpandBy
   local extraHeight = xyScreenSize[1] * optionalScreenSizePercentageToExpandBy
@@ -243,20 +269,26 @@ end
 -- Great for calculating the best place to click on a region.
 -------------------------------------------------------------------------------
 function ScreenSearcher:findFurthestPointFromEdgeForRegion(regionName)
+  self:_log(DEBUG, 'Finding furthest point from edge for ' .. regionName)
 
-  local slightlyExpandedOddBox = self:getRegionBox(regionName, nil, 2)
+  local slightlyExpandedOddBox = self.regions[regionName]:getBox(0, 0, 2, 2)
   local c_result = chamfer_distance(slightlyExpandedOddBox, self.screenToRegionMap, regionName)
   local p = makePoint(
     c_result.max_x + slightlyExpandedOddBox.left + self.box.left,
     c_result.max_y + slightlyExpandedOddBox.top + self.box.top)
   p.x = p[0]
   p.y = p[1]
+  self:_log(DEBUG, 'Found for ' .. regionName .. ' furthest point of ' .. p.x .. ', ' .. p.y .. ' with distance from edge of ' .. c_result.max_dt)
   return p
 end
 
 ---------------------------------------------------------------------------------------------
 --- PRIVATE SCREEN SEARCHER FUNCTIONS, DO NOT CALL THESE DIRECTLY, INSTEAD USE THE ONES ABOVE
 ---------------------------------------------------------------------------------------------
+
+function ScreenSearcher:_log(level, message)
+  veg_log(level, self.logLevel, 'ScreenSearcher', message)
+end
 
 -------------------------------------------------------------------------------
 -- This is an internal function which reads the screen and compares the new pixel values to the ones in the specified
@@ -276,6 +308,11 @@ function ScreenSearcher:_searchChangedPixelsAndSetupRegions(snapshotToCompareAga
                                                             resetOldRegions)
   self:_errorIfSnapshotDoesntExist(snapshotToCompareAgainst)
 
+  self:_log(DEBUG, 'Searching for changed pixels comparing against snapshot ' .. snapshotToCompareAgainst)
+  if optionalRegionNameToMarkChangesIn then
+    self:_log(DEBUG, 'Marking changes to region ' .. optionalRegionNameToMarkChangesIn)
+  end
+
   if createNewConnectedRegions and optionalRegionNameToMarkChangesIn then
     playErrorSoundAndExit('Cannot set both createNewConnectedRegions and an optionalRegionNameToMarkChangesIn.')
   end
@@ -283,6 +320,7 @@ function ScreenSearcher:_searchChangedPixelsAndSetupRegions(snapshotToCompareAga
   srReadScreen()
 
   if resetOldRegions then
+    self:_log(DEBUG, 'Resetting old regions...')
     for name, _ in pairs(self.regions) do
       if name ~= self.deadRegionName then
         self.regions[name] = nil
@@ -298,11 +336,12 @@ function ScreenSearcher:_searchChangedPixelsAndSetupRegions(snapshotToCompareAga
       local newPixel = srReadPixelFromBuffer(self.box.left + x, self.box.top + y)
       local originalPixel = self.snapshots[snapshotToCompareAgainst][y][x]
       self.screenToRegionMap[y] = self.screenToRegionMap[y] or {}
-      if resetOldRegions and self.screenToRegionMap[y][x] then
-        self.screenToRegionMap[y][x]:delete(x,y)
+      local existingRegion = self.screenToRegionMap[y][x]
+      if resetOldRegions and existingRegion and existingRegion:name() ~= self.deadRegionName then
+        self.screenToRegionMap[y][x]:delete(x, y)
         self.screenToRegionMap[y][x] = nil
       end
-      if newPixel ~= originalPixel then
+      if self:_pixelsAreDifferent(newPixel, originalPixel) then
         if optionalRegionNameToMarkChangesIn then
           changedCount = changedCount + self:_markLocationForRegion(x, y, optionalRegionNameToMarkChangesIn)
         elseif createNewConnectedRegions then
@@ -314,9 +353,11 @@ function ScreenSearcher:_searchChangedPixelsAndSetupRegions(snapshotToCompareAga
     end
 
     if optionalSnapshotToSaveNewPixelsIn then
+      self:_log(DEBUG, 'Saving pixels to snapshot ' .. optionalRegionNameToMarkChangesIn)
       self.snapshots[optionalSnapshotToSaveNewPixelsIn] = newSnapshotPixels
     end
   end
+  self:_log(DEBUG, 'Found ' .. changedCount .. ' changed pixels.')
   return changedCount
 end
 
@@ -352,7 +393,6 @@ function ScreenSearcher:_markLocationForRegion(x, y, regionName)
       region = RegionProxy:new(x, y, regionName)
       self.regions[regionName] = region
     else
-      print('Adding to ' .. regionName)
       region:add(x, y)
     end
     self.screenToRegionMap[y][x] = region
@@ -392,6 +432,13 @@ function ScreenSearcher:_connectChangedPixelToSurroundingRegions(x, y)
     leftRegion = self.screenToRegionMap[y][x - 1]
   end
 
+  if leftRegion and leftRegion:name() == self.deadRegionName then
+    leftRegion = nil
+  end
+  if aboveRegion and aboveRegion:name() == self.deadRegionName then
+    aboveRegion = nil
+  end
+
   local existingRegion = self.screenToRegionMap[y][x]
   if existingRegion then
     existingRegion:delete(x, y)
@@ -411,7 +458,7 @@ function ScreenSearcher:_connectChangedPixelToSurroundingRegions(x, y)
     self.nextFreeConnectedRegionId = self.nextFreeConnectedRegionId + 1
     local newConnectedRegion = RegionProxy:new(x, y, newConnectedRegionName)
     resultingRegion = newConnectedRegion
-    self.regions[newConnectingRegionName] = resultingRegion
+    self.regions[newConnectedRegionName] = resultingRegion
   end
   self.screenToRegionMap[y][x] = resultingRegion
   return 1
@@ -447,6 +494,14 @@ end
 
 function RegionProxy:get_center(x, y)
   return self.region:get_center(x, y)
+end
+
+function RegionProxy:width()
+  return self.region:width()
+end
+
+function RegionProxy:height()
+  return self.region:height()
 end
 
 function RegionProxy:size()
@@ -510,6 +565,7 @@ function Region:delete(x, y)
         for i = x + 1, self.max_x do
           if self.x_counts[i] then
             self.min_x = i
+            break
           end
         end
       end
@@ -517,6 +573,7 @@ function Region:delete(x, y)
         for i = self.max_x - 1, self.min_x, -1 do
           if self.x_counts[i] then
             self.max_x = i
+            break
           end
         end
       end
@@ -526,6 +583,7 @@ function Region:delete(x, y)
         for i = y + 1, self.max_y do
           if self.y_counts[i] then
             self.min_y = i
+            break
           end
         end
       end
@@ -533,6 +591,7 @@ function Region:delete(x, y)
         for i = self.max_y - 1, self.min_y, -1 do
           if self.y_counts[i] then
             self.max_y = i
+            break
           end
         end
       end
@@ -566,6 +625,14 @@ function Region:get_center(x_offset, y_offset)
   return { ['x'] = center_x, ['y'] = center_y }
 end
 
+function Region:width()
+  return self.max_x - self.min_x + 1
+end
+
+function Region:height()
+  return self.max_x - self.min_x + 1
+end
+
 function Region:getBox(xOffset, yOffset, extraWidth, extraHeight)
   return makeBox(
     self.min_x + xOffset - extraWidth,
@@ -574,7 +641,7 @@ function Region:getBox(xOffset, yOffset, extraWidth, extraHeight)
 end
 
 function isInRegion(y, x, screenToRegionMap, regionName)
-  return screenToRegionMap[y] and screenToRegionMap[y][x] and regionName == screenToRegionMap[y][x]
+  return screenToRegionMap[y] and screenToRegionMap[y][x] and regionName == screenToRegionMap[y][x]:name()
 end
 
 -------------------------------------------------------------------------------
@@ -672,6 +739,38 @@ function chamfer_distance(box, screenToRegionMap, regionName)
       end
     end
   end
+  --lsDoFrame()
+  --local startTime  = lsGetTimer()
+  --local displayTime = 10000
+  --while lsGetTimer() - startTime < displayTime do
+  --  lsPrint(10, 0, 10, 1, 1, 0xFFFFFFff, title or "Displaying distance map for region " .. regionName);
+  --  for y = 0, box.height, 1 do
+  --    for x = 0, box.width do
+  --      local colour = BLACK
+  --      if dt[y] and dt[y][x] then
+  --        local d = dt[y][x]
+  --        if d <= 0 then
+  --          colour = RED
+  --        elseif d <= 5 then
+  --          colour = LIGHT_BLUE
+  --        elseif d <= 10 then
+  --          colour = BLUE
+  --        else
+  --          colour = GREEN
+  --        end
+  --        if d == max_dt then
+  --          colour = YELLOW
+  --        end
+  --      elseif isInRegion(top + y, left + x, screenToRegionMap, regionName) then
+  --        colour = PURPLE
+  --      end
+  --      lsDisplaySystemSprite(1, x, y, 1, 1, 1, colour)
+  --    end
+  --  end
+  --  lsDoFrame()
+  --  lsSleep(tick_delay)
+  --  checkBreak()
+  --end
   local result = {}
   result.dt = dt
   result.max_x = max_x
