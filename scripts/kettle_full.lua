@@ -50,6 +50,24 @@ actions = {
     matLabels = {"Sulphurous Water", "Salt", "Wood"},
     matCounts = {25, 1, 28}
   },
+  {
+    label = "Grain Fert",
+    buttonPos = makePoint(30, 70);
+    stoked = false,
+    menuImage = "kettle/grain_fert.png",
+    output = 50,
+    matLabels = {"Rotten Fish", "Dung", "Water", "Wood"},
+    matCounts = {1, 1, 5, 5}
+  },
+  {
+    label = "Weed Killer",
+    buttonPos = makePoint(30, 100);
+    stoked = false,
+    menuImage = "kettle/weed_killer.png",
+    output = 50,
+    matLabels = {"Toad Skin Mushrooms", "Water", "Wood"},
+    matCounts = {1, 5, 5}
+  },
   --[[
     {
       label = "Flower Fert",
@@ -59,24 +77,6 @@ actions = {
       output = 50,
       matLabels = {"Rotten Fish", "Water", "Wood"},
       matCounts = {3, 5, 5}
-    },
-    {
-      label = "Grain Fert",
-      buttonPos = makePoint(30, 70);
-      stoked = false,
-      menuImage = "kettle/grain_fert.png",
-      output = 50,
-      matLabels = {"Rotten Fish", "Dung", "Water", "Wood"},
-      matCounts = {1, 1, 5, 5}
-    },
-    {
-      label = "Weed Killer",
-      buttonPos = makePoint(30, 100);
-      stoked = false,
-      menuImage = "kettle/weed_killer.png",
-      output = 50,
-      matLabels = {"Toad Skin Mushrooms", "Water", "Wood"},
-      matCounts = {1, 5, 5}
     },
     {
       label = "Arsenic",
