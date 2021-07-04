@@ -92,8 +92,8 @@ function addCC(window_pos, state, message)
 	if state.just_added then
 		return;
 	end
-	lsPrintln(window_pos[0] .. " " .. window_pos[1] .. " " .. window_w .. " " .. window_h);
-	local pos = srFindImageInRange("glass/GlassAdd" .. ccQty .. "Charcoal.png", window_pos[0]-50, window_pos[1], window_w, window_h, tol);
+	lsPrintln(window_pos[0]+3 .. " " .. window_pos[1]+3 .. " " .. window_w .. " " .. window_h);
+	local pos = srFindImageInRange("glass/GlassAdd" .. ccQty .. "Charcoal.png", window_pos[0]+3, window_pos[1]+3, window_w, window_h, tol);
       if not pos then
         sleepWithStatus(2000, "Uh Oh, Add " .. ccQty .. " CC not found on bench\nIf this error persists than your bench may have problems.");
 	  state.status = state.status .. " (Error, Adding" .. ccQty .. "CC failed, not found" .. message .. ")";
@@ -113,17 +113,17 @@ function glassTick(window_pos, state)
 	local out_of_glass = nil;
 
 	if glazierBenchSpec then
-	  pos = srFindImageInRange("glass/GlassTimeToStop_GlazierSpec.png", window_pos[0], window_pos[1], window_w, window_h, tol);
+	  pos = srFindImageInRange("glass/GlassTimeToStop_GlazierSpec.png", window_pos[0]+3, window_pos[1]+3, window_w, window_h, tol);
 	else
-	  pos = srFindImageInRange("glass/GlassTimeToStop.png", window_pos[0], window_pos[1], window_w, window_h, tol);
+	  pos = srFindImageInRange("glass/GlassTimeToStop.png", window_pos[0]+3, window_pos[1]+3, window_w, window_h, tol);
 	end
-	pos2 = srFindImageInRange("glass/GlassNoMelted.png", window_pos[0], window_pos[1], window_w, window_h, tol);
+	pos2 = srFindImageInRange("glass/GlassNoMelted.png", window_pos[0]+3, window_pos[1]+3, window_w, window_h, tol);
 
 
 	if pos or pos2 then
 		out_of_glass = 1;
 	end
-	pos = srFindImageInRange("glass/GlassTemperature.png", window_pos[0]-50, window_pos[1], window_w, window_h, tol);
+	pos = srFindImageInRange("glass/GlassTemperature.png", window_pos[0]+3, window_pos[1]+3, window_w, window_h, tol);
 	if not pos then
 		state.status = state.status .. " No temperature found, ignoring";
 		return state.status;
@@ -152,7 +152,7 @@ function glassTick(window_pos, state)
 	  state.status = state.status .. " Ticks:".. state.benchTicks .. "?";
 	end
 
-	cooking = srFindImageInRange("glass/GlassCooking.png", window_pos[0], window_pos[1], window_w, window_h, tol);
+	cooking = srFindImageInRange("glass/GlassCooking.png", window_pos[0]+3, window_pos[1]+3, window_w, window_h, tol);
 
 	if (stop_cooking or (out_of_glass and not maintainHeatNoCook)) and not cooking then
 		return nil;
@@ -294,7 +294,7 @@ function glassTick(window_pos, state)
 			if temp >= (1600 - state.HV + state.DV) and temp <= (2399 - state.HV) and not maintainHeatNoCook and state.MinTempReachedOnce and not ( (state.spiking or state.want_spike) and not cookDuringSpike ) then
 				local made_one=nil;
 				for item_index=1, #item_priority do
-					pos = srFindImageInRange("glass/" .. item_priority[item_index], window_pos[0]-50, window_pos[1], window_w, window_h, tol);
+					pos = srFindImageInRange("glass/" .. item_priority[item_index], window_pos[0]+3, window_pos[1]+3, window_w, window_h, tol);
 					if pos then
 							for pngName, glassName in pairs(item_name) do
 								if pngName == item_priority[item_index] then
@@ -315,18 +315,18 @@ function glassTick(window_pos, state)
 					-- refresh window
 					lsSleep(100);
 					srReadScreen();
-					thisIs = srFindImageInRange("ThisIs.png", window_pos[0], window_pos[1], window_w, window_h, tol);
+					windowCorner = srFindImageInRange("windowCorner.png", window_pos[0]+3, window_pos[1]+3, window_w, window_h, tol);
                                   ok = srFindImage("ok.png")
                                   if ok then
                                     srClickMouseNoMove(ok[0], ok[1])
                                     lsSleep(100)
                                   end
-					if not thisIs then
+					if not windowCorner then
 					  state.status = state.status .. " NothingToMake - Error Refreshing Window";
 					else
 					  state.status = state.status .. " NothingToMake - Refreshing Window";
-					--srSetMousePos(thisIs[0], thisIs[1]);
-					  srClickMouseNoMove(thisIs[0], thisIs[1]);
+					--srSetMousePos(windowCorner[0], windowCorner[1]);
+					  srClickMouseNoMove(windowCorner[0], windowCorner[1]);
 					  lsSleep(1000);
 					end
 				end
@@ -389,7 +389,7 @@ function doit()
 	srReadScreen();
 	setPriority = true;
 
-	local glass_windows = findAllImages("ThisIs.png");
+	local glass_windows = findAllImages("windowCorner.png", nil, 100);
 
 	if #glass_windows == 0 then
 		error 'Could not find any \'Glazier\'s Bench\' windows.';
@@ -463,7 +463,7 @@ function doit()
 
 		srReadScreen();
 
-		local glass_windows2 = findAllImages("ThisIs.png");
+		local glass_windows2 = findAllImages("windowCorner.png", nil, 100);
 		local should_continue=nil;
 		if #glass_windows == #glass_windows2 then
 			for window_index=1, #glass_windows do
