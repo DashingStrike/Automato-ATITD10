@@ -154,6 +154,8 @@ stds.common = {
 stds.automato = {
   read_globals = {
     "tick_delay",
+    "REGION",
+    "REGEX",
     "MB_YES",
     "MB_NO",
     "BOTTOM_RIGHT",
