@@ -91,7 +91,8 @@ function findPNG()
     srReadScreen();
 
   if image ~= "" then
-    findBlah = findAllImages(image, nil, tol);
+    local windowSize = srGetWindowSize();
+    findBlah = findAllImages(image, {x = windowSize[0] / 2 - 200, y = 80, width = 400, height = 50}, tol);
   end
 
   if #findBlah == 0 then
@@ -121,8 +122,8 @@ function pointToLocation()
 
 		for i=1,#findBlah do
 		  srSetMousePos(findBlah[i][0]+xOffset,findBlah[i][1]+yOffset);
-		  sleepWithStatus(pointing_delay, "Pointing to Location: " .. i .. "/" .. #findBlah .. "\n\nX Offset: " 
-		  .. xOffset .. "\nY Offset: " .. yOffset .. "\n\nMouse Location (no offset):\n" .. math.floor(findBlah[i][0]) .. ", " .. math.floor(findBlah[i][1]) .. "\n\nMouse Location (after offsets):\n" .. math.floor(findBlah[i][0]+xOffset) .. ", " .. 
+		  sleepWithStatus(pointing_delay, "Pointing to Location: " .. i .. "/" .. #findBlah .. "\n\nX Offset: "
+		  .. xOffset .. "\nY Offset: " .. yOffset .. "\n\nMouse Location (no offset):\n" .. math.floor(findBlah[i][0]) .. ", " .. math.floor(findBlah[i][1]) .. "\n\nMouse Location (after offsets):\n" .. math.floor(findBlah[i][0]+xOffset) .. ", " ..
 		  math.floor(findBlah[i][1]+yOffset), nil, 0.7);
 		end
       break;

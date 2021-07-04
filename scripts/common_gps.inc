@@ -238,7 +238,7 @@ function stepTo(dir, dest, compass)
   end
   safeClick(gpsCenter[0] + dir[0] * gpsStep[0],
 	    (gpsCenter[1] + dir[1] * gpsStep[1]) + offsetY);
-  sleepWithStatus(500, dest[0] .. ", " .. dest[1] .. "\n\n" .. coord2region(dest[0], dest[1]), nil, 0.7, "Walking to");
+  sleepWithStatus(250, dest[0] .. ", " .. dest[1] .. "\n\n" .. coord2region(dest[0], dest[1]), nil, 0.7, "Walking to");
 end
 
 local ffc_coordsPos = nil;
