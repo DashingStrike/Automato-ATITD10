@@ -58,7 +58,6 @@ function config()
     arrangeWindows = readSetting("arrangeWindows",arrangeWindows);
     arrangeWindows = CheckBox(15, y, z+10, 0xFFFFFFff, "Arrange windows (Grid format)", arrangeWindows, 0.65, 0.65);
     writeSetting("arrangeWindows",arrangeWindows);
-    y = y + 28;
 
     if lsButtonText(10, lsScreenY - 30, z, 100, 0x00ff00ff, "Begin") then
         is_done = 1;
@@ -69,60 +68,52 @@ function config()
         error "Clicked End Script button";
     end
     lsDoFrame();
-    lsSleep(shortWait);
+    lsSleep(100);
   end
 end
 
 function start()
   takeFromKilns();
-
-    for i=1, kilnPasses do
-      checkRepair();
-      srReadScreen();
-      clickAllText("Load the Kiln with Wood");
-      lsSleep(refresh_time);
-      refreshWindows();
-      lsSleep(refresh_time);
-      clickAllText("Load the Kiln with " .. productNames[typeOfProduct]);
-      refreshWindows();
-      lsSleep(refresh_time)
-      clickAllText("Fire  the Kiln");
-      lsSleep(refresh_time);
-      closePopUp();
-      --Check Repair for any that failed this round then fire any that were broken.
-      checkRepair();
-      refreshWindows();
-      lsSleep(refresh_time)
-      clickAllText("Fire the Kiln");
-      lsSleep(refresh_time)
-      closePopUp();
-      checkFiring();
-      takeFromKilns();
-    end
+  for i=1, kilnPasses do
+    checkRepair();
+    srReadScreen();
+    clickAllText("Load the Kiln with Wood");
+    refreshWindows();
+    clickAllText("Load the Kiln with " .. productNames[typeOfProduct]);
+    refreshWindows();
+    clickAllText("Fire the Kiln");
+    lsSleep(250);
+    closePopUp();
+    --Check Repair for any that failed this round then fire any that were broken.
+    checkRepair();
+    refreshWindows();
+    clickAllText("Fire the Kiln");
+    lsSleep(250);
+    closePopUp();
+    checkRepair();
+    checkFiring();
+    takeFromKilns();
+  end
   lsPlaySound("Complete.wav");
 end
 
 function takeFromKilns()
   srReadScreen();
-   kilnRegions = findAllText("This is [A-Za-z]+ [A-Za-z]+ Kiln", nil, REGION + REGEX);
+  kilnRegions = findAllText("This is [A-Za-z]+ [A-Za-z]+ Kiln", nil, REGION + REGEX);
   for i = 1, #kilnRegions do
     checkBreak();
-    local x = kilnRegions[i][0];
-    local y = kilnRegions[i][1];
-    local width = 491;
-    local height = 216;
     local p = findText("Take...", kilnRegions[i]);
       if (p) then
-  		safeClick(p[0]+4,p[1]+4);
-  		lsSleep(refresh_time);
-  		srReadScreen();
-  		local e = findText("Everything");
-      		if (e) then
-      			safeClick(e[0]+4,e[1]+4);
-      			lsSleep(refresh_time);
-      	 end
-  	   end
-   end
+        safeClick(p[0]+4,p[1]+4);
+        lsSleep(refresh_time);
+        srReadScreen();
+        local e = findText("Everything");
+          if (e) then
+            safeClick(e[0]+4,e[1]+4);
+            lsSleep(refresh_time);
+          end
+    end
+  end
 end
 
 function refreshWindows()
@@ -151,7 +142,8 @@ function checkFiring()
     if #firing == 0 then
         break; --We break this while statement because Making is not detect, hence we're done with this round
     end
-    sleepWithStatus(999, "Waiting for " .. productNames[typeOfProduct] .. " to finish", nil, 0.7, "Monitoring / Refreshing Windows")
+    sleepWithStatus(999, "Waiting for " .. productNames[typeOfProduct]
+    .. " to finish", nil, 0.7, "Monitoring / Refreshing Windows")
   end
 end
 
@@ -161,12 +153,12 @@ function closePopUp()
     local outofresource = srFindImage("YouDont.png");
     local ok = srFindImage("OK.png");
       if ok then
-          statusScreen("Found and Closing Popups ...", nil, 0.7);
-          safeClick(ok[0]+2,ok[1]+2);
-          lsSleep(100);
-            if outofresource then
-               error("Out of resources");
-            end
+        statusScreen("Found and Closing Popups ...", nil, 0.7);
+        safeClick(ok[0]+2,ok[1]+2);
+        lsSleep(100);
+          if outofresource then
+             error("Out of resources");
+          end
       else
           break;
       end
