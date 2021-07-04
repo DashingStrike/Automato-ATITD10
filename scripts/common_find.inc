@@ -282,6 +282,27 @@ function pixelMatch(anchor, offset, color, tolerance)
 end
 
 -------------------------------------------------------------------------------
+-- pixelMatchFromBuffer(anchor, offset, color, tolerance)
+--
+-- Checks to see whether the buffered screen pixel at anchor+offset matches a
+-- given color.
+--
+-- anchor -- Base location to check
+-- offset -- Offset from base location
+-- color -- Color to check against
+-- tolerance -- 0 means exact match, >= 255 means any color (default 0)
+--
+-- Returns true if the colors match within tolerance.
+-------------------------------------------------------------------------------
+
+function pixelMatchFromBuffer(anchor, offset, color, tolerance)
+  if not anchor or not offset or not color then
+    error("Incorrect number of arguments for pixelMatchFromBuffer()");
+  end
+  return pixelMatchListFromBuffer(anchor, offset, {color}, tolerance);
+end
+
+-------------------------------------------------------------------------------
 -- pixelMatchList(anchor, offset, colors, tolerance)
 --
 -- Checks to see whether the screen pixel at anchor+offset matches a
@@ -333,6 +354,47 @@ function calculatePixelDiffs(left, right)
     result[4-i] = math.abs((left % 256) - (right % 256));
     left = math.floor(left / 256);
     right = math.floor(right / 256);
+  end
+  return result;
+end
+
+-------------------------------------------------------------------------------
+-- pixelMatchListFromBuffer(anchor, offset, colors, tolerance)
+--
+-- Checks to see whether the buffered screen pixel at anchor+offset matches a
+-- given color.
+--
+-- anchor -- Base location to check
+-- offset -- Offset from base location
+-- colors -- Colors to check against, returns true if any of them are matched.
+-- tolerance -- 0 means exact match, >= 255 means any color (default 0)
+--
+-- Returns true if the colors match within tolerance.
+-------------------------------------------------------------------------------
+
+function pixelMatchListFromBuffer(anchor, offset, colors, tolerance)
+  if not anchor or not offset or not colors then
+    error("Incorrect number of arguments for pixelMatchListFromBuffer()");
+  end
+  if not tolerance then
+    tolerance = 0;
+  end
+  local result = false;
+  local screenColor = srReadPixelFromBuffer(anchor[0] + offset[0],
+          anchor[1] + offset[1]);
+  for i=1,#colors do
+    local currentMatch = true;
+    local diffs = calculatePixelDiffs(colors[i], math.floor(screenColor/256));
+    for j=1,#diffs do
+      if diffs[j] > tolerance then
+        currentMatch = false;
+        break;
+      end
+    end
+    if currentMatch then
+      result = true;
+      break;
+    end
   end
   return result;
 end

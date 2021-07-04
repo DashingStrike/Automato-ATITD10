@@ -91,8 +91,7 @@ function findPNG()
     srReadScreen();
 
   if image ~= "" then
-    local windowSize = srGetWindowSize();
-    findBlah = findAllImages(image, {x = windowSize[0] / 2 - 200, y = 80, width = 400, height = 50}, tol);
+    findBlah = findAllImages(image, nil, tol);
   end
 
   if #findBlah == 0 then
