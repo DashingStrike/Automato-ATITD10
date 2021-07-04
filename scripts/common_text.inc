@@ -122,6 +122,10 @@ function getChatText()
   return p2;
 end
 
+function getLastChat()
+  lastLine = chatText[#chatText][2];
+end
+
 -------------------------------------------------------------------------------
 -- getAllText()
 --
