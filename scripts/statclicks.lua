@@ -269,11 +269,11 @@ function combFlax()
     srReadScreen();
     local fix = srFindImage("repair.png", 6000);
     if (fix) then
-        repairRake("comb");
-        lsSleep(75);
-        srReadScreen();
-        safeClick(comb[0],comb[1]);
-        lsSleep(75);
+      repairRake("comb");
+      lsSleep(75);
+      srReadScreen();
+      safeClick(comb[0],comb[1]);
+      lsSleep(75);
     end
 
     srReadScreen();
@@ -324,7 +324,10 @@ function hacklingRake()
     srReadScreen();
     local fix = findText("Repair");
     if (fix) then
-        repairRake("rake");
+      repairRake("hackling");
+      lsSleep(150);
+      srReadScreen();
+      clickText(flaxText);
     end
     srReadScreen();
     local consume = srFindImage("consume.png");
@@ -651,7 +654,7 @@ function repairRake(type)
 		  material = "Bricks";
 		elseif i == 3 and type == "comb" then
 		  material = "Thorns";
-    elseif i == 3 and type == "rake" then
+    elseif i == 3 and type == "hackling" then
 		  material = "Nails";
 		else
 		  material = "What the heck?";

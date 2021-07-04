@@ -384,7 +384,7 @@ end
 -- offsetWidth (optional) -- adds an additional width offset
 -- offsetHeight (optional) -- adds an additional height offset
 -- default_focus (optional) -- bool: force 'Pause for Focus' box to be checked
--- default_waterGap (optional) -- bool: force 'Leave Gap for Water' box to be checked
+-- default_waterGap (optional) -- bool: force 'Leave Gap for the UI' box to be checked
 
 -------------------------------------------------------------------------------
 
@@ -465,7 +465,7 @@ function windowManager(title, message, allowCascade, allowWaterGap, varWidth, va
                             pauseForFocus);
     if allowWaterGap then
       y = y + 20;
-      waterGap = CheckBox(30, y, 10, 0xffffffff, " Leave Gap for Water",
+      waterGap = CheckBox(30, y, 10, 0xffffffff, " Leave Gap for the UI",
                             waterGap);
     end
       y = y + 30;
