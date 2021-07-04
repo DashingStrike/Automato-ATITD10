@@ -103,7 +103,7 @@ function SetupLureGroup()
 
     -- Find Lure Type
     for i = 1, #Lure_Types, 1 do
-      test = findText(Lure_Types[i]);
+      test = findText(Lure_Types[i] .. "...");
       if test then
         LureType = Lure_Types[i];
           if not muteSoundEffects then
