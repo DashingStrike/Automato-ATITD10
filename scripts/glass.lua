@@ -92,7 +92,7 @@ function addCC(window_pos, state, message)
 	if state.just_added then
 		return;
 	end
-	lsPrintln(window_pos[0]+3 .. " " .. window_pos[1]+3 .. " " .. window_w .. " " .. window_h);
+	lsPrintln(window_pos[0] .. " " .. window_pos[1] .. " " .. window_w .. " " .. window_h);
 	local pos = srFindImageInRange("glass/GlassAdd" .. ccQty .. "Charcoal.png", window_pos[0]+3, window_pos[1]+3, window_w, window_h, tol);
       if not pos then
         sleepWithStatus(2000, "Uh Oh, Add " .. ccQty .. " CC not found on bench\nIf this error persists than your bench may have problems.");
@@ -117,7 +117,7 @@ function glassTick(window_pos, state)
 	else
 	  pos = srFindImageInRange("glass/GlassTimeToStop.png", window_pos[0]+3, window_pos[1]+3, window_w, window_h, tol);
 	end
-	pos2 = srFindImageInRange("glass/GlassNoMelted.png", window_pos[0]+3, window_pos[1]+3, window_w, window_h, tol);
+	 pos2 = srFindImageInRange("glass/GlassNoMelted.png", window_pos[0]+3, window_pos[1]+3, window_w, window_h, tol);
 
 
 	if pos or pos2 then
@@ -325,8 +325,7 @@ function glassTick(window_pos, state)
 					  state.status = state.status .. " NothingToMake - Error Refreshing Window";
 					else
 					  state.status = state.status .. " NothingToMake - Refreshing Window";
-					--srSetMousePos(windowCorner[0], windowCorner[1]);
-					  srClickMouseNoMove(windowCorner[0], windowCorner[1]);
+					  srClickMouseNoMove(windowCorner[0]+3, windowCorner[1]+3);
 					  lsSleep(1000);
 					end
 				end
@@ -525,7 +524,7 @@ function doit()
 								if #glass_windows > 1 then
 								  thisLog = thisLog .. "\n";
 								end
-						  	  WriteGlassLogs(thisLog);
+                WriteGlassLogs(thisLog);
 							end
 						  last_tick = this_tick;
 						  this_tick = "";
