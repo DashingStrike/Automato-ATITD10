@@ -384,6 +384,8 @@ function doit()
   integration with Shroomdar!
   ]]);
 
+  getName();
+
   for _, mushroom in pairs(mushroomData) do
     mushroom.startMinutes = timeToMinutes(mushroom.start);
     mushroom.stopMinutes  = timeToMinutes(mushroom.stop);
@@ -465,6 +467,38 @@ function loadSettings()
       mushroom.show  = data.show;
     end
   end
+end
+
+function openCharacterMenu()
+  srReadScreen();
+
+  local utility = findText("Utility...");
+  if not utility then
+    local startX, startY = srMousePos();
+    setCameraView(CARTOGRAPHER2CAM);
+    lsSleep(100);
+    local window = srGetWindowSize();
+    srSetMousePos(window[0] / 2, window[1] / 2);
+    srClickMouse(window[0] / 2, window[1] / 2);
+    srSetMousePos(startX, startY);
+  end
+end
+
+function getName()
+  openCharacterMenu();
+
+  local utility = waitForText("Utility...", 1000, nil, nil, REGION);
+  if utility then
+    local parse = findText("%w+", utility, REGEX);
+
+    --Names are usually "Name, title" except for "Citizen Name"
+    --commas are being parsed as periods though in the new fo
+    local commaSplit = explode(".", parse[2]);
+    local spaceSplit = explode(" ", commaSplit[1]);
+    name = spaceSplit[#spaceSplit];
+  end
+
+  srKeyEvent("\27"); --Esc
 end
 
 function loadReports()
