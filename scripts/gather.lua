@@ -357,17 +357,34 @@ walkingRoute = false;
 routeStartTime = 0;
 
 function doit()
-    if(not promptOkay("WARNING! This macro requires your chats to be minimized and your \"Use arrow keys for movement\" option to be enabled. Enable fast gather from the One-Click Options menu.")) then
-        return;
-    end
-    if(not promptOkay("Time of day, shadows and light intensity should be on lowest setting. Updated for T10.")) then
-        return;
-    end
-    math.randomseed(lsGetTimer());
-    gather_randomNumber = math.random();
+    askForWindow([[
+  Make sure your chats are minimized.
 
-    loadRoutes();
-    queryRoute();
+  This macro will automatically configure
+  ATITD Interface, Video, and One Click Options
+
+  Hover ATITD window and press Shift to start.
+    ]]);
+
+  setVideoOptions({
+    [GRASS] = 1,
+    [SHADOW] = 1,
+    [TIME_OF_DAY] = 1,
+    [LIGHT_INTENSITY] = 1
+  }, false);
+  setInterfaceOptions({
+    [MOVE_KEYS] = 2
+  }, false);
+  setOneClickOptions({
+    [FAST_GATHER] = true,
+    [AUTO_TAKE] = true
+  }, false);
+
+  math.randomseed(lsGetTimer());
+  gather_randomNumber = math.random();
+
+  loadRoutes();
+  queryRoute();
 end
 
 function updateUnique()
@@ -423,32 +440,34 @@ function queryRoute()
     clay = readSetting("clay",clay);
     clay = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather clay and flint", clay);
     writeSetting("clay",clay);
-    y = y + 36;
+    y = y + 32;
     silt = readSetting("silt",silt);
     silt = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather silt", silt);
     writeSetting("silt",silt);
-    y = y + 36; stones = readSetting("stones", stones);
+    y = y + 32; stones = readSetting("stones", stones);
     stones = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather stones", stones);
     writeSetting("stones", stones);
-    y = y + 36;
+    y = y + 32;
     wood = readSetting("wood",wood);
     wood = lsCheckBox(10, y, z, 0xFFFFFFff, " Gather wood", wood);
     writeSetting("wood",wood);
     y = y + 32;
     papy = readSetting("papy",papy);
-    papy = lsCheckBox(10, y, z, 0xFFFFFFff, " Plant Papyrus", papy);
+    papy = lsCheckBox(10, y, z, 0xFFFFFFff, " Plant papyrus", papy);
     writeSetting("papy",papy);
     if(papy) then
-    y = y + 32;
-    lsPrint(35, y+5, z, 1, 1, 0xFFFFFFff, "Pass Delay (ms)");
-    papyDelay = readSetting("papyDelay",papyDelay);
-    nada, papyDelay = lsEditBox("papyDelay", 200, y+7, z, 70, 0, 1.0, 1.0, 0x000000ff, papyDelay);
-    writeSetting("papyDelay",papyDelay);
+      y = y + 32;
+      lsPrint(35, y, z, 1, 1, 0xFFFFFFff, "Pass Delay (ms)");
+      papyDelay = readSetting("papyDelay",papyDelay);
+      nada, papyDelay = lsEditBox("papyDelay", 200, y, z, 70, 0, 1.0, 1.0, 0x000000ff, papyDelay);
+      writeSetting("papyDelay",papyDelay);
+      y = y + 32;
+      if (papy and (not tonumber(papyDelay))) then
+        lsPrint(35, y, z+10, 0.9, 0.9, 0xFF2020ff, "MUST BE A NUMBER");
+      end
+    else
+      y = y + 64
     end
-    if (papy and (not tonumber(papyDelay))) then
-      lsPrint(35, y+32, z+10, 0.9, 0.9, 0xFF2020ff, "MUST BE A NUMBER");
-    end
-    y = y + 36;
     repeatForever = readSetting("repeatForever",repeatForever);
     repeatForever = lsCheckBox(10, y, z, 0xFFFFFFff, " Repeat forever", repeatForever);
     writeSetting("repeatForever",repeatForever);
@@ -1436,7 +1455,7 @@ end
 function getSiltClusters()
   srReadScreen();
   local xyWindowSize = srGetWindowSize();
-  return lsAnalyzeCustom(25, 300, false, xyWindowSize[0] * 0.5, 0xB0B0A0FF, 0xC0C0B0FF, true);
+  return lsAnalyzeCustom(25, 400, false, xyWindowSize[0] * 0.5, 0xA39C90ff, 0xB0A99Cff, true);
 end
 
 function checkSilt()
@@ -1474,11 +1493,31 @@ function checkSilt()
   return false;
 end
 
+function getStoneClusters()
+  srReadScreen();
+  local xyWindowSize = srGetWindowSize();
+  return lsAnalyzeCustom(20, 600, 0, xyWindowSize[0] * 0.5, 0x909090FF, 0xC5C5C5FF, true);
+end
+
+function isStoneAtPixel(x, y)
+  local rgb = pixelRGB(x, y);
+
+  return math.abs(rgb[1] - rgb[2]) < 4 and math.abs(rgb[1] - rgb[3]) < 4;
+end
+
 --Things that look too stone like (such as the stone textured terrain, stone floors in CPs, etc) will throw this off.
 function checkStones()
   if not stones then
     return false;
   end
+
+  local clusters = getStoneClusters();
+  if not clusters then
+    return false;
+  end
+  --If we find silt, stop moving, scan again, and click it.
+  srKeyUp(VK_ALL);
+  lsSleep(50);
 
   local moved = false;
   while true do
@@ -1488,18 +1527,20 @@ function checkStones()
       srKeyEvent("\27"); --escape to close any open window
     end
 
-    local xyWindowSize = srGetWindowSize();
-    local clusters = lsAnalyzeCustom(20, 600, 0, xyWindowSize[0] * 0.5, 0x909090FF, 0xC5C5C5FF, true);
+    clusters = getStoneClusters();
     local found = false;
     if clusters then
       srKeyUp(VK_ALL);
       setStatus("Gathering stones");
       for i = 1, #clusters do
         checkBreak();
-        if isInMiddleOfScreen(clusters[i][0], clusters[i][1]) then
+        if isInMiddleOfScreen(clusters[i][0], clusters[i][1]) and isStoneAtPixel(clusters[i][0], clusters[i][1]) then
           found = true;
           moved = true;
-          safeClick(clusters[i][0], clusters[i][1]);
+
+          safeBegin();
+          srSetMousePos(clusters[i][0], clusters[i][1]);
+          srClickMouse(clusters[i][0], clusters[i][1]);
           lsSleep(200);
 
           srReadScreen();
@@ -1523,10 +1564,7 @@ function checkStones()
     end
 
     if not found then
-      if moved then
-        lastMoveTime = lsGetTimer();
-      end
-      return;
+      return moved;
     end
 
     lsSleep(10);
@@ -1671,7 +1709,6 @@ function prepareForWalking()
         return;
     end
     prepareForWalkingInitialized = true;
-    askForWindow("Make sure your chats are minimized then hover ATITD window and press Shift to continue.");
     lsSleep(150);
     local xyWindowSize = srGetWindowSize();
     local mid = {};

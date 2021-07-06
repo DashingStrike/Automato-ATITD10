@@ -44,7 +44,7 @@ function doit()
 	while ((not my_index) or (my_index < 1) or (my_index > num_workers)) do
 		my_index = promptNumber("Which Worker # are you (1-" .. num_workers .. ")?", 1);
 	end
-	if promptOkay("Do you want an OK Prompt to appear (similar to this) when it\'s your turn?\n\nClicking No will have macro click for you, but lag might possibly cause premature clicking (if red endurance is lagging behind).\n\nClicking Yes will prompt you to click OK each time it\'s your turn, but lag proof.", nil, 0.7, 1, nil, 50) then
+	if promptOkay("Do you want an OK Prompt to appear (similar to this) when it\'s your turn?\n\nClicking No will have macro click for you, but lag might possibly cause premature clicking (if red endurance is lagging behind).\n\nClicking Yes will prompt you to click OK each time it\'s your turn, but lag proof.", nil, 0.7, 1, nil) then
 	  prompt_before_working = 1;
 	  promptText = "Click after Prompt";
 	  else

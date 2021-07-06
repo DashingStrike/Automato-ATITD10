@@ -136,4 +136,5 @@ dofile("common_find.inc");
 dofile("common_window.inc");
 dofile("common_text.inc");
 dofile("common_gps.inc");
+dofile("common_game_options.inc");
 dofile("constants.inc");

@@ -12,10 +12,15 @@
 lsRequireVersion(2,59);
 
 -- The colors used by srFindFirst/NextTextRegion and srGetWindowBorders to determine
--- the innermost border pixels
-minWindowBorderColorRange = 0x806144;
-maxWindowBorderColorRange = 0x886952;
-srSetWindowBorderColorRange(minWindowBorderColorRange, maxWindowBorderColorRange);
+-- the innermost border pixels, for thin border windows
+minThinWindowBorderColorRange = 0x806144;
+maxThinWindowBorderColorRange = 0x886952;
+srSetWindowBorderColorRange(minThinWindowBorderColorRange, maxThinWindowBorderColorRange);
+
+-- The colors used by srFindFirst/NextTextRegion and srGetWindowBorders to determine
+-- the innermost border pixels, for thick border windows
+minThickWindowBorderColorRange = 0x644026;
+maxThickWindowBorderColorRange = 0x6D472A;
 
 -- The colors that srStripRegion/Screen() looks for to decide it should invert (and
 -- treat as background when stripping)
@@ -400,6 +405,22 @@ function pixelMatchListFromBuffer(anchor, offset, colors, tolerance)
 end
 
 -------------------------------------------------------------------------------
+-- pixelRGB(x, y)
+--
+-- Read the pixel at x, y and return RGB
+--
+-- Return rgb hash where 1 = red, 2 = green, 3 = blue
+-------------------------------------------------------------------------------
+function pixelRGB(x, y)
+  local color = srReadPixelFromBuffer(x, y);
+  return {
+    math.floor(color/256/256/256) % 256,
+    math.floor(color/256/256) % 256,
+    math.floor(color/256) % 256,
+  };
+end
+
+-------------------------------------------------------------------------------
 -- ocrNumber(startX, startY, characterSet)
 --
 -- Looks for a string of digits of a given character set and returns
@@ -486,7 +507,7 @@ function findChatRegionReplacement()
     return;
   end
 
-  srSetWindowBorderColorRange(0x644026, 0x6d472a);
+  srSetWindowBorderColorRange(minThickWindowBorderColorRange, maxThickWindowBorderColorRange);
 
   local borders = srGetWindowBorders(pos[0], pos[1]+20);
   -- Offset past blue background into text area
@@ -497,7 +518,7 @@ function findChatRegionReplacement()
   borders[2] = borders[2] - borders[0]; -- return "width", not "right"
   borders[3] = borders[3] - borders[1]; -- return "height", not "bottom"
 
-  srSetWindowBorderColorRange(minWindowBorderColorRange, maxWindowBorderColorRange);
+  srSetWindowBorderColorRange(minThinWindowBorderColorRange, maxThinWindowBorderColorRange);
   return borders;
 end
 
