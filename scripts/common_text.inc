@@ -214,8 +214,12 @@ function parseText(x, y, w, h)
     newTable[i][2] = table[(i-1)*3+2];
 
     newTable[i][2] = fixSpaces(newTable[i][2], " ", ".");
-    newTable[i][2] = fixSpaces(newTable[i][2], "%d", "%d");
     newTable[i][2] = fixSpaces(newTable[i][2], "%.", ".");
+
+    --skip stripping spaces between numbers for dowsing messages
+    if not string.find(newTable[i][2], "%d+%.%d+ %d+%.%d+") then
+      newTable[i][2] = fixSpaces(newTable[i][2], "%d", "%d");
+    end
   end
   return newTable;
 end
