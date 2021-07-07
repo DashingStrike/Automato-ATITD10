@@ -1,6 +1,23 @@
 dofile("common.inc");
 
-askText = "EXPERIMENTAL: May have some issues, notably with snuffing the fire.\n\nAutomatically runs many charcoal hearths or ovens simultaneously.\n\nMake sure this window is in the TOP-RIGHT corner of the screen.\n\nTap Shift (while hovering ATITD window) to continue.";
+-- TODO: Test/adapt for regulator 0. I'm concerned that some of the logic/thresholds may not be portable between R0 and R1.
+-- TODO: Add better handling of oxygen, specifically to avoid snuffing the fire.
+-- TODO: Add experimental/observation mode for 1 hearth usage.
+-- TODO: Reorder functions to move important logic to the top.
+
+-- Explanantion of methodology:
+-- This script is based on utilizing a few behaviors to achieve efficient use of wood during charcoal
+-- generation. First, while at low wood values (10-25%), three things are true: heat drops faster,
+-- oxygen is consumed less when the oxygen is closed, and oxygen is built up faster when the vent is
+-- neutral. Secondly, heat generally is only built up when wood values are in the middle range (25-50%).
+-- Thirdly, wood is consumed faster when it is higher. Using all these behaviors, this script tries to
+-- generate charcoal over 2-3 cycles of heat generation and heat conservation. During the heat
+-- generation phase, wood is added to build the heat. Once a heat has risen above a certain threshold,
+-- it switches to the heat conservation phase. During the heat conservation phase, the vent is
+-- manipulated to minimze heat loss without adding anymore wood. When the heat drops below a certain
+-- threshold, it switches back to the heat generation phase.
+
+askText = "EXPERIMENTAL: May have some issues, notably with snuffing the fire.\n\nRegulator 1 is the most tested currently. YMMV for regulator 0.\n\nAutomatically runs many charcoal hearths or ovens simultaneously.\n\nMake sure this window is in the TOP-RIGHT corner of the screen.\n\nTap Shift (while hovering ATITD window) to continue.";
 
 wmText = "Tap Ctrl on Charcoal Hearths or Ovens\nto open and pin. Tap Alt to open, pin\nand stash.";
 
@@ -45,7 +62,7 @@ waterAddedTotal = 0;
 function doit()
   askForWindow(askText);
   --function windowManager(title, message, allowCascade, allowWaterGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight)
-  windowManager("Charcoal Setup", wmText, nil, nil, nil, nil, nil, nil, nil);   --add 16 extra pixels to window height because window expands with 'Take...' menu after first batch is created
+  windowManager("Charcoal Setup", wmText, nil, nil, nil, nil, nil, nil, nil);
   unpinOnExit(ccMenu);
 end
 
@@ -107,7 +124,7 @@ BarStateStart = 58; -- Pixel offset from oven window image.
 BarStateEnd = 254;  -- Pixel offset from oven window image.
 BarStateRange = BarStateEnd - BarStateStart;
 BarStateRangeFinishedBonus = 10;
-BarWoodAddValue = 16;
+BarWoodAddValue = 20;
 BarWaterAddValue = 12;
 
 BarProgressGreenPosition = makePoint(62, 110); -- About 25%, but doesn't really matter where we check.
@@ -217,7 +234,6 @@ function updateOvenState(oven, ovenState)
     changed = true;
   elseif result[OsInitial] then
     changed = true;
-    result[OsInitial] = false;
   end
 
   result[OsExpectWoodChange] = false;
@@ -238,9 +254,8 @@ function setupOvenStates(ovens)
     result[i][OsVent] = OsVentNormal;
     result[i][OsExpectWoodChange] = false;
     result[i][OsExpectWaterChange] = false;
-    result[i][OsInitial] = false;
-    ignore, result[i] = updateOvenState(ovens[i], result[i]);
     result[i][OsInitial] = true;
+    ignore, result[i] = updateOvenState(ovens[i], result[i]);
   end
   return result;
 end
@@ -366,8 +381,10 @@ BarProgressAlmostDone = BarStateRange * 0.85;
 BarOxygenToWoodRatioToOpenVent = 0.48;
 BarOxygenEventClosedVentSignal = 0.15;
 BarOxygenMinGrowthWhileOpen = 0.10;
+BarHeatFinishHeatToWoodMultiplier = 1;
 
-function manageOxygen(oven, newState, ovenState)
+-- Default management of oxygen when it doesn't really matter.
+function manageSafeOxygen(oven, newState, ovenState)
   if newState[OsOxygen] < BarOxygenMin then
     if newState[OsOxygen] < ovenState[OsOxygen] then
       -- Oxygen is low and dropping. Open up the vent.
@@ -409,7 +426,16 @@ function processOven(oven, ovenState)
   changed, newState = updateOvenState(oven, ovenState);
 
   if changed then
-    if newState[OsProgress] >= BarStateRange + BarStateRangeFinishedBonus then
+    -- A tick occurred. Check and handle things in the following order based on priority:
+    -- Progress done?
+    -- Burn out danger?
+    -- Did the fire get snuffed?
+    -- Coast to the end?
+    -- Might snuff the fire?
+    -- Heat is high enough to coast for a bit?
+    -- If nothing else, try to build up the heat.
+
+    if newState[OsProgress] >= BarStateRange + BarStateRangeFinishedBonus then -- Progress done?
       -- The oven is done and just needs to cool down.
       if newState[OsWater] < BarWaterFinishMin then
         while newState[OsWater] < BarWaterFinishMax do -- Add water to dump that heat.
@@ -424,96 +450,99 @@ function processOven(oven, ovenState)
         newState[OsVent] = OsVentOpen;
         clickButton(oven, ButtonOpenVent);
       end
-    else
-      -- Oven is still running. Check danger first.
-      if newState[OsDanger] > BarDangerMax then
-        if newState[OsDanger] >= ovenState[OsDanger] then
-          -- Danger is very high and didn't change or got worse since last tick. Take action!
-          clickButton(oven, ButtonWater, 1);
-          newState[OsWater] = newState[OsWater] + BarWaterAddValue;
-          newState[OsExpectWaterChange] = true;
-        end
+    elseif newState[OsDanger] > BarDangerWary then -- Burn out danger?
+      if newState[OsDanger] > BarDangerMax and newState[OsDanger] >= ovenState[OsDanger] then
+        -- Danger is very high and didn't change or got worse since last tick. Take action!
+        clickButton(oven, ButtonWater, 1);
+        newState[OsWater] = newState[OsWater] + BarWaterAddValue;
+        newState[OsExpectWaterChange] = true;
+      end
 
-        -- Definitely not dealing with wood, but need to manage oxygen.
-        manageOxygen(oven, newState, ovenState);
-      elseif newState[OsDanger] > BarDangerWary then
-        -- Danger is a bit high. Definitely don't add wood, but manage the oxygen.
-        manageOxygen(oven, newState, ovenState);
-      elseif newState[OsProgress] > BarProgressAlmostDone then
-        -- Nearly done. Can avoid adding wood if the heat stays decent.
-        if newState[OsHeat] > BarHeatLow then
-          -- Heat is looking good. Just manage oxygen.
-          manageOxygen(oven, newState, ovenState);
-        elseif newState[OsHeat] > BarHeatFinishMin then
-          if (newState[OsHeat] - BarHeatFinishMin) > (BarStateRange - newState[OsProgress]) then
-            -- Heat might be good if it doesn't drop too fast.
-            manageOxygen(oven, newState, ovenState);
-          elseif newState[OsHeat] >= ovenState[OsHeat] then
-            -- Heat isn't dropping, so might also be good.
-            manageOxygen(oven, newState, ovenState);
-          else
-            -- Heat is dropping and pretty low compared to how much progress to go. Make sure to add some wood, maybe more than once.
-            clickButton(oven, ButtonWood, 1);
-            newState[OsWood] = newState[OsWood] + BarWoodAddValue;
-            newState[OsExpectWoodChange] = true;
-            while newState[OsWood] < BarWoodBuildMin do
-              clickButton(oven, ButtonWood, 1);
-              newState[OsWood] = newState[OsWood] + BarWoodAddValue;
-            end
-
-            manageOxygen(oven, newState, ovenState);
-          end
-        end
+      -- Since danger is high, definitely don't add wood, but manage the oxygen.
+      manageSafeOxygen(oven, newState, ovenState);
+    elseif newState[OsWood] == ovenState[OsWood] and newState[OsOxygen] >= ovenState[OsOxygen] and not newState[OsInitial] then -- Snuffed the fire?
+      -- TODO: Determine when coasting won't work and just open the vent to end it quicker.
+      -- All that can be done is to not waste more wood and hope to coast to the end.
+      if newState[OsVent] ~= OsVentClosed then
+        newState[OsVent] = OsVentClosed;
+        clickButton(oven, ButtonCloseVent);
+      end
+    elseif newState[OsProgress] > BarProgressAlmostDone and newState[OsHeat] > BarHeatFinishMin then -- Coast to the end?
+      -- Nearly done. Can avoid adding wood if the heat stays decent.
+      if newState[OsHeat] > BarHeatLow then
+        -- Heat is looking good. Just manage oxygen.
+        manageSafeOxygen(oven, newState, ovenState);
+      elseif (newState[OsHeat] - BarHeatFinishMin) * BarHeatFinishHeatToWoodMultiplier > (BarStateRange - newState[OsProgress]) then
+        -- Heat might be good if it doesn't drop too fast.
+        manageSafeOxygen(oven, newState, ovenState);
+      elseif newState[OsHeat] >= ovenState[OsHeat] then
+        -- Heat isn't dropping, so might also be good.
+        manageSafeOxygen(oven, newState, ovenState);
       else
-        -- Normal stuff. Try to keep that heat in the good range.
-        if newState[OsHeat] > BarHeatMax then
-          -- Heat is high, just manage the oxygen.
-          manageOxygen(oven, newState, ovenState);
-        elseif newState[OsHeat] < BarHeatMin then
-          -- Heat is very low and we need to take extreme measures to raise it.
-          while newState[OsWood] < BarWoodHeatGrow do
-            clickButton(oven, ButtonWood, 1);
-            newState[OsWood] = newState[OsWood] + BarWoodAddValue;
-            newState[OsExpectWoodChange] = true;
-          end
-
-          if newState[OsOxygen] < newState[OsWood] then
-            -- Need to build oxygen for a big burst.
-            clickButton(oven, ButtonOpenVent);
-            newState[OsVent] = OsVentOpen;
-          else
-            manageOxygen(oven, newState, ovenState);
-          end
-        elseif newState[OsHeat] < BarHeatLow then
-          -- Heat is a bit low, but not too bad.
-          while newState[OsWood] < BarWoodBuildMax do
-            clickButton(oven, ButtonWood, 1);
-            newState[OsWood] = newState[OsWood] + BarWoodAddValue;
-            newState[OsExpectWoodChange] = true;
-          end
-
-          manageOxygen(oven, newState, ovenState);
-        elseif newState[OsHeat] >= ovenState[OsHeat] then
-          -- Heat is going up, so just manage oxygen.
-          manageOxygen(oven, newState, ovenState);
-        else
-          -- Heat is going down, maybe bump it up again.
-          if newState[OsOxygen] < BarOxygenToWoodRatioToOpenVent * newState[OsWood] then
-            -- Only add wood if the vent wouldn't be closed this tick.
-            if newState[OsWood] < BarWoodSimmerMin then
-              clickButton(oven, ButtonWood, 1);
-              clickButton(oven, ButtonWood, 1);
-              newState[OsWood] = newState[OsWood] + BarWoodAddValue + BarWoodAddValue;
-              newState[OsExpectWoodChange] = true;
-            end
-          end
-
-          manageOxygen(oven, newState, ovenState);
+        -- TODO: At this point, might need special logic to build heat up enough to finish.
+        -- Heat is dropping and pretty low compared to how much progress to go. Might not be able to coast, despite wanting to.
+        clickButton(oven, ButtonWood, 1);
+        newState[OsWood] = newState[OsWood] + BarWoodAddValue;
+        newState[OsExpectWoodChange] = true;
+        while newState[OsWood] < BarWoodBuildMin do
+          clickButton(oven, ButtonWood, 1);
+          newState[OsWood] = newState[OsWood] + BarWoodAddValue;
         end
+
+        manageSafeOxygen(oven, newState, ovenState);
+      end
+    --elseif newState[OsOxygen] <= expectedOxygenChange(newState) then -- Might snuff the fire?
+    -- TODO: Implement.
+    elseif newState[OsHeat] > BarHeatMax then -- Can coast for a bit?
+      -- Heat is high enough to just coast.
+      -- TODO: Might need a special state for this?
+      manageSafeOxygen(oven, newState, ovenState);
+    else -- Try to build up the heat.
+      if newState[OsHeat] < BarHeatMin then
+        -- Heat is very low and we need to take extreme measures to raise it.
+        while newState[OsWood] < BarWoodHeatGrow do
+          clickButton(oven, ButtonWood, 1);
+          newState[OsWood] = newState[OsWood] + BarWoodAddValue;
+          newState[OsExpectWoodChange] = true;
+        end
+
+        if newState[OsOxygen] < newState[OsWood] then
+          -- Need to build oxygen for a big burst.
+          clickButton(oven, ButtonOpenVent);
+          newState[OsVent] = OsVentOpen;
+        else
+          manageSafeOxygen(oven, newState, ovenState);
+        end
+      elseif newState[OsHeat] < BarHeatLow then
+        -- Heat is a bit low, but not too bad.
+        while newState[OsWood] < BarWoodBuildMax do
+          clickButton(oven, ButtonWood, 1);
+          newState[OsWood] = newState[OsWood] + BarWoodAddValue;
+          newState[OsExpectWoodChange] = true;
+        end
+
+        manageSafeOxygen(oven, newState, ovenState);
+      elseif newState[OsHeat] >= ovenState[OsHeat] then
+        -- Heat is going up, so just manage oxygen.
+        manageSafeOxygen(oven, newState, ovenState);
+      else
+        -- Heat is going down, maybe bump it up again.
+        if newState[OsOxygen] < BarOxygenToWoodRatioToOpenVent * newState[OsWood] then
+          -- Only add wood if the vent wouldn't be closed this tick.
+          if newState[OsWood] < BarWoodSimmerMin then
+            clickButton(oven, ButtonWood, 1);
+            clickButton(oven, ButtonWood, 1);
+            newState[OsWood] = newState[OsWood] + BarWoodAddValue + BarWoodAddValue;
+            newState[OsExpectWoodChange] = true;
+          end
+        end
+
+        manageSafeOxygen(oven, newState, ovenState);
       end
     end
   end
 
+  newState[OsInitial] = false;
   return newState;
 end
 
