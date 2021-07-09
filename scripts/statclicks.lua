@@ -1,6 +1,15 @@
 dofile("common.inc");
 dofile("settings.inc");
 
+gatherCounter = 0
+
+local stashList = {
+  insect   = {"Insect.", "All Insect"},
+  wood     = {"Limestone ("},
+  medium   = {"Soda ("},
+  cuttable = {"Dirt ("},
+};
+
 items = {
         --strength
         {"",
@@ -114,6 +123,12 @@ function getClickActions()
                 retrieveRods = readSetting("retrieveRods",retrieveRods);
                 retrieveRods = lsCheckBox(5, y-30, z, 0xFFFFFFff, " Automatically retrieve rods", retrieveRods);
                 writeSetting("retrieveRods",retrieveRods);
+            end
+            if items[i][tasks[i]] == "Limestone" or items[i][tasks[i]] == "Dirt" then
+                y = y + 35;
+                stashRawMaterials = readSetting("stashRawMaterials",stashRawMaterials);
+                stashRawMaterials = lsCheckBox(5, y-30, z, 0xFFFFFFff, " Automatically stash while digging (Pin WH)", stashRawMaterials);
+                writeSetting("stashRawMaterials",stashRawMaterials);
             end
         end
         lsDoFrame();
@@ -230,11 +245,49 @@ function gather(resource)
       if consume then
           eatOnion();
       end
-      safeClick(material[0], material[1])
+      safeClick(material[0], material[1]);
       lsSleep(100);
+      gatherCounter = gatherCounter + 1
+      if stashRawMaterials then
+        sleepWithStatus(1000,"clickCounter is " .. gatherCounter)
+        if gatherCounter >= 50 then
+          stashAll();
+          gatherCounter = 0
+        end
+      end
     end
 end
 
+function clickMenus(menus)
+  for _, menu in pairs(menus) do
+    checkBreak();
+    srReadScreen();
+    local found = findText(menu);
+    if found then
+      clickText(found);
+      lsSleep(200);
+    else
+      return false;
+    end
+  end
+  return true;
+end
+
+function stashAll()
+  local escape = "\27"
+  clickMenus({"Stash."});
+  for name, menus in pairs(stashList) do
+    checkBreak();
+    if clickMenus(menus) then
+      if name ~= 'insect' then
+        clickMax();
+        clickMenus({"Stash."});
+      end
+    end
+  end
+  lsSleep(250);
+  srKeyEvent(escape); -- Closing the stash window
+end
 --[[
 function searchRottenWood()
     woodForBugs = findText("Wood for Bugs");
