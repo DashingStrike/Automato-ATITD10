@@ -1,4 +1,5 @@
 dofile("common.inc");
+dofile("settings.inc")
 
 askText = "EXPERIMENTAL: May have some issues, notably with snuffing the fire.\n\nAutomatically runs many charcoal hearths or ovens simultaneously.\n\nMake sure this window is in the TOP-RIGHT corner of the screen.\n\nTap Shift (while hovering ATITD window) to continue.";
 
@@ -10,6 +11,10 @@ ButtonWater = 3;
 ButtonCloseVent = 4;
 ButtonNormalVent = 5;
 ButtonOpenVent = 6;
+
+useOven = true; -- Default to using a CC Oven. You can use a CC Hearth with checkbox in options()
+setRegulator = true; -- Automatically set the regulator to the provided level.
+regulatorList = {"0","1","2","3","4","5"};
 
 buttons = {
   {
@@ -44,19 +49,120 @@ waterAddedTotal = 0;
 -- Entry point for the script.
 function doit()
   askForWindow(askText);
-  --function windowManager(title, message, allowCascade, allowWaterGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight)
-  windowManager("Charcoal Setup", wmText, nil, nil, nil, nil, nil, nil, nil);   --add 16 extra pixels to window height because window expands with 'Take...' menu after first batch is created
+  windowManager("Charcoal Setup", wmText, nil, true, nil, nil, nil, nil, nil);
   unpinOnExit(ccMenu);
 end
 
 function ccMenu()
+  local scale = 0.7
   local passCount = 1;
   local done = false;
   while not done do
-    lsPrint(5, 5, 5, 0.7, 0.7, 0xffffffff, "How many passes?");
-    done, passCount = lsEditBox("pass_count", 5, 35, 0, 100, 30, 0.7, 0.7, 0x000000ff, passCount);
-    if lsButtonText(5, 110, 0, 50, 0xffffffff, "OK") then
+    local z = 0
+    local y = 10
+
+    passCount = readSetting("passCount", passCount)
+    lsPrint(10, y, z, scale, scale, 0xFFFFFFff, "How many passes?")
+
+    done, passCount = lsEditBox("passCount", 140, y, z, 50, 0, scale, scale, 0x000000ff, passCount)
+    if not tonumber(passCount) then
+      done = nil
+      lsPrint(200, y, z + 10, 0.7, 0.7, 0xFF2020ff, "NUMBER REQ")
+      passCount = 1
+    end
+
+    passCount = tonumber(passCount)
+    writeSetting("passCount", passCount)
+    y = y + 26
+
+    if not useOven and setRegulator then
+      lsPrint(10, y, 0, scale, scale, 0xffffffff, "Regulator Level:");
+      regulatorLevel = lsDropdown("regulatorLevel", 140, y-5, 0, 100, regulatorLevel, regulatorList);
+      y = y + 32;
+    end
+
+    lsPrintWrapped(
+      10,
+      y,
+      z + 10,
+      lsScreenX - 20,
+      0.7,
+      0.7,
+      0xffff40ff,
+      "Initialisation Settings:\n-------------------------------------------"
+    )
+    y = y + 5;
+
+    useOven = readSetting("useOven",useOven);
+    if useOven then
+      useOven = CheckBox(10, y+30, z, 0x99c2ffff, " Using CC Oven(s) (Uncheck for CC Hearth(s))", useOven, 0.65, 0.65);
+      y = y + 26
+    else
+      useOven = CheckBox(10, y+30, z, 0xffffffff, " Using CC Hearth(s) (Check for CC Oven(s))", useOven, 0.65, 0.65);
+      y = y + 20
+      setRegulator = CheckBox(10, y+30, z, 0xffffffff, " Automatically set the Regulator level",
+      setRegulator, 0.65, 0.65);
+      y = y + 26
+    end
+    writeSetting("useOven",useOven);
+    y = y + 26
+
+    if passCount > 1 then
+      plural = "passes"
+    else
+      plural = "pass"
+    end
+
+    lsPrintWrapped(
+      10,
+      y-5,
+      z + 10,
+      lsScreenX - 20,
+      0.7,
+      0.7,
+      0xffff40ff,
+      "-------------------------------------------"
+    )
+
+    if ButtonText(10, lsScreenY - 30, z, 100, 0x00ff00ff, "Start !", 0.9, 0.9) then
       done = true;
+    end
+
+    passCount = tonumber(passCount)
+    writeSetting("passCount", passCount)
+    y = y + 26
+
+    if useOven then
+      local ccVolume = 200;
+      lsPrintWrapped(
+        10,
+        y + 7,
+        z + 10,
+        lsScreenX - 20,
+        0.7,
+        0.7,
+        0xD0D0D0ff,
+        "The macro will exectue " .. passCount .. " " .. plural .. " which will generate an output of "
+        .. ccVolume .. " per Charcoal Oven"
+      )
+    else
+      local ccVolume = 100;
+      y = y + 24
+      lsPrintWrapped(
+        10,
+        y + 7,
+        z + 10,
+        lsScreenX - 20,
+        0.7,
+        0.7,
+        0xD0D0D0ff,
+        "The macro will exectue " .. passCount .. " " .. plural .. " which will generate an output of "
+        .. ccVolume .. " per Charcoal Hearth"
+      )
+    end
+
+    if lsButtonText(lsScreenX - 110, lsScreenY - 30, z, 100, 0xFF0000ff, "End script") then
+      error "Clicked End Script button"
     end
 
     lsDoFrame();
@@ -74,6 +180,9 @@ function ccMenu()
     drawWater(1); -- Refill Jugs. The parameter of 1 means don't do the animation countdown. Since we won't be running somewhere, not needed
     lsSleep(100);
     Do_Take_All_Click(); -- Make sure ovens are empty. If a previous run didn't complete and has wood leftover, will cause a popup 'Your oven already has wood' and throw macro off
+      if not useOven and setRegulator then
+        setRegulatorLevel();
+      end
     clickAllImages(buttons[ButtonBegin].image, buttons[ButtonBegin].offset[0], buttons[ButtonBegin].offset[1]);
     lsSleep(1500);
     ccRun(i, passCount);
@@ -534,10 +643,17 @@ function Do_Take_All_Click()
   lsSleep(100);
 end
 
+function setRegulatorLevel()
+  srReadScreen();
+  clickAllText("Regulator...")
+  waitForText("Regulation Level", 500)
+  srReadScreen();
+  clickAllText("Set Level " .. regulatorLevel - 1)
+end
+
 function clickAll(image_name)
   -- Find buttons and click them!
   srReadScreen();
-  xyWindowSize = srGetWindowSize();
   local buttons = findAllImages(image_name);
 
   if #buttons == 0 then
