@@ -315,48 +315,40 @@ end
 function hacklingRake()
     expressionToFind = "This is [a-z]+[ Improved]* Hackling Rake";
     flaxReg = findText(expressionToFind, nil, REGION + REGEX);
-    if flaxReg == nil then
-        return;
-    end
+      if flaxReg == nil then
+          return;
+      end
     flaxText = findText(expressionToFind, flaxReg, REGEX);
     clickText(flaxText);
-    lsSleep(per_tick);
+    lsSleep(100);
     srReadScreen();
     local fix = findText("Repair");
-    if (fix) then
-      repairRake("hackling");
-      lsSleep(150);
-      srReadScreen();
-      clickText(flaxText);
-    end
+      if (fix) then
+        repairRake("hackling");
+        lsSleep(75);
+        srReadScreen();
+        clickText(flaxText, flaxReg);
+        lsSleep(75);
+      end
     srReadScreen();
     local consume = srFindImage("consume.png");
-    if consume then
+      if consume then
         eatOnion();
-    end
-    s1 = findText("Separate Rotten");
-    s23 = findText("Continue processing");
-    clean = findText("Clean the");
-    if s1 then
+      end
+    s1 = findText("Separate Rotten", flaxReg);
+    s23 = findText("Continue processing", flaxReg);
+    clean = findText("Clean the", flaxReg);
+      if s1 then
         clickText(s1);
-    elseif s23 then
+      elseif s23 then
         clickText(s23);
-    elseif clean then
-        if takeAllWhenCombingFlax == true then
-            clickText(findText("Take..."));
-            everythingObj = waitForText("Everything", 1000);
-            if everythingObj == nil then
-                return;
-            end
-            clickText(everythingObj);
-            lsSleep(150);
-        end
+      elseif clean then
         clickText(clean);
-    else
+      else
         lsPrint(5, 0, 10, 1, 1, "Found Stats");
         lsDoFrame();
         lsSleep(2000);
-    end
+      end
 end
 --[[
 function pyramidPush()
