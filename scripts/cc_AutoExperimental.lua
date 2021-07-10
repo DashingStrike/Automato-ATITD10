@@ -49,7 +49,7 @@ waterAddedTotal = 0;
 -- Entry point for the script.
 function doit()
   askForWindow(askText);
-  windowManager("Charcoal Setup", wmText, nil, true, nil, nil, nil, nil, nil);
+  windowManager("Charcoal Setup", wmText, nil, true, 364, 303, nil, nil, nil);
   unpinOnExit(ccMenu);
 end
 
