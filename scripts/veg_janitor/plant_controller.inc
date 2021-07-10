@@ -4,6 +4,7 @@ dofile("veg_janitor/vector.inc")
 dofile("veg_janitor/screen.inc")
 dofile("veg_janitor/calibration.inc")
 dofile("screen_searcher.inc")
+dofile("veg_janitor/logger.inc")
 
 PlantController = {}
 function PlantController:new(index, location, alternate_drag, window_pos, seed_name, seed_type, num_water_times, config, existing_unpin_locations)
@@ -167,8 +168,9 @@ function PlantController:dead()
   local search_box = makeBox(self.window_pos.x - 15, self.window_pos.y - 15, 200, 70)
   srReadScreen()
   local dead = findImage("veg_janitor/dead.png", search_box)
-  --lsPrintln("Dead? " .. (dead and 'dead' or 'alive') .. " | " .. self.window_pos.x .. ", " .. self.window_pos.y);
-  return dead or not self.window_open and (self.plant_time and (lsGetTimer() - self.plant_time) > 7000) or self.harvest_time and (lsGetTimer() - self.harvest_time > 7000)
+  local r = dead or not self.window_open and (self.plant_time and (lsGetTimer() - self.plant_time) > 7000) or self.harvest_time and (lsGetTimer() - self.harvest_time > 7000)
+  self:_log(TRACE, "dead? " .. (r and 'dead' or 'alive') .. " | " .. self.window_pos.x .. ", " .. self.window_pos.y);
+  return r
 end
 
 function PlantController:close()
@@ -181,11 +183,14 @@ function PlantController:close()
   if unpin_loc then
     safeClick(unpin_loc[0], unpin_loc[1]);
   else
-    lsPrintln("Didn't find unpin image for plant " .. self.index .. " looking left:" .. search_box.left .. ", top: " .. search_box.top .. ", width: " .. search_box.width .. ", height: " .. search_box.height .. ".");
+    self:_log(INFO,"Didn't find unpin image for plant " .. self.index .. " looking left:" .. search_box.left .. ", top: " .. search_box.top .. ", width: " .. search_box.width .. ", height: " .. search_box.height .. ".");
     return
   end
 end
 
+function PlantController:_log(level, message)
+  veg_log(level, self.config.debug_log_level, 'plant_controller.inc', message)
+end
 
 function PlantController:grow_plant()
   -- Take of a snapshot of the area in which we are guessing the plant will be placed before we actually create
@@ -301,7 +306,7 @@ function PlantController:openBedWindow()
         click(self.saved_plant_location, true, true)
         lsSleep(click_delay)
       else
-        lsPrintln("Pixel matches recorded before planting colour of " .. click_colour .. ", not clicking.")
+        self:_log(INFO, "Pixel matches recorded before planting colour of " .. click_colour .. ", not clicking.")
       end
       self.open_attempts = self.open_attempts + 1
     end
@@ -317,7 +322,7 @@ function PlantController:openBedWindow()
       if not self.window_open then
         local found_new_window = findRemoveNewWindows(self.existing_unpin_locations)
         if found_new_window or self.open_attempts > 3 then
-          print('Failed due to click opening unknown window for plant: ' .. self.index)
+          self:_log(INFO, 'Failed due to click opening unknown window for plant: ' .. self.index)
           self.state = "complete"
         end
       end

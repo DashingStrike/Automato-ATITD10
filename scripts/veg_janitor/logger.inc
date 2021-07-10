@@ -34,6 +34,15 @@ function get_veg_log()
 end
 
 function veg_log(level, setLogLevel, file, message)
+  if not message then
+    message = 'BAD LOG LINE AT'
+    print(message)
+    print(debug.traceback())
+    return
+  end
+  if not file then
+    file = ''
+  end
   message = '$' .. lsGetTimer() .. '-' .. file .. '-' .. LOG_LEVEL_TO_NAME[level] .. ': ' .. message
   if not setLogLevel then
     print(message)

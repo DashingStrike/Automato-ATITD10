@@ -915,7 +915,7 @@ function getUserParams()
     if config.onion_calibration_mode_change_threshold == 4 and not config.fudged_onion then
       config.onion_calibration_mode_change_threshold = 4.5
       config.fudged_onion = true
-      print("Fudging onion to be a better number from previous default config value.")
+      veg_log(INFO, config.debug_log_level, 'ui.inc', "Fudging onion to be a better number from previous default config value.")
     elseif not config.onion_calibration_mode_change_threshold then
       config.onion_calibration_mode_change_threshold = 4.5
       config.fudged_onion = true

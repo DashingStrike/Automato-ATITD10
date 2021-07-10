@@ -84,7 +84,7 @@ function Plant:tick()
     if not self.last_harvest_attempt or (lsGetTimer() - self.last_harvest_attempt) > self.config.harvest_delay_time then
       self.last_harvest_attempt = lsGetTimer()
       if self.controller:harvest() then
-        print('PLANT ' .. self.index .. ' HARVESTED ')
+        self:_log(INFO, 'PLANT ' .. self.index .. ' HARVESTED ')
         self.harvested = true
         return "harvested"
       end
@@ -150,7 +150,7 @@ function Plant:finished()
 end
 
 function Plant:change_stage(direction)
-  lsPrintln("Plant " .. self.index .. " changing stage at " .. (lsGetTimer() - self.plant_time) ..
+  self:_log(INFO,"Plant " .. self.index .. " changing stage at " .. (lsGetTimer() - self.plant_time) ..
     " in stage " .. self.stage .. " to stage " .. (self.stage + direction))
   self.prev_stage = self.stage
   self.stage = self.stage + direction
@@ -184,7 +184,7 @@ end
 
 function Plant:water()
   local result = self.controller:water()
-  lsPrintln("Plant " .. self.index .. "water delay is " .. (lsGetTimer() - self.previous_stage_ended_at) .. " watered at " .. (lsGetTimer() - self.plant_time) ..
+  self:_log(INFO,"Plant " .. self.index .. "water delay is " .. (lsGetTimer() - self.previous_stage_ended_at) .. " watered at " .. (lsGetTimer() - self.plant_time) ..
     " in stage " .. self.stage .. " death " .. self:time_till_death() .. " next " .. (self.next_stage_starts_at - lsGetTimer()))
   return result
 end

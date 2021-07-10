@@ -75,7 +75,8 @@ function askForWindowAndSetupGlobals(config)
     if plant_config and plant_config.stage_advance_timings and plant_config.stage_advance_timings.calibrated then
       local calibration_version = plant_config.stage_advance_timings.calibration_version
       if not calibration_version or calibration_version < 1 then
-        print('Forcing re-calculation of calibration data due to version update!')
+        veg_log(INFO, config.debug_log_level, 'Forcing re-calculation of calibration data due to version update!')
+
         calculate_and_update_calibration_settings(config, config.seed_type, config.seed_name)
       end
     end
@@ -561,9 +562,8 @@ function gatherVeggies(config)
 
   local stop_after_this_run = false
   local pause_after_this_run = false
-  local run_number = 0
+  local run_number = 1
   while run_number <= config.num_runs do
-    run_number = run_number + 1
     local firstRun = run_number == 1
     srReadScreen();
     checkPlantButton()
@@ -596,7 +596,7 @@ function gatherVeggies(config)
     for i = 1, math.min(batch_size, config.num_plants) do
       table.insert(sortable_plant_list, plants[i])
     end
-    lsPrintln("Config run " .. run_number)
+    veg_log(INFO, config.debug_log_level, 'veg_janitor', "Run number: " .. run_number)
     local start = lsGetTimer()
 
     checkBreakIfNotSpeed()
@@ -660,7 +660,7 @@ function gatherVeggies(config)
     for k = 1, config.num_plants do
       if config.calibration_mode then
         if plants[k].bad_calibration then
-          print('IGNORING DATA DUE TO BAD CALIBRATION')
+          veg_log(INFO, config.debug_log_level, 'IGNORING DATA DUE TO BAD CALIBRATION')
           config.num_runs = config.num_runs + 1
         else
           plants[k]:output_calibration_data()
@@ -698,6 +698,7 @@ function gatherVeggies(config)
       lsPlaySound("error.wav");
       error('Your location is no longer suitable for growing vegetables, please move!')
     end
+    run_number = run_number + 1
   end
   if config.calibration_mode then
     calculate_and_update_calibration_settings(config, config.seed_type, config.seed_name)
@@ -794,7 +795,7 @@ Plants = {}
 function Plants:new(o)
   for index = 1, o.num_plants do
     local location = PLANT_LOCATIONS[index]
-    lsPrintln("Making plant " .. index .. " with location " .. location.direction_vector.x .. " , " .. location.direction_vector.y)
+    veg_log(INFO, o.config.debug_log_level, 'veg_janitor', "Making plant " .. index .. " with location " .. location.direction_vector.x .. " , " .. location.direction_vector.y)
     self[index] = PlantController:new(
       index,
       location,
