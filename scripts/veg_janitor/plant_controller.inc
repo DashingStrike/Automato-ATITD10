@@ -87,7 +87,7 @@ function PlantController:time_till_death()
   elseif self.state == "closed" then
     return 100000
   else
-    error("Unknowng controller state in time_till_death " .. self.state)
+    error("Unknown controller state in time_till_death " .. self.state)
   end
 end
 function PlantController:status()
@@ -168,7 +168,7 @@ function PlantController:dead()
   srReadScreen()
   local dead = findImage("veg_janitor/dead.png", search_box)
   --lsPrintln("Dead? " .. (dead and 'dead' or 'alive') .. " | " .. self.window_pos.x .. ", " .. self.window_pos.y);
-  return dead or not self.window_open and (self.plant_time and (lsGetTimer() - self.plant_time) > 7000)
+  return dead or not self.window_open and (self.plant_time and (lsGetTimer() - self.plant_time) > 7000) or self.harvest_time and (lsGetTimer() - self.harvest_time > 7000)
 end
 
 function PlantController:close()
@@ -249,6 +249,7 @@ function PlantController:harvest()
     lsSleep(click_delay / 2)
     self.harvested = true
     self.bad_calibration = false
+    self.harvest_time = lsGetTimer()
     return self:dead()
   else
     return false
@@ -281,7 +282,7 @@ function PlantController:check_how_many_plant_pixels_changed()
   if self.snapshoting_water_animations then
     return 0
   end
-  return self.searcher:countNumberChanged(self.prevCheckPixels, 'before')
+  return self.searcher:countNumberChanged('before', 'before')
 end
 
 function PlantController:openBedWindow()

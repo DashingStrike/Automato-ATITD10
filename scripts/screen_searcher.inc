@@ -168,9 +168,6 @@ end
 -- Returns the regions optionally filtered by a minimum size and/or returning only the largest N regions.
 -------------------------------------------------------------------------------
 function ScreenSearcher:drawRegions(displayTime, minRegionSizeFilter, title)
-  if not displayTime then
-    displayTime = 3000
-  end
   local furthestResults = {}
   for name, _ in pairs(self.regions) do
     if name ~= self.deadRegionName then
@@ -184,12 +181,13 @@ function ScreenSearcher:drawRegions(displayTime, minRegionSizeFilter, title)
   local startTime = lsGetTimer()
   lsDoFrame()
   local tickColour = RED
-  while lsGetTimer() - startTime < displayTime do
+  while (not displayTime or lsGetTimer() - startTime < displayTime) and not lsShiftHeld() do
     local box = self.box
     local screenToRegionMap = self.screenToRegionMap
     local regionToColour = { [self.deadRegionName] = RED }
     local nextFreeColour = 1
-    lsPrint(10, 0, 10, 1, 1, 0xFFFFFFff, title or "Displaying all regions:");
+    current_y = 10
+    drawWrappedText(title or "Displaying all regions:", WHITE)
     for y = 0, box.height, 1 do
       for x = 0, box.width do
         if screenToRegionMap[y] and screenToRegionMap[y][x] then
@@ -222,7 +220,7 @@ function ScreenSearcher:drawRegions(displayTime, minRegionSizeFilter, title)
           if furthestResults[y] and furthestResults[y][x + 1] then
             colour = tickColour
           end
-          lsDisplaySystemSprite(1, x, y, 1, 1, 1, colour)
+          lsDisplaySystemSprite(1, x, y + current_y, 1, 1, 1, colour)
         end
       end
     end
@@ -317,7 +315,6 @@ function ScreenSearcher:_searchChangedPixelsAndSetupRegions(snapshotToCompareAga
     playErrorSoundAndExit('Cannot set both createNewConnectedRegions and an optionalRegionNameToMarkChangesIn.')
   end
 
-  srReadScreen()
 
   if resetOldRegions then
     self:_log(DEBUG, 'Resetting old regions...')
@@ -328,12 +325,17 @@ function ScreenSearcher:_searchChangedPixelsAndSetupRegions(snapshotToCompareAga
     end
   end
 
+  srReadScreen()
+
   local newSnapshotPixels = {}
   local changedCount = 0
+  local ignoreChangedCount = 0
+  local didntChangeCount = 0
   for y = 0, self.box.height do
     newSnapshotPixels[y] = newSnapshotPixels[y] or {}
     for x = 0, self.box.width do
       local newPixel = srReadPixelFromBuffer(self.box.left + x, self.box.top + y)
+      newSnapshotPixels[y][x] = newPixel
       local originalPixel = self.snapshots[snapshotToCompareAgainst][y][x]
       self.screenToRegionMap[y] = self.screenToRegionMap[y] or {}
       local existingRegion = self.screenToRegionMap[y][x]
@@ -346,24 +348,30 @@ function ScreenSearcher:_searchChangedPixelsAndSetupRegions(snapshotToCompareAga
           changedCount = changedCount + self:_markLocationForRegion(x, y, optionalRegionNameToMarkChangesIn)
         elseif createNewConnectedRegions then
           changedCount = changedCount + self:_connectChangedPixelToSurroundingRegions(x, y)
-        elseif not self:_isInDeadRegion(x, y) then
+        elseif self:_isNotDeadRegion(x, y) then
           changedCount = changedCount + 1
+        else
+          ignoreChangedCount = ignoreChangedCount + 1
         end
+      else
+        didntChangeCount = didntChangeCount + 1
       end
     end
-
-    if optionalSnapshotToSaveNewPixelsIn then
-      self:_log(DEBUG, 'Saving pixels to snapshot ' .. optionalRegionNameToMarkChangesIn)
-      self.snapshots[optionalSnapshotToSaveNewPixelsIn] = newSnapshotPixels
-    end
   end
-  self:_log(DEBUG, 'Found ' .. changedCount .. ' changed pixels.')
+  if optionalSnapshotToSaveNewPixelsIn then
+    self.snapshots[optionalSnapshotToSaveNewPixelsIn] = newSnapshotPixels
+  end
+  self:_log(DEBUG, 'Found ' .. changedCount .. ' changed pixels, ignored ' .. ignoreChangedCount .. ' and ' .. didntChangeCount .. ' did not change.')
   return changedCount
 end
 
 function ScreenSearcher:_errorIfSnapshotDoesntExist(newSnapshotName)
   if not self.snapshots[newSnapshotName] then
-    playErrorSoundAndExit("Unknown snapshot name provided: " .. newSnapshotName)
+    if not newSnapshotName then
+      playErrorSoundAndExit("Unknown snapshot name provided: " .. newSnapshotName)
+    else
+      playErrorSoundAndExit("No snapshot name provided")
+    end
   end
 end
 
@@ -777,4 +785,8 @@ function chamfer_distance(box, screenToRegionMap, regionName)
   result.max_y = max_y
   result.max_dt = max_dt
   return result
+end
+
+function drawWrappedText(text, colour, x, y)
+  current_y = current_y + lsPrintWrapped(x, y, 10, lsGetWindowSize()[0] - 10, 0.6, 0.6, colour, text)
 end

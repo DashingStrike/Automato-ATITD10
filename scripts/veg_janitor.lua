@@ -310,7 +310,7 @@ function preLocatePlants(config, plants, seedScreenSearcher, dead_player_box)
   plantSearcher:snapshotScreen('before')
   plantSearcher:markBoxAsDead(dead_player_box)
   veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'Snapshotted screen and marked player area as dead...')
-  if config.debug_log_level >= DEBUG then
+  if config.debug_log_level >= DEBUG and config.show_debug_images then
     plantSearcher:drawRegions(2000, nil, 'Showing excluded player box')
   end
   for i = config.num_plants, 1, -1 do
@@ -331,7 +331,7 @@ function preLocatePlants(config, plants, seedScreenSearcher, dead_player_box)
     veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'Done pre-locating plant ' .. i)
   end
 
-  if config.debug_log_level >= DEBUG then
+  if config.debug_log_level >= DEBUG and config.show_debug_images then
     debugSearchBoxes(config, plants)
   end
 
@@ -369,13 +369,13 @@ function preLocatePlants(config, plants, seedScreenSearcher, dead_player_box)
     plants[i].saved_plant_location = point
   end
 
-  if config.debug_log_level >= DEBUG then
-    plantSearcher:drawRegions(10000, nil, 'Plant regions:')
+  if config.debug_log_level >= DEBUG and config.show_debug_images then
+    plantSearcher:drawRegions(3000, nil, 'Plant regions:')
   end
 end
 
 function displayDebugImages(config, plants, box)
-  if config.debug_log_level >= DEBUG then
+  if config.debug_log_level >= DEBUG and config.show_debug_images then
     for i = 1, config.num_plants do
       for y = box.top, box.top + box.height, 1 do
         for x = box.left, box.left + box.width do
@@ -457,7 +457,7 @@ function recordMovement(searcher, config)
       (num_snaps - i) .. ' snapshots left');
     lsDoFrame()
   end
-  if config.debug_log_level >= DEBUG then
+  if config.debug_log_level >= DEBUG and config.show_debug_images then
     searcher:drawRegions(3000, false, 'Seed searcher dead zones for player:')
   end
   return searcher:getRegionBox(searcher.deadRegionName, nil, 2.5)
@@ -485,8 +485,8 @@ function findSeedAndPickupIfThere(searcher, num_dead, config)
   searcher:markConnectedAreasAsNewRegions('beforeSeeds', nil, true)
   local regions = searcher:getRegions(pixel_change, num_dead + 3)
   veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Found ' .. #regions .. ' changed regions.')
-  if config.debug_log_level >= DEBUG then
-    searcher:drawRegions(6000, pixel_change, 'Potential Seed Bag Locations:')
+  if config.debug_log_level >= DEBUG and config.show_debug_images then
+    searcher:drawRegions(3000, pixel_change, 'Potential Seed Bag Locations:')
   end
   local seeds_picked_up = 0
   for i, region in ipairs(regions) do
@@ -515,13 +515,7 @@ function findSeedAndPickupIfThere(searcher, num_dead, config)
   if seeds_picked_up < num_dead then
     veg_log(INFO, config.debug_log_level, 'findSeedAndPickupIfThere', 'Failed to pickup all seeds, ' .. num_dead - seeds_picked_up .. ' left to pickup...')
     lsPlaySound("fail.wav");
-    local exit = false
-    while not lsShiftHeld() and not exit do
-      lsPrintWrapped(0, 0, 1, lsScreenX, 0.7, 0.7, 0xFFFFFFff, 'Failed to pickup a seedbag, please without moving your character at all pick up all seeds and then press and hold shift to continue.');
-      lsDoFrame();
-      lsSleep(tick_delay);
-      checkBreak();
-    end
+    searcher:drawRegions(false, pixel_change, 'Failed to pickup a seedbag, please without moving your character at all pick up all seeds and then press and hold shift to continue.');
     sleepWithStatus(3000, "WARNING VEG JANITOR IS ABOUT TO START DO NOT USE MOUSE OR KEYBOARD")
   end
 end

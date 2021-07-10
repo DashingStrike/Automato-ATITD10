@@ -437,8 +437,12 @@ function edit_config_screen(config)
       config.check_for_water_button = CheckBox(X_PADDING, current_y, 10, WHITE, " Error if the water button can't be seen at start?", config.check_for_water_button)
       current_y = current_y + 30
       config.search_for_seed_bags = CheckBox(X_PADDING, current_y, 10, WHITE, " Pickup dead plant seed bags after each run?", config.search_for_seed_bags)
+      current_y = current_y + 30
+      config.show_debug_images = CheckBox(X_PADDING, current_y, 10, WHITE, " Show Debug Images?", config.show_debug_images)
+      current_y = current_y + 30
+      config.only_click_when_pixel_changes_mode = CheckBox(X_PADDING, current_y, 10, WHITE, " Wait for pixel to change before opening plant?", config.only_click_when_pixel_changes_mode)
       current_y = current_y + 100
-      config.debug_log_level = dropdown("debug_log_level", INFO, LOG_LEVEL_TO_NAME, "Debug Log Level:", LOG_LEVEL_TO_LEVEL)
+      config.debug_log_level = dropdown("debug_log_level", config.debug_log_level or INFO, LOG_LEVEL_TO_NAME, "Debug Log Level:", LOG_LEVEL_TO_LEVEL)
       local copy_log_to_clipboard = button("Copy last runs debug log to clipboard", YELLOW)
       if copy_log_to_clipboard then
         lsClipboardSet(get_veg_log())
@@ -762,6 +766,8 @@ function is_boolean_config_key(key)
     ["sorting_mode"] = true,
     ["search_for_seed_bags"] = true,
     ["check_for_water_button"] = true,
+    ["show_debug_images"] = true,
+    ["only_click_when_pixel_changes_mode"] = true
   }
   return boolean_config_keys[key]
 end
@@ -1251,6 +1257,8 @@ function default_deep_config()
     ["sorting_mode"] = true,
     ["search_for_seed_bags"] = true,
     ["check_for_water_button"] = false,
+    ["show_debug_images"] = false,
+    ["only_click_when_pixel_changes_mode"] = false,
     ["end_of_run_wait"] = 3000,
     ["onion_calibration_mode_change_threshold"] = 4.5,
     ["non_onion_calibration_mode_change_threshold"] = 1,
