@@ -16,8 +16,11 @@ offset = {};
 
 function doit()
 
-    askForWindow("Make sure your chats are minimized. If the brown, from chat tabs, are midway or higher (from midpoint of anvil) while gathering offsets; mouse might get confused and start hovering tabs.\n\nNote that anvils need to have been rotated 180 degrees from the default rotation when built, so the sharp edge of the carp blade is to the left.\n\nSee comments in .lua for link to screenshot.\n\nHover ATITD window and press Shift to continue.");
-
+  askForWindow("Make sure your chats are minimized.\n\nEnable 'Supress the flyaway messages, only use the console'"
+  .. " otherwise there is a chance the flyaway will block automato seeing the 'Complete Project' option."
+  .. "\n\nNote that anvils need to have been rotated 180 degrees from the default rotation when built,"
+  .. " so the sharp edge of the carp blade is to the left.\n\nSee comments in .lua for link to screenshot."
+  .. "\n\nHover ATITD window and press Shift to continue.");
     --promptOkay(prompt_string, color, scale, yes_no, no_cancel, offsetY)
     promptOkay("Make sure you are in the F8F8 view, zoomed all the way in.\n\nNo worries, the macro will force F8F8 mode when you click 'Start' button, later.\n\nPin anvil menu where it does not overlap the anvil.", nil, 0.7, nil, true, 35);
     promptOkay("Stand to the left of the anvil without any part of your body overlapping the anvil.\n\nYou may need to reposition your avatar slightly until you get a good quality blade.\n\nPractice makes perfect, experiment!", nil, 0.7, nil, true, 35);
@@ -226,7 +229,7 @@ function findAnvil()
     clickText(pos);
 
     srReadScreen();
-    pos = findText("Copper...");
+    pos = findText(metal .. "...");
     if(not pos) then
         fatalError("Unable to find the Copper menu item.");
     end

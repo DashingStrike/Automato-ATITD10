@@ -449,7 +449,7 @@ function displayMoves()
 
     auto = readSetting("auto", auto);
     lsPrint(5, y, 0, 1, 1, 0xFFFFFFff, "Auto Start:");
-    move = lsCheckBox(105, y, z, 0xFFFFFFff, "", auto);
+    auto = lsCheckBox(105, y, z, 0xFFFFFFff, "", auto);
     writeSetting("auto", auto);
     y = y + 30;
 
