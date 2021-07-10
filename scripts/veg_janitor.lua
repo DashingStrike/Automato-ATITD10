@@ -467,7 +467,6 @@ function findSeedAndPickupIfThere(searcher, num_dead, config)
   lsPrintWrapped(10, 100, 0, lsScreenX - 20, 1, 1, 0xd0d0d0ff, 'Searching for ' .. num_dead .. ' seed bags left over on the floor from failed plants.');
   lsDoFrame()
   srReadScreen()
-  local existing_unpin_locs = findAllImages("veg_janitor/pin.png", 4800)
   local start_seed_box_found = srFindImage("veg_janitor/seeds.png",
     4800);
   if start_seed_box_found then
@@ -490,6 +489,7 @@ function findSeedAndPickupIfThere(searcher, num_dead, config)
   end
   local seeds_picked_up = 0
   for i, region in ipairs(regions) do
+    veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Checking region called ' .. region:name() .. ' with size ' .. region:size() .. ' and box ' .. table_to_str(region:getBox()))
     veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Looking for seed ' .. i .. '.')
     local clickLoc = searcher:findFurthestPointFromEdgeForRegion(region:name())
     lsSleep(click_delay)

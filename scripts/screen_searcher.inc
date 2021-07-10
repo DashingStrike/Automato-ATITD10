@@ -138,11 +138,10 @@ end
 -- Returns the regions optionally filtered by a minimum size and/or returning only the largest N regions.
 -------------------------------------------------------------------------------
 function ScreenSearcher:getRegions(minRegionSizeFilter, keepLargestNRegionFilter)
-  local regionsPassingFilter
   local fcomp = function(a, b)
     return a:size() > b:size()
   end
-  regionsPassingFilter = {}
+  local regionsPassingFilter = {}
   local seenRegions = {}
   for name, region in pairs(self.regions) do
     if not seenRegions[name] and name ~= self.deadRegionName then
@@ -453,7 +452,11 @@ function ScreenSearcher:_connectChangedPixelToSurroundingRegions(x, y)
   end
   local resultingRegion = nil
   if aboveRegion and leftRegion then
-    aboveRegion:connect(leftRegion, x, y)
+    local orgName = leftRegion:name()
+    local connected = aboveRegion:connect(leftRegion, x, y)
+    if connected then
+      self.regions[orgName] = nil
+    end
     resultingRegion = aboveRegion
   elseif aboveRegion then
     aboveRegion:add(x, y)
@@ -495,8 +498,10 @@ function RegionProxy:connect(other_region, connecting_x, connecting_y)
   if other_region:name() ~= self:name() then
     self.region:connect(other_region.region, connecting_x, connecting_y)
     other_region.region = self.region
+    return true
   else
     self.region:add(connecting_x, connecting_y)
+    return false
   end
 end
 
@@ -642,6 +647,18 @@ function Region:height()
 end
 
 function Region:getBox(xOffset, yOffset, extraWidth, extraHeight)
+  if not xOffset then
+    xOffset = 0
+  end
+  if not yOffset then
+    yOffset = 0
+  end
+  if not extraWidth then
+    extraWidth = 0
+  end
+  if not extraHeight then
+    extraHeight = 0
+  end
   return makeBox(
     self.min_x + xOffset - extraWidth,
     self.min_y + yOffset - extraHeight,
