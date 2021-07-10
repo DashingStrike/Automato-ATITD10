@@ -275,8 +275,22 @@ function uncheck(i)
   countChecked();
 end
 
+function activateTimer()
+  local windowSize = srGetWindowSize();
+  for x = -200, 200, 20 do
+    srSetMousePos(windowSize[0] / 2 + x, 125);
+    srReadScreen();
+    local timer = findImage("acro/timer.png", iconRange);
+    if timer then
+      safeClick(timer[0], timer[1]);
+      return true;
+    end
+  end
+
+  return false;
+end
+
 function doMoves()
-  local now = 0;
   local lastClick = 0;
   local GUI = "";
   local windowSize = srGetWindowSize();
@@ -319,9 +333,11 @@ function doMoves()
           end
           srClickMouseNoMove(clickMove[0]+3, clickMove[1]+2);
           lsSleep(1000);
-          if not waitForImage("acro/timer.png", 5000, nil, iconRange, 4000) then
-            sleepWithStatus(2000, "UANBLE TO ACRO!\n\nDid your partner move away?", nil, 0.7);
-            return;
+
+          if not waitForImage("acro/timer.png", 1000, "Waiting for acro timer icon", iconRange, 500) then
+            if  not activateTimer() then
+              promptOkay("Unable to find acro timer!\n\nMake sure your acro icon is active by clicking on it so the time displays. You can perform a move manually to do this if needed.", nil, 0.7, nil, true);
+            end
           end
 
           if follows() then

@@ -55,6 +55,32 @@ local movements = {
   "Don't use either",
 }
 
+function setGameOptions(oneClickOptions, videoOptions, interfaceOptions)
+  if not promptOkay("This macro needs to specific ATITD Options.\n\nWould you like to set them automatically?", 0xFFFFCCff, nil, true) then
+    if next(oneClickOptions) ~= nil then
+      setOptionsError(oneClickOptionKeys, oneClickOptions, "One Click");
+    end
+    if next(videoOptions) ~= nil then
+      setOptionsError(videoOptionKeys, videoOptions, "Video");
+    end
+    if next(interfaceOptions) ~= nil then
+      setOptionsError(interfaceOptionKeys, interfaceOptions, "Interface");
+    end
+    return;
+  end
+
+  if next(oneClickOptions) ~= nil then
+    setOneClickOptions(oneClickOptions);
+  end
+  if next(videoOptions) ~= nil then
+    setVideoOptions(videoOptions);
+  end
+  if next(interfaceOptions) ~= nil then
+    setInterfaceOptions(interfaceOptions);
+  end
+end
+
+--Internal methods below
 function getOneClickOptions()
   if not openOption("One-Click and Related") then
     return {};
@@ -135,12 +161,7 @@ function getInterfaceOptions()
   return options;
 end
 
-function setOneClickOptions(options, prompt)
-  if prompt ~= false and not promptOkay("This macro needs to configure your ATITD One Click Options.") then
-    setOptionsError(oneClickOptionKeys, options, "One Click");
-    return;
-  end
-
+function setOneClickOptions(options)
   local current = getOneClickOptions();
   if #current ~= #oneClickOptionKeys then
     setOptionsError(oneClickOptionKeys, options, "One Click");
@@ -167,12 +188,7 @@ function setOneClickOptions(options, prompt)
   lsSleep(200);
 end
 
-function setVideoOptions(options, prompt)
-  if prompt ~= false and not promptOkay("This macro needs to configure your ATITD Video Options.") then
-    setOptionsError(videoOptionKeys, options, "Video");
-    return;
-  end
-
+function setVideoOptions(options)
   local current = getVideoOptions();
   if #current ~= #videoOptionKeys then
     setOptionsError(videoOptionKeys, options, "Video");
@@ -196,27 +212,22 @@ function setVideoOptions(options, prompt)
     safeClick(close[0], close[1]);
   end
 
-  if options[1] and options[1] ~= current[1] then
+  if options[TERRAIN] and options[TERRAIN] ~= current[TERRAIN] then
     local ok = waitForImage("options/ok.png", 10000, "Waiting for reloading graphics popup...");
     if ok then
       safeClick(ok[0], ok[1]);
     end
   end
 
-  if options[6] and options[6] ~= current[6] then
-    promptOkay("You must restart ATITD for the Light Intensity setting to take effect");
+  if options[LIGHT_INTENSITY] and options[LIGHT_INTENSITY] ~= current[LIGHT_INTENSITY] then
+    promptOkay("You must restart ATITD for the Light Intensity setting to take effect", 0xFF0000ff, nil, nil, false);
     error("Restart ATITD");
   end
 
   lsSleep(200);
 end
 
-function setInterfaceOptions(options, prompt)
-  if prompt ~= false and not promptOkay("This macro needs to configure your ATITD Interface Options.") then
-    setOptionsError(interfaceOptionKeys, options, "Interface");
-    return;
-  end
-
+function setInterfaceOptions(options)
   local current = getInterfaceOptions();
   if #current ~= #interfaceOptionKeys then
     setOptionsError(interfaceOptionKeys, options, "Interface");
@@ -257,8 +268,10 @@ function setOptionsError(keys, options, title)
     msg = msg .. "\n" .. keys[i] .. " to " .. value;
   end
 
-  if not promptOkay(msg) then
-    error(title .. " Options not set");
+  promptOkay(msg, nil, nil, nil, true);
+
+  if options[LIGHT_INTENSITY] and keys[LIGHT_INTENSITY] == videoOptionKeys[LIGHT_INTENSITY] then
+    promptOkay("You must restart ATITD for the Light Intensity setting to take effect", 0xFF0000ff, nil, nil, true);
   end
 end
 

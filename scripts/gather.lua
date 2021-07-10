@@ -366,20 +366,6 @@ function doit()
   Hover ATITD window and press Shift to start.
     ]]);
 
-  setVideoOptions({
-    [GRASS] = 1,
-    [SHADOW] = 1,
-    [TIME_OF_DAY] = 1,
-    [LIGHT_INTENSITY] = 1
-  }, false);
-  setInterfaceOptions({
-    [MOVE_KEYS] = 2
-  }, false);
-  setOneClickOptions({
-    [FAST_GATHER] = true,
-    [AUTO_TAKE] = true
-  }, false);
-
   math.randomseed(lsGetTimer());
   gather_randomNumber = math.random();
 
@@ -473,6 +459,7 @@ function queryRoute()
     writeSetting("repeatForever",repeatForever);
     lsSetCamera(0,0,lsScreenX,lsScreenY);
     if lsButtonText(10, 320, z, 90, 0xFFFFFFff, "GO!") then
+      handleOptions();
       followRoute(route);
     end
     if lsButtonText(200, 320, z, 90, 0xFFFFFFff, "Exit") then
@@ -489,6 +476,28 @@ function queryRoute()
       showEditRoute = nil;
     end
   end
+end
+
+function handleOptions()
+  local oneClickOptions = {};
+  local videoOptions = {};
+  local interfaceOptions = {
+    [MOVE_KEYS] = 2
+  };
+
+  if wood then
+    oneClickOptions[FAST_GATHER] = true;
+  end
+
+  if silt or stone then
+    oneClickOptions[AUTO_TAKE] = true;
+    videoOptions[GRASS] = 1;
+    videoOptions[SHADOW] = 1;
+    videoOptions[TIME_OF_DAY] = 1;
+    videoOptions[LIGHT_INTENSITY] = 1;
+  end
+
+  setGameOptions(oneClickOptions, videoOptions, interfaceOptions);
 end
 
 function deleteRoute(route)
