@@ -30,6 +30,22 @@ function log(msg)
   end
 end
 
+function eatOnion()
+  srReadScreen();
+  buffed = srFindImage("stats/enduranceBuff.png");
+  if buffed then
+    return;
+  end
+
+  local consume = findText("Consume");
+  if not consume then
+    return;
+  end
+  safeClick(consume[0],consume[1]);
+
+  waitForImage("stats/enduranceBuff.png", 3000, "Waiting for the green endurance icon to appear");
+end
+
 function doit()
   for i=1, 20 do
     log("...");
@@ -84,6 +100,8 @@ function doit()
     if not quarry then
       error "Could not find quarry window";
     end
+
+    eatOnion();
 
     -- Check END
     endurance = srFindImage("stats/endurance.png");
