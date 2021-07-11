@@ -237,6 +237,13 @@ function ScreenSearcher:drawRegions(displayTime, minRegionSizeFilter, title)
 end
 
 -------------------------------------------------------------------------------
+-- Returns true if the regionName is a region.
+-------------------------------------------------------------------------------
+function ScreenSearcher:isRegion(regionName)
+  return self.regions[regionName] ~= nil and self.regions[regionName] ~= false
+end
+
+-------------------------------------------------------------------------------
 -- Returns the box encompassing all pixels for the given regionName, optionally expanded by the parameters.
 -------------------------------------------------------------------------------
 function ScreenSearcher:getRegionBox(regionName, optionalScreenSizePercentageToExpandBy, optionalFixedValueToExpandBy)
@@ -658,6 +665,9 @@ function Region:getBox(xOffset, yOffset, extraWidth, extraHeight)
   end
   if not extraHeight then
     extraHeight = 0
+  end
+  if self.size == 0 or self.min_x == nil or self.min_y == nil then
+    return nil
   end
   return makeBox(
     self.min_x + xOffset - extraWidth,

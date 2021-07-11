@@ -325,12 +325,20 @@ function preLocatePlants(config, plants, seedScreenSearcher, dead_player_box)
     srReadScreen()
 
     plants[i].location:move()
-    lsSleep(500)
+    lsSleep(click_delay*2)
     veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'Marking screen changes as plant ' .. i)
     local numChanged = plantSearcher:markAllChangesAsRegion('before', i)
     veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'For plant ' .. i .. ' found it has ' .. numChanged .. ' pixels!')
     veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'Setting search box for plant ' .. i)
-    plants[i]:set_search_box(plantSearcher:getRegionBox(i, 0.02))
+    local foundPlant = plantSearcher:isRegion(i)
+    local search_box = foundPlant and plantSearcher:getRegionBox(i, 0.02)
+    if not foundPlant or not search_box then
+      playErrorSoundAndExit([[Failed to find any pixels which changed colour when the plant was placed on the screen.
+      Try in veg_janitor 'Edit Current Config'-> and increase the click delay in increments of 50.
+      Or try move location so the plants don't blend into the background.
+      Or try 'Edit Current Config'->'Plant Run Settings'->'Enable Exact pixel change detection for plants']])
+    end
+    plants[i]:set_search_box(search_box)
 
     safeClick(buildButton[0] + 70, buildButton[1])
     veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'Done pre-locating plant ' .. i)

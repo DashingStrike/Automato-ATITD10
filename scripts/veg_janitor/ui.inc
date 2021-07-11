@@ -926,8 +926,11 @@ function getUserParams()
     if not config.non_onion_calibration_mode_change_threshold then
       config.non_onion_calibration_mode_change_threshold = 1
     end
-    if not config.debug_log_level then
+    if config.debug_log_level == nil then
       config.debug_log_level = INFO
+    end
+    if config.only_click_when_pixel_changes_mode == nil then
+      config.only_click_when_pixel_changes_mode = true
     end
 
     write_config(config)
