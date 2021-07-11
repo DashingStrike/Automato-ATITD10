@@ -307,7 +307,11 @@ end
 function preLocatePlants(config, plants, seedScreenSearcher, dead_player_box)
   veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'Prelocating plants...')
   local box = makeLargeSearchBoxAroundPlayer((srGetWindowSize()[0] / 4))
-  local plantSearcher = ScreenSearcher:new(box, 'compareColorEx', config.debug_log_level)
+  local plantCompareMode = "compareColorEx"
+  if config.plant_search_uses_equality then
+    plantCompareMode = "equality"
+  end
+  local plantSearcher = ScreenSearcher:new(box, plantCompareMode, config.debug_log_level)
   plantSearcher:snapshotScreen('before')
   plantSearcher:markBoxAsDead(dead_player_box)
   veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'Snapshotted screen and marked player area as dead...')
@@ -332,7 +336,7 @@ function preLocatePlants(config, plants, seedScreenSearcher, dead_player_box)
     veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'Done pre-locating plant ' .. i)
   end
 
-  if config.debug_log_level >= DEBUG and config.show_debug_images then
+  if config.debug_log_level >= TRACE and config.show_debug_images then
     debugSearchBoxes(config, plants)
   end
 
@@ -580,12 +584,15 @@ function gatherVeggies(config)
       if firstRun or movementExpected then
         local xyScreenSize = srGetWindowSize();
         seed_searcher = ScreenSearcher:new(makeLargeSearchBoxAroundPlayer((xyScreenSize[0] / 4)), 'compareColorEx', config.debug_log_level)
+        veg_log(INFO, config.debug_log_level, 'veg_janitor', 'Snapshotting before for seed searcher')
         seed_searcher:snapshotScreen('beforeSeeds')
+        veg_log(INFO, config.debug_log_level, 'veg_janitor', 'Recording movement')
         dead_player_box = recordMovement(seed_searcher, config)
       else
         -- Resnapshot the empty floor at the start of runs. Otherwise the seed finder will think all pixels have
         -- changed as the lighting changes slowly over the time if we just use an initial snapshot from the very first
         -- run.
+        veg_log(INFO, config.debug_log_level, 'veg_janitor', 'Re-snapshotting before for seed searcher')
         seed_searcher:snapshotScreen('beforeSeeds')
       end
     end

@@ -265,6 +265,13 @@ function edit_config_screen(config)
           single_attribute_edit_screen(config, "Edit Calibration Mode Non Onion Threshold",
             "The percentage of pixels required to change at once for the calibration mode to think an non onion has grown a stage.",
             "non_onion_calibration_mode_change_threshold", 1, "percentage", 200)
+          config.plant_search_uses_equality = CheckBox(X_PADDING, current_y, 10, WHITE, " Exact pixel change detection for plants?", config.plant_search_uses_equality)
+          current_y = current_y + 30
+          config.only_click_when_pixel_changes_mode = CheckBox(X_PADDING, current_y, 10, WHITE, " Wait for pixel to change before opening plant?", config.only_click_when_pixel_changes_mode)
+          current_y = current_y + 30
+          config.check_for_water_button = CheckBox(X_PADDING, current_y, 10, WHITE, " Error if the water button can't be seen at start?", config.check_for_water_button)
+          current_y = current_y + 30
+          config.search_for_seed_bags = CheckBox(X_PADDING, current_y, 10, WHITE, " Pickup dead plant seed bags after each run?", config.search_for_seed_bags)
 
         end
       }
@@ -434,13 +441,8 @@ function edit_config_screen(config)
         end
       }
       config.click_delay = drawNumberEditBox("click_delay", "What should the click delay be? ", 100)
-      config.check_for_water_button = CheckBox(X_PADDING, current_y, 10, WHITE, " Error if the water button can't be seen at start?", config.check_for_water_button)
-      current_y = current_y + 30
-      config.search_for_seed_bags = CheckBox(X_PADDING, current_y, 10, WHITE, " Pickup dead plant seed bags after each run?", config.search_for_seed_bags)
       current_y = current_y + 30
       config.show_debug_images = CheckBox(X_PADDING, current_y, 10, WHITE, " Show Debug Images?", config.show_debug_images)
-      current_y = current_y + 30
-      config.only_click_when_pixel_changes_mode = CheckBox(X_PADDING, current_y, 10, WHITE, " Wait for pixel to change before opening plant?", config.only_click_when_pixel_changes_mode)
       current_y = current_y + 100
       config.debug_log_level = dropdown("debug_log_level", config.debug_log_level or INFO, LOG_LEVEL_TO_NAME, "Debug Log Level:", LOG_LEVEL_TO_LEVEL)
       local copy_log_to_clipboard = button("Copy last runs debug log to clipboard", YELLOW)
@@ -767,7 +769,8 @@ function is_boolean_config_key(key)
     ["search_for_seed_bags"] = true,
     ["check_for_water_button"] = true,
     ["show_debug_images"] = true,
-    ["only_click_when_pixel_changes_mode"] = true
+    ["only_click_when_pixel_changes_mode"] = true,
+    ["plant_search_uses_equality"] = true
   }
   return boolean_config_keys[key]
 end
@@ -1259,6 +1262,7 @@ function default_deep_config()
     ["check_for_water_button"] = false,
     ["show_debug_images"] = false,
     ["only_click_when_pixel_changes_mode"] = false,
+    ["plant_search_uses_equality"] = false,
     ["end_of_run_wait"] = 3000,
     ["onion_calibration_mode_change_threshold"] = 4.5,
     ["non_onion_calibration_mode_change_threshold"] = 1,

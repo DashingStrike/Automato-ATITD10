@@ -205,6 +205,7 @@ function PlantController:grow_plant()
   -- and place it.
 
   if self.saved_plant_location then
+    self:_log(INFO,"Snapshotting before pixel")
     self.saved_plant_pixel = srReadPixel(self.saved_plant_location.x, self.saved_plant_location.y)
   end
 
@@ -214,7 +215,11 @@ function PlantController:grow_plant()
   self.plant_time = lsGetTimer()
   self.plant = Plant:new(self.index, self.plant_time, self, self.config)
   if self.config.calibration_mode then
-    self.searcher = ScreenSearcher:new(self.location.box, 'compareColorEx', self.config.debug_log_level)
+    local plantCompareMode = "compareColorEx"
+    if self.config.plant_search_uses_equality then
+      plantCompareMode = "equality"
+    end
+    self.searcher = ScreenSearcher:new(self.location.box, plantCompareMode, self.config.debug_log_level)
     self.searcher:snapshotScreen('before')
     self.snapshoting_water_animations = true
   end
@@ -299,22 +304,21 @@ function PlantController:check_how_many_plant_pixels_changed()
 end
 
 function PlantController:openBedWindow()
-  -- TODO: problably do something different as this is the only thing that takes mouse control from the user.
   if self.alternate_drag then
-
     if not self.undragged_window_open and (not self.last_clicked_plant_at or (lsGetTimer() - self.last_clicked_plant_at) > 500) then
       local current_pixel = srReadPixel(self.saved_plant_location.x, self.saved_plant_location.y)
       local new_colour = current_pixel
       local click_colour = self.saved_plant_pixel
-      local pixel_same = new_colour == click_colour
-      if pixel_same or not self.config.only_click_when_pixel_changes_mode then
-        self.last_clicked_plant_at = lsGetTimer()
+      local pixel_diff = new_colour ~= click_colour
+      self.last_clicked_plant_at = lsGetTimer()
+      if pixel_diff or not self.config.only_click_when_pixel_changes_mode then
         click(self.saved_plant_location, false, true)
         lsSleep(click_delay)
         click(self.saved_plant_location, true, true)
         lsSleep(click_delay)
       else
-        self:_log(INFO, "Pixel matches recorded before planting colour of " .. click_colour .. ", not clicking.")
+        local before = table_to_str(parseColor(click_colour))
+        self:_log(INFO, "Pixel does matches recorded before planting colour of " .. before .. ", not clicking.")
       end
       self.open_attempts = self.open_attempts + 1
     end
