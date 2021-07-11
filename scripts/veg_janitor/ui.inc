@@ -295,7 +295,7 @@ function edit_config_screen(config)
             table.insert(plant_types, plant_type)
           end
           local seed_names = {}
-          local plant_type = dropdown("plant_loc_" .. config.name, findIndex(plant_types, config.selected_seed_type, 1), plant_types, "Plant type:")
+          local plant_type = dropdown("plant_loc_" .. config.name, findIndex(plant_types, 'Default', 1), plant_types, "Plant type:")
           local seed_name = ''
           local loc_conf
           if plant_type == 'Default' then
@@ -304,7 +304,7 @@ function edit_config_screen(config)
             for seed_name, seed_config in pairs(config.plants[plant_type]) do
               table.insert(seed_names, seed_name)
             end
-            seed_name = dropdown("plant_loc_" .. plant_type .. config.name, findIndex(seed_names, config.seed_name, 1), seed_names, "Seed name:")
+            seed_name = dropdown("plant_loc_" .. plant_type .. config.name, findIndex(seed_names, 'Default', 1), seed_names, "Seed name:")
             local seed_config = config.plants[plant_type][seed_name]
             loc_conf = seed_config.plant_location_order
           end
@@ -932,6 +932,11 @@ function getUserParams()
     if config.only_click_when_pixel_changes_mode == nil then
       config.only_click_when_pixel_changes_mode = true
     end
+    if not config.fudged_directions then
+      config.fudged_directions = true
+      veg_log(INFO, config.debug_log_level, 'ui.inc', "Fudging directions to be a better number from previous default config value.")
+      config.default_plant_location_order = default_deep_config()['default_plant_location_order']
+    end
 
     write_config(config)
     lsDoFrame()
@@ -1276,9 +1281,9 @@ function default_deep_config()
     },
     ["default_plant_location_order"] = {
       { direction = "SOUTH", number_of_moves = 2 },
-      { direction = "NORTH", number_of_moves = 2 },
       { direction = "EAST", number_of_moves = 2 },
       { direction = "WEST", number_of_moves = 2 },
+      { direction = "NORTH", number_of_moves = 2 },
       { direction = "SOUTH_EAST", number_of_moves = 1 },
       { direction = "NORTH_WEST", number_of_moves = 1 },
       { direction = "NORTH_EAST", number_of_moves = 1 },
