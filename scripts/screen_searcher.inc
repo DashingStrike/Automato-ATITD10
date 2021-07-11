@@ -171,10 +171,12 @@ function ScreenSearcher:drawRegions(displayTime, minRegionSizeFilter, title)
   for name, _ in pairs(self.regions) do
     if name ~= self.deadRegionName then
       local result = self:findFurthestPointFromEdgeForRegion(name)
-      local x = result.x - self.box.left
-      local y = result.y - self.box.top
-      furthestResults[y] = furthestResults[y] or {}
-      furthestResults[y][x] = true
+      if result then
+        local x = result.x - self.box.left
+        local y = result.y - self.box.top
+        furthestResults[y] = furthestResults[y] or {}
+        furthestResults[y][x] = true
+      end
     end
   end
   local startTime = lsGetTimer()
@@ -276,6 +278,9 @@ function ScreenSearcher:findFurthestPointFromEdgeForRegion(regionName)
   self:_log(DEBUG, 'Finding furthest point from edge for ' .. regionName)
 
   local slightlyExpandedOddBox = self.regions[regionName]:getBox(0, 0, 2, 2)
+  if not slightlyExpandedOddBox then
+    return false
+  end
   local c_result = chamfer_distance(slightlyExpandedOddBox, self.screenToRegionMap, regionName)
   local p = makePoint(
     c_result.max_x + slightlyExpandedOddBox.left + self.box.left,

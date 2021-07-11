@@ -325,7 +325,7 @@ function preLocatePlants(config, plants, seedScreenSearcher, dead_player_box)
     srReadScreen()
 
     plants[i].location:move()
-    lsSleep(click_delay*2)
+    lsSleep(click_delay * 2)
     veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'Marking screen changes as plant ' .. i)
     local numChanged = plantSearcher:markAllChangesAsRegion('before', i)
     veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'For plant ' .. i .. ' found it has ' .. numChanged .. ' pixels!')
@@ -378,7 +378,10 @@ function preLocatePlants(config, plants, seedScreenSearcher, dead_player_box)
 
   for i = 1, config.num_plants do
     local point = plantSearcher:findFurthestPointFromEdgeForRegion(i)
-    veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'Saving click location for plant ' .. i .. ' as '.. point.x .. ' , ' .. point.y)
+    if not point then
+      playErrorSoundAndExit([[Failed to find a click location for a plant. Please PM thejanitor on discord. ]])
+    end
+    veg_log(DEBUG, config.debug_log_level, 'preLocatePlants', 'Saving click location for plant ' .. i .. ' as ' .. point.x .. ' , ' .. point.y)
     plants[i].saved_plant_location = point
   end
 
@@ -505,24 +508,28 @@ function findSeedAndPickupIfThere(searcher, num_dead, config)
     veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Checking region called ' .. region:name() .. ' with size ' .. region:size())
     veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Looking for seed ' .. i .. '.')
     local clickLoc = searcher:findFurthestPointFromEdgeForRegion(region:name())
-    lsSleep(click_delay)
-    srClickMouse(clickLoc.x, clickLoc.y, 1)
-    lsSleep(click_delay)
-    srReadScreen()
-    local seed_box_found = srFindImage("veg_janitor/seeds.png",
-      4800);
-    if seed_box_found then
-      veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Found seed!')
-      seeds_picked_up = seeds_picked_up + 1
+    if clickLoc then
       lsSleep(click_delay)
-      srClickMouse(clickLoc.x - 1, clickLoc.y - 1, 0)
+      srClickMouse(clickLoc.x, clickLoc.y, 1)
       lsSleep(click_delay)
-      srClickMouse(clickLoc.x - 1, clickLoc.y - 1, 0)
-      sleepWithStatus(3500, "Waiting for pickup animation...", nil, 0.7, "Please standby");
+      srReadScreen()
+      local seed_box_found = srFindImage("veg_janitor/seeds.png",
+        4800);
+      if seed_box_found then
+        veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Found seed!')
+        seeds_picked_up = seeds_picked_up + 1
+        lsSleep(click_delay)
+        srClickMouse(clickLoc.x - 1, clickLoc.y - 1, 0)
+        lsSleep(click_delay)
+        srClickMouse(clickLoc.x - 1, clickLoc.y - 1, 0)
+        sleepWithStatus(3500, "Waiting for pickup animation...", nil, 0.7, "Please standby");
+      else
+        veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Failed to find seed closing window!')
+        lsSleep(click_delay)
+        srClickMouse(clickLoc.x - 1, clickLoc.y - 1, 0)
+      end
     else
-      veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Failed to find seed closing window!')
-      lsSleep(click_delay)
-      srClickMouse(clickLoc.x - 1, clickLoc.y - 1, 0)
+      veg_log(INFO, config.debug_log_level, 'findSeedAndPickupIfThere', 'FAILED TO FIND CLICK LOC FOR ' .. i .. '.')
     end
   end
   if seeds_picked_up < num_dead then
@@ -686,7 +693,7 @@ function gatherVeggies(config)
     for k = 1, config.num_plants do
       if config.calibration_mode then
         if plants[k].bad_calibration then
-          veg_log(INFO, config.debug_log_level,'veg_janitor', 'IGNORING DATA DUE TO BAD CALIBRATION')
+          veg_log(INFO, config.debug_log_level, 'veg_janitor', 'IGNORING DATA DUE TO BAD CALIBRATION')
           config.num_runs = config.num_runs + 1
         else
           plants[k]:output_calibration_data()
