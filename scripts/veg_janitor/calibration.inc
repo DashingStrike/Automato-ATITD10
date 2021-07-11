@@ -1,5 +1,7 @@
 dofile("veg_janitor/io.inc")
 dofile("veg_janitor/binsert.inc")
+dofile("veg_janitor/logger.inc")
+
 CALIBRATION_LOG_FILE_NAME = "calibration_data_log"
 
 function calibration_log_header()
@@ -89,7 +91,7 @@ function filter_table_by_config_and_seed(csv_table, config, config_seed_type, co
   end
   return rows_per_stage
 end
-function filter_stages_by_std_dev_from_mean(stages, num_of_std_devs_from_mean_for_max)
+function filter_stages_by_std_dev_from_mean(stages, num_of_std_devs_from_mean_for_max, config)
   local total = 0
   for i = 1, #stages do
     local stage = stages[i]
@@ -109,16 +111,16 @@ function filter_stages_by_std_dev_from_mean(stages, num_of_std_devs_from_mean_fo
 
   local filtered_stages = {}
   local max_distance = std_dev * num_of_std_devs_from_mean_for_max
-  print('Mean is ' .. mean)
-  print('Std Dev is ' .. std_dev)
-  print('Only allowing values between ' .. mean - max_distance .. ' and ' .. mean + max_distance )
+  _log(INFO, config, 'Mean is ' .. mean)
+  _log(INFO, config, 'Std Dev is ' .. std_dev)
+  _log(INFO, config, 'Only allowing values between ' .. mean - max_distance .. ' and ' .. mean + max_distance )
   for i = 1, #stages do
     local stage = stages[i]
     local time_since_prev_stage = stage["time_since_prev_stage"]
     if math.abs(time_since_prev_stage - mean) <= max_distance then
       table.insert(filtered_stages, stage)
     else
-      print('Filtering ' .. time_since_prev_stage)
+      _log(INFO, config, 'Filtering ' .. time_since_prev_stage)
     end
   end
   return filtered_stages
@@ -135,6 +137,9 @@ function quantile(t, key, q)
   end
 end
 
+function _log(level, config, message)
+  veg_log(level, config.debug_log_level, 'calibration.inc', message)
+end
 
 function calculate_and_update_calibration_settings(config, seed_type, seed_name)
   -- Reload the config from file to ensure we dont write out any in-memory only config values
@@ -144,16 +149,16 @@ function calculate_and_update_calibration_settings(config, seed_type, seed_name)
   local stages = config.plants[seed_type][seed_name].stages + 1
   local timings = config.plants[seed_type][seed_name].stage_advance_timings or {}
   config.plants[seed_type][seed_name].stage_advance_timings = timings
-  print('Calibration Run Details for ' .. seed_type .. ' - ' .. seed_name)
+  _log(INFO, config, 'Calibration Run Details for ' .. seed_type .. ' - ' .. seed_name)
   if not filtered_table_stages[2] then
-    print('No data points found')
+    _log(INFO, config, 'No data points found')
     timings["calibrated"] = false
     timings["data_points"] = 0
   else
     for i = 2, stages do
       local data_points = filtered_table_stages[i]
-      local data_points_with_2_std_dev_of_mean = filter_stages_by_std_dev_from_mean(data_points, 2)
-      print('Started with ' .. #data_points .. ' data points, filtered down to ' .. #data_points_with_2_std_dev_of_mean)
+      local data_points_with_2_std_dev_of_mean = filter_stages_by_std_dev_from_mean(data_points, 2, config)
+      _log(INFO, config, 'Started with ' .. #data_points .. ' data points, filtered down to ' .. #data_points_with_2_std_dev_of_mean)
       local q = quantile(data_points_with_2_std_dev_of_mean, "time_since_prev_stage", config.calibration_mode_percentile)
       local timing = q + config.calibration_mode_buffer_ms
       timings[i - 1] = timing
@@ -187,7 +192,6 @@ end
 
 
 function apply_calibration_fix(config, change)
-  print('BAD CALIBRATION, MODIFYING TRESHOLD BY ' .. change)
   if config.seed_type == 'Onions' then
     config.onion_calibration_mode_change_threshold = config.onion_calibration_mode_change_threshold + change
   else

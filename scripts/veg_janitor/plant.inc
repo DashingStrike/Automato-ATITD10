@@ -70,6 +70,10 @@ function Plant:update_stage_times()
   table.insert(self.measured_stage_times, row)
 end
 
+function Plant:_log(level, message)
+  veg_log(level, self.config.debug_log_level, 'plant.inc', message)
+end
+
 function Plant:tick()
   if self:dead() then
     return "dead"
@@ -80,7 +84,7 @@ function Plant:tick()
     if not self.last_harvest_attempt or (lsGetTimer() - self.last_harvest_attempt) > self.config.harvest_delay_time then
       self.last_harvest_attempt = lsGetTimer()
       if self.controller:harvest() then
-        print('PLANT ' .. self.index .. ' HARVESTED ')
+        self:_log(INFO, 'PLANT ' .. self.index .. ' HARVESTED ')
         self.harvested = true
         return "harvested"
       end
@@ -101,23 +105,19 @@ function Plant:tick()
       local limit_percent = limit / 100
       local pixel_limit = xyWindowSize[0] * limit_percent
       pixel_limit = pixel_limit * pixel_limit * (self.stage / 1.5)
-      if (self.config.debug or self.config.debug_log) and change_count ~= 0 then
-        print(' count = ' .. change_count .. ' vs ' .. pixel_limit)
+      if change_count ~= 0 then
+        self:_log(TRACE, ' count = ' .. change_count .. ' vs ' .. pixel_limit)
       end
       if lsGetTimer() - self.previous_stage_ended_at > 25000 then
-        print("CALIBRATION STAGE TIMED OUT")
+        self:_log(INFO, ' CALIBRATION TIMEOUT - Calibration stage timed out after 25000 MS. Marking this run as a bad calibration and applying a calibration fix of -0.5')
         self.controller.bad_calibration = true
         apply_calibration_fix(self.config, -0.5)
         return "wait-till-dead"
       end
       if change_count > pixel_limit then
-        if self.config.debug or self.config.debug_log then
-          print('-------------------------')
-          print('BIG CHANGE ' .. change_count)
-          print('-------------------------')
-        end
+          self:_log(INFO, 'A big change of ' .. change_count .. ' pixels was detected on screen.')
         if lsGetTimer() - self.previous_stage_ended_at < 6000 then
-          print("DETECTED TOO EARLY CHANGE IN CALIBRATION")
+          self:_log(INFO, ' CALIBRATION TOO EARLY - Veg janitor detected the plant growing less than 6000 ms into its current stage. Marking this run as a bad calibration and applying a calibration fix of 0.5')
           self.controller.bad_calibration = true
           apply_calibration_fix(self.config, 0.5)
           return "wait-till-dead"
@@ -150,7 +150,7 @@ function Plant:finished()
 end
 
 function Plant:change_stage(direction)
-  lsPrintln("Plant " .. self.index .. " changing stage at " .. (lsGetTimer() - self.plant_time) ..
+  self:_log(INFO,"Plant " .. self.index .. " changing stage at " .. (lsGetTimer() - self.plant_time) ..
     " in stage " .. self.stage .. " to stage " .. (self.stage + direction))
   self.prev_stage = self.stage
   self.stage = self.stage + direction
@@ -184,7 +184,7 @@ end
 
 function Plant:water()
   local result = self.controller:water()
-  lsPrintln("Plant " .. self.index .. "water delay is " .. (lsGetTimer() - self.previous_stage_ended_at) .. " watered at " .. (lsGetTimer() - self.plant_time) ..
+  self:_log(INFO,"Plant " .. self.index .. " water delay is " .. (lsGetTimer() - self.previous_stage_ended_at) .. " watered at " .. (lsGetTimer() - self.plant_time) ..
     " in stage " .. self.stage .. " death " .. self:time_till_death() .. " next " .. (self.next_stage_starts_at - lsGetTimer()))
   return result
 end

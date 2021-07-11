@@ -1,4 +1,5 @@
 dofile("veg_janitor/io.inc")
+dofile("veg_janitor/logger.inc")
 dofile("screen_reader_common.inc")
 -- Used to place gui elements sucessively.
 current_y = 0
@@ -70,7 +71,7 @@ function single_attribute_edit_screen(config, title, descriptive_name, name, def
         before = default
       end
 
-      config[name] = drawEditBox(name .. config.name, descriptive_name,  before, thing_type, width)
+      config[name] = drawEditBox(name .. config.name, descriptive_name, before, thing_type, width)
     end
   }
 
@@ -264,6 +265,13 @@ function edit_config_screen(config)
           single_attribute_edit_screen(config, "Edit Calibration Mode Non Onion Threshold",
             "The percentage of pixels required to change at once for the calibration mode to think an non onion has grown a stage.",
             "non_onion_calibration_mode_change_threshold", 1, "percentage", 200)
+          config.plant_search_uses_equality = CheckBox(X_PADDING, current_y, 10, WHITE, " Exact pixel change detection for plants?", config.plant_search_uses_equality)
+          current_y = current_y + 30
+          config.only_click_when_pixel_changes_mode = CheckBox(X_PADDING, current_y, 10, WHITE, " Wait for pixel to change before opening plant?", config.only_click_when_pixel_changes_mode)
+          current_y = current_y + 30
+          config.check_for_water_button = CheckBox(X_PADDING, current_y, 10, WHITE, " Error if the water button can't be seen at start?", config.check_for_water_button)
+          current_y = current_y + 30
+          config.search_for_seed_bags = CheckBox(X_PADDING, current_y, 10, WHITE, " Pickup dead plant seed bags after each run?", config.search_for_seed_bags)
 
         end
       }
@@ -433,14 +441,14 @@ function edit_config_screen(config)
         end
       }
       config.click_delay = drawNumberEditBox("click_delay", "What should the click delay be? ", 100)
-      config.check_for_water_button = CheckBox(X_PADDING, current_y, 10, WHITE, " Error if the water button can't be seen at start?", config.check_for_water_button)
       current_y = current_y + 30
-      config.search_for_seed_bags = CheckBox(X_PADDING, current_y, 10, WHITE, " Pickup dead plant seed bags after each run?", config.search_for_seed_bags)
-      current_y = current_y + 30
-      config.debug = CheckBox(X_PADDING, current_y, 10, WHITE, " Show pretty debug pictures?", config.debug)
-      current_y = current_y + 30
-      config.debug_log = CheckBox(X_PADDING, current_y, 10, WHITE, "Print debug logs?", config.debug_log)
-      current_y = current_y + 60
+      config.show_debug_images = CheckBox(X_PADDING, current_y, 10, WHITE, " Show Debug Images?", config.show_debug_images)
+      current_y = current_y + 100
+      config.debug_log_level = dropdown("debug_log_level", config.debug_log_level or INFO, LOG_LEVEL_TO_NAME, "Debug Log Level:", LOG_LEVEL_TO_LEVEL)
+      local copy_log_to_clipboard = button("Copy last runs debug log to clipboard", YELLOW)
+      if copy_log_to_clipboard then
+        lsClipboardSet(get_veg_log())
+      end
       local copy_to_clipboard = button("Copy config to clipboard")
       if copy_to_clipboard then
         lsClipboardSet(serializeToString(config))
@@ -692,7 +700,7 @@ function plant_creator(config)
     end
     local conf = config.plants[plant_type][seed_name]
     if #conf.stage_advance_timings < conf.stages then
-      for i=#conf.stage_advance_timings+1, conf.stages do
+      for i = #conf.stage_advance_timings + 1, conf.stages do
         conf.stage_advance_timings[i] = 16000
       end
     end
@@ -760,6 +768,9 @@ function is_boolean_config_key(key)
     ["sorting_mode"] = true,
     ["search_for_seed_bags"] = true,
     ["check_for_water_button"] = true,
+    ["show_debug_images"] = true,
+    ["only_click_when_pixel_changes_mode"] = true,
+    ["plant_search_uses_equality"] = true
   }
   return boolean_config_keys[key]
 end
@@ -907,9 +918,20 @@ function getUserParams()
     if config.onion_calibration_mode_change_threshold == 4 and not config.fudged_onion then
       config.onion_calibration_mode_change_threshold = 4.5
       config.fudged_onion = true
-      print("Fudging onion to be a better number from previous default config value.")
+      veg_log(INFO, config.debug_log_level, 'ui.inc', "Fudging onion to be a better number from previous default config value.")
+    elseif not config.onion_calibration_mode_change_threshold then
+      config.onion_calibration_mode_change_threshold = 4.5
+      config.fudged_onion = true
     end
-
+    if not config.non_onion_calibration_mode_change_threshold then
+      config.non_onion_calibration_mode_change_threshold = 1
+    end
+    if config.debug_log_level == nil then
+      config.debug_log_level = INFO
+    end
+    if config.only_click_when_pixel_changes_mode == nil then
+      config.only_click_when_pixel_changes_mode = true
+    end
 
     write_config(config)
     lsDoFrame()
@@ -1234,12 +1256,16 @@ function default_deep_config()
     ["click_delay"] = 100,
     ["alternate_drag"] = true,
     ["pre_look"] = true,
+    ["debug_log_level"] = NAME_TO_LOG_LEVEL['INFO'],
     ["num_calibration_runs"] = 10,
     ["record_plant_animation"] = true,
     ["reposition_avatar"] = true,
     ["sorting_mode"] = true,
     ["search_for_seed_bags"] = true,
     ["check_for_water_button"] = false,
+    ["show_debug_images"] = false,
+    ["only_click_when_pixel_changes_mode"] = false,
+    ["plant_search_uses_equality"] = false,
     ["end_of_run_wait"] = 3000,
     ["onion_calibration_mode_change_threshold"] = 4.5,
     ["non_onion_calibration_mode_change_threshold"] = 1,

@@ -168,7 +168,8 @@ function serializeKeyValue(outputFile, indentStr, k, v)
   end
 end
 
-function print_table(node)
+function table_to_str(node)
+
   -- to make output beautiful
   local function tab(amt)
     local str = ""
@@ -248,6 +249,16 @@ function print_table(node)
   -- This is necessary for working with HUGE tables otherwise we run out of memory using concat on huge strings
   table.insert(output, output_str)
   output_str = table.concat(output)
+  return output_str
+end
 
-  lsPrintln(output_str)
+function print_table(node)
+  lsPrintln(table_to_str(node))
+end
+
+function read_file_into_string(file)
+  local f = assert(io.open(file, "rb"))
+  local content = f:read("*all")
+  f:close()
+  return content
 end
