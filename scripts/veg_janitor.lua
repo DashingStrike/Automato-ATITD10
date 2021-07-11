@@ -483,14 +483,14 @@ function findSeedAndPickupIfThere(searcher, num_dead, config)
   local pixel_change = math.floor(expected_seed_bag_pixel_size * fudge_factor)
   veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Looking for ' .. num_dead .. ' seeds which must have a region pixel size greater than ' .. pixel_change)
   searcher:markConnectedAreasAsNewRegions('beforeSeeds', nil, true)
-  local regions = searcher:getRegions(pixel_change, num_dead + 3)
+  local regions = searcher:getRegions(pixel_change)
   veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Found ' .. #regions .. ' changed regions.')
   if config.debug_log_level >= DEBUG and config.show_debug_images then
     searcher:drawRegions(3000, pixel_change, 'Potential Seed Bag Locations:')
   end
   local seeds_picked_up = 0
   for i, region in ipairs(regions) do
-    veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Checking region called ' .. region:name() .. ' with size ' .. region:size() .. ' and box ' .. table_to_str(region:getBox()))
+    veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Checking region called ' .. region:name() .. ' with size ' .. region:size())
     veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Looking for seed ' .. i .. '.')
     local clickLoc = searcher:findFurthestPointFromEdgeForRegion(region:name())
     lsSleep(click_delay)
@@ -559,6 +559,9 @@ function gatherVeggies(config)
   if movementExpected and config.search_for_seed_bags then
     error('Your plant order settings will result in your character moving when harvesting. This will break the seed bag pickup, please either change your plant order settings or disable seed bag pickup.')
   end
+  if movementExpected then
+    veg_log(INFO, config.debug_log_level, 'veg_janitor', 'Movement is expected')
+  end
 
   local stop_after_this_run = false
   local pause_after_this_run = false
@@ -596,7 +599,7 @@ function gatherVeggies(config)
     for i = 1, math.min(batch_size, config.num_plants) do
       table.insert(sortable_plant_list, plants[i])
     end
-    veg_log(INFO, config.debug_log_level, 'veg_janitor', "Run number: " .. run_number)
+    veg_log(INFO, config.debug_log_level, 'veg_janitor', "Run number: " .. run_number .. ' with ' .. config.num_plants .. ' plants.')
     local start = lsGetTimer()
 
     checkBreakIfNotSpeed()
@@ -611,12 +614,16 @@ function gatherVeggies(config)
       local plant = sortable_plant_list[j]
       if plant:finished() and not plant_finished[plant.index] then
         if plant:died() then
+          veg_log(INFO, config.debug_log_level, 'veg_janitor', "Plant " .. plant.index .. " must have died.")
           num_dead = num_dead + 1
+        else
+          veg_log(INFO, config.debug_log_level, 'veg_janitor', "Plant " .. plant.index .. " finished and harvested.")
         end
         num_finished = num_finished + 1
         plant_finished[plant.index] = true
       end
       if not found[plant.index] and (plant.window_open and not plant_finished[plant.index]) then
+        veg_log(INFO, config.debug_log_level, 'veg_janitor', "Plant " .. plant.index .. " found and watering.")
         num_watering = num_watering + 1
         found[plant.index] = true
       end
@@ -642,6 +649,7 @@ function gatherVeggies(config)
 
       checkBreakIfNotSpeed()
     end
+    veg_log(INFO, config.debug_log_level, 'veg_janitor', "Run number: " .. run_number .. ' finished, cleaning up.')
 
     lsSleep(click_delay)
     drawWater()
@@ -654,23 +662,30 @@ function gatherVeggies(config)
       findSeedAndPickupIfThere(seed_searcher, num_dead, config)
     end
 
+    -- VEG PER HOUR CALCULATION
     local stop = lsGetTimer() + config.end_of_run_wait
     local yield = config.plant_yield_bonus + config.plants[config.seed_type][config.seed_name].yield
     local total = math.floor((3600 / ((stop - start) / 1000)) * config.num_plants * yield) -- default 3, currently 9 veggie yield with pyramids bonus
+
+    -- OUTPUT CALIBRATION DATA
     for k = 1, config.num_plants do
       if config.calibration_mode then
         if plants[k].bad_calibration then
-          veg_log(INFO, config.debug_log_level, 'IGNORING DATA DUE TO BAD CALIBRATION')
+          veg_log(INFO, config.debug_log_level,'veg_janitor', 'IGNORING DATA DUE TO BAD CALIBRATION')
           config.num_runs = config.num_runs + 1
         else
           plants[k]:output_calibration_data()
         end
       end
+      veg_log(DEBUG, config.debug_log_level, 'veg_janitor', 'Resetting plant controller ' .. k)
       plants[k]:partiallyResetState()
     end
+
     if stop_after_this_run then
       break
     end
+
+    -- PAUSE LOOP
     if pause_after_this_run then
       local continue = false
       while not (lsShiftHeld() and lsAltHeld()) and not continue do

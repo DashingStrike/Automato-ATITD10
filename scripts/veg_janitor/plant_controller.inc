@@ -66,6 +66,7 @@ function PlantController:partiallyResetState()
   self.open_attempts = 0
   self.bad_calibration = true
   self.bad_calibration_config_change = 0.5
+  self.harvest_time = nil
 end
 
 function PlantController:output_calibration_data()
@@ -119,23 +120,30 @@ function PlantController:died()
   return not self.harvested
 end
 
+function PlantController:_changeState(newState)
+  if self.state ~= newState then
+    self.state = newState
+    self:_log(INFO, 'Plant ' .. self.index .. ' is ' .. newState)
+  end
+  return self.state
+end
+
 function PlantController:tick()
   self.last_ticked_time = lsGetTimer()
   if self.state == "closed" then
     return self.state
   end
   if self:dead() then
-    self.state = "complete"
-    return self.state
+    return self:_changeState("complete")
   end
   if self.state == "unplanted" then
     self:grow_plant()
-    self.state = "opening"
+    return self:_changeState("opening")
   elseif self.state == "opening" then
     if self:openBedWindow() then
       find_and_click_image("pin", self.window_pos)
       self.window_open = true
-      self.state = "growing"
+      return self:_changeState("growing")
     end
   elseif self.state == 'wait-till-dead' then
     -- Refresh the window so we can see when the plant dies.
@@ -144,9 +152,9 @@ function PlantController:tick()
     local plant_state = self.plant:tick()
     if plant_state ~= "growing" then
       if plant_state == "wait-till-dead" then
-        self.state = plant_state
+        return self:_changeState("wait-till-dead")
       else
-        self.state = "complete"
+        return self:_changeState("complete")
       end
     else
       if self.snapshoting_water_animations then
@@ -159,7 +167,7 @@ function PlantController:tick()
     end
   elseif self.state == "complete" then
     self:close()
-    self.state = "closed"
+    return self:_changeState("closed")
   end
   return self.state
 end

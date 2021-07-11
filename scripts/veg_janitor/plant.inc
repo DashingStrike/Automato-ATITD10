@@ -184,7 +184,7 @@ end
 
 function Plant:water()
   local result = self.controller:water()
-  self:_log(INFO,"Plant " .. self.index .. "water delay is " .. (lsGetTimer() - self.previous_stage_ended_at) .. " watered at " .. (lsGetTimer() - self.plant_time) ..
+  self:_log(INFO,"Plant " .. self.index .. " water delay is " .. (lsGetTimer() - self.previous_stage_ended_at) .. " watered at " .. (lsGetTimer() - self.plant_time) ..
     " in stage " .. self.stage .. " death " .. self:time_till_death() .. " next " .. (self.next_stage_starts_at - lsGetTimer()))
   return result
 end

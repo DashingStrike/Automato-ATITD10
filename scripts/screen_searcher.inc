@@ -275,7 +275,7 @@ function ScreenSearcher:findFurthestPointFromEdgeForRegion(regionName)
     c_result.max_y + slightlyExpandedOddBox.top + self.box.top)
   p.x = p[0]
   p.y = p[1]
-  self:_log(DEBUG, 'Found for ' .. regionName .. ' furthest point of ' .. p.x .. ', ' .. p.y .. ' with distance from edge of ' .. c_result.max_dt)
+  self:_log(DEBUG, 'Found ' .. regionName .. ' furthest point of ' .. p.x .. ', ' .. p.y .. ' with distance from edge of ' .. c_result.max_dt)
   return p
 end
 
