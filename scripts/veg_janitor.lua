@@ -531,6 +531,9 @@ function findSeedAndPickupIfThere(searcher, num_dead, config)
     else
       veg_log(INFO, config.debug_log_level, 'findSeedAndPickupIfThere', 'FAILED TO FIND CLICK LOC FOR ' .. i .. '.')
     end
+    if seeds_picked_up == num_dead then
+      break
+    end
   end
   if seeds_picked_up < num_dead then
     veg_log(INFO, config.debug_log_level, 'findSeedAndPickupIfThere', 'Failed to pickup all seeds, ' .. num_dead - seeds_picked_up .. ' left to pickup...')
