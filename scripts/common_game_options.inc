@@ -137,7 +137,7 @@ function getInterfaceOptions()
     return {};
   end
 
-  local down = findImage("options/down.png", interfaceOptionsRange);
+  local down = findImage("options/down.png", interfaceOptionsRange, 7000);
   if not down then
     return {};
   end
@@ -151,7 +151,7 @@ function getInterfaceOptions()
   lsSleep(100);
 
   srReadScreen();
-  local radio = findImage("options/radio.png", interfaceOptionsRange);
+  local radio = findImage("options/radio.png", interfaceOptionsRange, 7000);
   if not radio then
     return {};
   end
@@ -180,7 +180,7 @@ function setOneClickOptions(options)
     end
   end
 
-  local close = findImage("options/close.png", oneClickOptionsRange);
+  local close = findImage("options/close.png", oneClickOptionsRange, 7000);
   if close then
     safeClick(close[0], close[1]);
   end
@@ -207,7 +207,7 @@ function setVideoOptions(options)
     end
   end
 
-  local close = findImage("options/close.png", videoOptionsRange);
+  local close = findImage("options/close.png", videoOptionsRange, 7000);
   if close then
     safeClick(close[0], close[1]);
   end
@@ -244,7 +244,7 @@ function setInterfaceOptions(options)
     safeClick(interfaceOptionsRange.x + 125, interfaceOptionsRange.y + 342 + options[MOVE_KEYS] * 18);
   end
 
-  local close = findImage("options/close.png", interfaceOptionsRange);
+  local close = findImage("options/close.png", interfaceOptionsRange, 7000);
   if close then
     safeClick(close[0], close[1]);
   end
@@ -277,7 +277,7 @@ end
 
 function openOption(text)
   srReadScreen();
-  local icon = findImage("options/icon.png");
+  local icon = findImage("options/icon.png", nil, 7000);
   if not icon then
     return false;
   end
