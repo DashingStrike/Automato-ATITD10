@@ -1,6 +1,6 @@
 dofile("common.inc");
 
-askText = "This macro will be removed after acronomicon has been out a while, so try it and report any issues.\n\nWait until you have Acrobat window open, from a partner, (won\'t work with Self Click, Acrobat, Show Moves) before you start macro! It will memorize your moves for future partners (even if you close acro window). You can move acro window while its running. You do not need to quit/restart macro between each partner. Click \"Menu\" button, when you are done acroing the current player. Optionally, click \"Refresh\" button when your next partner\'s acro window is open. Make sure you resize the acro window so all the buttons you know are showing (above divider bar). Press Shift over ATITD window to continue.";
+askText = "Wait until you have Acrobat window open, from a partner, (won\'t work with Self Click, Acrobat, Show Moves) before you start macro! It will memorize your moves for future partners (even if you close acro window). You can move acro window while its running. You do not need to quit/restart macro between each partner. Click \"Menu\" button, when you are done acroing the current player. Optionally, click \"Refresh\" button when your next partner\'s acro window is open. Make sure you resize the acro window so all the buttons you know are showing (above divider bar). Press Shift over ATITD window to continue.";
 
 moveImages = {
 "Asianinfluence.png",
@@ -103,6 +103,7 @@ debugClickMoves = nil; -- Change to true to make mouse point to where it's click
 
 function doit()
   askForWindow(askText);
+  promptOkay("This macro is deprecated, and will be removed after acronomicon.lua has been out for a while, so please try it and report any issues", 0xFF0000ff, nil, nil, true);
   totalSession = lsGetTimer();
   findMoves();
   checkAllBoxes();
