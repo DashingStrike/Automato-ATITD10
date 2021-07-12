@@ -524,20 +524,14 @@ function checkItem()
 end
 
 function takeProduct()
+  clickTextWithError("This is [a-z]+ Anvil", REGEX);
   clickTextWithError("Complete Project");
 
-  local scrap = waitForText(
-    "Ready to Unload",
-    60000,
-    "Waiting for 'Ready to Unload' text on the screen."
-  );
-  if not scrap then
-    error("Unable to find 'Ready to Unload' on the screen");
+  if not waitForImage("Yes.png", 60000, "Waiting for 'Ready to Unload' popup.") then
+    error("Unable to find 'Ready to Unload' popup");
   end
 
   clickImageWithError("Yes.png");
-
-  clickImageWithError("ok.png", 1000);
 
   clickTextWithError("This is [a-z]+ Anvil", REGEX);
 end
