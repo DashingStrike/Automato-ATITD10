@@ -253,5 +253,6 @@ stds.automato = {
     "srTrainTextReader",
     "srUpArrow",
     "srUpArrow2",
+    "srCharEvent",
   }
 }
