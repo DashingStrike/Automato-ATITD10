@@ -27,12 +27,12 @@ items = {
           "Weave Wool Cloth",
           "Oil (Flax Seed)",
           "Limestone",
-          "Dirt"
+          "Dirt",
+          "Stir Cement",
           --[[
           "Excavate Blocks",
           "Pump Aqueduct",
           "Push Pyramid",
-          "Stir Cement",
           "Weave Silk",
 
           "Water Insects",
@@ -59,9 +59,9 @@ items = {
           "Wooden Peg",
           "Wooden Pestle",
           "Tackle Block",
-          "Wooden Cog"
-          --[[
+          "Wooden Cog",
           "Search Rotten Wood",
+          --[[
           "Tap Rods",
           ]]--
         },
@@ -288,19 +288,17 @@ function stashAll()
   lsSleep(250);
   srKeyEvent(escape); -- Closing the stash window
 end
---[[
-function searchRottenWood()
-    woodForBugs = findText("Wood for Bugs");
 
-    if woodForBugs ~= nil then
-        clickText(woodForBugs);
-        lsSleep(per_tick);
-        srReadScreen();
-        closePopUp();
-        lsSleep(per_tick);
-    end
+function searchRottenWood()
+  woodForBugs = findText("Wood for Bugs");
+  if woodForBugs ~= nil then
+      clickText(woodForBugs);
+      lsSleep(per_tick);
+      srReadScreen();
+      closePopUp();
+      lsSleep(per_tick);
+  end
 end
-]]--
 
 function flaxOil()
   srReadScreen();
@@ -403,34 +401,6 @@ function hacklingRake()
         lsSleep(2000);
       end
 end
---[[
-function pyramidPush()
-   local curCoords = findCoords();
-   local t, u;
-   if curCoords[0] > pyramidXCoord + 2 then
-      t = findText("Push this block West");
-      if t ~= nil then u = t end;
-   elseif curCoords[0] < pyramidXCoord - 2 then
-      t = findText("Push this block East");
-      if t ~= nil then u = t end;
-   else
-      t = findText("Turn this block to face North-South");
-      if t ~= nil then u = t end;
-   end
-   if curCoords[1] > pyramidYCoord + 2 then
-      t = findText("Push this block South");
-      if t ~= nil then u = t end;
-   elseif curCoords[1] < pyramidYCoord - 2 then
-      t = findText("Push this block North");
-      if t ~= nil then u = t end;
-   else
-      t = findText("Turn this block to face East-West");
-      if t ~= nil then u = t end;
-   end
-   if u ~= nil then
-      clickText(u);
-   end
-end
 
 function stirCement()
     t = waitForText("Stir the cement", 2000);
@@ -475,6 +445,35 @@ function stirCement()
             clickText(waitForText("Make a batch of Cement"));
         end
     end
+end
+
+--[[
+function pyramidPush()
+   local curCoords = findCoords();
+   local t, u;
+   if curCoords[0] > pyramidXCoord + 2 then
+      t = findText("Push this block West");
+      if t ~= nil then u = t end;
+   elseif curCoords[0] < pyramidXCoord - 2 then
+      t = findText("Push this block East");
+      if t ~= nil then u = t end;
+   else
+      t = findText("Turn this block to face North-South");
+      if t ~= nil then u = t end;
+   end
+   if curCoords[1] > pyramidYCoord + 2 then
+      t = findText("Push this block South");
+      if t ~= nil then u = t end;
+   elseif curCoords[1] < pyramidYCoord - 2 then
+      t = findText("Push this block North");
+      if t ~= nil then u = t end;
+   else
+      t = findText("Turn this block to face East-West");
+      if t ~= nil then u = t end;
+   end
+   if u ~= nil then
+      clickText(u);
+   end
 end
 
 local function tapRods()
@@ -609,7 +608,11 @@ function doTasks()
                 elseif curTask == "Dirt" then
                   gather("Dirt");
                 elseif curTask == "Churn Butter" then
-                    churnButter();
+                  churnButter();
+                elseif curTask == "Stir Cement" then
+                  stirCement();
+                elseif curTask == "Search Rotten Wood" then
+                    searchRottenWood();
                 else
                   clickText(findText(textLookup[curTask]));
                 end
@@ -622,11 +625,7 @@ function doTasks()
                     excavateBlocks();
                 elseif curTask == "Tap Rods" then
                     tapRods();
-                elseif curTask == "Stir Cement" then
-                    stirCement();
 
-                elseif curTask == "Search Rotten Wood" then
-                    searchRottenWood();
                 end
                 ]]--
                 statTimer[i] = lsGetTimer();
