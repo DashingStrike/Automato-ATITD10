@@ -249,7 +249,7 @@ function gather(resource)
       lsSleep(100);
       gatherCounter = gatherCounter + 1
       if stashRawMaterials then
-        sleepWithStatus(1000,"clickCounter is " .. gatherCounter)
+        sleepWithStatus(1000,"Stashing at 50 clicks.\n\nClick Count: " .. gatherCounter)
         if gatherCounter >= 50 then
           stashAll();
           gatherCounter = 0
