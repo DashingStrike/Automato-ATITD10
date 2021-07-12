@@ -68,16 +68,16 @@ actions = {
     matLabels = {"Toad Skin Mushrooms", "Water", "Wood"},
     matCounts = {1, 5, 5}
   },
+  {
+    label = "Flower Fert",
+    buttonPos = makePoint(30, 40);
+    stoked = false,
+    menuImage = "kettle/flower_fert.png",
+    output = 50,
+    matLabels = {"Rotten Fish", "Water", "Wood"},
+    matCounts = {3, 5, 5}
+  },
   --[[
-    {
-      label = "Flower Fert",
-      buttonPos = makePoint(30, 40);
-      stoked = false,
-      menuImage = "kettle/flower_fert.png",
-      output = 50,
-      matLabels = {"Rotten Fish", "Water", "Wood"},
-      matCounts = {3, 5, 5}
-    },
     {
       label = "Arsenic",
       buttonPos = makePoint(30, 220);
