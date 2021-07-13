@@ -131,7 +131,7 @@ function saveRecipe(recipe)
 end
 
 function deleteRecipe()
-  table.remove(recipes, recipe);
+  table.remove(recipes, recipeIndex);
   writeSetting("recipes", recipes);
 end
 
@@ -351,7 +351,7 @@ function findAnvil()
       srMakeImage("anvil_search", centerX + 50, centerY - 50, 75, 50);
       srShowImageDebug("anvil_search", 5, 5, 1, 2);
 
-      lsPrintWrapped(10, 110, 0, lsScreenX - 20, 0.7, 0.7, 0xFFFF80ff, "Looking for anvil handle in the above region");
+      lsPrintWrapped(10, 110, 0, lsScreenX - 20, 0.7, 0.7, 0xFFFF80ff, "Looking for the top yellow part of the anvil handle in the above region");
 
       if lsButtonText(10, lsScreenY - 30, 0, 100, 0xFFFFFFff, "OK") then
         lsDoFrame();
