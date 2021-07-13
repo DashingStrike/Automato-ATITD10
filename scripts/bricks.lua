@@ -315,6 +315,8 @@ function brickHotkeyMode()
 		needDelay = false;
 		if(brickRackReady(racks,x,y) or racks[x][y].lastTime < lsGetTimer() - timeout) then
 			srSetMousePos(racks[x][y].x,racks[x][y].y);
+      lsSleep(delay);
+      srKeyEvent("r") -- Repair brick moulds
 			lsSleep(delay);
 			srKeyEvent("t"..brickHotkeys[typeOfBrick]);
 			needDelay = true;
