@@ -35,6 +35,17 @@ dofile("screen_reader_common.inc")
 -- screenSearcher:markAllChangesAsRegion('before', 'myObject')
 -- local myObjectsLocationOnScreen = screenSearcher:findPointInRegionFurthestFromEdge('myObject')
 -- click(myObjectsLocationOnScreen)
+--
+-- If there are many objects appearing at once on the screen which are separate you can instead use:
+--
+-- screenSearcher:snapshotScreen('before')
+-- triggerManyObjectsToAppearAtOnceOnScreen()
+-- screenSearcher:markConnectedAreasAsNewRegions('before')
+-- local regions = screenSearcher:getRegions()
+-- for _, region in ipairs(regions) do
+--     local myObjectsLocationOnScreen = screenSearcher:findPointInRegionFurthestFromEdge(region:name())
+--     click(myObjectsLocationOnScreen)
+-- end
 -------------------------------------------------------------------------------
 
 ScreenSearcher = {}
@@ -164,7 +175,8 @@ function ScreenSearcher:getRegions(minRegionSizeFilter, keepLargestNRegionFilter
 end
 
 -------------------------------------------------------------------------------
--- Returns the regions optionally filtered by a minimum size and/or returning only the largest N regions.
+-- Draws the regions and their furthest point from edge as a flashing cross optionally filtered by a minimum size
+-- and/or returning only the largest N regions.
 -------------------------------------------------------------------------------
 function ScreenSearcher:drawRegions(displayTime, minRegionSizeFilter, title)
   local furthestResults = {}
