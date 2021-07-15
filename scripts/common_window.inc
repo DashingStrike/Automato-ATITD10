@@ -213,8 +213,8 @@ function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offse
         screen[0] = screen[0] - lsGetWindowSize()[0];
  end
 
-  local currentX = 3;
-  local currentY = 5;
+  local currentX = 8;
+  local currentY = 10;
   if waterGap then
     currentY = 95;
   end
@@ -266,7 +266,7 @@ function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offse
       end
     else
       if currentX + width >= screen[0] then
-        currentX = 3;
+        currentX = 8;
         currentY = currentY + yMax;
         yMax = 0;
       end
