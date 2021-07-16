@@ -509,6 +509,8 @@ function doit()
       waitForText("Add how much Charcoal?", nil, "Waiting for Charcoal message");
       srKeyEvent(string.format("%d\n", toAdd));
       waitForNoText("Add how much Charcoal?");
+      lsSleep(100);
+      closePopUp();
     end
   end
   clickAllText("Start fire");
@@ -609,5 +611,19 @@ function downArrow()
     --srSetMousePos(downPin[0]+8,downPin[1]+5);
     srClickMouseNoMove(downPin[0]+8,downPin[1]+5);
     lsSleep(100);
+  end
+end
+
+function closePopUp()
+  while 1 do -- Perform a loop in case there are multiple pop-ups behind each other; this will close them all before continuing.
+    checkBreak();
+		lsSleep(250);
+    srReadScreen();
+    ok = srFindImage("OK.png");
+		if ok then
+			srClickMouseNoMove(ok[0],ok[1]);
+		else
+			break;
+		end
   end
 end
