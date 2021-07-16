@@ -392,17 +392,38 @@ function findchat()
     gui_refresh();
 end
 
+function findClockInfo()
+  srReadScreen();
+  coordinates = findCoords()
+  if coordinates then
+    coordX = coordinates[0];
+    coordY = coordinates[1];
+    Coordinates = coordX .. ", " .. coordY
+  end
+  fetchTime = getTime(1);
+  theDateTime = string.sub(fetchTime,string.find(fetchTime,",") + 0); -- I know it's weird to have +0, but don't remove it or will error, shrug
+  stripYear = string.sub(theDateTime,string.find(theDateTime,",") + 2);
+  Time = string.sub(stripYear,string.find(stripYear,",") + 2);
+  stripYear = "," .. stripYear
+  Date = string.sub(stripYear,string.find(stripYear,",") + 1, string.len(stripYear) - string.len(Time) - 2);
+  stripYear = string.sub(theDateTime,string.find(theDateTime,",") + 2);
+end
+
 function gui_refresh()
     checkBreak();
 
-    if GrandTotalCaught < 10 then
-        last10 = GrandTotalCaught .. "/10";
-    elseif GrandTotalCaught > 10 then
-        last10 = "10/" .. GrandTotalCaught
-    else
-        last10 = 10;
+    if GrandTotalCasts == 0 or GrandTotalCasts == 1 then
+      DateBegin = Date;
+      TimeBegin = Time;
     end
 
+    if GrandTotalCaught < 10 then
+      last10 = GrandTotalCaught .. "/10";
+    elseif GrandTotalCaught > 10 then
+      last10 = "10/" .. GrandTotalCaught
+    else
+      last10 = 10;
+    end
 
     --Stats (On Screen Display)
     --CurrentLureIndex  out of  PlayersLures
@@ -425,6 +446,7 @@ function gui_refresh()
     local y = 2;
     CurrentLure = PlayersLures[CurrentLureIndex];
     QCurrentLure = PlayersLures[QCurrentLureIndex];
+    lsPrintWrapped(10, y, 0, lsScreenX - 20, 0.5, 0.5, 0xc0c0ffff, Date .. " | " .. Time .. " | " .. Coordinates);
     nextLureChange = TotalCasts + 1 - castcount
     nextLureChangeMessageColor = 0xc0ffffff;
 
@@ -594,8 +616,7 @@ function gui_refresh()
         allcaught = "*** No fish caught! ***";
     end
 
-    WriteFishStats("Note this report is overwritten every time the macro runs. The stats are for last fishing session only!\nYou can safely delete this file, but it will be created the next time macro runs!\n\n----------------------------------\nOdd Fish Seen: " .. GrandTotalOdd .. "\nUnusual Fish Seen: " .. GrandTotalUnusual .. "\nStrange Fish Seen: " .. GrandTotalStrange .. "\n----------------------------------\nLures Clicked: " .. GrandTotalLuresUsed .. "\nLures Lost: " .. GrandTotalLostLures .. " \n----------------------------------\nCasts: " .. GrandTotalCasts .. "\nFailed Catches: " .. GrandTotalFailed .. "\nFish Caught: " .. GrandTotalCaught .. " (" .. math.floor(GrandTotaldb) .. "db)\n----------------------------------\n\nAll lures lost this Session:\n\n" .. lostlures .. "\n\n\nAll fish caught this Session:\n\n".. allcaught);
-
+    WriteFishStats("Note this report is overwritten every time the macro runs. The stats are for last fishing session only!\nYou can safely delete this file, but it will be created the next time macro runs!\n\n\nStart Time: " .. DateBegin .. " @ " .. TimeBegin .. "\nEnd Time: " .. Date .. " @ " .. Time .. "\nLast Coordinates: " .. Coordinates .. "\n----------------------------------\nOdd Fish Seen: " .. GrandTotalOdd .. "\nUnusual Fish Seen: " .. GrandTotalUnusual .. "\nStrange Fish Seen: " .. GrandTotalStrange .. "\n----------------------------------\nLures Clicked: " .. GrandTotalLuresUsed .. "\nLures Lost: " .. GrandTotalLostLures .. " \n----------------------------------\nCasts: " .. GrandTotalCasts .. "\nFailed Catches: " .. GrandTotalFailed .. "\nFish Caught: " .. GrandTotalCaught .. " (" .. math.floor(GrandTotaldb) .. "db)\n----------------------------------\n\nAll lures lost this Session:\n\n" .. lostlures .. "\n\n\nAll fish caught this Session:\n\n".. allcaught);
     lsDoFrame();
     lsSleep(10);
 end
@@ -645,6 +666,13 @@ function doit()
     setOptions();
     PlayersLures = SetupLureGroup();  -- Fetch the list of lures from pinned lures window
     lsSleep(1000); -- Just a delay to let the sound effect finishing playing, not needed...
+
+    findClockInfo();
+    while not coordinates do
+      checkBreak();
+      findClockInfo();
+      sleepWithStatus(1000, "Can not find Clock!\n\nMove your clock slightly.\n\nMacro will resume once found ...\n\nIf you do not see a clock, type /clockloc in chat bar.");
+    end
 
     while 1 do
 
@@ -726,6 +754,7 @@ function doit()
 
             --Cast
             checkBreak();
+            filletFish();  -- Search for "All Fish" pinned up. If so, fillet.
             castWait = 0;
             findchat();
             lastLineFound = lastLineParse; -- Record last line before casting
@@ -794,6 +823,7 @@ function doit()
 
             castcount = castcount + 1;
             GrandTotalCasts = GrandTotalCasts + 1;
+            findClockInfo();
 
             --Parse Chat
             CurrentLure = PlayersLures[CurrentLureIndex];
@@ -895,7 +925,6 @@ function doit()
                         --lsPlaySound("applause.wav");
                         --end
                         --end
-                        filletFish();  -- Search for "All Fish" pinned up. If so, fillet.
                         end
                     end
 
@@ -913,12 +942,12 @@ function doit()
             if v == "lure" or v == "alreadyfishing" or noWriteLog or not string.find(lastLine, "^%*%*", 0) then
             -- Do nothing
             elseif overweight then
-                WriteFishLog("[" .. CurrentLure .. " (" .. LureType .. ")] " .. lastLineParse2 .. "\n");
+              WriteFishLog("[" .. Date .. ", " .. Time .. "] [" .. Coordinates .. "] [" .. CurrentLure .. " (" .. LureType .. ")] " .. lastLineParse2 .. "\n");
             elseif writeLastTwoLines then
-                WriteFishLog("[" .. CurrentLure .. " (" .. LureType .. ")] " .. lastLineParse2 .. "\n");
-                WriteFishLog("[" .. CurrentLure .. " (" .. LureType .. ")] " .. lastLineParse .. "\n");
+              WriteFishLog("[" .. Date .. ", " .. Time .. "] [" .. Coordinates .. "] [" .. CurrentLure .. " (" .. LureType .. ")] " .. lastLineParse2 .. "\n");
+              WriteFishLog("[" .. Date .. ", " .. Time .. "] [" .. Coordinates .. "] [" .. CurrentLure .. " (" .. LureType .. ")] " .. lastLineParse .. "\n");
             elseif LogFails or caughtFish or oddFound or strangeUnusualFound then
-                WriteFishLog("[" .. CurrentLure .. " (" .. LureType .. ")] " .. lastLineParse .. "\n");
+              WriteFishLog("[" .. Date .. ", " .. Time .. "] [" .. Coordinates .. "] [" .. CurrentLure .. " (" .. LureType .. ")] " .. lastLineParse .. "\n");
             end
 
             gui_refresh();
