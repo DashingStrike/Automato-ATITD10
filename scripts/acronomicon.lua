@@ -94,6 +94,24 @@ moveShortNames = {
   "WM",
 };
 
+local timerPositions = {
+  0,
+  20,
+  -20,
+  40,
+  -40,
+  60,
+  -60,
+  80,
+  -80,
+  100,
+  -100,
+  120,
+  -120,
+  140,
+  -140,
+};
+
 local bernike = {
   {2836, -988 },
   {2836, -972 },
@@ -139,11 +157,15 @@ local bernike = {
   {2756, -988 },
 };
 
-hello = "";
-bye = "";
-auto = false;
-move = false;
-greeted = false;
+local hello = "";
+local bye = "";
+local notification = 3;
+local switch = false;
+local auto = false;
+local move = false;
+local greeted = false;
+
+local activated = false;
 
 function doit()
   askForWindow([[
@@ -216,24 +238,25 @@ function findMoves()
   end
 end
 
-function say(msg)
-  if not srFindImage("chat/main_chat.png") then
-    local main = srFindImage("ocr/mainChatWhite.png");
-    if not main then
-      main = srFindImage("ocr/mainChatRed.png");
+function openChat(active, white, red)
+  if not srFindImage(active) then
+    local chat = srFindImage(white);
+    if not chat then
+      chat = srFindImage(red);
     end
 
-    if not main then
-      return;
+    if not chat then
+      lsPrintln("Chat tab not found");
+      return false;
     end
 
-    safeClick(main[0], main[1]);
+    safeClick(chat[0], chat[1]);
     lsSleep(100);
   end
 
-  if not waitForImage("chat/main_chat.png", 2000) then
-    lsPrintln("Chat Fail");
-    return;
+  if not waitForImage(active, 2000) then
+    lsPrintln("Chat tab failed to open");
+    return false;
   end
 
   local min = srFindImage("chat/chat_min.png");
@@ -241,14 +264,39 @@ function say(msg)
     srKeyDown(VK_RETURN);
     lsSleep(10);
     srKeyUp(VK_RETURN);
+    lsSleep(10);
   end
 
   if waitForNoImage("chat/chat_min.png", 2000) then
-    lsPrintln("Chat Fail");
+    lsPrintln("Chat failed to start");
+    return false;
+  end
+
+  return true;
+end
+
+function say(msg)
+  if not openChat("chat/main_chat.png", "ocr/mainChatWhite.png", "ocr/mainChatRed.png") then
     return;
   end
 
   srKeyEvent(msg);
+  lsSleep(100);
+  srKeyDown(VK_RETURN);
+  lsSleep(10);
+  srKeyUp(VK_RETURN);
+end
+
+function saySwitch()
+  if not openChat("chat/acro_active.png", "chat/acro_white.png", "chat/acro_red.png") then
+    return;
+  end
+
+  srKeyDown(VK_DIVIDE);
+  lsSleep(10);
+  srKeyUp(VK_DIVIDE);
+  lsSleep(10);
+  srKeyEvent("me switch");
   lsSleep(100);
   srKeyDown(VK_RETURN);
   lsSleep(10);
@@ -269,6 +317,11 @@ function follows()
 end
 
 function uncheck(i)
+  if #foundMovesShortName < 2 then
+    --Don't uncheck the last move, keep going so that acro stays active for learning
+    return;
+  end
+
   sleepWithStatus(2000, "Unchecking " .. foundMovesName[i] .. " from Move List.\n\nMove was followed or learnt", nil, 0.7);
   foundMovesShortName[i] = false;
 
@@ -276,23 +329,63 @@ function uncheck(i)
 end
 
 function activateTimer()
+  if activated then
+    return false;
+  end
+
+  activated = true;
   local windowSize = srGetWindowSize();
-  for x = -200, 200, 20 do
-    srSetMousePos(windowSize[0] / 2 + x, 125);
-    srReadScreen();
-    local timer = findImage("acro/timer.png", iconRange);
-    if timer then
-      safeClick(timer[0], timer[1]);
-      return true;
+  local activateStart = lsGetTimer();
+  while lsGetTimer() - activateStart < 3000 do
+    for i = 1, #timerPositions do
+      srSetMousePos(windowSize[0] / 2 + timerPositions[i], 125);
+      srReadScreen();
+      local timer = findImage("acro/timer.png", iconRange);
+      if timer then
+        safeClick(timer[0], timer[1]);
+        srSetMousePos(windowSize[0] / 2, windowSize[1] / 2);
+
+        if waitForImage("acro/timer.png", 1000, nil, iconRange, 500) then
+          return true;
+        end
+      end
     end
   end
 
   return false;
 end
 
+function wait(sessionStart, timerPlayed, message)
+  if lsButtonText(10, lsScreenY - 30, z, 90, 0xFF9999ff, "End") then
+    finish();
+    displayMoves();
+  end
+
+  if lsButtonText(lsScreenX / 2 - 45, lsScreenY - 30, z, 80, 0xffff80ff, "Menu") then
+    displayMoves();
+  end
+
+  local seconds = math.floor((lsGetTimer() - sessionStart) / 1000);
+  local minutes = math.floor(seconds / 60);
+  seconds = math.floor(seconds % 60);
+
+  if (notification and not timerPlayed and minutes >= notification) then
+    lsPlaySound("trolley.wav");
+    timerPlayed = true;
+
+    if switch then
+      saySwitch();
+    end
+  end
+
+  statusScreen(message);
+  lsSleep(100);
+end
+
 function doMoves()
+  local sessionStart = lsGetTimer();
+  local timerPlayed = false;
   local lastClick = 0;
-  local GUI = "";
   local windowSize = srGetWindowSize();
   local iconRange = {x = windowSize[0] / 2 - 200, y = 80, width = 400, height = 50};
 
@@ -304,20 +397,10 @@ function doMoves()
     while i <= #foundMovesName do
       checkBreak();
       if foundMovesShortName[i] then
-        GUI = "\n\n" .. string.upper(foundMovesName[i]) .. "\n \n[" .. count .. "/" .. checkedBoxes .. "] Moves.";
-
+        local message = string.upper(foundMovesName[i]) .. "\n\n[" .. count .. "/" .. checkedBoxes .. "] Moves.\n\n";
         while findImage("acro/timer.png", iconRange, 4000) do
-          if lsButtonText(10, lsScreenY - 30, z, 90, 0xFF9999ff, "End") then
-            finish();
-            displayMoves();
-          end
-
-          if lsButtonText(lsScreenX / 2 - 45, lsScreenY - 30, z, 80, 0xffff80ff, "Menu") then
-            displayMoves();
-          end
-
-          statusScreen("Waiting on timer" .. GUI);
-          lsSleep(100);
+          activated = true;
+          wait(sessionStart, timerPlayed, message);
           srReadScreen();
         end
 
@@ -332,11 +415,21 @@ function doMoves()
             srSetMousePos(clickMove[0]+3, clickMove[1]+2);
           end
           srClickMouseNoMove(clickMove[0]+3, clickMove[1]+2);
-          lsSleep(1000);
 
-          if not waitForImage("acro/timer.png", 1000, "Waiting for acro timer icon", iconRange, 500) then
-            if  not activateTimer() then
-              promptOkay("Unable to find acro timer!\n\nMake sure your acro icon is active by clicking on it so the time displays. You can perform a move manually to do this if needed.", nil, 0.7, nil, true);
+          if not waitForImage("acro/timer.png", 2500, nil, iconRange, 500) then
+            if not activateTimer() then
+              local delayStart = lsGetTimer();
+              while (lsGetTimer() - delayStart) < 4000 do
+                wait(sessionStart, timerPlayed, message .. [[
+Unable to find acro timer.
+
+Please click it, so that it is solid
+and the seconds are displayed
+
+Otherwise falling back to 7 second delay
+
+]]);
+              end
             end
           end
 
@@ -385,7 +478,7 @@ end
 
 function getNextLocation()
   local coords = findCoords();
-  if coords[0] > 2748 and coords[0] < 2844 and coords[1] > -996 and coords[1] < -884 then
+  if coords and coords[0] > 2748 and coords[0] < 2844 and coords[1] > -996 and coords[1] < -884 then
     for i = 1, #bernike do
       if math.abs(coords[0] - bernike[i][1]) < 8 and math.abs(coords[1] - bernike[i][2]) < 8 then
         if i == #bernike then
@@ -434,6 +527,7 @@ function refresh()
   findMoves();
   checkAllBoxes();
   if auto then
+    sleepWithStatus(3000, "Waiting a few seconds before starting moves...");
     start();
   end
 end
@@ -469,13 +563,22 @@ function displayMoves()
     writeSetting("auto", auto);
     y = y + 30;
 
-    move = readSetting("move", move);
     lsPrint(5, y, 0, 1, 1, 0xFFFFFFff, "Move:");
     move = lsCheckBox(105, y, z, 0xFFFFFFff, "", move);
     lsPrint(135, y, 0, 1, 1, 0xFFFFFFff, "Only works @ Bernike Acro Court");
-    writeSetting("move", move);
     y = y + 30;
 
+    lsPrint(5, y, 0, 1, 1, 0xFFFFFFff, "Timer:");
+    foo, notification = lsEditBox("notification", 105, y, z, 20, 0, 1, 1, 0x000000ff, notification);
+    lsPrint(135, y, 0, 1, 1, 0xFFFFFFff, "Minutes (Plays Sound)");
+    notification = tonumber(notification);
+    y = y + 30;
+
+    if notification then
+      switch = lsCheckBox(105, y, z, 0xFFFFFFff, "", switch);
+      lsPrint(135, y, 0, 1, 1, 0xFFFFFFff, "Call Switch (Only in Acro Courts)");
+    end
+    y = y + 30;
 
     if #foundMovesName > 0 then
       lsPrint(5, y, 0,1, 1, 0x40ff40ff, "Check moves you want to perform:");
