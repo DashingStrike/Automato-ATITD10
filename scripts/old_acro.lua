@@ -104,6 +104,7 @@ debugClickMoves = nil; -- Change to true to make mouse point to where it's click
 function doit()
   askForWindow(askText);
   promptOkay("This macro is deprecated, and will be removed after acronomicon.lua has been out for a while, so please try it and report any issues", 0xFF0000ff, nil, nil, true);
+  promptOkay("Acronomicon was last updated July 17th 2021, so if you haven't tried it since then, give it another shot", 0xFF0000ff, nil, nil, true);
   totalSession = lsGetTimer();
   findMoves();
   checkAllBoxes();
