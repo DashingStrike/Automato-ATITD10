@@ -322,7 +322,7 @@ function uncheck(i)
     return;
   end
 
-  sleepWithStatus(2000, "Unchecking " .. foundMovesName[i] .. " from Move List.\n\nMove was followed or learnt", nil, 0.7);
+  sleepWithStatus(7000, "Unchecking " .. foundMovesName[i] .. " from Move List.\n\nMove was followed or learnt", nil, 0.7);
   foundMovesShortName[i] = false;
 
   countChecked();
@@ -355,7 +355,9 @@ function activateTimer()
   return false;
 end
 
-function wait(sessionStart, timerPlayed, message)
+function wait(message)
+  checkBreak();
+
   if lsButtonText(10, lsScreenY - 30, z, 90, 0xFF9999ff, "End") then
     finish();
     displayMoves();
@@ -365,21 +367,16 @@ function wait(sessionStart, timerPlayed, message)
     displayMoves();
   end
 
+  statusScreen(message);
+  lsSleep(100);
+end
+
+function getSessionTime(sessionStart)
   local seconds = math.floor((lsGetTimer() - sessionStart) / 1000);
   local minutes = math.floor(seconds / 60);
   seconds = math.floor(seconds % 60);
 
-  if (notification and not timerPlayed and minutes >= notification) then
-    lsPlaySound("trolley.wav");
-    timerPlayed = true;
-
-    if switch then
-      saySwitch();
-    end
-  end
-
-  statusScreen(message);
-  lsSleep(100);
+  return minutes, seconds;
 end
 
 function doMoves()
@@ -397,11 +394,23 @@ function doMoves()
     while i <= #foundMovesName do
       checkBreak();
       if foundMovesShortName[i] then
-        local message = string.upper(foundMovesName[i]) .. "\n\n[" .. count .. "/" .. checkedBoxes .. "] Moves.\n\n";
+        local minutes, seconds = getSessionTime(sessionStart);
+
         while findImage("acro/timer.png", iconRange, 4000) do
           activated = true;
-          wait(sessionStart, timerPlayed, message);
+          minutes, seconds = getSessionTime(sessionStart);
+
+          wait("Session time: " .. minutes .. "m " .. seconds .. "s\n\n" .. string.upper(foundMovesName[i]) .. "\n[" .. count .. "/" .. checkedBoxes .. "] Moves.\n\n");
           srReadScreen();
+        end
+
+        if (notification and not timerPlayed and minutes >= notification) then
+          lsPlaySound("trolley.wav");
+          timerPlayed = true;
+
+          if switch then
+            saySwitch();
+          end
         end
 
         clickMove = srFindImage("acro/" .. foundMovesImage[i]);
@@ -420,13 +429,15 @@ function doMoves()
             if not activateTimer() then
               local delayStart = lsGetTimer();
               while (lsGetTimer() - delayStart) < 4000 do
-                wait(sessionStart, timerPlayed, message .. [[
+                minutes, seconds = getSessionTime(sessionStart);
+
+                wait("Session time: " .. minutes .. "m " .. seconds .. "s\n\n" .. string.upper(foundMovesName[i]) .. "\n[" .. count .. "/" .. checkedBoxes .. "] Moves.\n\n" .. [[
 Unable to find acro timer.
 
 Please click it, so that it is solid
 and the seconds are displayed
 
-Otherwise falling back to 7 second delay
+Falling back to 7 second delay
 
 ]]);
               end
@@ -574,7 +585,7 @@ function displayMoves()
     notification = tonumber(notification);
     y = y + 30;
 
-    if notification then
+    if notification and notification > 0 then
       switch = lsCheckBox(105, y, z, 0xFFFFFFff, "", switch);
       lsPrint(135, y, 0, 1, 1, 0xFFFFFFff, "Call Switch (Only in Acro Courts)");
     end
