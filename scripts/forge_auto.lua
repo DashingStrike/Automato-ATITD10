@@ -258,7 +258,7 @@ local function makeItem(currentItem, window)
   elseif lastParent == "Medium Gear x1" then
     local t = waitForText("Medium Gear...");
     safeClick(t[0]+20,t[1]+4);
-    local t = waitForText("Make 10...");
+    local t = waitForText("Make 1...");
     safeClick(t[0]+20,t[1]+4);
     text = name .. " Medium Gear";
   elseif lastParent == "Medium Gear x10" then
