@@ -26,7 +26,9 @@ knownVineNames = {
   { name = "Distraction",
     image = "Distraction" },
   { name = "Frivolity",
-    image = "Frivolity" }
+    image = "Frivolity" },
+  { name = "Wisdom",
+    image = "Wisdom" }
 };
 
 vineyardActions = { "Tend", "Harvest", "Cutting" };
