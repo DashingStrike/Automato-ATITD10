@@ -184,6 +184,7 @@ end
 
 function gatherResources()
 	askForWindow('Searches for and clicks the selected resource (clay, grass, slate) until stopped.\n\nGrass: It\'s efficient (less running) if you walk instead of run (Self Click -> Emote -> Gait: Walking -- Gait: Running to restore)\n\nPress Shift over ATITD window to continue.');
+  promptOkay("This macro is deprecated, and will be removed soon.\n\nPlease use statclicks.lua for dirt/limestone\n\nPlease use gather.lua for grass, slate, and clay", 0xFF0000ff, nil, nil, true);
 	while 1 do
 		-- Ask for which button
 		local image_name = nil;
