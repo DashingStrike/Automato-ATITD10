@@ -323,6 +323,7 @@ function preLocatePlants(config, plants, seedScreenSearcher, dead_player_box)
     srReadScreen()
     local buildButton = clickPlantButton(config.seed_name)
     srReadScreen()
+    checkBreak()
 
     plants[i].location:move()
     lsSleep(click_delay * 2)
@@ -372,6 +373,7 @@ function preLocatePlants(config, plants, seedScreenSearcher, dead_player_box)
         'Waiting for plants to die, ' .. numSnapsRequired - numSnapsSoFar .. ' snapshots left.');
       lsDoFrame()
       lsSleep(first_stage_time * 0.5)
+      checkBreak()
       findSeedAndPickupIfThere(seedScreenSearcher, config.num_plants, config)
     end
   end
@@ -467,6 +469,7 @@ function recordMovement(searcher, config)
   local num_snaps = config.num_char_snaps or 10
   for i = 1, num_snaps do
     searcher:markChangesAsDeadZone('beforeSeeds')
+    checkBreak()
     lsPrintWrapped(10, 50, 0, lsScreenX - 20, 1, 1, 0xd0d0d0ff,
       [[Recording your characters movement to reduce click errors...]]);
     lsPrintWrapped(10, 100, 0, lsScreenX - 20, 1, 1, 0xd0d0d0ff,
@@ -507,6 +510,7 @@ function findSeedAndPickupIfThere(searcher, num_dead, config)
   for i, region in ipairs(regions) do
     veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Checking region called ' .. region:name() .. ' with size ' .. region:size())
     veg_log(DEBUG, config.debug_log_level, 'findSeedAndPickupIfThere', 'Looking for seed ' .. i .. '.')
+    checkBreak()
     local clickLoc = searcher:findFurthestPointFromEdgeForRegion(region:name())
     if clickLoc then
       lsSleep(click_delay)
@@ -531,6 +535,7 @@ function findSeedAndPickupIfThere(searcher, num_dead, config)
     else
       veg_log(INFO, config.debug_log_level, 'findSeedAndPickupIfThere', 'FAILED TO FIND CLICK LOC FOR ' .. i .. '.')
     end
+    checkBreak()
     if seeds_picked_up == num_dead then
       break
     end
