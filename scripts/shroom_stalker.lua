@@ -354,8 +354,8 @@ local days = {
   "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
   "21", "22", "23", "24", "25", "26", "27", "28", "29", "30",
 };
-local hours = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
-local minutes = {
+local hoursStrings = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
+local minutesStrings = {
   "00", "01", "02", "03", "04", "05", "06", "07", "08", "09",
   "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
   "20", "21", "22", "23", "24", "25", "26", "27", "28", "29",
@@ -542,6 +542,9 @@ function tick()
   end
 
   local minutes = timeToMinutes(time);
+  if not minutes then
+    return false;
+  end
 
   for _, mushroom in pairs(mushroomData) do
     local delta = getActiveDelta(minutes, mushroom);
@@ -657,8 +660,8 @@ function reportToShroomdar(mushroom)
   local seasonIndex = getIndex(seasons, seasonString);
   local monthIndex = getIndex(months, monthString);
   local dayIndex = getIndex(days, dayString);
-  local hourIndex = getIndex(hours, hourString);
-  local minuteIndex = getIndex(minutes, minuteString);
+  local hourIndex = getIndex(hoursStrings, hourString);
+  local minuteIndex = getIndex(minutesStrings, minuteString);
   local ampmIndex = getIndex(ampms, ampmString);
 
   local coords = findCoords();
@@ -679,8 +682,8 @@ function reportToShroomdar(mushroom)
     dayIndex   = lsDropdown("reportDay" .. reportIndex, 130, 85, 5, 50, dayIndex, days);
 
     lsPrint(5, 120, 5, 0.7, 0.7, 0xffffffff, "Time:");
-    hourIndex   = lsDropdown("reportHour" .. reportIndex, 75, 115, 5, 50, hourIndex, hours);
-    minuteIndex = lsDropdown("reportMinute" .. reportIndex, 130, 115, 5, 50, minuteIndex, minutes);
+    hourIndex   = lsDropdown("reportHour" .. reportIndex, 75, 115, 5, 50, hourIndex, hoursStrings);
+    minuteIndex = lsDropdown("reportMinute" .. reportIndex, 130, 115, 5, 50, minuteIndex, minutesStrings);
     ampmIndex   = lsDropdown("reportAmpm" .. reportIndex, 185, 115, 5, 50, ampmIndex, ampms);
 
     lsPrint(5, 150, 5, 0.7, 0.7, 0xffffffff, "Coords:");
@@ -720,8 +723,8 @@ function reportToShroomdar(mushroom)
         "Season=" .. seasons[seasonIndex],
         "Month=" .. months[monthIndex],
         "Day=" .. days[dayIndex],
-        "hour=" .. hours[hourIndex],
-        "minute=" .. minutes[minuteIndex],
+        "hour=" .. hoursStrings[hourIndex],
+        "minute=" .. minutesStrings[minuteIndex],
         "ampm=" .. ampms[ampmIndex],
         "x=" .. coordsX,
         "y=" .. coordsY,
@@ -923,6 +926,10 @@ function timeToMinutes(time)
   local hour, minute, ampm = string.match(time, "(%d%d?):(%d%d) ?(%a%a)");
   hour   = tonumber(hour);
   minute = tonumber(minute);
+
+  if not hour or not minute then
+    return nil;
+  end
 
   if ampm == "PM" and hour < 12 then
     hour = hour + 12;
