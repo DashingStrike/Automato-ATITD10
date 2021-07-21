@@ -11,8 +11,9 @@ function findCoords()
   local result = nil;
   local str = "";
   local clockRegion = findClockRegion();
-
   local lines = findAllText(nil, clockRegion);
+  srSetWindowInvertColorRange(minSetWindowInvertColorRange, maxSetWindowInvertColorRange);
+
   for i=1,#lines do
     if i == 2 then
       str = lines[i][2];
@@ -43,7 +44,6 @@ function findCoords()
       lsPrintln("Failed to find coords");
     end
   end
-  srSetWindowInvertColorRange(minSetWindowInvertColorRange, maxSetWindowInvertColorRange); -- Reset color range back to default (defined at top of common_find.inc)
   return result;
 end
 
@@ -129,6 +129,7 @@ function getTime(fmt)
   local time = nil;
   local datetime2 = nil;
   local t = findAllText("Year", findClockRegion());
+  srSetWindowInvertColorRange(minSetWindowInvertColorRange, maxSetWindowInvertColorRange);
 
   if #t == 0 then
     return nil;
