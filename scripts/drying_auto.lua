@@ -159,7 +159,7 @@ function checkMaking()
 				lsSleep(150);
 				break; --We break this while statement because Making is not detect, hence we're done with this round
 			end
-		sleepWithStatus(999, "Waiting for " .. product .. "s to finish", nil, 0.7, "Monitoring Pinned Window(s)");
+		sleepWithStatus(999, "Waiting for " .. product .. " to dry", nil, 0.7, "Monitoring Pinned Window(s)");
 	end
 end
 
