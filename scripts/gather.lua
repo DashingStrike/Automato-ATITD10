@@ -452,6 +452,7 @@ function queryRoute()
       end
     else
       papy = false;
+      papyDelay = nil;
     end
 
     movement = readSetting("movement", movement);
@@ -1030,7 +1031,7 @@ function followRoute(route)
         curr = curr + 1;
         if(curr > #r) then
             curr = 1;
-            if papyDelay then
+            if papy and papyDelay then
                 sleepWithStatus(tonumber(papyDelay) * 1000, "Waiting before starting next round")
             end
             if(not repeatForever) then
