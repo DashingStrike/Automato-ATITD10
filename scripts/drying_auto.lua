@@ -25,23 +25,12 @@ function start()
 		-- refresh windows
 		refreshWindows();
 		lsSleep(500);
-			if flax then
-				clickAllText("Dry " .. product);
-			elseif grass then
-				clickAllText("Dry " .. product);
-			elseif fertile then
-				clickAllText("Dry " .. product);
-			end
+		clickAllText("Dry " .. product);
 		lsSleep(300);
 		clickMax();
 		lsSleep(150);
 		closePopUp();  --If you don't have enough cuttable stones in inventory, then a popup will occur.
 		checkMaking();
-		srReadScreen();
-		clickAllText("Take");
-		lsSleep(150);
-		clickAllText("Everything");
-		lsSleep(150);
 	end
 		if(unpinWindows) then
 			closeAllWindows();
@@ -163,6 +152,11 @@ function checkMaking()
 		this = findAllText("This");
 		drying = findAllText("drying");
 			if #drying == 0 then
+				srReadScreen();
+				clickAllText("Take");
+				lsSleep(150);
+				clickAllText("Everything");
+				lsSleep(150);
 				break; --We break this while statement because Making is not detect, hence we're done with this round
 			end
 		sleepWithStatus(999, "Waiting for " .. product .. "s to finish", nil, 0.7, "Monitoring Pinned Window(s)");
