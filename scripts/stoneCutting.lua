@@ -1,6 +1,7 @@
 -- stoneCutting.lua
 -- by Rhaom - v1.0 added September 13, 2019
 -- Merged rockSaw.lua & masonsBench.lua into a single script
+-- Tribisha July 23, 2021: Added option to take all after each pass.
 
 dofile("common.inc");
 dofile("settings.inc");
@@ -47,6 +48,11 @@ function config()
 	arrangeWindows = readSetting("arrangeWindows",arrangeWindows);
 	arrangeWindows = CheckBox(15, y, z+10, 0xFFFFFFff, "Arrange windows (Grid format)", arrangeWindows, 0.65, 0.65);
 	writeSetting("arrangeWindows",arrangeWindows);
+	y = y + 28;
+
+	takeAll = readSetting("takeAll",takeAll);
+	takeAll = CheckBox(15, y, z+10, 0xFFFFFFff, "Take all after each pass", takeAll, 0.65, 0.65);
+	writeSetting("takeAll",takeAll);
 	y = y + 28;
 
 	lsPrintWrapped(10, y, z+10, lsScreenX - 20, 0.7, 0.7, 0xffff40ff,
@@ -255,6 +261,12 @@ function checkMaking()
 				srReadScreen();
 				making = findAllText("Making")
 					if #making == 0 then
+						if(takeAll) then
+					    clickAllText("Take");
+			        lsSleep(100);
+			        clickAllText("Everything");
+  			      lsSleep(50);
+			      end
 						break; --We break this while statement because Making is not detect, hence we're done with this round
 					end
 				sleepWithStatus(999, "Waiting for " .. product .. " to finish", nil, 0.7, "Monitoring Pinned Window(s)");
