@@ -12,7 +12,7 @@ is_plant = true;
 finish_up = 0;
 finish_up_message = "";
 use_fert = true;
-readClock = true;
+readClock = false;
 
 autoWater = false
 water_coords = {}
@@ -211,10 +211,12 @@ function promptBarleyNumbers()
     writeSetting("use_fert",use_fert);
     y = y + 20;
 
-    autoWater = readSetting("autoWater", autoWater)
-    autoWater = CheckBox(10, y-5, z, 0xFFFFFFff, " Automatically Gather Water (Each new pass)", autoWater, 0.65, 0.65)
-    writeSetting("autoWater", autoWater)
-    y = y + 20;
+    if readClock then
+      autoWater = readSetting("autoWater", autoWater)
+      autoWater = CheckBox(10, y-5, z, 0xFFFFFFff, " Automatically Gather Water (Each new pass)", autoWater, 0.65, 0.65)
+      writeSetting("autoWater", autoWater)
+      y = y + 20;
+    end
 
     readClock = readSetting("readClock",readClock);
     readClock = CheckBox(10, y-5, z, 0xFFFFFFff, " Read Clock (Find Coords/Walk to StartPos)", readClock, 0.7, 0.7);
@@ -232,15 +234,14 @@ function promptBarleyNumbers()
 
       if use_fert then
         lsPrintWrapped(10, y+10, z+10, lsScreenX - 20, 0.7, 0.7, 0xD0D0D0ff, "Plant/Harvest a " .. grid_w .. "x" ..
-        grid_w .. " grid of " .. num_loops .. " times\n\nRequires:\n(" .. math.floor(grid_w * grid_w * num_loops) ..
-        ") Barley\n(" .. math.floor(grid_w * grid_w * num_loops*totalWater) .. ") Water\n" ..
-        "(" .. math.floor(grid_w * grid_w * num_loops*totalFertilizer) .. ") Fertilizer\n\n"..
-        "Yields: 2-10+ per plant (10 = no weeds)");
+        grid_w .. " grid, " .. num_loops .. " times.\nYield: 2-10+ per plant (10 = no weeds)\n\nRequires:\n(" .. math.floor(grid_w * grid_w * num_loops) ..
+        ") Barley, (" .. math.floor(grid_w * grid_w * num_loops*totalWater) .. ") Water & " ..
+        "(" .. math.floor(grid_w * grid_w * num_loops*totalFertilizer) .. ") Fertilizer");
       else
         lsPrintWrapped(10, y+10, z+10, lsScreenX - 20, 0.7, 0.7, 0xD0D0D0ff,"Plant/Harvest a " .. grid_w .. "x" ..
-        grid_w .. " grid of " .. num_loops .. " times\n\nRequires:\n(" .. math.floor(grid_w * grid_w * num_loops) ..
-        ") Barley\n(" .. math.floor(grid_w * grid_w * num_loops*totalWater) .. ") Water\n\n" ..
-        "Yields: 2+ per plant");
+        grid_w .. " grid, " .. num_loops .. " times.\nYield: 2+ per plant\n\nRequires:\n(" .. math.floor(grid_w * grid_w * num_loops) ..
+        ") Barley & (" .. math.floor(grid_w * grid_w * num_loops*totalWater) .. ") Water\n\n" ..
+        "");
       end
     end
 
@@ -364,7 +365,7 @@ function doit()
   sleepWithStatus(1000, "Ticks since planting: " .. ticks .. "/" .. totalWater - 1 .. "\n\n[" .. waterUsed .. "/" .. totalWater*goodPlantings .. "]  Jugs of Water Used "  .. "\n[" .. fertilizerUsed .. "/" .. totalFertilizer*goodPlantings .. "] Fertilizer Used\n\n[" .. loop_count .. "/" .. num_loops .. "]  Current Pass\n\nElapsed Time: " .. getElapsedTime(startTime) .. finish_up_message,nil, 0.7, "Ready for Harvesting");
 
     harvestAll();
-    if is_plant and water_coords then
+    if is_plant and autoWater then
       walk(water_coords, false)
       if autoWater then
         drawWater()
