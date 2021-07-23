@@ -1,15 +1,19 @@
 dofile("common.inc");
 dofile("settings.inc");
 
-----------------------------------------
---          Global Variables          --
-----------------------------------------
+-- Written by Tribisha July 2021
+-- Version Log
+-- v1.01: 
+-- Bug fix > Added screen refresh to handle menu creep after first pass
+-- Code efficiency > removed reliance on product flags in making loop
+--                 > cleaned up unnecessary for-loops
+
 unpinWindows = false;
 arrangeWindows = true;
 
 askText = "Dry flax, grass or papyrus, without the mouse being used.\n\n"
 .. "Pin up windows manually or select the arrange windows checkbox.";
-----------------------------------------
+
 
 function doit()
 	askForWindow(askText);
@@ -24,16 +28,23 @@ function start()
 	for i=1, dryingPasses do
 		-- refresh windows
 		refreshWindows();
-		lsSleep(500);
-		clickAllText("Dry " .. product);
-		lsSleep(300);
-		clickMax();
-		lsSleep(150);
-		closePopUp();  --If you don't have enough cuttable stones in inventory, then a popup will occur.
+		srReadScreen();
+		lsSleep(250);
+		racks = findAllText("Dry " .. product);
+		for j=1, #racks do
+      clickText(racks[j]);
+      lsSleep(100);
+      clickMax();
+      lsSleep(100);
+    end
+		lsSleep(250);
+		closePopUp();  --If you don't have enough drying materials in inventory, then a popup will occur.
 		checkMaking();
 	end
 		if(unpinWindows) then
 			closeAllWindows();
+		else
+			refreshWindows();
 		end;
 	lsPlaySound("Complete.wav");
 end
@@ -123,7 +134,7 @@ function config()
   elseif grass then
 	  product = "Grass";
 	elseif fertile then
-		product = "Papyrus (Fertile)";
+		product = "Papyrus";
 	end
 
     if flax or grass or fertile then
@@ -149,15 +160,13 @@ function checkMaking()
 	while 1 do
 		refreshWindows();
 		srReadScreen();
-		this = findAllText("This");
 		drying = findAllText("drying");
-			if #drying == 0 then
-				srReadScreen();
-				clickAllText("Take");
-				lsSleep(150);
-				clickAllText("Everything");
-				lsSleep(150);
-				break; --We break this while statement because Making is not detect, hence we're done with this round
+			if #drying == 0 then       -- Finished making, now take the products
+  		  clickAllText("Take");
+			  lsSleep(100);
+			  clickAllText("Everything");
+			  lsSleep(50);
+			  break; --We break this while statement because Making is not detect, hence we're done with this round
 			end
 		sleepWithStatus(999, "Waiting for " .. product .. " to dry", nil, 0.7, "Monitoring Pinned Window(s)");
 	end
