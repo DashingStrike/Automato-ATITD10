@@ -1,12 +1,6 @@
 dofile("common.inc");
 dofile("settings.inc");
 
-askText = "Two methods available: Use Fertilizer or Water Only.\n\n"
-.. "'Right click pins/unpins a menu' must be ON.\n\n"
-.. "'Plant all crops where you stand' must be ON.\n\n"
-.. "Pin Barley Plant window in TOP-RIGHT.\n\n"
-.. "Automato: Slighty in TOP-RIGHT.";
-
 ----------------------------------------
 --          Global Variables          --
 ----------------------------------------
@@ -20,13 +14,18 @@ finish_up_message = "";
 use_fert = true;
 readClock = true;
 
+autoWater = false
+water_coords = {}
+water_coords[0] = 0
+water_coords[1] = 0
+
 -- Tweakable delay values
-refresh_time = 60; -- Time to wait for windows to update
-walk_time = 750; -- Reduce to 300 if you're fast.
+refresh_time = 75; -- Time to wait for windows to update
+walk_time = 550; -- Reduce to 300 if you're fast.
 
 -- Don't touch. These are set according to Jimbly's black magic.
-walk_px_y = 320;
-walk_px_x = 340;
+walk_px_y = 355;
+walk_px_x = 315;
 
 xyCenter = {};
 xyFlaxMenu = {};
@@ -41,6 +40,12 @@ max_width_offset will prevent it from reading all the way to the right edge of g
 This should be about 425 if we can use aquaduct. We can use 350 if no aquaduct window is present (to refill jugs).
 --]]
 max_width_offset = 350
+
+askText = "Two methods available: Use Fertilizer or Water Only.\n\n"
+.. "'Right click pins/unpins a menu' must be ON.\n\n"
+.. "'Plant all crops where you stand' must be ON.\n\n"
+.. "Pin Barley Plant window in TOP-RIGHT.\n\n"
+.. "Automato: Slighty in TOP-RIGHT.";
 ----------------------------------------
 
 -------------------------------------------------------------------------------
@@ -103,12 +108,12 @@ function checkWindowSize()
 end
 
 -------------------------------------------------------------------------------
--- promptFlaxNumbers()
+-- promptBarleyNumbers()
 --
 -- Gather user-settable parameters before beginning
 -------------------------------------------------------------------------------
 
-function promptFlaxNumbers()
+function promptBarleyNumbers()
   scale = 0.75;
   local z = 0;
   is_done = nil;
@@ -135,6 +140,7 @@ function promptFlaxNumbers()
     end
     writeSetting("num_loops",num_loops);
     y = y + 32;
+
     lsPrint(5, y-10, z, scale, scale, 0xFFFFFFff, "Grid size:");
     grid_w = readSetting("grid_w",grid_w);
     is_done, grid_w = lsEditBox("grid", 85, y-10, z, 40, 0, scale, scale,
@@ -148,6 +154,32 @@ function promptFlaxNumbers()
     writeSetting("grid_w",grid_w);
     grid_w = tonumber(grid_w);
     grid_h = grid_w;
+
+    if autoWater then
+      lsPrint(5, y+12, z, scale, scale, 0xFFFFFFff, "Water coords:")
+      water_coords[0] = readSetting("water_coordsX", water_coords[0])
+      is_done, water_coords[0] =
+        lsEditBox("water_coordsX", 120, y+12, z, 55, 0, scale, scale, 0x000000ff, water_coords[0])
+      water_coords[0] = tonumber(water_coords[0])
+      if not water_coords[0] then
+        is_done = nil
+        lsPrint(135, y+12, z, 0.7, 0.7, 0xFF2020ff, "MUST BE A NUMBER")
+        water_coords[0] = 1
+      end
+      writeSetting("water_coordsX", water_coords[0])
+
+      water_coords[1] = readSetting("water_coordsY", water_coords[1])
+      is_done, water_coords[1] =
+        lsEditBox("water_coordsY", 180, y+12, z, 55, 0, scale, scale, 0x000000ff, water_coords[1])
+      water_coords[1] = tonumber(water_coords[1])
+      if not water_coords[1] then
+        is_done = nil
+        lsPrint(135, y + 28, z + 10, 0.7, 0.7, 0xFF2020ff, "MUST BE A NUMBER")
+        water_coords[1] = 1
+      end
+      writeSetting("water_coordsY", water_coords[1])
+      y = y + 12
+    end
 
     lsPrintWrapped(5, y+20, z, lsScreenX - 20, 0.7, 0.7, 0xffff40ff,
     "Plant Settings\n-------------------------------------------");
@@ -163,27 +195,35 @@ function promptFlaxNumbers()
 		  totalWater = 4
 		elseif grid_w == 3 then
 		  totalWater = 5
-		elseif grid_w == 4 then
-		  totalWater = 6
 		else
-		  totalWater = 7;
+		  totalWater = 6;
 		end
 
     use_fert = readSetting("use_fert",use_fert);
       if use_fert then
-        use_fert = CheckBox(10, y, z, 0xff8080ff, " Use Fertilizer (Uncheck for Water Only)", use_fert, 0.7, 0.7);
+        use_fert = CheckBox(10, y-5, z, 0xff8080ff, " Use Fertilizer (Uncheck for Water Only)", use_fert, 0.7, 0.7);
         totalWater = 7;
         totalFertilizer = 4;
       else
-        use_fert = CheckBox(10, y, z, 0x8080ffff, " Use Water Only (Check for Fertilizer)", use_fert, 0.7, 0.7);
+        use_fert = CheckBox(10, y-5, z, 0x8080ffff, " Use Water Only (Check for Fertilizer)", use_fert, 0.7, 0.7);
         totalFertilizer = 0;
       end
     writeSetting("use_fert",use_fert);
-    y = y + 25;
+    y = y + 20;
+
+    autoWater = readSetting("autoWater", autoWater)
+    autoWater = CheckBox(10, y-5, z, 0xFFFFFFff, " Automatically Gather Water (Each new pass)", autoWater, 0.65, 0.65)
+    writeSetting("autoWater", autoWater)
+    y = y + 20;
 
     readClock = readSetting("readClock",readClock);
     readClock = CheckBox(10, y-5, z, 0xFFFFFFff, " Read Clock (Find Coords/Walk to StartPos)", readClock, 0.7, 0.7);
     writeSetting("readClock",readClock);
+    y = y + 20;
+
+    belowUI = readSetting("belowUI",belowUI);
+    belowUI = CheckBox(10, y-5, z, 0xFFFFFFff, " Pin grid below the UI", belowUI, 0.7, 0.7);
+    writeSetting("belowUI",belowUI);
     y = y + 5;
 
     lsPrintWrapped(5, y+10, z, lsScreenX - 20, 0.7, 0.7, 0xffff40ff,
@@ -249,7 +289,7 @@ end
 
 function doit()
 
-  promptFlaxNumbers();
+  promptBarleyNumbers();
   askForWindow(askText);
   initGlobals();
   local startPos;
@@ -273,7 +313,6 @@ function doit()
     fertilizerUsed = 0;
     waterUsed = 0;
     quit = false;
-    error_status = "";
     plantAndPin(loop_count);
     dragWindows(loop_count);
     statusScreen("Adding 2 Water/Fertilizer ...",nil, nil, 0.7);
@@ -325,6 +364,14 @@ function doit()
   sleepWithStatus(1000, "Ticks since planting: " .. ticks .. "/" .. totalWater - 1 .. "\n\n[" .. waterUsed .. "/" .. totalWater*goodPlantings .. "]  Jugs of Water Used "  .. "\n[" .. fertilizerUsed .. "/" .. totalFertilizer*goodPlantings .. "] Fertilizer Used\n\n[" .. loop_count .. "/" .. num_loops .. "]  Current Pass\n\nElapsed Time: " .. getElapsedTime(startTime) .. finish_up_message,nil, 0.7, "Ready for Harvesting");
 
     harvestAll();
+    if is_plant and water_coords then
+      walk(water_coords, false)
+      if autoWater then
+        drawWater()
+        lsSleep(150)
+        clickMax() -- Sometimes drawWater() misses the max button
+      end
+    end
     walkHome(startPos);
     drawWater();
 	if finish_up == 1 or quit then
@@ -376,7 +423,7 @@ function plantAndPin(loop_count)
                   xyCenter[1] + walk_px_y*dy[dxi], 0);
 
         spot = getWaitSpot(xyFlaxMenu[0], xyFlaxMenu[1]);
-	if not waitForChange(spot, 1500) then
+	if not waitForChange(spot, 1000) then
 	  error_status = "Did not move on click.";
 	  break;
 	end
@@ -464,8 +511,67 @@ end
 function dragWindows(loop_count)
   statusScreen("(" .. loop_count .. "/" .. num_loops .. ")  " ..
                "Dragging Windows into Grid" .. "\n\nElapsed Time: " .. getElapsedTime(startTime));
---    arrangeStashed(nil, waterGap, window_w, window_h);
-    arrangeStashed();
+  if belowUI then
+    arrangeStashed(nil, true, window_w, window_h, nil, 35, 20);
+  else
+    arrangeStashed(nil, nil, window_w, window_h, mil, 35, 20);
+  end
+end
+
+-------------------------------------------------------------------------------
+-- walk(dest,abortOnError)
+--
+-- Walk to dest while checking for menus caused by clicking on objects.
+-- Returns true if you have arrived at dest.
+-- If walking around brings up a menu, the menu will be dismissed.
+-- If abortOnError is true and walking around brings up a menu,
+-- the function will return.  If abortOnError is false, the function will
+-- attempt to move around a little randomly to get around whatever is in the
+-- way.
+-------------------------------------------------------------------------------
+
+function walk(dest, abortOnError)
+  centerMouse()
+  srReadScreen()
+  local coords = findCoords()
+  local failures = 0
+  while coords[0] ~= dest[0] or coords[1] ~= dest[1] do
+    centerMouse()
+    lsPrintln("Walking from (" .. coords[0] .. "," .. coords[1] .. ") to (" .. dest[0] .. "," .. dest[1] .. ")")
+    walkTo(makePoint(dest[0], dest[1]))
+    srReadScreen()
+    coords = findCoords()
+    checkForEnd()
+    if checkForMenu() then
+      if (coords[0] == dest[0] and coords[1] == dest[1]) then
+        return true
+      end
+      if abortOnError then
+        return false
+      end
+      failures = failures + 1
+      if failures > 50 then
+        return false
+      end
+      lsPrintln("Hit a menu, moving randomly")
+      walkTo(makePoint(math.random(-1, 1), math.random(-1, 1)))
+      srReadScreen()
+    else
+      failures = 0
+    end
+  end
+  return true
+end
+
+function checkForMenu()
+  srReadScreen()
+  pos = srFindImage("unpinnedPin.png", 5000)
+  if pos then
+    safeClick(pos[0] - 5, pos[1])
+    lsPrintln("checkForMenu(): Found a menu...returning true")
+    return true
+  end
+  return false
 end
 
 -------------------------------------------------------------------------------
@@ -551,11 +657,46 @@ function harvestAll()
   closeWindowsFast();
 end
 
-
 function closeWindowsFast()
 	srReadScreen();
 	local allTextReferences = findAllText("This is");
 	for buttons=1, #allTextReferences do
 		srClickMouseNoMove(allTextReferences[buttons][0]+20, allTextReferences[buttons][1]+5, 1);
 	end
+end
+
+-------------------------------------------------------------------------------
+-- checkForEnd()
+--
+-- Similar to checkBreak, but also looks for a clean exit.
+-------------------------------------------------------------------------------
+
+local ending = false
+
+function checkForEnd()
+  if ((lsAltHeld() and lsControlHeld()) and not ending) then
+    ending = true
+    closeAllWindows(0, 0, xyWindowSize[0] - max_width_offset, xyWindowSize[1])
+    error "broke out with Alt+Ctrl"
+  end
+  if (lsShiftHeld() and lsControlHeld()) then
+    if lsMessageBox("Break", "Are you sure you want to exit?", MB_YES + MB_NO) == MB_YES then
+      error "broke out with Shift+Ctrl"
+    end
+  end
+  if lsAltHeld() and lsShiftHeld() then
+    -- Pause
+    while lsAltHeld() or lsShiftHeld() do
+      statusScreen("Please release Alt+Shift", 0x808080ff, false)
+    end
+    local done = false
+    while not done do
+      local unpaused = lsButtonText(lsScreenX - 110, lsScreenY - 60, nil, 100, 0xFFFFFFff, "Unpause")
+      statusScreen("Hold Alt+Shift to resume", 0xFFFFFFff, false)
+      done = (unpaused or (lsAltHeld() and lsShiftHeld()))
+    end
+    while lsAltHeld() or lsShiftHeld() do
+      statusScreen("Please release Alt+Shift", 0x808080ff, false)
+    end
+  end
 end
