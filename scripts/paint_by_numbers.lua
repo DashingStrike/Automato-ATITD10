@@ -550,7 +550,7 @@ Either way it tracks the result and outputs
 it to reactions.txt at the end.
 
 You will need to use that reactions.txt file with
-Practical Paint to generate recipes.
+Desert Paint Codex to generate recipes.
 
 Hover over the ATITD window and press shift.
 ]]);

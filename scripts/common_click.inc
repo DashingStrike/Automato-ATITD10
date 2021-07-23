@@ -563,3 +563,37 @@ function pixelBlockCheck(x, y, color, rgbTol, hueTol, size)
   end
   return true;
 end
+
+function waitAndClickText(text, range, flags)
+  local found = waitForText(
+    text,
+    60000,
+    "Waiting for '" .. text .. "' text on the screen.",
+    range,
+    flags
+  );
+  lsDoFrame();
+
+  if not found then
+    error("Unable to find '" .. text .. "' on the screen");
+  end
+
+  clickText(found);
+end
+
+function waitAndClickImage(image, range, tol)
+  local found = waitForImage(
+    image,
+    60000,
+    "Unable to find the image ''" .. image .. "' on the screen.",
+    range,
+    tol
+  );
+  lsDoFrame();
+
+  if not found then
+    error("Unable to find the image '" .. image .. "' on the screen");
+  end
+
+  clickText(found); --Works for images too!
+end

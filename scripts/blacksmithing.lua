@@ -289,7 +289,7 @@ function getClickCount(steps)
 end
 
 function checkAnvil()
-  clickTextWithError("This is [a-z]+ Anvil", REGEX);
+  waitAndClickText("This is [a-z]+ Anvil", nil, REGEX);
 
   local complete = waitForNoText("Complete Project", 60000, "Please discard or complete the existing project");
   if complete then
@@ -305,7 +305,7 @@ function findHandle(startX, endX, startY, endY, step)
       checkBreak();
 
       local pixel = parseColor(srReadPixel(x,y));
-      if pixel[0] > 180 and pixel[0] < 220 and pixel[0] - pixel[1] > 30 and pixel[0] - pixel[1] < 55 and pixel[0] - pixel[2] > 90 and pixel[0] - pixel[2] < 130 then
+      if pixel[0] > 140 and pixel[0] < 220 and pixel[0] - pixel[1] > 24 and pixel[0] - pixel[1] < 55 and pixel[0] - pixel[2] > 47 and pixel[0] - pixel[2] < 130 then
         foundX = x;
         foundY = y;
       elseif foundX then
@@ -316,7 +316,7 @@ function findHandle(startX, endX, startY, endY, step)
 end
 
 function findAnvil()
-  clickTextWithError("This is [a-z]+ Anvil", REGEX);
+  waitAndClickText("This is [a-z]+ Anvil", nil, REGEX);
 
   setCameraView(CARTOGRAPHER2CAM);
   lsSleep(100);
@@ -369,29 +369,29 @@ function findAnvil()
 end
 
 function loadAnvil(metal, product)
-  clickTextWithError("Load Anvil...");
+  waitAndClickText("Load Anvil...");
 
-  clickTextWithError(metal .. "...");
+  waitAndClickText(metal .. "...");
 
-  clickTextWithError("^" .. product, REGEX);
+  waitAndClickText("^" .. product, nil, REGEX);
 
-  clickTextWithError("This is [a-z]+ Anvil", REGEX);
+  waitAndClickText("This is [a-z]+ Anvil", nil, REGEX);
 
   lsSleep(2000);
 end
 
 function setTool(tool)
-  clickTextWithError("Tools...");
+  waitAndClickText("Tools...");
 
-  clickTextWithError(tool);
+  waitAndClickText(tool);
 end
 
 function setForce(force)
-  clickTextWithError("Tools...");
+  waitAndClickText("Tools...");
 
-  clickTextWithError("Force Level");
+  waitAndClickText("Force Level");
 
-  clickTextWithError("[" .. force .. "]");
+  waitAndClickText("[" .. force .. "]");
 end
 
 function checkKey(recipe, status, code, step)
@@ -518,30 +518,30 @@ function makeRecipe()
 end
 
 function checkItem()
-  clickTextWithError("Tools...");
+  waitAndClickText("Tools...");
 
-  clickTextWithError("Quality Check");
+  waitAndClickText("Quality Check");
 end
 
 function takeProduct()
-  clickTextWithError("This is [a-z]+ Anvil", REGEX);
-  clickTextWithError("Complete Project");
+  waitAndClickText("This is [a-z]+ Anvil", nil, REGEX);
+  waitAndClickText("Complete Project");
 
   if not waitForImage("Yes.png", 60000, "Waiting for 'Ready to Unload' popup.") then
     error("Unable to find 'Ready to Unload' popup");
   end
 
-  clickImageWithError("Yes.png");
+  waitAndClickImage("Yes.png");
 
-  clickTextWithError("This is [a-z]+ Anvil", REGEX);
+  waitAndClickText("This is [a-z]+ Anvil", nil, REGEX);
 end
 
 function scrapProduct()
   srReadScreen();
 
-  clickTextWithError("This is [a-z]+ Anvil", REGEX);
+  waitAndClickText("This is [a-z]+ Anvil", nil, REGEX);
 
-  clickTextWithError("Discard Project");
+  waitAndClickText("Discard Project");
 
   srReadScreen();
 
@@ -554,9 +554,9 @@ function scrapProduct()
     error("Unable to find 'Yes' on the screen");
   end
 
-  clickImageWithError("Yes.png");
+  waitAndClickImage("Yes.png");
 
-  clickTextWithError("This is [a-z]+ Anvil", REGEX);
+  waitAndClickText("This is [a-z]+ Anvil", nil, REGEX);
 end
 
 
@@ -581,42 +581,4 @@ function clickXY(x, y)
   else
     safeClick(clickX, clickY);
   end
-end
-
-function clickTextWithError(text, flags)
-  if not delay then
-    delay = 500;
-  end
-
-  local found = waitForText(
-    text,
-    60000,
-    "Waiting for '" .. text .. "' text on the screen.",
-    nil,
-    flags
-  );
-
-  if not found then
-    error("Unable to find '" .. text .. "' on the screen");
-  end
-
-  clickText(found);
-end
-
-function clickImageWithError(image)
-  if not delay then
-    delay = 500;
-  end
-
-  local found = waitForImage(
-    image,
-    60000,
-    "Unable to find the image ''" .. image .. "' on the screen."
-  );
-
-  if not found then
-    error("Unable to find the image '" .. image .. "' on the screen");
-  end
-
-  clickText(found);
 end
