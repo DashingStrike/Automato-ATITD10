@@ -24,8 +24,8 @@ refresh_time = 75; -- Time to wait for windows to update
 walk_time = 550; -- Reduce to 300 if you're fast.
 
 -- Don't touch. These are set according to Jimbly's black magic.
-walk_px_y = 355;
-walk_px_x = 315;
+walk_px_y = 320;
+walk_px_x = 340;
 
 xyCenter = {};
 xyFlaxMenu = {};
