@@ -14,7 +14,7 @@ function doit()
   boards = 0;  --Total boards planed
   brokeplane = 0;
     if(arrangeWindows) then
-      arrangeInGrid(false, false, 360, 130, nil, 60);
+      arrangeInGrid(false, false, 360, 200, nil, 60);
     end
   planeBoards(); -- Planes Boards
 end
