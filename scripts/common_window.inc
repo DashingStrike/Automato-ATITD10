@@ -208,16 +208,16 @@ function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offse
   local bottomRightY = screen[1] - 20;
 
  if sizeRight then
-         screen[0] = screen[0] - sizeRight;
+  screen[0] = screen[0] - sizeRight;
  else
-        screen[0] = screen[0] - lsGetWindowSize()[0];
+  screen[0] = screen[0] - lsGetWindowSize()[0];
  end
 
   local currentX = 8;
   local currentY = 10;
-  if waterGap then
-    currentY = 95;
-  end
+    if waterGap then
+      currentY = 95;
+    end
   local initY = currentY;
   local lastX = 0;
   local lastY = 0;
@@ -233,7 +233,7 @@ function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offse
       break;
     end
 
-    safeClick(window[0], window[1]);
+    safeClick(window[0]+5, window[1]+5);
     lsSleep(click_delay);
     srReadScreen();
     local bounds = srGetWindowBorders(window[0] + 5, window[1] + 5);
@@ -276,7 +276,8 @@ function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offse
     end
     lastX = window[0] - bounds[0] + currentX;
     lastY = window[1] - bounds[1] + currentY;
-    safeDrag(window[0], window[1], lastX, lastY);
+    safeDrag(window[0]+5, window[1]+5, lastX, lastY);
+    lsSleep(tick_delay);
     if cascade then
       currentX = currentX + 8;
       currentY = currentY + 25;
