@@ -22,7 +22,25 @@ BRICK_HOTKEYS = 6;
 GUILD_BOREHOLES = 7;
 DROP_ONE = 8;
 
-MOVE_KEYS = 22;
+MOVE_KEYS = 23;
+FLYAWAYS = 24;
+SUPPRESS_FLYAWAYS = 26;
+SUPRESS_CONSOLE = 27;
+TOOLTIPS = 28;
+ANVIL_CHAT = 29;
+GLORY_CHAT = 30;
+INVISIBLE = 31;
+WARN_LAG = 32;
+AUTO_AFK = 33;
+HOTKEY_EDIT = 34;
+TADPOLES = 35;
+INSECTS = 36;
+GUILD_PLANTS = 37;
+AUTO_SWIM = 38;
+DEFAULT_MAX = 39;
+HIDE_MIC = 40;
+CATS = 41;
+BONFIRE = 42;
 
 local videoOptionKeys = {
   "Terrain Horizon",
@@ -47,6 +65,24 @@ local oneClickOptionKeys = {
 
 local interfaceOptionKeys = {
   [MOVE_KEYS] = "Movement",
+  [FLYAWAYS] = "Use Flyaway Messages...",
+  [SUPPRESS_FLYAWAYS] = "Suppress flyaway messages...",
+  [SUPRESS_CONSOLE] = "Suppress console messages...",
+  [TOOLTIPS] = "Hide Action Bar Tooltips",
+  [ANVIL_CHAT] = "Use chat bubble over anvil",
+  [GLORY_CHAT] = "Use chat bubble over glory hole",
+  [INVISIBLE] = "Use invisible highlighting",
+  [WARN_LAG] = "Try to warn when lag",
+  [AUTO_AFK] = "Auto go AFK idle 10 minutes",
+  [HOTKEY_EDIT] = "Hotkeys are editable",
+  [TADPOLES] = "Discard any tadpoles...",
+  [INSECTS] = "Discard any Insects...",
+  [GUILD_PLANTS] = "Auto... crops guild-owned",
+  [AUTO_SWIM] = "Auto swim when walk into water",
+  [DEFAULT_MAX] = "Default to MAX for 'How Many?'",
+  [HIDE_MIC] = "Hide Microphones when empty",
+  [CATS] = "Drop all Cats when logging in",
+  [BONFIRE] = "Verify before lighting a bonfire",
 }
 
 local movements = {
@@ -155,8 +191,27 @@ function getInterfaceOptions()
   if not radio then
     return {};
   end
-
   options[MOVE_KEYS] = math.floor((radio[1] - interfaceOptionsRange.y - 342) / 18 + 0.5);
+
+  for i = 1, 23 do
+    safeClick(down[0], down[1]);
+    lsSleep(50);
+  end
+  lsSleep(100);
+
+  srReadScreen();
+  local xs = findAllImages("options/x.png", interfaceOptionsRange);
+
+  for i = 1, #xs do
+    local row = math.floor((xs[i][1] - interfaceOptionsRange.y  - 67) / 18 + 0.5) + 23;
+    options[row] = true;
+  end
+
+  for i = 1, 6 do
+    safeClick(down[0], down[1]);
+    lsSleep(50);
+  end
+  lsSleep(100);
 
   return options;
 end
@@ -240,8 +295,35 @@ function setInterfaceOptions(options)
     return;
   end
 
+  local up = findImage("options/up.png", interfaceOptionsRange, 7000);
+  if not up then
+    setOptionsError(interfaceOptionKeys, options, "Interface");
+  end
+
+  for i = 1, 6 do
+    safeClick(up[0], up[1]);
+    lsSleep(50);
+  end
+  lsSleep(100);
+
+  for i, value in pairs(options) do
+    if i >= 24 and i <= 42 then --Other
+      if value ~= current[i] then
+        safeClick(interfaceOptionsRange.x + 121, interfaceOptionsRange.y + 67 + (i - 23) * 18);
+      end
+    end
+  end
+
+  for i = 1, 23 do
+    safeClick(up[0], up[1]);
+    lsSleep(50);
+  end
+  lsSleep(100);
+
   if options[MOVE_KEYS] then
-    safeClick(interfaceOptionsRange.x + 125, interfaceOptionsRange.y + 342 + options[MOVE_KEYS] * 18);
+    if options[MOVE_KEYS] ~= current[i] then
+      safeClick(interfaceOptionsRange.x + 125, interfaceOptionsRange.y + 342 + options[MOVE_KEYS] * 18);
+    end
   end
 
   local close = findImage("options/close.png", interfaceOptionsRange, 7000);
