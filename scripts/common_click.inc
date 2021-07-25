@@ -585,7 +585,7 @@ function waitAndClickImage(image, range, tol)
   local found = waitForImage(
     image,
     60000,
-    "Unable to find the image ''" .. image .. "' on the screen.",
+    "Waiting for image ''" .. image .. "' on the screen.",
     range,
     tol
   );

@@ -25,17 +25,36 @@ local directions = {
   "West",
 }
 
-local lastX = 0;
-local lastY = 0;
-local status = "Starting";
+local lastResult = "";
+local status = "";
 local format = 1;
 local autorun = 0;
 local autodowse = 0;
 local spacing = 0;
 local nearby = false;
+local multipleRods = false;
 local file = "dowsing.txt"
+local currentRod = "";
+
+function getFileName()
+  if not multipleRods then
+    return file;
+  end
+
+  local name, extension = string.match(file, "(.+)%.(.+)$");
+  return name .. "_" .. currentRod .. "." .. extension;
+end
 
 function writeDowseLog(x, y, region, name, exact)
+  if exact then
+    status = name .. " at " .. x .. ", " .. y;
+  else
+    status = name .. " near " .. x .. ", " .. y;
+    if not nearby then
+      return;
+    end
+  end
+
   local color = mapColors[name];
   if not color then
     color = "DotYe";
@@ -62,7 +81,8 @@ function writeDowseLog(x, y, region, name, exact)
       region .. "," ..
       name;
   end
-  logfile = io.open(file,"a+");
+
+  logfile = io.open(getFileName(),"a+");
   logfile:write(text .. "\n");
   logfile:close();
 end
@@ -75,7 +95,43 @@ function checkIfMain()
   return true;
 end
 
-function getDowseResult()
+function getOreFromLine(line)
+  local sand = string.match(line, " detect nothing but sand");
+  if sand then
+    return "Sand";
+  end
+
+  local ore = string.match(line, " detect vein of (%D+) at");
+  if not ore then
+    ore = string.match(line, " detect vein of (%D+), somewhere");
+  end
+
+  return ore;
+end
+
+function getExactFromLine(line)
+  return string.match(line, " at ");
+end
+
+function getRegionFromLine(line)
+  local region = string.match(line, " at (%D+) [-0-9]+");
+  if not region then
+    region = string.match(line, " nearby (%D+) [-0-9]+");
+  end
+
+  return region;
+end
+
+function getCoordsFromLine(line)
+  local x, y = string.match(line, "([-0-9]+%.[0-9]+) ([-0-9]+%.[0-9]+)");
+  if not x then
+    return "", "";
+  end
+
+  return x, y;
+end
+
+function getDowseResult(wait, init)
   srReadScreen();
 
   local onMain = checkIfMain();
@@ -89,56 +145,60 @@ function getDowseResult()
     onMain = checkIfMain();
   end
 
-  local chatText = getChatText();
-  while not chatText or not chatText[#chatText] do
+  local startTimer = lsGetTimer();
+  repeat
     checkBreak();
     srReadScreen();
-    sleepWithStatus(100, "Waiting for chat", nil, 0.7);
-    chatText = getChatText();
-  end
 
-  lastLine = chatText[#chatText][2];
-
-  local foundOre;
-  local region;
-  local x;
-  local y;
-
-  region, x, y = string.match(lastLine, ".+ but sand at (%D+) ([-0-9]+%.[0-9]+) ([-0-9]+%.[0-9]+)");
-  if (region) then
-    if ((x ~= lastX) or (y ~= lastY)) then
-      writeDowseLog(x , y, region, "Sand", true);
-      status = "Sand at " .. x .. ", " .. y;
-      lastX = x;
-      lastY = y;
+    local chatText = getChatText();
+    while not chatText or not chatText[#chatText] do
+      checkBreak();
+      srReadScreen();
+      sleepWithStatus(100, "Waiting for chat", nil, 0.7);
+      chatText = getChatText();
     end
-    return;
-  end
 
-  foundOre, region, x, y = string.match(lastLine, ".+ vein of (%D+) at (%D+) ([-0-9]+%.[0-9]+) ([-0-9]+%.[0-9]+)");
-  if (foundOre) then
-    if ((x ~= lastX) or (y ~= lastY)) then
-      lsPlaySound("cymbals.wav");
-      writeDowseLog(x , y, region, foundOre, true);
-      status = foundOre .. " at " .. x .. ", " .. y;
-      lastX = x;
-      lastY = y;
-    end
-    return;
-  end
+    local secondToLastLine = chatText[#chatText - 1][2];
+    local lastLine         = chatText[#chatText][2];
 
-  foundOre, region, x, y = string.match(lastLine, ".+ vein of (%D+), somewhere nearby (%D+) ([-0-9]+%.[0-9]+) ([-0-9]+%.[0-9]+)");
-  if (foundOre) then
-    if ((x ~= lastX) or (y ~= lastY)) then
-      lsPlaySound("cymbals.wav");
-      if nearby then
-        writeDowseLog(x , y, region, foundOre, false);
+    local x, y = getCoordsFromLine(lastLine);
+    if x ~= "" then
+      local foundOre  = getOreFromLine(lastLine);
+      local exact     = getExactFromLine(lastLine);
+      local region    = getRegionFromLine(lastLine);
+
+      local x2 = "";
+      local y2 = "";
+      if multipleRods then
+        x2, y2    = getCoordsFromLine(secondToLastLine);
       end
-      status = foundOre .. " near " .. x .. ", " .. y;
-      lastX = x;
-      lastY = y;
+      local resultKey = table.concat({x,y,x2,y2}, ",");
+      if init then
+        lastResult = resultKey;
+        return;
+      end
+
+      if lastResult ~= resultKey then
+        lastResult = resultKey;
+        writeDowseLog(x , y, region, foundOre, exact);
+        switchRods();
+
+        if foundOre ~= "Sand" and (exact or nearby) then
+          lsPlaySound("cymbals.wav");
+        end
+        return;
+      end
     end
-  end
+
+    if wait then
+      lsPrintWrapped(10, 10, 0, lsScreenX - 20, 0.7, 0.7, 0xFFFFFFff, "Waiting for new dowsing line in chat");
+      if lsButtonText(lsScreenX - 110, lsScreenY - 30, 0, 100, 0xFFFFFFff, "Cancel") then
+        return;
+      end
+      lsDoFrame();
+    end
+    lsSleep(10);
+  until lsGetTimer() - startTimer > 30000 or not wait
 end
 
 function displayConfig()
@@ -147,7 +207,7 @@ function displayConfig()
 
     local y = 5;
 
-    lsPrint(10, y, 0, 0.7, 0.7, 0xB0B0B0ff, "This will write a log to dowsing.txt");
+    lsPrint(10, y, 0, 0.7, 0.7, 0xB0B0B0ff, "This will write a log file");
     y = y + 25;
 
     file = readSetting("file", file);
@@ -166,6 +226,12 @@ function displayConfig()
     lsPrint(10, y, 0, 1, 1, 0xFFFFFFff, "Log Nearby:");
     nearby = CheckBox(130, y, 0, 0xFFFFFFff, "", nearby, 1, 1);
     writeSetting("nearby", nearby)
+    y = y + 35;
+
+    multipleRods = readSetting("multipleRods", multipleRods);
+    lsPrint(10, y, 0, 1, 1, 0xFFFFFFff, "Multi Rods:");
+    multipleRods = CheckBox(130, y, 0, 0xFFFFFFff, "", multipleRods, 1, 1);
+    writeSetting("multipleRods", multipleRods)
     y = y + 35;
 
     lsPrint(10, y, 0, 1, 1, 0xFFFFFFff, "Auto Run:");
@@ -198,7 +264,12 @@ function displayConfig()
 end
 
 function displayStatus()
-  lsPrint(10, 10, 0, 0.7, 0.7, 0xB0B0B0ff, status);
+  local message = "Last Found: " .. status;
+  if autorun == 1 then
+    message = "Please move to the next position.\n\n" .. message;
+  end
+
+  lsPrintWrapped(10, 10, 0, lsScreenX - 20, 0.7, 0.7, 0xB0B0B0ff, message);
 
   if lsButtonText(lsScreenX - 110, lsScreenY - 30, 0, 100, 0xFFFFFFff, "End script") then
     error "Clicked End Script button";
@@ -225,13 +296,78 @@ function walk(distance)
 end
 
 function dowse()
-  srReadScreen();
-  local button = waitForImage("dowsing.png", 72000, "Waiting to dowse\n\n Last Log: " .. status, nil, 6000);
-  if not button then
-    fatalError("Unable to find dowsing button");
+  local count = 1;
+  if multipleRods then
+    count = 2;
   end
-  safeClick(button[0], button[1]);
-  getDowseResult();
+
+  for i = 1, count do
+    srReadScreen();
+    local button = waitForImage("dowsing.png", 72000, "Waiting to dowse, stay put.", nil, 6000);
+    if not button then
+      fatalError("Unable to find dowsing button");
+    end
+    safeClick(button[0], button[1]);
+    getDowseResult(true);
+  end
+end
+
+function getRodType()
+  local rods = findAllText("Dowsing Rod (");
+  for i = 1, #rods do
+    safeClick(rods[i][0], rods[i][1]);
+  end
+
+  lsSleep(100);
+  srReadScreen();
+
+  local rodRegion = findText("Deselect as preferred Dowsing", nil, REGION);
+  if not rodRegion then
+    lsPrintln("No select");
+    return nil;
+  end
+
+  local rod = findText("Dowsing Rod (", rodRegion);
+  if not rod then
+    lsPrintln("No rod");
+    return nil;
+  end
+
+  local type = string.match(rod[2], "Dowsing Rod (%b())");
+  if not type then
+    lsPrintln("No match");
+    return nil;
+  end
+
+  return string.lower(string.gsub(type, "[%(%)]", ""));
+end
+
+function switchRods()
+  if multipleRods then
+    local rods = findAllText("Dowsing Rod (");
+    while not rods or #rods ~= 2 do
+      promptOkay("Please pin both of your dowsing rods", nil, nil, nil, true);
+      srReadScreen();
+      rods = findAllText("Dowsing Rod (");
+    end
+    clickAllText("Dowsing Rod (");
+    lsSleep(100);
+
+    srReadScreen();
+    local select = findText("Select as preferred Dowsing");
+    if not select then
+      error("Unable to select dowsing rod");
+    end
+    safeClick(select[0], select[1]);
+    lsSleep(100);
+
+    srReadScreen();
+    clickAllText("Dowsing Rod (");
+    currentRod = getRodType();
+    if not currentRod then
+      error("Couldn't read current rod");
+    end
+  end
 end
 
 function doit()
@@ -247,7 +383,13 @@ With Auto Run On, it will run in the selected direction, stopping every "Auto Do
 Hover over the ATITD window and press shift.
 ]]);
 
+  setGameOptions({}, {}, {
+    [TOOLTIPS] = false,
+  });
+
   displayConfig();
+  getDowseResult(false, true);
+  switchRods();
   lsDoFrame();
 
   if autorun > 1 then
@@ -268,9 +410,10 @@ Hover over the ATITD window and press shift.
       walk(1);
       if autodowse and srFindImage("dowsing.png") then
         dowse();
+      else
+        getDowseResult();
       end
     end
-    getDowseResult();
 
     checkBreak();
     lsSleep(50);
