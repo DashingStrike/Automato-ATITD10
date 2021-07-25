@@ -85,9 +85,9 @@ function doit()
       status = status .. "\n\n" .. harvestMe()
       if replant then
         if vineForReplanting==1 then
-          status = status .. "\n\n" .. plantMe(activeVine.image);
+          status = status .. "\n\n" .. plantMe(activeVine.name);
         else
-          status = status .. "\n\n" .. plantMe(vines[vineForReplanting-1].image);
+          status = status .. "\n\n" .. plantMe(vines[vineForReplanting-1].name);
         end
         if alsoTend then
           sleepWithStatus(1000, "Waiting for plants to grow");
@@ -99,6 +99,10 @@ function doit()
             status = status .. "\n\nCould not locate vineyard";
           end
         end
+      end
+    else
+      if replant then
+        status = status .. "\n\n" .. plantMe(vines[vineForReplanting-1].name);
       end
     end
     --Using this to close the window instead of CloseAllWindows() as this appears to havew a double click issue.
@@ -196,11 +200,12 @@ function cutMe()
 end
 
 function refreshVineyard()
-  local refreshPos = findText("Vineyard");
-  if refreshPos then
-    safeClick(refreshPos[0] + 10, refreshPos[1] + 5);
-  end
-return refreshPos
+  srReadScreen();
+  refreshPos = findAllText("Vineyard");
+    for i=1,#refreshPos do
+      clickText(refreshPos[i]);
+    end
+  return refreshPos
 end
 
 function plantMe(vineToPlant)
@@ -213,11 +218,14 @@ function plantMe(vineToPlant)
       safeClick(PlantPos[0] + 10, PlantPos[1] + 5);
       sleepWithStatus(500, "Waiting for new window");
       srReadScreen();
-      local newVine = findText( vineToPlant );
+      local newVine = findText(vineToPlant);
       if newVine then
         sleepWithStatus(500, "Planting new vine: " .. vineToPlant );
         safeClick(newVine[0] + 25, newVine[1] + 5);
+        lsSleep(150);
+        closePopUp();
         sleepWithStatus(250, "Final click");
+        refreshVineyard();
         myStatus = "Replanted " .. vineToPlant
       else
         myStatus = "\n\nCould not find (" .. vineToPlant .. ") to replant.";
@@ -482,7 +490,7 @@ function statusNumber(name,endCharacter,suppressName)
     local number = string.match(anchor[2], name .. " ([-0-9]+)");
     if number then
   if not suppressName then
-      result = name .. ": " .. number .. endCharacter;
+      result = name .. " " .. number .. endCharacter;
 	else
       result = number .. endCharacter;
 	end
@@ -605,4 +613,18 @@ function statusScreen(message, color, allow_break, scale)
   end
   lsSleep(tick_delay);
   lsDoFrame();
+end
+
+function closePopUp()
+  while 1 do -- Perform a loop in case there are multiple pop-ups behind each other;
+    checkBreak();
+    lsSleep(250);
+    srReadScreen();
+    ok = srFindImage("OK.png");
+      if ok then
+        srClickMouseNoMove(ok[0],ok[1]);
+      else
+        break;
+      end
+  end
 end
