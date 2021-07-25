@@ -3,6 +3,8 @@ dofile("settings.inc");
 
 gatherCounter = 0
 
+fuelList = {"Coal", "Charcoal", "Petroleum"};
+
 local stashList = {
   insect   = {"Insect.", "All Insect"},
   wood     = {"Limestone ("},
@@ -113,29 +115,36 @@ function getClickActions()
             tasks[i] = lsDropdown(statNames[i], 5, y, 0, 200, tasks[i], items[i]);
             y = y + 32;
             if items[i][tasks[i]] == "Stir Cement" then
-                y = y + 35;
-                stirMaster = readSetting("stirMaster",stirMaster);
-                stirMaster = lsCheckBox(5, y-30, z, 0xFFFFFFff, " Automatically fill the Clinker Vat", stirMaster);
-                writeSetting("stirMaster",stirMaster);
+              y = y + 35;
+              stirMaster = readSetting("stirMaster",stirMaster);
+              stirMaster = lsCheckBox(5, y-30, z, 0xFFFFFFff, " Automatically fill the Clinker Vat", stirMaster);
+              writeSetting("stirMaster",stirMaster);
+                if stirMaster == true then
+                  stirFuel = readSetting("stirFuel",stirFuel);
+                  lsPrint(5, y, 0, 1, 1, 0xffffffff, "Fuel Type:");
+                  stirFuel = lsDropdown("stirFuel", 105, y, 0, 150, stirFuel, fuelList);
+                  writeSetting("stirFuel",stirFuel);
+                  y = y + 35;
+                end
             end
             if items[i][tasks[i]] == "Tap Rods" then
-                y = y + 35;
-                retrieveRods = readSetting("retrieveRods",retrieveRods);
-                retrieveRods = lsCheckBox(5, y-30, z, 0xFFFFFFff, " Automatically retrieve rods", retrieveRods);
-                writeSetting("retrieveRods",retrieveRods);
+              y = y + 35;
+              retrieveRods = readSetting("retrieveRods",retrieveRods);
+              retrieveRods = lsCheckBox(5, y-30, z, 0xFFFFFFff, " Automatically retrieve rods", retrieveRods);
+              writeSetting("retrieveRods",retrieveRods);
             end
             if items[i][tasks[i]] == "Limestone" or items[i][tasks[i]] == "Dirt" then
-                y = y + 35;
-                stashRawMaterials = readSetting("stashRawMaterials",stashRawMaterials);
-                stashRawMaterials = lsCheckBox(5, y-30, z, 0xFFFFFFff, " Automatically stash while digging (Pin WH)", stashRawMaterials);
-                writeSetting("stashRawMaterials",stashRawMaterials);
+              y = y + 35;
+              stashRawMaterials = readSetting("stashRawMaterials",stashRawMaterials);
+              stashRawMaterials = lsCheckBox(5, y-30, z, 0xFFFFFFff, " Automatically stash while digging (Pin WH)", stashRawMaterials);
+              writeSetting("stashRawMaterials",stashRawMaterials);
             end
         end
         lsDoFrame();
         lsSleep(tick_delay);
-        if lsButtonText(150, 58, z, 100, 0xFFFFFFff, "OK") then
+          if lsButtonText(150, 58, z, 100, 0xFFFFFFff, "OK") then
             done = true;
-        end
+          end
     end
 end
 
@@ -403,47 +412,60 @@ function hacklingRake()
 end
 
 function stirCement()
-    t = waitForText("Stir the cement", 2000);
-    if t then
-        safeClick(t[0]+20,t[1]);
-    else
-        clickText(findText("This is [a-z]+ Clinker Vat", nil, REGEX));
-        lsSleep(500);
-        if stirMaster then
-            take = findText("Take...")
-            if take then
-                clickText(waitForText("Take..."));
-                clickText(waitForText("Everything"));
-            end
-            sleepWithStatus(1750, "Adding Bauxite to the Clinker Vat")
-            clickText(waitForText("Load the vat with Bauxite"));
-            waitForText("how much");
-            srCharEvent("10\n");
-            waitForNoText("how much");
-            sleepWithStatus(1750, "Adding Gypsum to the Clinker Vat")
-            clickText(waitForText("Load the vat with Gypsum"));
-            waitForText("how much");
-            srCharEvent("10\n");
-            waitForNoText("how much");
-            sleepWithStatus(1750, "Adding Clinker to the Clinker Vat")
-            clickText(waitForText("Load the vat with Clinker"));
-            waitForText("how much");
-            srCharEvent("800\n");
-            waitForNoText("how much");
 
-            lsSleep(250);
-            clickText(findText("This is [a-z]+ Clinker Vat", nil, REGEX));
-            fuel = findText("Fuel level")
-            if not fuel then
-                sleepWithStatus(1750, "Adding Petroleum to the Clinker Vat")
-                clickText(waitForText("Load the vat with Petroleum"));
-                waitForText("much fuel");
-                srCharEvent("40\n");
-                waitForNoText("how much");
+  if stirFuel == 1 then
+    fuelType = "Coal"
+  elseif stirFuel == 2 then
+    fuelType = "Charcoal"
+  elseif stirFuel == 3 then
+    fuelType = "Petroleum"
+  end
+
+  t = waitForText("Stir the cement", 2000);
+    if t then
+      safeClick(t[0]+20,t[1]);
+    else
+      clickText(findText("This is [a-z]+ Clinker Vat", nil, REGEX));
+      lsSleep(500);
+      if stirMaster then
+          take = findText("Take...")
+            if take then
+              clickText(waitForText("Take..."));
+              clickText(waitForText("Everything"));
             end
-            sleepWithStatus(1750, "Mixing a batch of Cement")
-            clickText(waitForText("Make a batch of Cement"));
-        end
+          sleepWithStatus(1750, "Adding Bauxite to the Clinker Vat")
+          clickText(waitForText("Load the vat with Bauxite"));
+          waitForImage("max.png", 3000);
+          srCharEvent("10\n");
+          waitForNoImage("max.png");
+          sleepWithStatus(1750, "Adding Gypsum to the Clinker Vat")
+          clickText(waitForText("Load the vat with Gypsum"));
+          waitForImage("max.png", 3000);
+          srCharEvent("10\n");
+          waitForNoImage("max.png");
+          sleepWithStatus(1750, "Adding Clinker to the Clinker Vat")
+          clickText(waitForText("Load the vat with Clinker"));
+          waitForImage("max.png", 3000);
+          srCharEvent("800\n");
+          waitForNoImage("max.png");
+
+          lsSleep(250);
+          clickText(findText("This is [a-z]+ Clinker Vat", nil, REGEX));
+          fuel = findText("Fuel level")
+          if not fuel then
+            sleepWithStatus(1750, "Adding " .. fuelType .. " to the Clinker Vat")
+            clickText(waitForText("Load the vat with " .. fuelType));
+            waitForImage("max.png", 3000);
+              if fuelType == "Coal" or fuelType == "Charcoal" then
+                srCharEvent("800\n");
+              elseif fuelType == "Petroleum" then
+                srCharEvent("40\n");
+              end
+            waitForNoImage("max.png");
+          end
+          sleepWithStatus(1750, "Mixing a batch of Cement")
+          clickText(waitForText("Make a batch of Cement"));
+      end
     end
 end
 
@@ -734,16 +756,16 @@ end
 
 function doit()
     getClickActions();
-    if items[2][tasks[2]] == "Push Pyramid" then
+      if items[2][tasks[2]] == "Push Pyramid" then
         pyramidXCoord = promptNumber("Pyramid x coordinate:");
         pyramidYCoord = promptNumber("Pyramid y coordinate:");
-    end
+      end
     local mousePos = askForWindow(askText);
     windowSize = srGetWindowSize();
     done = false;
-    while done == false do
+      while done == false do
         doTasks();
         checkBreak();
         lsSleep(80);
-    end
+      end
 end
