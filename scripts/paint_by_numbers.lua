@@ -416,7 +416,7 @@ function getBuildingRegion(name)
   while not building do
     checkBreak();
     srReadScreen();
-    building = findText("This is a " .. name, nil, REGION);
+    building = findText("This is [a-z]+ " .. name, nil, REGION+REGEX);
     sleepWithStatus(250,"Waiting for " .. name, nil, 0.7);
   end
 
