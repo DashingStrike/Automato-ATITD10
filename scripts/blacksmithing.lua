@@ -194,8 +194,7 @@ function main()
         break;
       end
 
-      if lsButtonText(lsScreenX - 110, lsScreenY - 30, z, 100, 0xFFFFFFff,
-        "End script") then
+      if lsButtonText(lsScreenX - 110, lsScreenY - 30, z, 100, 0xFFFFFFff, "End script") then
         error "Clicked End script button";
       end
 
@@ -566,12 +565,17 @@ function clickXY(x, y)
   if troubleshoot then
     srSetMousePos(clickX, clickY);
     safeClick(clickX, clickY);
-    lsPrint(5, 5, 0, 0.7, 0.7, 0xffffffff, "Clicked: " .. x .. ", " .. y);
-    lsPrint(5, 25, 0, 0.7, 0.7, 0xffffffff, "Press Ctrl to advance");
-    lsDoFrame();
 
     while not lsControlHeld() do
       checkBreak();
+
+      lsPrint(5, 5, 0, 0.7, 0.7, 0xffffffff, "Clicked: " .. x .. ", " .. y);
+      lsPrint(5, 25, 0, 0.7, 0.7, 0xffffffff, "Press Ctrl to advance");
+      if lsButtonText(lsScreenX - 110, lsScreenY - 30, z, 100, 0xFFFFFFff, "End script") then
+        error "Clicked End script button";
+      end
+
+      lsDoFrame();
       lsSleep(10);
     end
     while lsControlHeld() do
