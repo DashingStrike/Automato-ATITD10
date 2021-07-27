@@ -144,8 +144,10 @@ end
 function trygem () -- Main status update
 	srReadScreen();
 	local touch = findText("Water Mine");
-	if (touch) then -- Don't error if we can't find it.  Assume the user will come back to the mine and touch the screen himself.
+	if touch ~= nil then -- Don't error if we can't find it.  Assume the user will come back to the mine and touch the screen himself.
 		srClickMouseNoMove(touch[0],touch[1]);
+	else
+		return(0); -- don't bother processing anything if the water mine isn't visible
 	end
 
   find_pitch = findText("Pitch Angle");  -- update pitch if user changed it manually
@@ -156,21 +158,40 @@ function trygem () -- Main status update
 	local take_every = findText("Take..."); -- new menu
 	local take_the = findText("Take the"); -- old/current menu
   local cur_gem_hour = (lsGetTimer() - last_gem_hour); -- milliseconds since last gem found or macro start
+  local not_refreshed = 1; -- var to detect if the menu has refreshed after taking
 
 	if take_every then -- potentially new menu for upgraded water mine with basket
 			srClickMouseNoMove(take_every[0]+10, take_every[1]+5);
 			lsSleep(srdelay);
 			clickAllText("Everything");
-			lsSleep(srdelay);
-	    clickAllText("Water Mine");
+			while not_refreshed == 1 do
+			  clickAllText("Water Mine");	
+
+				srReadScreen();
+				take_every = findText("Take...");
+        statusScreen("Waiting for server update.")
+			  if take_every == nil then
+			  	not_refreshed = 0;
+			  end
+			  lsSleep(50); -- don't chew up all the cpu
+			end
 	    writeToLog(0);
 	    last_gem_hour = lsGetTimer();
 	    total_gems = total_gems + 1;
 	    return 1;
 	elseif take_the then -- original style of take
 			srClickMouseNoMove(take_the[0]+10, take_the[1]+5);
-			lsSleep(srdelay);
-	    clickAllText("Water Mine");
+			while not_refreshed == 1 do
+			  clickAllText("Water Mine");	
+				
+				srReadScreen();
+				take_the = findText("Take the");
+        statusScreen("Waiting for server update.")
+			  if take_the == nil then
+			  	not_refreshed = 0;
+			  end
+			  lsSleep(50); -- don't chew up all the cpu
+			end
 	    writeToLog(0);
 	    last_gem_hour = lsGetTimer();
 	    total_gems = total_gems + 1;
