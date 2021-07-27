@@ -1618,7 +1618,7 @@ end
 function isStoneAtPixel(x, y)
   local rgb = pixelRGB(x, y);
 
-  return math.abs(rgb[1] - rgb[2]) < 4 and math.abs(rgb[1] - rgb[3]) < 4;
+  return math.abs(rgb[1] - rgb[2]) < 6 and math.abs(rgb[1] - rgb[3]) < 6;
 end
 
 --Things that look too stone like (such as the stone textured terrain, stone floors in CPs, etc) will throw this off.
