@@ -7,8 +7,8 @@ dofile("settings.inc");
 
 do_initial_wind = readSetting("do_initial_wind",do_initial_wind);
 do_wind = readSetting("do_wind",do_wind);
-doLog = readSetting("doLog",doLog);
-doPitchChange = readSetting("doPitchChange",doPitchChange);
+do_log = readSetting("do_log",do_log);
+do_pitch_change = readSetting("do_pitch_change",do_pitch_change);
 
 wind_time = 7920000;  	-- 2 hours teppy time
 check_time = 10000;   	-- 10 seconds
@@ -16,33 +16,49 @@ check_time = 10000;   	-- 10 seconds
 srdelay = 100;  	--how long to wait after interacting before assuming the screen has finished changing
 delay   = 10;  	--how long to wait when busy waiting
 gems = 0;
-lastGemHour = lsGetTimer(); -- init
+total_gems = 0;
+last_gem_hour = lsGetTimer(); -- init
 
 -- Logfile writing variables
 pitch = 0; -- current pitch
 time = ""; -- time of gem found
-fileName = "WaterMine.txt"; -- name of file to write to
 
 
 
-function writeToLog(newWind)
-  local text;
-
+function writeToLog(new_wind)
   srReadScreen();
-  local fetchTime = getTime(1);
-  if fetchTime then
+  local fetch_time = getTime(1);
+  if fetch_time then
     time = getTime(1)
   else
     time = "Time NOT Found";
   end
   
-  timeSince = timestr(lsGetTimer() - lastGemHour);
+  local time_since = timestr(lsGetTimer() - last_gem_hour);
+  local mine_region = findText("Water Mine",nil,REGION);
+  local mine_text = parseText(mine_region.x, mine_region.y, mine_region.width, mine_region.height);
+  local text = "";
+  local filename = "WaterMine -";
+  local is_not_label = string.sub(mine_text[2][2],1,11);
 
-  text = "---\nCurrent Pitch: " .. pitch .. "\nGame Time: " .. time .. "\nTime since last: " .. timeSince .. "\n---";
+  if is_not_label == "Pitch Angle" then -- we need to check to see if water mine has a label
+  	filename = filename .. ".txt"; -- default filename for unlabelled water mines
+    text = "Current Pitch: " .. pitch .. 
+           "\nGame Time: " .. time .. 
+           "\nTime since last: " .. time_since .. 
+           "\n---";
+  else
+  	filename = filename .. " " .. mine_text[2][2] .. ".txt"; -- add the label to filename
+ 	  text = "-=> " .. mine_text[2][2] ..  -- add the label to log
+ 	         " <=- \nCurrent Pitch: " .. pitch .. 
+ 	         "\nGame Time: " .. time .. 
+ 	         "\nTime since last: " .. time_since .. 
+ 	         "\n---";
+  end
 
-  logfile = io.open(fileName,"a+");
-  if newWind == 1 then
-    logfile:write("\n-= Started new log =-\n Game Time: " .. time .. "\n");
+  local logfile = io.open(filename,"a+");
+  if new_wind == 1 then -- if the macro has restarted, add this line
+    logfile:write("\n\n*** Started new log ***\n Game Time: " .. time .. "\n---");
   else
     logfile:write(text .. "\n");
   end
@@ -56,16 +72,16 @@ function doit()
 	wind_timer = -1 - wind_time;
 	gems = 0;
 
-	findPitch = findText("Pitch Angle");
-	if findPitch then
-        pitch = tonumber(string.match(findPitch[2],"Pitch Angle is ([-0-9]+)"));
+	find_pitch = findText("Pitch Angle");
+	if find_pitch then
+        pitch = tonumber(string.match(find_pitch[2],"Pitch Angle is ([-0-9]+)"));
     end
-    if(doLog) then
+    if(do_log) then
     	writeToLog(1); 
     end
 
 	initial_start_time = lsGetTimer();
-    lastGemHour = initial_start_time; -- get accurate start time
+    last_gem_hour = initial_start_time; -- get accurate start time
 	while 1 do
 		start_time = lsGetTimer();
 		gems = gems + trygem();
@@ -75,20 +91,20 @@ function doit()
 				time_left2 = wind_time - (lsGetTimer() - wind_timer);
 				if (do_wind) then
 					if gems ~= 0 then
-						statusScreen("Current Pitch: " .. pitch .. "\nGems found: " .. gems .. "\nLast gem found " .. timestr(lsGetTimer() - lastGemHour) .. " ago\n\nTotal runtime: " .. 
+						statusScreen("Current Pitch: " .. pitch .. "\nGems found: " .. gems .. " of " .. total_gems .. "\nLast gem found " .. timestr(lsGetTimer() - last_gem_hour) .. " ago\n\nTotal runtime: " .. 
 							timestr(lsGetTimer() - initial_start_time) .. "\nChecking in: " .. timestr(time_left) .. 
 							"\nWinding in: " .. timestr(time_left2));
 					else
-						statusScreen("Current Pitch: " .. pitch .. "\nGems found: " .. gems .. "\n\nTotal runtime: " .. 
+						statusScreen("Current Pitch: " .. pitch .. "\nGems found: " .. gems .. " of " .. total_gems .. "\n\nTotal runtime: " .. 
 						    timestr(lsGetTimer() - initial_start_time) .. "\nChecking in: " .. timestr(time_left) .. 
 						    "\nWinding in: " .. timestr(time_left2));
 					end				
 				else
 					if gems ~= 0 then
-						statusScreen("Current Pitch: " .. pitch .. "\nGems found: " .. gems ..  "\nLast gem found " .. timestr(lsGetTimer() - lastGemHour) .. " ago\n\nTotal runtime: " .. 
+						statusScreen("Current Pitch: " .. pitch .. "\nGems found: " .. gems .. " of " .. total_gems .. "\nLast gem found " .. timestr(lsGetTimer() - last_gem_hour) .. " ago\n\nTotal runtime: " .. 
 							timestr(lsGetTimer() - initial_start_time) .. "\nChecking in: " .. timestr(time_left) .. "\nNot Winding");
 					else
-						statusScreen("Current Pitch: " .. pitch .. "\nGems found: " .. gems ..  "\n\nTotal runtime: " .. 
+						statusScreen("Current Pitch: " .. pitch .. "\nGems found: " .. gems ..  " of " .. total_gems .. "\n\nTotal runtime: " .. 
 							timestr(lsGetTimer() - initial_start_time) .. "\nChecking in: " .. timestr(time_left) .. "\nNot Winding");
 					end
 				end
@@ -127,72 +143,70 @@ end
 
 function trygem () -- Main status update
 	srReadScreen();
-	touch = findText("Water Mine");
+	local touch = findText("Water Mine");
 	if (touch) then -- Don't error if we can't find it.  Assume the user will come back to the mine and touch the screen himself.
 		srClickMouseNoMove(touch[0],touch[1]);
 	end
 
-	lsSleep(srdelay);
-	srReadScreen();
-    findPitch = findText("Pitch Angle");  -- update pitch if user changed it manually
-    if findPitch then 
-        pitch = tonumber(string.match(findPitch[2],"Pitch Angle is ([-0-9]+)"));
-    end
-	TakeEvery = findText("Take..."); -- new menu
-	Takethe = findText("Take the"); -- old/current menu
+  find_pitch = findText("Pitch Angle");  -- update pitch if user changed it manually
+  if find_pitch then 
+    pitch = tonumber(string.match(find_pitch[2],"Pitch Angle is ([-0-9]+)"));
+  end
+	
+	local take_every = findText("Take..."); -- new menu
+	local take_the = findText("Take the"); -- old/current menu
+  local cur_gem_hour = (lsGetTimer() - last_gem_hour); -- milliseconds since last gem found or macro start
 
-    curGemHour = (lsGetTimer() - lastGemHour); -- milliseconds since last gem found or macro start
-
-
-
-	if TakeEvery then -- potentially new menu for upgraded water mine with basket
-		srClickMouseNoMove(TakeEvery[0]+10, TakeEvery[1]+5);
-		lsSleep(srdelay);
-		clickAllText("Everything");
-		lsSleep(srdelay);
+	if take_every then -- potentially new menu for upgraded water mine with basket
+			srClickMouseNoMove(take_every[0]+10, take_every[1]+5);
+			lsSleep(srdelay);
+			clickAllText("Everything");
+			lsSleep(srdelay);
 	    clickAllText("Water Mine");
 	    writeToLog(0);
-	    lastGemHour = lsGetTimer();
-        return 1;
-	elseif Takethe then -- original style of take
-		srClickMouseNoMove(Takethe[0]+10, Takethe[1]+5);
-		lsSleep(srdelay);
+	    last_gem_hour = lsGetTimer();
+	    total_gems = total_gems + 1;
+	    return 1;
+	elseif take_the then -- original style of take
+			srClickMouseNoMove(take_the[0]+10, take_the[1]+5);
+			lsSleep(srdelay);
 	    clickAllText("Water Mine");
 	    writeToLog(0);
-   	    lastGemHour = lsGetTimer();
-        return 1;
-    else
-    	if (doPitchChange) then
-	    	if curGemHour >= 1320000 then -- 1320000 ms = 22mins real time = 1 hour gametime
-	    	    -- Change pitch +1
-	   	    	findPitch = findText("Pitch Angle");
-	        	if findPitch then
-	                newPitch = tonumber(string.match(findPitch[2],"Pitch Angle is ([-0-9]+)"));
-	            end
+	    last_gem_hour = lsGetTimer();
+	    total_gems = total_gems + 1;
+	    return 1;
+  else
+		if (do_pitch_change) then
+	  	if cur_gem_hour >= 1320000 then -- 1320000 ms = 22mins real time = 1 hour gametime
+		    -- Change pitch +1
+		    find_pitch = findText("Pitch Angle");
+	    	if find_pitch then
+	        new_pitch = tonumber(string.match(find_pitch[2],"Pitch Angle is ([-0-9]+)"));
+	      end
 
-	    	    newPitch = pitch + 1;
-	    	    if newPitch > 30 then -- max pitch possible is 30, restart at lowest (10)
-	    	    	newPitch = 10;
-	    	    end
+		    new_pitch = pitch + 1;
+		    if new_pitch > 30 then -- max pitch possible is 30, restart at lowest (10)
+		    	new_pitch = 10;
+		    end
 
-	    	    changePitch = findText("Set the Pitch");
-	    	    if changePitch then
-	    	    	srClickMouseNoMove(changePitch[0]+10, changePitch[1]+5);
-	                lsSleep(srdelay);
-	                clickAllText("Angle of " .. newPitch);
-	                pitch = newPitch;
-	                lastGemHour = lsGetTimer(); -- reset change pitch timer
-	                lsSleep(srdelay);
-                	srReadScreen();
-                	touch = findText("Water Mine");
+		    local changePitch = findText("Set the Pitch");
+		    if changePitch then
+		    	srClickMouseNoMove(changePitch[0]+10, changePitch[1]+5);
+	        lsSleep(srdelay);
+	        clickAllText("Angle of " .. new_pitch);
+	        pitch = new_pitch;
+	        last_gem_hour = lsGetTimer(); -- reset change pitch timer
+	        lsSleep(srdelay);
+	      	srReadScreen();
+	      	touch = findText("Water Mine");
 					if (touch) then -- Don't error if we can't find it.  Assume the user will come back to the mine and touch the screen himself.
 						srClickMouseNoMove(touch[0],touch[1]);
 					end
-	            end
-		    end
+					gems = 0; -- reset gem found count after pitch change
+	      end
+		  end
 		end
-	 return 0;
-
+		return 0;
 	end
 end
 
@@ -224,18 +238,18 @@ function promptOptions()
 		writeSetting("do_wind",do_wind);
 		y = y + 32;
 
-		doLog = CheckBox(10, y, z+10, 0xFFFFDDff, " Log gems found (WaterMine.txt)", doLog, scale);
+		do_log = CheckBox(10, y, z+10, 0xFFFFDDff, " Log gems found (WaterMine.txt)", do_log, scale);
 		y = y + 32;
-        writeSetting("doLog",doLog);
+        writeSetting("do_log",do_log);
 
-		doPitchChange = CheckBox(10, y, z+10, 0xFFFFDDff, " Change pitch", doPitchChange, scale);
+		do_pitch_change = CheckBox(10, y, z+10, 0xFFFFDDff, " Change pitch", do_pitch_change, scale);
 		y = y + 16;
 	    lsPrint(10, y, z, scale, scale, 0xFFFFFFff, "If no gems are found for 22 real");
 	    y = y + 16;
 	    lsPrint(10, y, z, scale, scale, 0xFFFFFFff, "minutes, pitch will change by +1");
-        writeSetting("doPitchChange",doPitchChange);
+        writeSetting("do_pitch_change",do_pitch_change);
 
-        if doPitchChange then
+        if do_pitch_change then
 	    lsPrint(10, y-16, z, scale, scale, 0xAAFFAAff, "If no gems are found for 22 real");
 	    lsPrint(10, y, z, scale, scale, 0x88FFFAAff, "minutes, pitch will change by +1");
 		end
