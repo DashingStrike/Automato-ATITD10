@@ -31,8 +31,8 @@ function findAllTextRegions()
   return regions;
 end
 
-function showDebugInRange(name, screenx, screeny, imgw, imgh, x, y, z, w, h)
-  srMakeImage(name, screenx, screeny, imgw, imgh, true);
+function showDebugInRange(name, screenx, screeny, imgw, imgh, x, y, z, w, h, from_stripped)
+  srMakeImage(name, screenx, screeny, imgw, imgh, from_stripped);
   local scale = 1;
   local border = 1;
   for stest=2,10 do
@@ -66,7 +66,7 @@ function findStuff()
     srStripRegion(current[0], current[1], current[2], current[3]);
     showDebugInRange("current-region",
       current[0], current[1], current[2], current[3],
-      5, 5, 2, lsScreenX - 10, lsScreenY / 2 - 10);
+      5, 5, 2, lsScreenX - 10, lsScreenY / 2 - 10, true);
     if lsButtonText(lsScreenX - 110, 0, 10, 100,
         0xFFFFFFff, "Region " .. windowIndex .. "/" .. #regions ) then
       windowIndex = windowIndex + 1;
@@ -100,7 +100,7 @@ function findStuff()
   local xyWindowSize = srGetWindowSize();
   local color = 0xFFFFFFff;
   local found = true;
-  if borders[0] == 0 or borders[1] == 0 or borders[2] == xyWindowSize[0] - 1 or borders[3] == xyWindowSize[1] - 1 then
+  if borders[0] == 0 and borders[1] == 0 and borders[2] == xyWindowSize[0] - 1 and borders[3] == xyWindowSize[1] - 1 then
     color = 0xFF8080ff;
     found = false;
   end
@@ -115,7 +115,7 @@ function findStuff()
     -- srStripRegion(borders[0], borders[1], borders[2] - borders[0] + 1, borders[3] - borders[1] + 1);
     showDebugInRange("current-window",
       borders[0], borders[1], borders[2] - borders[0] + 1, borders[3] - borders[1] + 1,
-      5, y, 2, lsScreenX - 10, lsScreenY - (y + 20) - 2);
+      5, y, 2, lsScreenX - 10, lsScreenY - (y + 20) - 2, false);
     y = y + 20;
   end
 
