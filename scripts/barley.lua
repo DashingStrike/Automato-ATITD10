@@ -523,9 +523,9 @@ function dragWindows(loop_count)
   statusScreen("(" .. loop_count .. "/" .. num_loops .. ")  " ..
                "Dragging Windows into Grid" .. "\n\nElapsed Time: " .. getElapsedTime(startTime));
   if belowUI then
-    arrangeStashed(nil, true, window_w, window_h, nil, 35, 20);
+    arrangeStashed(nil, true, window_w, window_h, nil);
   else
-    arrangeStashed(nil, nil, window_w, window_h, mil, 35, 20);
+    arrangeStashed(nil, nil, window_w, window_h, nil);
   end
 end
 
