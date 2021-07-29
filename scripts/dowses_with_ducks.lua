@@ -191,14 +191,15 @@ function getDowseResult(wait, init)
     end
 
     if wait then
-      lsPrintWrapped(10, 10, 0, lsScreenX - 20, 0.7, 0.7, 0xFFFFFFff, "Waiting for new dowsing line in chat");
+      local seconds = math.floor(10.5 - (lsGetTimer() - startTimer) / 1000);
+      lsPrintWrapped(10, 10, 0, lsScreenX - 20, 0.7, 0.7, 0xFFFFFFff, "Waiting " .. seconds .. "s for new dowsing line in chat.\n\nIf there are 2 identical dowsing lines (from dowsing in the exact same spot) just move to the next spot and wait out the timer.");
       if lsButtonText(lsScreenX - 110, lsScreenY - 30, 0, 100, 0xFFFFFFff, "Cancel") then
         return;
       end
       lsDoFrame();
     end
     lsSleep(10);
-  until lsGetTimer() - startTimer > 30000 or not wait
+  until lsGetTimer() - startTimer > 10000 or not wait
 end
 
 function displayConfig()
