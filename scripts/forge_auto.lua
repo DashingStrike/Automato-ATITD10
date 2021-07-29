@@ -150,7 +150,17 @@ function chooseItems(itemList, multiple)
     for i=1, #currentItem.parents do
       leafParentsString = leafParentsString .. currentItem.parents[i] .. "/";
     end
+
+    -- less confusing name
+    x_pos = string.find(leafParentsString,"x");
+      if x_pos then
+        x_pos = x_pos - 2; -- find the character before the " x"
+        leafParentsString = string.sub(leafParentsString,1,x_pos);
+        leafParentsString = leafParentsString .. "/";
+      end
+
     batchItemName = leafParentsString .. currentItem.name;
+
     currentItem.num = promptNumber(string.format("How many %s%s would you like to make?", leafParentsString, currentItem.name),nil,0.66);
     if multiple then
       if currentItem.num ~= 0 then
