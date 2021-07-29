@@ -12,6 +12,7 @@ do_pitch_change = readSetting("do_pitch_change",do_pitch_change);
 flip_flop = readSetting("flip_flop",flip_flop);
 flip1 = readSetting("flip1",flip1);
 flip2 = readSetting("flip2",flip2);
+change_pitch_time = readSetting("change_pitch_time",change_pitch_time);
 
 wind_time = 7920000;  	-- 2 hours teppy time
 check_time = 10000;   	-- 10 seconds
@@ -222,7 +223,7 @@ function trygem () -- Main status update
 	    return 1;
   else
 		if (do_pitch_change) then
-	  	if cur_gem_hour >= 1320000 then -- 1320000 ms = 22mins real time = 1 hour gametime
+	  	if tonumber(cur_gem_hour) >= tonumber(change_pitch_time) * 60000 then 
 
         srReadScreen();
 		    find_pitch = findText("Pitch Angle");
@@ -231,7 +232,7 @@ function trygem () -- Main status update
 	      end
 
         if flip_flop then
-        	if new_pitch == flip1 then
+        	if new_pitch == tonumber(flip1) then
             changePitch(flip2);
         	else
             changePitch(flip1);
@@ -314,7 +315,7 @@ function promptOptions()
 	    if flip_flop then
 				flip1 = readSetting("flip1",flip1);
 				lsPrint(10, y+24, z, scale, scale, 0xffffffff, "Pitch 1:");
-				is_done, flip1 = lsEditBox("flip1", 90, y+24, z, 50, 30, scale, scale,
+				is_done, flip1 = lsEditBox("flip1", 185, y+24, z, 50, 30, scale, scale,
 											   0x000000ff, flip1);
 				if not tonumber(flip1) then
 				  is_done = false;
@@ -325,7 +326,7 @@ function promptOptions()
 
 				flip2 = readSetting("flip2",flip2);
 				lsPrint(10, y+52, z, scale, scale, 0xffffffff, "Pitch 2:");
-				is_done, flip2 = lsEditBox("flip2", 90, y+48, z, 50, 30, scale, scale,
+				is_done, flip2 = lsEditBox("flip2", 185, y+48, z, 50, 30, scale, scale,
 											   0x000000ff, flip2);
 				if not tonumber(flip2) then
 				  is_done = false;
@@ -333,6 +334,18 @@ function promptOptions()
 				  flip2 = 15;
 				end
 				writeSetting("flip2",tonumber(flip2));
+
+				change_pitch_time = (readSetting("change_pitch_time",change_pitch_time)) * 60000;
+				lsPrint(10, y+74, z, scale, scale, 0xffffffff, "Minutes before change:");
+				is_done, change_pitch_time = lsEditBox("change_pitch_time", 185, y+72, z, 50, 30, scale, scale,
+											   0x000000ff, change_pitch_time);
+				if not tonumber(change_pitch_time) then
+				  is_done = false;
+				  lsPrint(140, y+74, z+10, 0.7, 0.7, 0xFF2020ff, "MUST BE A NUMBER");
+				  change_pitch_time = 22; -- default to 1 game hour
+				end
+				writeSetting("change_pitch_time",tonumber(change_pitch_time));
+
 	    end
       writeSetting("flip_flop",flip_flop);
 		end
