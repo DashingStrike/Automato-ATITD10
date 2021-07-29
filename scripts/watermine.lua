@@ -313,7 +313,6 @@ function promptOptions()
 	    y = y + 32;
 	    flip_flop = CheckBox(10, y, z+10, 0xFFFFDDff, " Pitch flip-flop", flip_flop, scale);
 	    if flip_flop then
-				flip1 = readSetting("flip1",flip1);
 				lsPrint(10, y+24, z, scale, scale, 0xffffffff, "Pitch 1:");
 				is_done, flip1 = lsEditBox("flip1", 185, y+24, z, 50, 30, scale, scale,
 											   0x000000ff, flip1);
@@ -324,7 +323,6 @@ function promptOptions()
 				end
 				writeSetting("flip1",tonumber(flip1));
 
-				flip2 = readSetting("flip2",flip2);
 				lsPrint(10, y+52, z, scale, scale, 0xffffffff, "Pitch 2:");
 				is_done, flip2 = lsEditBox("flip2", 185, y+48, z, 50, 30, scale, scale,
 											   0x000000ff, flip2);
@@ -335,7 +333,6 @@ function promptOptions()
 				end
 				writeSetting("flip2",tonumber(flip2));
 
-				change_pitch_time = (readSetting("change_pitch_time",change_pitch_time)) * 60000;
 				lsPrint(10, y+74, z, scale, scale, 0xffffffff, "Minutes before change:");
 				is_done, change_pitch_time = lsEditBox("change_pitch_time", 185, y+72, z, 50, 30, scale, scale,
 											   0x000000ff, change_pitch_time);
