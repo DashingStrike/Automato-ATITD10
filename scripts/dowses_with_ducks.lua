@@ -101,9 +101,9 @@ function getOreFromLine(line)
     return "Sand";
   end
 
-  local ore = string.match(line, " detect vein of (%D+) at");
+  local ore = string.match(line, " vein of (%D+) at");
   if not ore then
-    ore = string.match(line, " detect vein of (%D+), somewhere");
+    ore = string.match(line, " vein of (%D+), somewhere");
   end
 
   return ore;
