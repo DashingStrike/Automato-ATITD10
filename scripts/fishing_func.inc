@@ -60,9 +60,8 @@ Lures = {
 "Woolly Aphid",
 };
 
-
 Chat_Types = {
-["deben"] = "caught",
+["Caught a"] = "caught",
 ["You are carrying"] = "overweight",
 ["You have achieved"] = "achievement",
 ["You are already fishing"] = "alreadyfishing",
@@ -73,7 +72,6 @@ Chat_Types = {
 ["lost your lure"] = "lostlure",
 };
 
-
 Isis_List = {
 ["boat is damaged"] = "isis1",
 ["rare artifact"] = "isis2",
@@ -81,14 +79,12 @@ Isis_List = {
 ["uneasy feeling"] = "isis4",
 };
 
-
 Ignore_List = {
 ["You are already fishing"] = "alreadyfishing",
 ["is ready"] = "forgecb",
 ["fillet a fish"] = "fillet",
 ["move"] = "move",
 };
-
 
 -- Don't change order, we want the best towards the top, worst at the bottom. We want to select the best lure first.
 Lure_Types = {
@@ -101,13 +97,11 @@ Lure_Types = {
 "Fresh",
 };
 
-
 function WriteFishLog(Text)
 	FileFish = io.open("FishLog.txt","a+");
 	FileFish:write(Text);
 	FileFish:close();
 end
-
 
 function WriteFishStats(Text)
 	FileFish = io.open("FishStats.txt","w+");

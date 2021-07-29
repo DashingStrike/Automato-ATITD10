@@ -2,6 +2,40 @@ dofile("common.inc");
 dofile("Fishing_Func.inc");
 dofile("settings.inc");
 
+----------------------------------------
+--          Global Variables          --
+----------------------------------------
+CurrentLure = ""; --Don't Edit
+gui_log_fish = {}; --Don't Edit, holds log display
+gui_log_fish2 = {}; --Don't Edit, holds log display
+log_fish = {}; --Don't Edit, holds log display
+lostlure_log = {}; --Don't Edit, holds log display
+CurrentLureIndex = 1; -- 1 = First Lure Player Owns in alphabetical order
+QCurrentLureIndex = 1;
+ChangeLureMenu="";
+LastLureMenu="";
+DownArrowLocs=nil;
+PlayersLures={}; --Don't Edit, Holds Current Player Lures
+
+castcount = 0;
+GrandTotalCaught = 0;
+GrandTotalCasts = 0;
+GrandTotaldb = 0;
+GrandTotalStrange = 0;
+GrandTotalOdd = 0;
+GrandTotalUnusual = 0;
+GrandTotalLuresUsed = 0;
+GrandTotalLostLures = 0;
+GrandTotalFailed = 0;
+lastLostLure = "";
+LostLure = 0;
+LureType = "";
+lastLostLureType = "";
+lockLure = false;
+skipLure = false;
+lastCastWait = 0;
+castWait = 0;
+
 SNum = 0;
 Sfish = "";
 muteSoundEffects = false;
@@ -11,6 +45,7 @@ LogFails = false;  	-- Do you want to add Failed Catches to log file? 'Failed to
 LogStrangeUnusual = false; 	-- Do you want to add Strange and Unusual fish to the log file? Note the log will still add an entry if you lost lure.
 LogOdd = false; 	-- Do you want to add Odd fish to the log file? Note the log will still add an entry if you lost lure.
 AutoFillet = true; -- Do you want to auto-fillet fish if menu is pinned?
+----------------------------------------
 
 function setOptions()
 
@@ -336,18 +371,27 @@ end
 function ChatReadFish(value)
     --Find the last line of chat
     local chatText = getChatText();
-    if value then
-      numCaught, fishType = string.match(lastLine2, "(%d+) deben ([^.]+)%."); -- Read next to last line of main chat
+    if value ~= nil then
+      numCaught, fishType = string.match(lastLine, "(%d+) deben ([^.]+)%."); -- Read next to last line of main chat
     else
-      numCaught, fishType = string.match(lastLine, "(%d+) deben ([^.]+)%."); -- Read last line of main chat
+      fishType = string.match(lastLine, "Caught a ([^.]+)%."); -- Read last line of main chat
     end
     if fishType then
         GrandTotalCaught = GrandTotalCaught + 1
         Sfish = string.gsub(fishType, "%W", "");
-        SNum = numCaught
-        GrandTotaldb = GrandTotaldb + SNum
+        if value ~= nil then
+          SNum = numCaught
+          GrandTotaldb = GrandTotaldb + SNum
+        end
     end
-    return("[" .. CurrentLure .. " (" .. LureType .. ")] "  .. Sfish .. " (" .. SNum .. "db)");
+    if value ~= nil then
+      logMessage = ("[" .. CurrentLure .. " (" .. LureType .. ")] "  .. Sfish .. " (" .. SNum .. "db)");
+      logType = "seasonal"
+    else
+      logMessage = ("[" .. CurrentLure .. " (" .. LureType .. ")] "  .. Sfish);
+      logType = "common"
+    end
+    return logMessage, logType;
 end
 
 function findchat()
@@ -629,40 +673,6 @@ function doit()
     .. "Required: Pin Lures Menu (Click the lure health bar).\n\n"
     .. "History will be recorded in FishLog.txt and stats in FishStats.txt.");
 
-    ----------------------------------------
-    --Variables Used By Program -- Don't Edit Unless you know what you're doing!
-    CurrentLure = ""; --Don't Edit
-    gui_log_fish = {}; --Don't Edit, holds log display
-    gui_log_fish2 = {}; --Don't Edit, holds log display
-    log_fish = {}; --Don't Edit, holds log display
-    lostlure_log = {}; --Don't Edit, holds log display
-    CurrentLureIndex = 1; -- 1 = First Lure Player Owns in alphabetical order
-    QCurrentLureIndex = 1;
-    ChangeLureMenu="";
-    LastLureMenu="";
-    DownArrowLocs=nil;
-    PlayersLures={}; --Don't Edit, Holds Current Player Lures
-
-    castcount = 0;
-    GrandTotalCaught = 0;
-    GrandTotalCasts = 0;
-    GrandTotaldb = 0;
-    GrandTotalStrange = 0;
-    GrandTotalOdd = 0;
-    GrandTotalUnusual = 0;
-    GrandTotalLuresUsed = 0;
-    GrandTotalLostLures = 0;
-    GrandTotalFailed = 0;
-    lastLostLure = "";
-    LostLure = 0;
-    LureType = "";
-    lastLostLureType = "";
-    lockLure = false;
-    skipLure = false;
-    lastCastWait = 0;
-    castWait = 0;
-    ----------------------------------------
-
     setOptions();
     PlayersLures = SetupLureGroup();  -- Fetch the list of lures from pinned lures window
     lsSleep(1000); -- Just a delay to let the sound effect finishing playing, not needed...
@@ -887,24 +897,27 @@ function doit()
                     end
 
                     if v == "caught" or caughtFish then
-
-                        if v == "caught" then
+                        if v == "caught" and string.match(lastLine, "Caught a (%d+) deben ([^.]+)%.") then
                           caughtFish = true;
-                          Fish = ChatReadFish(); -- Parse last line of main chat
-                        else
-                          Fish = ChatReadFish(1); -- Parse next to last line of main chat
+                          Fish = ChatReadFish(1); -- Parse last line of main chat
+                        elseif v == "caught" and string.match(lastLine, "Caught a ([^.]+)%.") then
+                          caughtFish = true;
+                          Fish = ChatReadFish(); -- Parse next to last line of main chat
 
                             if not fishType then
                               caughtFish = nil;
                             else
                               overweight=1;
                             end
-
                         end
 
                         if caughtFish then
                         --Last 10 fish caught that displays on GUI
-                        addlog = Sfish .. " (" .. SNum .. "db) | " .. CurrentLure
+                          if logType == "common" then
+                            addlog = Sfish .. " | " .. CurrentLure
+                          elseif logType == "seasonal" then
+                            addlog = Sfish .. " (" .. SNum .. "db) | " .. CurrentLure
+                          end
                         table.insert(gui_log_fish, 1, addlog);
                         -- All fish caught that displays in fishstats.txt
                         table.insert(gui_log_fish2, addlog);
