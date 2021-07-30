@@ -21,23 +21,21 @@ items = {
         {"",
           "Churn Butter",
           "Dig Hole",
+          "Dirt",
+          "Excavate Blocks",
           "Flax Comb",
           "Hackling Rake",
+          "Limestone",
+          "Oil (Flax Seed)",
+          "Push Pyramid",
+          "Stir Cement",
           "Weave Canvas",
           "Weave Linen",
           "Weave Papy Basket",
           "Weave Wool Cloth",
-          "Oil (Flax Seed)",
-          "Limestone",
-          "Dirt",
-          "Stir Cement",
           --[[
-          "Excavate Blocks",
           "Pump Aqueduct",
-          "Push Pyramid",
           "Weave Silk",
-
-          "Water Insects",
           ]]--
         },
         --con
@@ -47,25 +45,23 @@ items = {
         },
         --foc
         {"",
-          "Long Sharp Stick",
-          "Rawhide Strips",
-          "Sharpened Stick",
-          "Tinder",
-          "Clay Lamp",
-          "Flint Hammer",
           "Barrel Tap",
           "Bottle Stopper",
+          "Clay Lamp",
           "Crudely Carved Handle",
+          "Flint Hammer",
           "Large Crude Handle",
+          "Long Sharp Stick",
           "Personal Chit",
+          "Rawhide Strips",
+          "Search Rotten Wood",
+          "Sharpened Stick",
+          "Tackle Block",
+          "Tap Rods",
+          "Tinder",
+          "Wooden Cog",
           "Wooden Peg",
           "Wooden Pestle",
-          "Tackle Block",
-          "Wooden Cog",
-          "Search Rotten Wood",
-          --[[
-          "Tap Rods",
-          ]]--
         },
 };
 
@@ -469,7 +465,7 @@ function stirCement()
     end
 end
 
---[[
+
 function pyramidPush()
    local curCoords = findCoords();
    local t, u;
@@ -549,7 +545,6 @@ local function excavateBlocks()
     end
     return;
 end
-]]--
 
 function churnButter()
   local t = srFindImage("statclicks/churn.png");
@@ -634,19 +629,21 @@ function doTasks()
                 elseif curTask == "Stir Cement" then
                   stirCement();
                 elseif curTask == "Search Rotten Wood" then
-                    searchRottenWood();
+                  searchRottenWood();
+                elseif curTask == "Excavate Blocks" then
+                  excavateBlocks();
+                elseif curTask == "Push Pyramid" then
+                  pyramidPush();
+                elseif curTask == "Tap Rods" then
+                  tapRods();
                 else
                   clickText(findText(textLookup[curTask]));
                 end
                 --[[
                 elseif curTask == "Weave Silk" then
                     weave("Silk");
-                elseif curTask == "Push Pyramid" then
-                    pyramidPush();
-                elseif curTask == "Excavate Blocks" then
-                    excavateBlocks();
-                elseif curTask == "Tap Rods" then
-                    tapRods();
+
+
 
                 end
                 ]]--
