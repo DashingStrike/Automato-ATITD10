@@ -113,7 +113,7 @@ function findClosePopUp()
       srReadScreen();
       OK = srFindImage("OK.png");
 	  if OK then  
-	    g(OK[0]+2,OK[1]+2, true);
+	    safeClick(OK[0]+2,OK[1]+2, true);
 	    lsSleep(clickDelay);
 	  else
 	    break;
@@ -134,9 +134,9 @@ function checkCloseWindows()
 	  if #closeWindows > 0 then
 		for i=#closeWindows, 1, -1 do
 		  -- 2 right clicks in a row to close window (1st click pins it, 2nd unpins it
-		  g(closeWindows[i][0]+5, closeWindows[i][1]+10, true);
+		  safeClick(closeWindows[i][0]+5, closeWindows[i][1]+10, true);
 		  lsSleep(100);
-		  g(closeWindows[i][0]+5, closeWindows[i][1]+10, true);
+		  safeClick(closeWindows[i][0]+5, closeWindows[i][1]+10, true);
 		end
 		lsSleep(clickDelay);
 	  end
@@ -177,6 +177,11 @@ function MakeJugs()
   local OK = true;
   srKeyEvent('j'); -- Make Jug [J]
   sleepWithStatus(wheelDelay,"Starting Jugs");
+  srReadScreen();
+  noClay = srFindImage("ItTakes.png");
+  if noClay then
+    error("You ran out of clay to make jugs.");
+  end;
   findClosePopUp(); -- Screen clean up
   checkCloseWindows(); -- Screen clean up
 end
