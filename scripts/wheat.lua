@@ -58,7 +58,6 @@ function tendWheat()
 
       --First, click harvest buttons
       for i=#harvest, 1, -1  do
-        sleepWithStatus(1000,"I found harvest option")
         srClickMouseNoMove(harvest[i][0]+5, harvest[i][1]+3);
         lsSleep(150);
       end
@@ -68,7 +67,6 @@ function tendWheat()
       srReadScreen();
       local emptyWindow = srFindImage("WindowEmpty.png")
         if emptyWindow then
-          sleepWithStatus(2000,"I found an empty window")
           clickAllImages("WindowEmpty.png", 50, 20);
           lsSleep(150);
         end
