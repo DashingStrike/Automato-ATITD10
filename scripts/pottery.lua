@@ -382,7 +382,6 @@ function MakeProduct()
 			product = "Clay Mortar"
 			srKeyEvent('m'); -- Mould a Clay Mortar [M]
 		elseif hotkeyTask == 3 then
-			sleepWithStatus(5000,"What is cookpotHotkey...." .. cookpotHotkey)
 			product = "Cookpot"
 			srKeyEvent(cookpotHotkey); -- Mould a Cookpot
 		end
