@@ -58,24 +58,17 @@ function tendWheat()
 
       --First, click harvest buttons
       for i=#harvest, 1, -1  do
+        sleepWithStatus(1000,"I found harvest option")
         srClickMouseNoMove(harvest[i][0]+5, harvest[i][1]+3);
-        lsSleep(click_delay);
+        lsSleep(150);
       end
-
-      --Wait a long moment, it takes a while before the window turns blank, to allow a right click to close it.
       sleepWithStatus(2000, "Harvested " .. windowcount .. " windows...");
       clickAllImages("ThisIs.png");  --Refresh windows to make the harvest windows turn blank
       sleepWithStatus(1000, "Refreshing " .. windowcount .. "/Preparing to Close windows...");
-
-      --Right click to close previously harvested windows
-      for i=#harvest, 1, -1  do
-        srClickMouseNoMove(harvest[i][0]+5, harvest[i][1]+3);  -- Right click the window to close it.
-        lsSleep(150);
-      end
-
       srReadScreen();
       local emptyWindow = srFindImage("WindowEmpty.png")
         if emptyWindow then
+          sleepWithStatus(2000,"I found an empty window")
           clickAllImages("WindowEmpty.png", 50, 20);
           lsSleep(150);
         end
