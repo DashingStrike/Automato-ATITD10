@@ -16,6 +16,8 @@ local stashList = {
   wood     = {"Wood ("},
   medium   = {"Medium Stone ("},
   cuttable = {"Cuttable Stone ("},
+  papy     = {"Fertile Papyrus ("},
+  papySeed = {"Papyrus Seeds(hf) ("},
 };
 
 routeFileName = "gather_routes.txt";
@@ -107,6 +109,7 @@ WaypointOrder[#WaypointOrder+1] = MenuClick;
 WaypointOrder[#WaypointOrder+1] = Bonfire;
 WaypointOrder[#WaypointOrder+1] = Warehouse;
 WaypointOrder[#WaypointOrder+1] = Water;
+WaypointOrder[#WaypointOrder+1] = Papyrus;
 WaypointOrder[#WaypointOrder+1] = Acacia;
 WaypointOrder[#WaypointOrder+1] = Anaxi;
 WaypointOrder[#WaypointOrder+1] = Arconis;
@@ -178,7 +181,6 @@ WaypointOrder[#WaypointOrder+1] = SummerMaple;
 WaypointOrder[#WaypointOrder+1] = WhitePine;
 WaypointOrder[#WaypointOrder+1] = Safsaf;
 WaypointOrder[#WaypointOrder+1] = SweetPine;
-WaypointOrder[#WaypointOrder+1] = Papyrus;
 
 WaypointTypes = {};
 WaypointTypes[Waypoint] = "Waypoint";
@@ -346,7 +348,8 @@ local clay = false;
 local silt = false;
 local stones = false;
 local papy = false;
-local papyDelay = 10;
+local plantPapy = false;
+local plantPapyDelay = 10;
 local repeatForever = true;
 
 local gather_iterations = 0;
@@ -435,24 +438,32 @@ function queryRoute()
 
     if movement == 1 or movement == 4 then
       papy = readSetting("papy", papy);
-      papy = lsCheckBox(5, y, z, 0xFFFFFFff, " Plant Papy", papy);
+      papy = lsCheckBox(5, y, z, 0xFFFFFFff, " Papy", papy);
       writeSetting("papy", papy);
-      if(papy) then
-        papyDelay = readSetting("delay",papyDelay);
-        local delayColor = 0xFFFFFFff;
-        if not papyDelay then
-          delayColor = 0xFF0000ff;
+      y = y + 25;
+
+      if movement == 4 then
+        plantPapy = readSetting("plantPapy", plantPapy);
+        plantPapy = lsCheckBox(5, y, z, 0xFFFFFFff, " Plant Papy", plantPapy);
+        writeSetting("plantPapy", plantPapy);
+
+        if plantPapy then
+          plantPapyDelay = readSetting("delay", plantPapyDelay);
+          local delayColor = 0xFFFFFFff;
+          if not plantPapyDelay then
+            delayColor = 0xFF0000ff;
+          end
+          lsPrint(155, y, z, 1, 1, delayColor, "Delay (s): ");
+          _, plantPapyDelay = lsEditBox("delay", 245, y, z, 30, 0, 1.0, 1.0, 0x000000ff, plantPapyDelay);
+          if not tonumber(plantPapyDelay) then
+            plantPapyDelay = nil;
+          end
+          writeSetting("delay", plantPapyDelay);
         end
-        lsPrint(155, y, z, 1, 1, delayColor, "Delay (s): ");
-        _, papyDelay = lsEditBox("delay", 245, y, z, 30, 0, 1.0, 1.0, 0x000000ff, papyDelay);
-        if not tonumber(papyDelay) then
-          papyDelay = nil;
-        end
-        writeSetting("delay",papyDelay);
       end
     else
-      papy = false;
-      papyDelay = nil;
+      plantPapy = false;
+      plantPapyDelay = nil;
     end
 
     movement = readSetting("movement", movement);
@@ -529,20 +540,26 @@ end
 function handleOptions()
   local oneClickOptions = {};
   local videoOptions = {};
-  local interfaceOptions = {
-    [MOVE_KEYS] = 2
-  };
+  local interfaceOptions = {};
 
   if wood then
     oneClickOptions[FAST_GATHER] = true;
   end
 
-  if silt or stone then
+  if silt or stones then
     oneClickOptions[AUTO_TAKE] = true;
     videoOptions[GRASS] = 1;
     videoOptions[SHADOW] = 1;
     videoOptions[TIME_OF_DAY] = 1;
     videoOptions[LIGHT_INTENSITY] = 1;
+  end
+
+  if movement ~= 1 then
+    interfaceOptions[MOVE_KEYS] = 2;
+  end
+
+  if papy then
+    interfaceOptions[AUTO_SWIM] = false;
   end
 
   setGameOptions(oneClickOptions, videoOptions, interfaceOptions);
@@ -955,7 +972,7 @@ function followRoute(route)
             end
         end
         if(not haveWarehouse) then
-            if papy then
+            if plantPapy then
                 haveWarehouse = false;
             else
                 if(not promptOkay("This route does not include a warehouse.  If you add a warehouse's coords to this route, resources will be stashed there every time you reach those coordinates.")) then
@@ -964,7 +981,7 @@ function followRoute(route)
             end
         end
     else
-        if(not wood or slate or clay or grass or silt or stones or papy) then
+        if(not wood or slate or clay or grass or silt or stones or papy or plantPapy) then
             if(not promptOkay("You have not specified any resources to gather.  Are you sure that's what you want?")) then
                 return;
             end
@@ -999,8 +1016,8 @@ function followRoute(route)
             end
         elseif(r[curr][3] == Warehouse) then
             stashAll();
-        elseif(papy and r[curr][3] ~= Waypoint) then
-            plantPapy();
+        elseif(plantPapy and r[curr][3] == Papyrus) then
+          plant();
         elseif(r[curr][3] == Water) then
             while(not fillJugs()) do
                 walkTo(r[curr][1]+math.random(-1,1),r[curr][2]+math.random(-1,1),false,false);
@@ -1029,12 +1046,12 @@ function followRoute(route)
             end
         end
         curr = curr + 1;
-        if(curr > #r) then
+        if curr > #r then
             curr = 1;
-            if papy and papyDelay then
-                sleepWithStatus(tonumber(papyDelay) * 1000, "Waiting before starting next round")
+            if plantPapy and plantPapyDelay then
+                sleepWithStatus(tonumber(plantPapyDelay) * 1000, "Waiting before starting next round")
             end
-            if(not repeatForever) then
+            if not repeatForever then
                 routeStartTime = 0;
                 walkingRoute = false;
                 return;
@@ -1524,6 +1541,9 @@ function checkGather()
   if checkStones() then
     return true;
   end
+  if checkPapy() then
+    return true;
+  end
 
   return false;
 end
@@ -1568,10 +1588,49 @@ function checkClay()
     return false;
 end
 
+function clickClusters(func, name, sleep, all)
+  local clusters = func();
+  if not clusters then
+    return false;
+  end
+  --If we find something, stop moving, scan again, and click it.
+  srKeyUp(VK_ALL);
+  lsSleep(50);
+
+  clusters = func();
+  if not clusters then
+    return false;
+  end
+
+  local found = false;
+  for i = 1, #clusters do
+    checkBreak();
+    local cluster = clusters[i];
+
+    if isInMiddleOfScreen(cluster[0], cluster[1]) then
+      safeClick(cluster[0], cluster[1]);
+      sleepWithStatus(sleep, "Picking: " .. name);
+
+      srReadScreen();
+      if findText(name) or findText("Tests...") then
+        srKeyEvent("\27"); --escape to close window
+      end
+
+      found = true;
+    end
+
+    if not all then
+      break;
+    end
+  end
+
+  return found;
+end
+
 function getSiltClusters()
   srReadScreen();
   local xyWindowSize = srGetWindowSize();
-  return lsAnalyzeCustom(25, 400, false, xyWindowSize[0] * 0.5, 0xA39C90ff, 0xB0A99Cff, true);
+  return lsAnalyzeCustom(25, 400, false, xyWindowSize[0] * 0.85, 0xA39C90ff, 0xB0A99Cff, true);
 end
 
 function checkSilt()
@@ -1579,34 +1638,21 @@ function checkSilt()
     return false;
   end
 
-  local clusters = getSiltClusters();
-  if not clusters then
+  return clickClusters(getSiltClusters, "Silt", 3500);
+end
+
+function getPapyClusters()
+  srReadScreen();
+  local xyWindowSize = srGetWindowSize();
+  return lsAnalyzeCustom(5, 100, false, xyWindowSize[0] * 0.85, 0xD0C000ff, 0xFFEF30ff, true);
+end
+
+function checkPapy()
+  if not papy then
     return false;
   end
-  --If we find silt, stop moving, scan again, and click it.
-  srKeyUp(VK_ALL);
-  lsSleep(50);
 
-  clusters = getSiltClusters();
-  if not clusters then
-    return false;
-  end
-  local cluster = clusters[1];
-
-  if isInMiddleOfScreen(cluster[0], cluster[1]) then
-    safeClick(cluster[0], cluster[1]);
-    lsSleep(1000);
-
-    srReadScreen();
-    if findText("Silt") or findText("Tests...") then
-      srKeyEvent("\27"); --escape to close window
-    end
-    lsSleep(1500);
-
-    return true;
-  end
-
-  return false;
+  return clickClusters(getPapyClusters, "Papyrus", 1000, true);
 end
 
 function getStoneClusters()
@@ -1759,8 +1805,8 @@ function stashWood()
     setStatus("Wood stashed");
 end
 
-function plantPapy()
-    if(not papy) then
+function plant()
+    if(not plantPapy) then
         return false;
     end
     srReadScreen();
@@ -1778,10 +1824,10 @@ end
 function isInMiddleOfScreen(x, y)
   local xyWindowSize = srGetWindowSize();
   return
-  x > xyWindowSize[0] * 0.25 and
-    x < xyWindowSize[0] * 0.75 and
-    y > xyWindowSize[1] * 0.25 and
-    y < xyWindowSize[1] * 0.75;
+  x > xyWindowSize[0] * 0.15 and
+    x < xyWindowSize[0] * 0.85 and
+    y > xyWindowSize[1] * 0.15 and
+    y < xyWindowSize[1] * 0.85;
 end
 
 function clickMenus(menus)
