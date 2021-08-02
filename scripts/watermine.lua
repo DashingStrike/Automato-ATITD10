@@ -99,7 +99,11 @@ end
 if flip_flop then
 	if pitch ~= tonumber(flip1) and pitch ~= tonumber(flip2) then
 		changePitch(flip1);
-	end
+  end
+end
+
+if change_pitch_time == nil then
+	change_pitch_time = 22; -- default to 22 mins if nil
 end
 
 	initial_start_time = lsGetTimer();
