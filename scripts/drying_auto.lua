@@ -8,20 +8,25 @@ dofile("settings.inc");
 -- Code efficiency > removed reliance on product flags in making loop
 --                 > cleaned up unnecessary for-loops
 
-unpinWindows = false;
 arrangeWindows = true;
+window_w = 246;
+window_h = 184;
+offset_w = 125; -- allow for wider window when drying sterile papyrus
+offset_h = 25;
 
-askText = "Dry flax, grass or papyrus, without the mouse being used.\n\n"
-.. "Pin up windows manually or select the arrange windows checkbox.";
-
+wmText = "Tap Ctrl on racks/hammocks to open and pin.\nTap Alt on racks/hammocks to open, pin and stash.";
+askText = "Dry flax, grass or papyrus, without the mouse being used.\n\nWindow Manager will appear after options selected.";
 
 function doit()
 	askForWindow(askText);
 	config();
 		if(arrangeWindows) then
-			arrangeInGrid(nil, nil, nil, nil,nil, 70, 90);
-		end
-	start();
+			windowManager("Racks Setup", wmText, false, true, window_w, window_h, nil, offset_w, offset_h);
+			sleepWithStatus(500, "Starting... Don\'t move mouse!");
+			unpinOnExit(start);
+		else
+	    start();
+	  end
 end
 
 function start()
@@ -76,10 +81,6 @@ function config()
 		writeSetting("arrangeWindows",arrangeWindows);
 		y = y + 32;
 
-		unpinWindows = readSetting("unpinWindows",unpinWindows);
-		unpinWindows = CheckBox(10, y, z, 0xFFFFFFff, "Unpin windows on exit", unpinWindows, 0.65, 0.65);
-		writeSetting("unpinWindows",unpinWindows);
-		y = y + 32;
 
 		if flax then
       flaxColor = 0x80ff80ff;
@@ -96,12 +97,18 @@ function config()
     else
       fertileColor = 0xffffffff;
     end
+		if sterile then
+      sterileColor = 0x80ff80ff;
+    else
+      sterileColor = 0xffffffff;
+    end
 
     flax = readSetting("flax",flax);
     grass = readSetting("grass",grass);
 		fertile = readSetting("fertile",fertile);
+		sterile = readSetting("sterile",sterile);
 
-    if not grass and not fertile then
+    if not grass and not fertile and not sterile then
       flax = CheckBox(15, y, z+10, flaxColor, " Dry Flax",
                            flax, 0.65, 0.65);
       y = y + 32;
@@ -109,7 +116,7 @@ function config()
       flax = false
     end
 
-    if not flax and not fertile then
+    if not flax and not fertile and not sterile then
       grass = CheckBox(15, y, z+10, grassColor, " Dry Grass to Straw",
                               grass, 0.65, 0.65);
       y = y + 32;
@@ -117,7 +124,7 @@ function config()
       grass = false
     end
 
-		if not flax and not grass then
+		if not flax and not grass and not sterile then
       fertile = CheckBox(15, y, z+10, fertileColor, " Dry Fertile Papyrus",
                               fertile, 0.65, 0.65);
       y = y + 32;
@@ -125,19 +132,34 @@ function config()
       fertile = false
     end
 
-    writeSetting("flax",flax);
+ 		if not flax and not grass and not fertile then
+      sterile = CheckBox(15, y, z+10, sterileColor, " Dry Sterile Papyrus",
+                              sterile, 0.65, 0.65);
+      y = y + 32;
+    else
+      sterile = false
+    end
+
+   writeSetting("flax",flax);
     writeSetting("grass",grass);
 		writeSetting("fertile",fertile);
+		writeSetting("sterile",sterile);
 
 	if flax then
 		product = "Rotten Flax";
+		offset_w = 100;
   elseif grass then
 	  product = "Grass";
-	elseif fertile then
+		offset_w = 56;
+  elseif fertile then
 		product = "Papyrus";
-	end
+		offset_w = 125;
+  elseif sterile then
+		product = "Sterile Papyrus";
+		offset_w = 125;
+  end
 
-    if flax or grass or fertile then
+    if flax or grass or fertile or sterile then
     lsPrintWrapped(15, y, z+10, lsScreenX - 20, 0.7, 0.7, 0xd0d0d0ff,
                    "Uncheck box to see more options!");
 
