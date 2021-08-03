@@ -152,13 +152,13 @@ function weave(clothType)
         srcType = "Thread";
         srcQty = "400";
     elseif clothType == "Basket" then
-        srcType = "Dried Papyrus";
+        srcType = "Papyrus";
         srcQty = "200";
     elseif clothType == "Wool" then
         srcType = "Yarn";
         srcQty = "60";
     elseif clothType == "Silk" then
-        srcType = "Raw Silk";
+        srcType = "Silk";
         srcQty = "50";
     end
 
