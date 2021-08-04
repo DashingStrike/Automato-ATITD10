@@ -1676,7 +1676,7 @@ return
 		{
 			["masterOnly"] = true,
 			["prod"] = 1,
-			["q"] = 20,
+			["q"] = 30,
 		}
 		,
 		["Brass"] =
