@@ -556,17 +556,8 @@ Hover over the ATITD window and press shift.
 ]]);
   
   if file_exists("reactions.txt") then
-    while true do
-      lsPrint(5, 5, 5, 0.7, 0.7, 0xff6666ff, "WARNING: reactions.txt already exists!");
-      lsPrint(5, 37, 5, 0.7, 0.7, 0xff6666ff, "Running this macro will overwrite the file.");
-      if lsButtonText(5, lsScreenY - 30, 0, 120, 0x80ff80ff, "Continue Anyway") then
-        break;
-      end
-      if lsButtonText(200, lsScreenY - 30, 0, 100, 0xff8080ff, "Stop!") then
-        error("User aborted macro!");
-      end
-      checkBreak();
-      lsDoFrame();
+    if not promptOkay("WARNING: reactions.txt already exists!\nRunning this macro will overwrite the file.") then
+      error("User aborted macro!");
     end
   end
 
