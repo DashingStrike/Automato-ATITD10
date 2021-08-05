@@ -7,8 +7,6 @@ askText = singleLine([[
 
 wmText = "Tap Ctrl on Charcoal Hearths or Ovens\nto open and pin. Tap Alt to open, pin\nand stash.";
 
-click_delay = 0;
-
 buttons = {
   {
     name = "Begin",
@@ -56,8 +54,7 @@ buttons = {
 
 function doit()
   askForWindow(askText);
-	--function windowManager(title, message, allowCascade, allowWaterGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight)
-  windowManager("Charcoal Setup", wmText, nil, nil, nil, nil, nil, nil, 16);   --add 16 extra pixels to window height because window expands with 'Take...' menu after first batch is created
+  windowManager("Charcoal Setup", wmText, nil, nil, nil, nil, nil, nil, 16);  --add 16 extra pixels for 'Take...' menu
   unpinOnExit(ccMenu);
 end
 

@@ -167,12 +167,12 @@ function openAndPin(x, y, timeout)
 end
 
 -------------------------------------------------------------------------------
--- arrangeInGrid(cascade, waterGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight)
+-- arrangeInGrid(cascade, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight)
 --
 -- Arrange all open windows into a grid on the screen. Stashes them first.
 --
 -- cascade (optional) -- arrange windows into an overlapping cascade
--- waterGap (optional) -- leave a gap at the top for getting water
+-- uiGap (optional) -- leave a gap at the top for the ui
 -- varWidth, varHeight (optional) -- specify window width/height - instead of detecting.
 -- sizeRight (optional) -- amount of space to right of screen, defaults to automato width
 -- offsetWidth (optional) -- adds an additional width offset
@@ -180,20 +180,20 @@ end
 
 -------------------------------------------------------------------------------
 
-function arrangeInGrid(cascade, waterGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight)
+function arrangeInGrid(cascade, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight)
   stashAllWindows(BOTTOM_LEFT);
   stashAllWindows(BOTTOM_RIGHT);
-  arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight);
+  arrangeStashed(cascade, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight);
 end
 
 -------------------------------------------------------------------------------
--- arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight)
+-- arrangeStashed(cascade, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight)
 --
 -- Arrange all open windows into a grid on the screen. Assumes they
 -- are pre-stashed.
 --
 -- cascade (optional) -- arrange windows into a overlapping cascade
--- waterGap (optional) -- leave a 50px gap at the top (for water or similar)
+-- uiGap (optional) -- leave a 50px gap at the top (for water or similar)
 -- varWidth (optional) -- width of windows, if not set width will be initial window width
 -- varHeight (optional) --  height of windows, if not set height will be initial window height
 -- sizeRight (optional) -- amount of space to right of screen, defaults to automato width
@@ -202,7 +202,7 @@ end
 
 -------------------------------------------------------------------------------
 
-function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight, windowCap)
+function arrangeStashed(cascade, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight, windowCap)
   local screen = srGetWindowSize();
   local bottomRightX = screen[0] - 20;
   local bottomRightY = screen[1] - 20;
@@ -215,7 +215,7 @@ function arrangeStashed(cascade, waterGap, varWidth, varHeight, sizeRight, offse
 
   local currentX = 8;
   local currentY = 10;
-    if waterGap then
+    if uiGap then
       currentY = 95;
     end
   local initY = currentY;
@@ -371,7 +371,7 @@ function closeEmptyRegions()
 end
 
 -------------------------------------------------------------------------------
--- windowManager(title, message, allowCascade, allowWaterGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight, default_focus, default_waterGap)
+-- windowManager(title, message, allowCascade, allowUIGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight, default_focus, default_uiGap)
 --
 -- Run a window manager interface to let the user open, pin, arrange,
 -- or clear windows.
@@ -379,29 +379,29 @@ end
 -- title (optional) -- title of window
 -- message (optional) -- extra instructions for the user
 -- allowCascade (optional) -- allow the user to arrange in a cascade
--- allowWaterGap (optional) -- allow the user to add a water gap
+-- allowUIGap (optional) -- allow the user to add a gap to skip the UI
 -- varWidth, varHeight (optional) -- specify window width/height - instead of detecting
 -- sizeRight (optional) -- amount of space to right of screen, defaults to automato width
 -- offsetWidth (optional) -- adds an additional width offset
 -- offsetHeight (optional) -- adds an additional height offset
 -- default_focus (optional) -- bool: force 'Pause for Focus' box to be checked
--- default_waterGap (optional) -- bool: force 'Leave Gap for the UI' box to be checked
+-- default_uiGap (optional) -- bool: force 'Leave Gap for the UI' box to be checked
 
 -------------------------------------------------------------------------------
 
 pauseForFocus = false;
 
-function windowManager(title, message, allowCascade, allowWaterGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight, default_focus, default_waterGap)
+function windowManager(title, message, allowCascade, allowUIGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight, default_focus, default_uiGap)
   if not title then
     title = "Window Manager";
   end
   if not message then
     message = "Tap Ctrl to open and pin a window.\nTap Alt to open, pin and stash."
   end
-  local waterGap = false;
+  local uiGap = false;
 
-  if default_waterGap then
-    waterGap = true;
+  if default_uiGap then
+    uiGap = true;
   end
 
   if default_focus then
@@ -420,7 +420,7 @@ function windowManager(title, message, allowCascade, allowWaterGap, varWidth, va
       if pauseForFocus then
         askForWindow(focusMessage);
       end
-      arrangeInGrid(false, waterGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight);
+      arrangeInGrid(false, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight);
     end
     y = y + 30;
 
@@ -430,7 +430,7 @@ function windowManager(title, message, allowCascade, allowWaterGap, varWidth, va
         if pauseForFocus then
           askForWindow(focusMessage);
         end
-        arrangeInGrid(true, waterGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight);
+        arrangeInGrid(true, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight);
       end
       y = y + 30;
     end
@@ -464,10 +464,10 @@ function windowManager(title, message, allowCascade, allowWaterGap, varWidth, va
 
     pauseForFocus = CheckBox(30, y, 10, 0xffffffff, " Pause for Focus",
                             pauseForFocus);
-    if allowWaterGap then
+    if allowUIGap then
       y = y + 20;
-      waterGap = CheckBox(30, y, 10, 0xffffffff, " Leave Gap for the UI",
-                            waterGap);
+      uiGap = CheckBox(30, y, 10, 0xffffffff, " Leave Gap for the UI",
+                            uiGap);
     end
       y = y + 30;
 
