@@ -50,6 +50,7 @@ items = {
           "Clay Lamp",
           "Crudely Carved Handle",
           "Flint Hammer",
+          "Heavy Mallet",
           "Large Crude Handle",
           "Long Sharp Stick",
           "Personal Chit",
@@ -596,6 +597,8 @@ function doTasks()
                   carve(curTask);
                 elseif curTask == "Flint Hammer" then
                   carve(curTask);
+                elseif curTask == "Heavy Mallet" then
+                    carve(curTask);
                 elseif curTask == "Wooden Peg" then
                   carve(curTask);
                 elseif curTask == "Wooden Pestle" then
