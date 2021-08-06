@@ -1552,10 +1552,10 @@ function checkSlate()
     if not slate then
         return false;
     end
-    local pos = srFindImage("slate.png",7000);
-    if(pos) then
-        stopMoving();
+    local pos = srFindImage("slate.png", 7000);
+    if pos then
         safeClick(pos[0] + 3, pos[1] + 3);
+        stopMoving();
         sleepWithBreak(1500);
         return true;
     end
