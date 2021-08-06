@@ -437,7 +437,7 @@ function addIngredient(building, ingredient)
 
     clickPoint(plusButtons[ingredient], 2, 2);
 
-    lsSleep(10);
+    lsSleep(100);
     srReadScreen();
 
     local ok = srFindImage("ok.png");
@@ -453,8 +453,9 @@ function addIngredient(building, ingredient)
         ok = srFindImage("ok.png");
         if ok then
           safeClick(ok[0] + 5, ok[1] + 5)
+          lsSleep(100);
+          srReadScreen();
         end
-        srReadScreen();
         break;
       end
       if ingredient == 7 then
@@ -478,7 +479,7 @@ function reset(building)
 
   local empty = findImage("paint/concentration0.png", building);
   if empty then
-    return;
+    return true;
   end
 
   for i = 1, 10 do
@@ -491,6 +492,13 @@ function reset(building)
 
   clickText(findText("Take the Paint", building));
   lsSleep(100);
+
+  local ok = srFindImage("ok.png");
+  if not ok then
+    return true;
+  else
+    return false;
+  end
 end
 
 function displayIngredients()
@@ -554,7 +562,7 @@ Desert Paint Codex to generate recipes.
 
 Hover over the ATITD window and press shift.
 ]]);
-  
+
   if file_exists("reactions.txt") then
     if not promptOkay("WARNING: reactions.txt already exists!\nRunning this macro will overwrite the file.") then
       error("User aborted macro!");
@@ -577,12 +585,15 @@ Hover over the ATITD window and press shift.
 
   local finish = false;
   local auto = false;
-  local retry = false;
   for i = 1, 2 do
     for index, data in pairs(paintData) do
       for reactionIndex, reactionTarget in pairs(data.reactions) do
         if not finish then
-          reset();
+          while not reset() do
+            if not promptOkay("Failed to reset lab. Please Try again.") then
+              error("Macro aborted by user.")
+            end
+          end
         end
 
         local begin = nil;
@@ -624,9 +635,22 @@ Hover over the ATITD window and press shift.
 
           if begin then
             lsPrint(5, 105, 5, 0.7, 0.7, 0xffffffff, "Difference: " .. difference[1] .. ", " .. difference[2] .. ", " .. difference[3]);
-            playerReactions[index][reactionIndex] = getReactionValue(reactionTarget, color, difference);
-            if playerReactions[index][reactionIndex] ~= nil then
-              lsPrint(5, 125, 5, 0.7, 0.7, 0xffffffff, "Reaction: " .. playerReactions[index][reactionIndex] .. " " .. reactionChars[reactionTarget]);
+            local reaction = getReactionValue(reactionTarget, color, difference);
+            if reaction ~= nil and (reaction > 64 or reaction < -64) then
+              promptOkay("Measured Invalid Reaction. Please Try again.", nil, nil, nil, true);
+
+              reaction = nil;
+              begin = false;
+              auto = false;
+              while not reset() do
+                if not promptOkay("Failed to reset lab. Please Try again.") then
+                  error("Macro aborted by user.")
+                end
+              end
+            end
+            playerReactions[index][reactionIndex] = reaction;
+            if reaction ~= nil then
+              lsPrint(5, 125, 5, 0.7, 0.7, 0xffffffff, "Reaction: " .. reaction .. " " .. reactionChars[reactionTarget]);
             else
               if not fixBoundsIndex then
                 fixBoundsIndex = fixBounds(color, index, reactionIndex, reactionTarget);
@@ -739,7 +763,7 @@ function file_exists(name)
 
     io.close(f);
     return true;
-  else 
-    return false; 
+  else
+    return false;
   end
 end
