@@ -5,6 +5,8 @@ askText = singleLine([[
   ovens simultaneously.
 ]]);
 
+click_delay = 0;
+
 wmText = "Tap Ctrl on Charcoal Hearths or Ovens\nto open and pin. Tap Alt to open, pin\nand stash.";
 
 buttons = {
@@ -62,7 +64,7 @@ function ccMenu()
   while 1 do
     for i=1, #buttons do
       if showButton(buttons[i]) then
-	runCommand(buttons[i]);
+        runCommand(buttons[i]);
       end
     end
     statusScreen("CC Control Center", 0x00d000ff);
