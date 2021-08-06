@@ -399,6 +399,10 @@ end
 boxTypes = {"Student's Forge", "Student's Casting Box", "Master's Forge", "Master's Casting Box"};
 
 function doit()
+  unpinOnExit(runForges);
+end
+
+function runForges()
   local t;
   success, forgeItems = deserialize("forge_items.txt");
   if success == false then
@@ -408,6 +412,9 @@ function doit()
   if success == false then
     error("Could not read casting box info");
   end
+  
+  askForWindow("Hover mouse over ATITD Window and press SHIFT");
+  windowManager(nil,nil, false, false, 480, 200, nil, 10, 20,false);
 
   local topLevel = {};
   topLevel.Forge = forgeItems;
@@ -516,9 +523,9 @@ function doit()
     local toAdd = ccamount - curCC;
     if t and toAdd > 0 then
       clickText(findText("Fill this ", win[i]));
-      waitForText("Add how much Charcoal?", nil, "Waiting for Charcoal message");
+      waitForImage("max.png", nil, "Waiting for Charcoal message");
       srKeyEvent(string.format("%d\n", toAdd));
-      waitForNoText("Add how much Charcoal?");
+      waitForNoImage("max.png");
       lsSleep(100);
       closePopUp();
     end
