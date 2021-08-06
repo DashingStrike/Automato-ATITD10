@@ -679,6 +679,7 @@ function closeWindowsFast()
     for buttons=1, #allTextReferences do
       srClickMouseNoMove(allTextReferences[buttons][0]+20, allTextReferences[buttons][1]+5);
     end
+    lsSleep(75);
 end
 
 -------------------------------------------------------------------------------
