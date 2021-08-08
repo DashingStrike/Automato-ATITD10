@@ -272,6 +272,8 @@ function edit_config_screen(config)
           config.check_for_water_button = CheckBox(X_PADDING, current_y, 10, WHITE, " Error if the water button can't be seen at start?", config.check_for_water_button)
           current_y = current_y + 30
           config.search_for_seed_bags = CheckBox(X_PADDING, current_y, 10, WHITE, " Pickup dead plant seed bags after each run?", config.search_for_seed_bags)
+          current_y = current_y + 30
+          config.reposition_avatar = CheckBox(X_PADDING, current_y, 10, WHITE, " Reposition your avatar between each run?", config.reposition_avatar)
 
         end
       }
@@ -948,7 +950,6 @@ function getUserParams()
   config.seed_type = config.selected_seed_type
   config.pre_look = true
   config.record_plant_animation = config.seed_type == 'Onions'
-  config.reposition_avatar = true
   config.sorting_mode = true
   config.alternate_drag = true
   click_delay = config.click_delay
