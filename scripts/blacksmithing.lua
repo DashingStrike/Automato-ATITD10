@@ -86,7 +86,8 @@ local products = {
   "Sharp Edged Blade",
   "Jagged Blade",
   "Twice Folded Blade",
-  "Spring"
+  "Spring",
+  "Horse Shoe",
 };
 
 local anvilOffset = {};
@@ -121,6 +122,16 @@ function loadRecipes()
     if success then
       recipes = default["recipes"];
       writeSetting("recipes", recipes);
+    end
+  end
+
+  local horseShoeMigrated = readSetting("horse_shoe_migrated", false);
+  if not horseShoeMigrated then
+    local success, default = deserialize("default_blacksmithing.txt");
+    if success then
+      table.insert(recipes, default["recipes"][5]);
+      writeSetting("recipes", recipes);
+      writeSetting("horse_shoe_migrated", true);
     end
   end
 end
@@ -248,6 +259,10 @@ function options()
       troubleshoot = CheckBox(x, y+110, z, 0xffffffff, " Troubleshooting Mode", troubleshoot, 0.65, 0.65);
 
       lsPrint(x + 180, y + 150, z, 1.0, 1.0, 0xffffffff, "Steps: " .. getClickCount(recipes[recipeIndex].steps));
+
+      if recipes[recipeIndex].product == "Horse Shoe" then
+        metalIndex = 2; --Horse Shoes can only be made in iron
+      end
 
       if lsButtonText(x, lsScreenY - 30, z, 100, 0x80ff80ff, "Start") then
         break;
@@ -433,6 +448,10 @@ function recordRecipe(existingRecipe)
       checkBreak();
       lsDoFrame();
       lsSleep(10);
+    end
+
+    if products[productIndex] == "Horse Shoe" then
+      metalIndex = 2; --Horse Shoes can only be made in iron
     end
 
     loadAnvil(metals[metalIndex], recipe.product);
