@@ -97,6 +97,10 @@ if find_pitch then
 end
 
 if flip_flop then
+	if tonumber(flip1) < 10 or tonumber(flip2) < 10 or tonumber(flip1) >30 or tonumber(flip2) > 30 then
+		promptOkay("FLIP-FLOP OPTION TURNED ON BUT INVALID FLIP VALUES ENTERED.\n\nEither turn off the flip-flop option, or enter valid numbers for flip-flop.",0xFFaaaaff,false,false,true);
+		error("Turn off flip-flop option.")
+	end
 	if pitch ~= tonumber(flip1) and pitch ~= tonumber(flip2) then
 		changePitch(flip1);
   end
@@ -323,7 +327,7 @@ function promptOptions()
 				if not tonumber(flip1) then
 				  is_done = false;
 				  lsPrint(140, y+24, z+10, 0.7, 0.7, 0xFF2020ff, "MUST BE A NUMBER");
-				  flip1 = 15;
+				  flip1 = 0;
 				end
 				writeSetting("flip1",tonumber(flip1));
 
@@ -333,7 +337,7 @@ function promptOptions()
 				if not tonumber(flip2) then
 				  is_done = false;
 				  lsPrint(140, y+52, z+10, 0.7, 0.7, 0xFF2020ff, "MUST BE A NUMBER");
-				  flip2 = 15;
+				  flip2 = 0;
 				end
 				writeSetting("flip2",tonumber(flip2));
 
