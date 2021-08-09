@@ -41,6 +41,7 @@ DEFAULT_MAX = 39;
 HIDE_MIC = 40;
 CATS = 41;
 BONFIRE = 42;
+SMASH_STONE = 43;
 
 local videoOptionKeys = {
   "Terrain Horizon",
@@ -83,6 +84,7 @@ local interfaceOptionKeys = {
   [HIDE_MIC] = "Hide Microphones when empty",
   [CATS] = "Drop all Cats when logging in",
   [BONFIRE] = "Verify before lighting a bonfire",
+  [SMASH_STONE] = "Don't show Smash this Stone...",
 }
 
 local movements = {
@@ -164,6 +166,10 @@ end
 
 --This option menu is quite complex. Will add support for settings as-needed.
 function getInterfaceOptions()
+  if true then
+    return {}; --Malard made some of the non-test options hidden depending on your skills, breaking this functionality
+  end
+
   if not openOption("Interface Options") then
     return {};
   end
@@ -284,9 +290,11 @@ end
 
 function setInterfaceOptions(options)
   local current = getInterfaceOptions();
-  if #current ~= #interfaceOptionKeys then
-    setOptionsError(interfaceOptionKeys, options, "Interface");
-    return;
+  for key, value in pairs(interfaceOptionKeys) do
+    if current[key] == nil then
+      setOptionsError(interfaceOptionKeys, options, "Interface");
+      return;
+    end
   end
 
   local interfaceOptionsRange = getOptionsRange("options/interface_options.png", "Waiting for Interface Options...");

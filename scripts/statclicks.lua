@@ -296,9 +296,9 @@ function stashAll()
 end
 
 function searchRottenWood()
-  woodForBugs = findText("Wood for Bugs");
-  if woodForBugs ~= nil then
-      clickText(woodForBugs);
+  searchForBugs = findText("Search for Bugs");
+  if searchForBugs ~= nil then
+      clickText(searchForBugs);
       lsSleep(per_tick);
       srReadScreen();
       closePopUp();
