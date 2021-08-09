@@ -640,13 +640,18 @@ local suggestionData = {
 };
 
 local blueColors = {
+  0x00012Fff,
   0x000130ff,
+  0x0101F9ff,
   0x010281ff,
   0x0203D2ff,
+  0x0203D3ff,
   0x0203FBff,
   0x2B2CFCff,
   0x7D7DFDff,
+  0x7D7EFDff,
   0xCFCFFEff,
+  0xCFD0FEff,
 };
 
 local recipeData = {};
