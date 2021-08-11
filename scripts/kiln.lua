@@ -152,7 +152,7 @@ function promptParameters()
 			lsPrint(10, y+5, z, 0.65, 0.65, 0xFFFFFFff, helpText);
 			y = y + 22;
 			lsPrintWrapped(10, y+5, z+10, lsScreenX - 20, 0.7, 0.7, 0xD0D0D0ff,
-		  "Stand where you can reach all tubs with all ingredients on you.");
+		  "Stand where you can reach all kilns with all ingredients on you.");
 		elseif hotkeyMode and not pinnedMode then
 			lsPrintWrapped(10, y+15, z, lsScreenX - 20, 0.7, 0.7, 0xffff40ff,
 			"Mode Settings\n---------------------------------------");
@@ -163,7 +163,7 @@ function promptParameters()
 			lsPrint(10, y+25, z, 0.65, 0.65, 0xFFFFFFff, helpText);
 			y = y + 22;
 			lsPrintWrapped(10, y+25, z+10, lsScreenX - 20, 0.7, 0.7, 0xD0D0D0ff,
-		  "Stand where you can reach all tubs with all ingredients on you.");
+		  "Stand where you can reach all kilns with all ingredients on you.");
     end
 
 	if pinnedMode and kilnPasses ~= 1 then
@@ -300,11 +300,11 @@ clickList = {};
     was_shifted = is_shifted;
     checkBreak();
     lsPrint(10, 10, z, 0.7, 0.7, 0xFFFFFFff,
-	    "Set Pottery Wheel Locations (" .. #clickList .. ")");
+	    "Set Kiln Locations (" .. #clickList .. ")");
     local y = 60;
     lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "Select camera and zoom level");
     y = y + 20
-    lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "that best fits the pottery wheels in screen.")
+    lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "that best fits the Kilns in screen.")
     y = y + 20
     lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "Suggest: F8F8 view.")
     y = y + 20
@@ -312,17 +312,17 @@ clickList = {};
     y = y + 40;
     lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "MAKE SURE CHAT IS MINIMIZED!")
     y = y + 40;
-    lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "1) Set all pottery wheel locations:");
+    lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "1) Set all Kiln locations:");
     y = y + 20;
     lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "Hover mouse, " .. key .. " over each")
     y = y + 20;
-    lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "pottery wheel.")
+    lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "Kiln.")
     y = y + 30;
-    lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "2) After setting all pottery wheel locations:")
+    lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "2) After setting all Kiln locations:")
     y = y + 20;
-    lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "Click Start to begin checking pottery wheels.")
+    lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "Click Start to begin checking Kilns.")
 
-    if #clickList >= 1 then -- Only show start button if one or more pottery wheel was selected.
+    if #clickList >= 1 then -- Only show start button if one or more Kiln was selected.
       if lsButtonText(10, lsScreenY - 30, z, 100, 0xFFFFFFff, "Start") then
         is_done = 1;
       end
