@@ -28,6 +28,7 @@ items = {
           "Limestone",
           "Oil (Flax Seed)",
           "Push Pyramid",
+          "Recycle Tattered Sail",
           "Stir Cement",
           "Weave Canvas",
           "Weave Linen",
@@ -170,30 +171,39 @@ function weave(clothType)
     end
 
     if clothType == "Basket" then
-        weaveImage = srFindImage("statclicks/weave_papyrus.png");
+      weaveImage = srFindImage("statclicks/weave_papyrus.png");
+    elseif clothType == "TatteredSail" then
+      srReadScreen();
+      recycleSail = findText("Recycle");
     else
-        weaveImage = srFindImage("statclicks/weave_" .. srcType .. ".png");
+      weaveImage = srFindImage("statclicks/weave_" .. srcType .. ".png");
     end
-    if weaveImage ~= nil then
+    if weaveImage or recycleSail ~= nil then
+      if recycleSail ~= nil then
+        safeClick(recycleSail[0],recycleSail[1]);
+      else
         safeClick(weaveImage[0],weaveImage[1]);
+      end
         lsSleep(100);
         --Close the error window if a student's loom
         srReadScreen();
         studloom = srFindImage("statclicks/student_loom.png")
-        if studloom then
+          if studloom then
             lsSleep(500);
             srReadScreen();
             closePopUp();
-        end
+          end
         -- reload the loom
-        loadImage = srFindImage("statclicks/with_" .. srcType .. ".png");
-        if loadImage ~= nil then
+        if not recycleSail then
+          loadImage = srFindImage("statclicks/with_" .. srcType .. ".png");
+          if loadImage ~= nil then
             safeClick(loadImage[0],loadImage[1]);
             local t = waitForImage("statclicks/how_much.png", 2000);
-            if t ~= nil then
+              if t ~= nil then
                 srCharEvent(srcQty .. "\n");
-            end
+              end
             closePopUp();
+          end
         end
     end
 
@@ -619,6 +629,8 @@ function doTasks()
                   weave("Canvas");
                 elseif curTask == "Weave Linen" then
                   weave("Linen");
+                elseif curTask == "Recycle Tattered Sail" then
+                  weave("TatteredSail");
                 elseif curTask == "Weave Wool Cloth" then
                   weave("Wool");
                 elseif curTask == "Weave Papy Basket" then
