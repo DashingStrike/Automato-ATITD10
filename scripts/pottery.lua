@@ -258,9 +258,9 @@ function checkMaking()
 	while 1 do
 		refreshWindows();
 		srReadScreen();
-		this = findAllText("This");
+		wheel = findAllText("Wheel");
 		making = findAllText("Mould a " .. product);
-			if #making == #this then
+			if #making == #wheel then
 				break; --We break this while statement because Making is not detect, hence we're done with this round
 			end
 		sleepWithStatus(999, "Waiting for " .. product .. "s to finish", nil, 0.7, "Monitoring Pinned Window(s)");
