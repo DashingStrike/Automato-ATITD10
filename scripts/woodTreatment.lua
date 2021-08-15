@@ -57,60 +57,66 @@ function makeBoards(config, boards_amount)
         makeBoardsBatch(config, 1, remainder);
       end
   else
-    makeBoardsBatch(config, boards_amount)
+    makeBoardsBatch(config, boards_amount, nil, boards_amount)
   end
 end
 
-function makeBoardsBatch(config, num_batches, remainder)
+function makeBoardsBatch(config, num_batches, remainder, batchSize)
 srReadScreen();
-  for i=1, num_batches do
-  checkBreak();
-  srReadScreen();
-  Load = findText("Load Boards");
-    if Load then
-      clickText(Load);
-    else
-      error("Could not find a 'Load Boards' option")
-    end
-  waitForImage("max.png", 500);
-  srReadScreen();
-  local max = srFindImage("max.png")
-    if remainder ~= nil then
-      srKeyEvent(remainder); -- Add the treatment value
-      srKeyEvent(string.char(13));  -- Send Enter Key to close the window
-    else
-      safeClick(max[0]+5,max[1]+5);
-    end
-  waitForNoImage("max.png", 500);
-
-    for iidx=1, #recipes[config.board_index].ingredient do
-      checkBreak();
-      srReadScreen();
-
-      sleepWithStatus(2500, "Allowing the server to settle down,"
-      .. " to avoid 'Wood Treatment Tank is Busy' popup.", nil, 0.7);
-      clickText(waitForText("Treat..."));
-      waitForText("Treat with")
-
-      srReadScreen();
-      local treat_buttons = findAllImages("woodTreatment/treatWith.png");
-        if (#treat_buttons == 0) then
-          error "No 'Treat with...' option found";
-        end
-
-      checkBreak();
-      local buttonNo = TREAT_INDEX[recipes[config.board_index].ingredient[iidx]];
-      srClickMouseNoMove(treat_buttons[buttonNo][0]+2,treat_buttons[buttonNo][1]+2);
-      waitForImage("max.png", 500);
-      srKeyEvent(recipes[config.board_index].amount[iidx]) -- Add the treatment value
-      srKeyEvent(string.char(13));  -- Send Enter Key to close the window
-      waitForNoImage("max.png", 500);
-      checkProcessing(recipes[config.board_index].ingredient[iidx]);
-    end
-  srReadScreen();
-  lsSleep(250);
-  clickAllText("Take Everything");
+  if batchSize ~= nil then
+    num_batches = 1
   end
+    for i=1, num_batches do
+    checkBreak();
+    srReadScreen();
+    Load = findText("Load Boards");
+      if Load then
+        clickText(Load);
+      else
+        error("Could not find a 'Load Boards' option")
+      end
+    waitForImage("max.png", 500);
+    srReadScreen();
+    local max = srFindImage("max.png")
+      if remainder ~= nil then
+        srKeyEvent(remainder); -- Add the treatment value
+        srKeyEvent(string.char(13));  -- Send Enter Key to close the window
+      elseif batchSize > 0 then
+        srKeyEvent(batchSize); -- Add the treatment value
+        srKeyEvent(string.char(13));  -- Send Enter Key to close the window
+      else
+        safeClick(max[0]+5,max[1]+5);
+      end
+    waitForNoImage("max.png", 500);
+
+      for iidx=1, #recipes[config.board_index].ingredient do
+        checkBreak();
+        srReadScreen();
+
+        sleepWithStatus(2500, "Allowing the server to settle down,"
+        .. " to avoid 'Wood Treatment Tank is Busy' popup.", nil, 0.7);
+        clickText(waitForText("Treat..."));
+        waitForText("Treat with")
+
+        srReadScreen();
+        local treat_buttons = findAllImages("woodTreatment/treatWith.png");
+          if (#treat_buttons == 0) then
+            error "No 'Treat with...' option found";
+          end
+
+        checkBreak();
+        local buttonNo = TREAT_INDEX[recipes[config.board_index].ingredient[iidx]];
+        srClickMouseNoMove(treat_buttons[buttonNo][0]+2,treat_buttons[buttonNo][1]+2);
+        waitForImage("max.png", 500);
+        srKeyEvent(recipes[config.board_index].amount[iidx]) -- Add the treatment value
+        srKeyEvent(string.char(13));  -- Send Enter Key to close the window
+        waitForNoImage("max.png", 500);
+        checkProcessing(recipes[config.board_index].ingredient[iidx]);
+      end
+    srReadScreen();
+    lsSleep(250);
+    clickAllText("Take Everything");
+    end
 end
 
 function refreshWindows()
