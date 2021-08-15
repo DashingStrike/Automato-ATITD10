@@ -318,25 +318,28 @@ function searchRottenWood()
 end
 
 function grindMetal()
-local startGrinder = findText("Start");
-local repairGrinder = findText("Repair")
-  if startGrinder then
-    clickText(startGrinder);
-    lsSleep(per_tick);
-  elseif repairGrinder then
-    clickText(repairGrinder);
-    lsSleep(per_tick);
-  else
-    srReadScreen();
-    local wind = findText("Wind");
-      if wind ~= nil then
-        clickText(wind);
-        lsSleep(per_tick);
-        srReadScreen();
-        closePopUp();
-        lsSleep(per_tick);
-      end
-  end
+  local startGrinder = findText("Start");
+  local repairGrinder = findText("Repair")
+
+  clickText(findText("This is [a-z]+ Barrel Grinder", nil, REGEX));
+
+    if startGrinder and repairGrinder then
+      clickText(repairGrinder);
+      lsSleep(per_tick);
+    elseif startGrinder and not repairGrinder then
+      clickText(startGrinder);
+      lsSleep(per_tick);
+    else
+      srReadScreen();
+      local wind = findText("Wind");
+        if wind ~= nil then
+          clickText(wind);
+          lsSleep(per_tick);
+          srReadScreen();
+          closePopUp();
+          lsSleep(per_tick);
+        end
+    end
 end
 
 
