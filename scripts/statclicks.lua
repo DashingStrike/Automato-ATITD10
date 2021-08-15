@@ -19,6 +19,7 @@ items = {
         },
         --end
         {"",
+          "Barrel Grinder",
           "Churn Butter",
           "Dig Hole",
           "Dirt",
@@ -315,6 +316,30 @@ function searchRottenWood()
       lsSleep(per_tick);
   end
 end
+
+function grindMetal()
+local startGrinder = findText("Start");
+local repairGrinder = findText("Repair")
+  if startGrinder then
+    clickText(startGrinder);
+    lsSleep(per_tick);
+  elseif repairGrinder then
+    clickText(repairGrinder);
+    lsSleep(per_tick);
+  else
+    srReadScreen();
+    local wind = findText("Wind");
+      if wind ~= nil then
+        clickText(wind);
+        lsSleep(per_tick);
+        srReadScreen();
+        closePopUp();
+        lsSleep(per_tick);
+      end
+  end
+end
+
+
 
 function flaxOil()
   srReadScreen();
@@ -639,6 +664,8 @@ function doTasks()
                   gather("Limestone");
                 elseif curTask == "Dirt" then
                   gather("Dirt");
+                elseif curTask == "Barrel Grinder" then
+                  grindMetal();
                 elseif curTask == "Churn Butter" then
                   churnButter();
                 elseif curTask == "Stir Cement" then
