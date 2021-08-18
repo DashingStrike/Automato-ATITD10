@@ -11,7 +11,7 @@ pitlocs = {};
 pitstokecnt = {};
 pitchangecnt = {};
 PIT_THRESH_UNSTOKE = 20;
-PIT_THRESH_STOKE = 4;
+PIT_THRESH_STOKE = 6;
 PIT_TEST_POINTS = 15;
 
 function doit()
@@ -216,7 +216,7 @@ function doStoke(pitnum)
   end
   x,y = srMousePos();
   srSetMousePos(pitlocs[pitnum][0], pitlocs[pitnum][1]);
-  lsSleep(150);
+  lsSleep(200);
   srKeyEvent('S');
   lsSleep(100);
   srSetMousePos(x, y);
