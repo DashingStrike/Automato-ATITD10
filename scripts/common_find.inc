@@ -433,12 +433,15 @@ end
 --
 -- startX, startY -- position to start looking
 -- characterSet (optional) -- constant defining images and sizes:
---                            NORMAL_SET (default), BOLD_SET, SMALL_SET
+--                            NORMAL_SET (default), BLACK_BOLD_SET,
+--                            BLACK_SMALL_SET, BLUE_BOLD_SET, BLUE_SMALL_SET
 -------------------------------------------------------------------------------
 
 NORMAL_SET = 0;
-BOLD_SET = 1;
-SMALL_SET = 2;
+BLACK_BOLD_SET = 1;
+BLACK_SMALL_SET = 2;
+BLUE_BOLD_SET = 3;
+BLUE_SMALL_SET = 4;
 
 function ocrNumber(startX, startY, characterSet)
   if not startX or not startY then
@@ -454,27 +457,27 @@ function ocrNumber(startX, startY, characterSet)
   local offset=0;
   while (not digit) and (offset < 10) do
     digit = findDigit(x, y, sizeX, sizeY, prefix);
-    if not digit then
-      x = x+1;
-      offset = offset + 1;
-    end
+      if not digit then
+        x = x+1;
+        offset = offset + 1;
+      end
   end
   -- find remaining digits
   local result = 0;
   while digit do
     if decimal == false then
       result = result * 10 + digit;
-      x = x + sizeX;
+      x = x + sizeX + 1;
     else
       result = result + digit/10^ afterDecimal;
       afterDecimal = afterDecimal + 1;
-      x = x + sizeX;
+      x = x + sizeX + 1;
     end
     digit = findDigit(x, y, sizeX, sizeY, prefix);
     if digit == "." then
       decimal = true;
       afterDecimal = 1;
-      x = x + 4;
+      x = x + 4
       digit = findDigit(x, y, sizeX, sizeY, prefix);
     end
   end
@@ -483,25 +486,27 @@ end
 
 function findDigit(x, y, sizeX, sizeY, prefix)
   for i=0, 9 do
-    if srFindImageInRange(prefix .. i .. ".png", x, y, sizeX, sizeY, 5000) then
+    if srFindImageInRange(prefix .. i .. ".png", x, y, sizeX, sizeY, 500) then
       return i;
     end
   end
 
-  if prefix == "ocr/" then
-    if srFindImageInRange("ocr/decimals.png", x, y, sizeX, sizeY, 5000) then
+  if prefix == "ocr/small/blue/" then
+    if srFindImageInRange("ocr/small/blue/decimals.png", x, y, sizeX, sizeY, 500) then
       return ".";
     end
   end
 end
 
 function getCharacterSet(characterSet)
-  if characterSet == BOLD_SET then
-    return "ocr/bold/", 7, 9;
-  elseif characterSet == SMALL_SET then
-    return "ocr/small/", 6, 8;
-  else
-    return "ocr/default/", 6, 9;
+  if characterSet == BLACK_BOLD_SET then
+    return "ocr/bold/black/", 7, 9;
+  elseif characterSet == BLACK_SMALL_SET then
+    return "ocr/small/black/", 6, 9;
+  elseif characterSet == BLUE_BOLD_SET then
+    return "ocr/bold/blue/", 7, 9;
+  elseif characterSet == BLUE_SMALL_SET then
+    return "ocr/small/blue/", 6, 9;
   end
 end
 
