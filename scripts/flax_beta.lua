@@ -731,7 +731,7 @@ function harvestAll(loop_count)
         end
       end
 
-     local waters = findAllImages("flax/weedWater.png")
+     local waters = findAllImages("flax/water.png")
       for i = #waters, 1, -1 do
         lastClick = lastClickTime(waters[i][0], waters[i][1])
         if lastClick == nil or lsGetTimer() - lastClick >= CLICK_MIN_WEED then
