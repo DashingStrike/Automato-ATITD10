@@ -250,7 +250,7 @@ local function makeItem(currentItem, window)
   if lastParent == "Small Gear x1" then
     local t = waitForText("Small Gear...");
     safeClick(t[0]+20,t[1]+4);
-    local t = waitForText("Make 1...");
+    local t = waitForText("Make 1 ...");
     safeClick(t[0]+20,t[1]+4);
     text = name .. " Small Gear";
   elseif lastParent == "Small Gear x10" then
@@ -268,7 +268,7 @@ local function makeItem(currentItem, window)
   elseif lastParent == "Medium Gear x1" then
     local t = waitForText("Medium Gear...");
     safeClick(t[0]+20,t[1]+4);
-    local t = waitForText("Make 1...");
+    local t = waitForText("Make 1 ...");
     safeClick(t[0]+20,t[1]+4);
     text = name .. " Medium Gear";
   elseif lastParent == "Medium Gear x10" then
@@ -412,7 +412,7 @@ function runForges()
   if success == false then
     error("Could not read casting box info");
   end
-  
+
   askForWindow("Hover mouse over ATITD Window and press SHIFT");
   windowManager(nil,nil, false, false, 480, 200, nil, 10, 20,false);
 
