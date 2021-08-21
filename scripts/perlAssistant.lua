@@ -9,7 +9,7 @@ perls = {};
 solutions = {};
 solved = false;
 
-
+xyWindowSize = {};
 
 colorNames     = {"Aqua",      "Beige",     "Black",     "Coral",     "Pink",      "Smoke",     "White"};
 colorValues    = {0x00FFFFff,  0xF5F5DCff,  0x000000ff,  0xFF7F50ff,  0xFFC0CBff,  0x738276ff,  0xF0F0F0ff};
@@ -112,6 +112,7 @@ end
 
 function doit()
   askForWindow("Press shift over ATiTD window.");
+  xyWindowSize = srGetWindowSize();
   if not loadNecklace() then saveNecklace(); end;
   while 1 do
     doSolver(getBedSize());
@@ -173,6 +174,8 @@ end
 
 function doSolver(bedSize)
 
+  solutionDiving = true;
+
   perls = {};
   
   local maxPerlColors = 1;
@@ -201,6 +204,10 @@ function doSolver(bedSize)
   local solShadowColor = 0x000000ee;
   local error = false;
   local solved = false;
+  local detected = false;
+  local topLeftGridPos = {[0] = 0, 0};
+  local gapDistance = 0;
+  local gotoPosFromCenter = {[0] = 0, 0};
   while true do
 
     checkBreak();
@@ -244,6 +251,9 @@ function doSolver(bedSize)
               perls[w][h] = perls[w][h] + 1;
               if perls[w][h] > maxPerlColors then perls[w][h] = 0; end;
             elseif not error and solved then
+              if solutionDiving then
+                safeClick(xyWindowSize[0]*.5+100, xyWindowSize[1]*.5+100, 1);
+              end
               if bedSize ~= 5 then
                  perls[w][h] = perls[w][h] + 1;
                  if perls[w][h] > maxPerlColors then perls[w][h] = 0; end;
@@ -274,7 +284,7 @@ function doSolver(bedSize)
 
           if     perls[w][h] == 1 then perlColor = 0x0000FFee;
           elseif perls[w][h] == 2 then perlColor = 0x00FF00ee;
-          elseif perls[w][h] == 3 then perlColor = 0xFFFFFFee;
+          elseif perls[w][h] == 3 then perlColor = 0xFFD0D0ee;
           end
 
           lsDrawCircle(x + (perlWHSize * .5), y + (perlWHSize * .5), z + 1, (perlWHSize * .33), .5, perlColor)
@@ -327,6 +337,228 @@ function doSolver(bedSize)
         error = false;
         solved = false;
       end
+
+      
+      if true then
+        
+        
+        if lsButtonText(startX + perlGap, startY + baseSize + (perlGap * 2) + 10 + 30, z, 75,
+                        0xFFFFFFff, "Detect") then
+          for w = 1, bedSize do
+            perls[w] = {}; solutions[w] = {};
+            for h = 1, bedSize do
+              perls[w][h] = 0; solutions[w][h] = 0;
+            end
+          end
+          error = false;
+          solved = false;
+
+            local leftMostCluster = 0;
+            local rightMostCluster = 0;
+            local topMostCluster = 0;
+            local bottomMostCluster = 0;
+
+          
+          clusters = {}
+          for c = 1, maxPerlColors do
+            if c == 1 then -- blue
+              clusters[c] = lsAnalyzeCustom(15, 200, 0, xyWindowSize[1] * 0.9,  0xB1B1C0ff, 0xCECEFFff); 
+            elseif c == 2 then -- green
+              clusters[c] = lsAnalyzeCustom(15, 200, 0, xyWindowSize[1] * 0.9,  0x9EC27Eff, 0xC9F0B1ff); -- green
+            else -- redish white :( the worst to detect
+              clusters[c] = lsAnalyzeCustom(20, 200, 0, xyWindowSize[1] * 0.9,  0xC6C087ff, 0xFEEEF6ff); -- redish white
+            end
+          end
+          
+          if clusters then
+            for c = 1, maxPerlColors do
+              --lsPrintln("Color: " .. c .. "\n" ..inspectit.inspect(clusters[c]));
+            end
+            local clusterGrid = {};
+            local gridPositions = {};
+            for x = 1, bedSize do
+              if not clusterGrid[x] then clusterGrid[x] = {}; end;
+              if not gridPositions[x] then gridPositions[x] = {}; end;
+              for y = 1, bedSize do
+                clusterGrid[x][y] = 0;
+                gridPositions[x][y] = {[0] = x, y};
+              end
+            end
+            --lsPrintln("gridPositions: \n" .. inspectit.inspect(gridPositions));
+            local minX = 99999;
+            local maxX = 0;
+            local minY = 99999;
+            local maxY = 0;
+
+            
+
+            local leftMostColor = 1;
+            local rightMostColor = 1;
+            local topMostColor = 1;
+            local bottomMostColor = 1;
+
+            
+
+            
+            for c = 1, #clusters do
+              --clusters[c][0] = {};
+              
+              for i = 1, #clusters[c] do
+                minX = math.min(minX, clusters[c][i][0]);
+                minY = math.min(minY, clusters[c][i][1]);
+                maxX = math.max(maxX, clusters[c][i][0]);
+                maxY = math.max(maxY, clusters[c][i][1]);
+                clusters[c][0] = {[0] = 99999, 99999};
+                if c ~= 3  and minX < clusters[leftMostColor][leftMostCluster][0] then
+                  leftMostCluster = i;
+                  leftMostColor = c;
+                end
+                if c ~= 3 and minY < clusters[topMostColor][topMostCluster][1] then
+                  topMostCluster = i;
+                  topMostColor = c;
+                end
+                clusters[c][0] = {[0] = 0, 0};
+                if c ~= 3 and maxX > clusters[rightMostColor][rightMostCluster][0] then
+                  rightMostCluster = i;
+                  rightMostColor = c;
+                end
+                if c ~= 3 and maxY > clusters[bottomMostColor][bottomMostCluster][1] then
+                  bottomMostCluster = i;
+                  bottomMostColor = c;
+                end
+              end
+              
+              detected = true;
+            end
+            
+            --lsPrintln("left="..leftMostCluster .. ", top=" .. topMostCluster .. 
+            --          ", right=" .. rightMostCluster .. ", bottom=" .. bottomMostCluster);
+            gridPositions[1][1] = {[0] = clusters[leftMostColor][leftMostCluster][0],
+                                   clusters[topMostColor][topMostCluster][1]};
+            topLeftGridPos = {[0] = clusters[leftMostColor][leftMostCluster][0],
+                                   clusters[topMostColor][topMostCluster][1]};
+            --lsPrintln("going to: " .. inspectit.inspect(topLeftGridPos));
+            gridPositions[bedSize][bedSize] = {[0] = clusters[rightMostColor][rightMostCluster][0],
+                                               clusters[bottomMostColor][bottomMostCluster][1]};
+            
+            local gridWidth = gridPositions[bedSize][bedSize][0] - gridPositions[1][1][0];
+            local gridHeight = gridPositions[bedSize][bedSize][1] - gridPositions[1][1][1];
+            local gridXGap = (gridWidth/(bedSize-1));
+            local gridYGap = (gridHeight/(bedSize-1));
+            gapDistance = 0;
+            if gridXGap > gridYGap then
+              gapDistance = ((gridXGap - gridYGap)*.5)+gridYGap;
+            elseif gridYGap > gridXGap then
+              gapDistance = ((gridYGap - gridXGap)*.5)+gridXGap;
+            else
+              gapDistance = gridXGap;
+            end
+            --lsPrintln("gapDistance = " .. gapDistance);
+
+              for x = 1, bedSize do
+                for y = 1, bedSize do
+                  --if not (x == 1 and y == 1) and not (x == bedSize and y == bedSize) then 
+                    gridPositions[x][y] = {[0] = math.floor(gridPositions[1][1][0] + (gapDistance * (x-1))+0.5), math.floor(gridPositions[1][1][1] + (gapDistance * (y-1))+0.5)};
+                  --end
+                end
+              end
+
+            --lsPrintln("clusers: \n" .. inspectit.inspect(clusters));
+            --lsPrintln("gridPositions: \n" .. inspectit.inspect(gridPositions));
+            for c = 1, #clusters do
+              for x = 1, bedSize do
+                for y = 1, bedSize do
+                  for i = 1, #clusters[c] do
+                    --perls[w][h]
+                    if perls[x][y] < 2 and
+                       clusters[c][i][0] < gridPositions[x][y][0] + 15 and
+                       clusters[c][i][1] < gridPositions[x][y][1] + 15 and
+                       clusters[c][i][0] > gridPositions[x][y][0] - 15 and
+                       clusters[c][i][1] > gridPositions[x][y][1] - 15 then
+                      perls[x][y] = c;
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+
+        if detected and solved and lsButtonText(startX - perlGap + baseSize + (perlGap * 2) - 65, startY + baseSize + (perlGap * 2) + 10 + 30, z, 65,
+                      0xFFFFFFff, "Autodive") then
+
+          local x = 1;
+          local y = 1;
+          gotoPosFromCenter = {[0] = 0, 0};
+          local rlToggle = false;
+          gapDistance = math.floor(gapDistance+.5);
+          --lsPrintln("gapDistance: " .. gapDistance .. " going to: " .. inspectit.inspect(topLeftGridPos));
+          
+          safeClick(topLeftGridPos[0], topLeftGridPos[1]);
+          --srSetMousePos(topLeftGridPos[0], topLeftGridPos[1]);
+          --srClickMouse(topLeftGridPos[0], topLeftGridPos[1]);
+          
+          sleepWithBreakCheck(7000);
+          while y ~= bedSize+1  do
+            while x ~= bedSize+1 and x ~= 0 do
+              --lsPrintln("Top of while loops, x="..x.." y="..y);
+              --
+              if solutions[x][y] ~= 0 then
+                --lsPrintln("perls="..solutions[x][y].." gotoPosFromCenter: " ..inspectit.inspect(gotoPosFromCenter));
+                gotoPosFromCenter[0] = gotoPosFromCenter[0]+(xyWindowSize[0]*.5);
+                gotoPosFromCenter[1] = gotoPosFromCenter[1]+(xyWindowSize[1]*.5);
+                safeClick(gotoPosFromCenter[0], gotoPosFromCenter[1]);
+                gotoPosFromCenter = {[0] = 0, 0};
+                sleepWithBreakCheck(7000);
+                local sleepTime = 0;
+                while solutions[x][y] ~= 0 do
+                  solutions[x][y] = solutions[x][y] - 1;
+                  lsSleep(75);
+                  safeClick((xyWindowSize[0]*.5)+100, (xyWindowSize[1]*.5)+100, 1);
+                  lsSleep(150);
+                  sleepTime = sleepTime + 7000;
+                  checkBreak();
+                end
+                sleepWithBreakCheck(sleepTime);
+              end
+              if not rlToggle then x = x + 1;
+              else x = x - 1; end;
+              if x ~= 0 and x ~= bedSize+1 then
+                if not rlToggle then
+                  gotoPosFromCenter[0] = gotoPosFromCenter[0] + gapDistance;
+                else
+                  gotoPosFromCenter[0] = gotoPosFromCenter[0] - gapDistance;
+                end
+              end
+            end
+            if not rlToggle then x = bedSize; rlToggle = true;
+            else x = 1; rlToggle = false; end;
+            y = y + 1;
+            if y ~= bedSize+1 then
+              gotoPosFromCenter[1] = gotoPosFromCenter[1] + gapDistance;
+            end
+          end
+
+
+        end
+        solutionDiving = lsCheckBox(startX + perlGap, startY + baseSize + (perlGap * 2) + 10 + 60, z, 0xFFFFFFff, " Dive on solution clicks", solutionDiving)
+        lsPrintWrapped(startX + perlGap, startY + baseSize + (perlGap * 2) + 10 + 95, z, lsScreenX - (startX*2),
+                       0.75, 0.75, 0xFF7733ff, "    Detection can be difficult depending on the time of day, " ..
+                       "afternoon is the worst and pinkish-white is the toughest to detect.  It may take several "..
+                       "clicks of [Detect] to fully, or mostly, detect all spots.  You may manually fix detected or "..
+                       "missed spots.\n    Autodive will attempt to "..
+                       "swim and dive your solution.  It is dependent on detection to get the grid "..
+                       "size correct, so you need to have had detected a non-white spot on all 4 sides in order "..
+                       "to use it.\n    Clicking on a solved grid position will cause you to dive where you are "..
+                       "currently, so you can swim to a position with a number manually in-game and click on the solution in that position "..
+                       "the number of times indicated to dive that many times in that location, then swim "..
+                       "to another position and repeat watching the puzzle get solved in game matching the "..
+                       "solution grid.");
+        --lsDoFrame();
+      end
+
+
+    --------------------------
 
     else
       srShowImageDebug("perlAssistant/perlAssistantTable.png", tableImageXOffset, tableImageYOffset, 0, 1);
@@ -615,8 +847,10 @@ function doBasicSweep(pivoti, pivotj)
     end
 end
 
-
-
-function editPerlTable()
-
+function sleepWithBreakCheck(delay_time)
+    local start_time = lsGetTimer();
+    while delay_time - (lsGetTimer() - start_time) > 0 do
+        checkBreak();
+        lsSleep(50);
+    end
 end
