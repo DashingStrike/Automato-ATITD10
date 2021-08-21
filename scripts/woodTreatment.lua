@@ -81,7 +81,7 @@ srReadScreen();
       if remainder ~= nil then
         srKeyEvent(remainder); -- Add the treatment value
         srKeyEvent(string.char(13));  -- Send Enter Key to close the window
-      elseif batchSize > 0 then
+      elseif batchSize ~= nil then
         srKeyEvent(batchSize); -- Add the treatment value
         srKeyEvent(string.char(13));  -- Send Enter Key to close the window
       else
