@@ -188,26 +188,16 @@ function trygem () -- Main status update
     pitch = tonumber(string.match(find_pitch[2],"Pitch Angle is ([-0-9]+)"));
   end
 	
-	local take_every = findText("Take..."); -- new menu
+	local take_every = findText("Empty Gem Basket"); -- new menu
 	local take_the = findText("Take the"); -- old/current menu
   local cur_gem_hour = (lsGetTimer() - last_gem_hour); -- milliseconds since last gem found or macro start
   local not_refreshed = 1; -- var to detect if the menu has refreshed after taking
 
 	if take_every then -- potentially new menu for upgraded water mine with basket
-			clickAllText("Take...");
+			clickAllText("Empty Gem Basket");
 			lsSleep(srdelay);
-			clickAllText("Everything");
-			while not_refreshed == 1 do
-			  clickAllText("Water Mine");	
-
-				srReadScreen();
-				take_every = findText("Take...");
-        statusScreen("Waiting for server update.")
-			  if take_every == nil then
-			  	not_refreshed = 0;
-			  end
-			  lsSleep(50); -- don't chew up all the cpu
-			end
+		  clickAllText("Water Mine");	
+		  lsSleep(50); 
 	    writeToLog(0);
 	    last_gem_hour = lsGetTimer();
 	    total_gems = total_gems + 1;
