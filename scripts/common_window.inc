@@ -19,11 +19,18 @@ BOTTOM_RIGHT = 3;
 -- corner -- destination corner (TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT,
 --           or BOTTOM_RIGHT)
 -- bounds (optional) -- bounds of window
+-- offset (optional) -- Offset from the corner to stash the windows. Useful when
+--                      the state of the window can change before being arranged.
+--                      This will be a hard offset, ignoring the current window
+--                      size entirely (so always supply both x and y).
+--                      Note: This does not auto-correct to keep things off the game
+--                      window borders. Factor that space in when using this.
+--                      object structure: offset.x, offset.y (as positive values).
 -------------------------------------------------------------------------------
 
 local stashBit = 0;
 
-function stashWindow(sourceX, sourceY, corner, bounds)
+function stashWindow(sourceX, sourceY, corner, bounds, offset)
   if not sourceX or not sourceY or not corner then
     error("Incorrect number of arguments for stashWindow()");
   end
@@ -37,14 +44,36 @@ function stashWindow(sourceX, sourceY, corner, bounds)
   size[1] = bounds[3] - bounds[1];
   local screen = srGetWindowSize();
   local dest = {};
-  dest[0] = screen[0] - size[0] + (sourceX - bounds[0]) - 5;
-  if corner == TOP_LEFT or corner == BOTTOM_LEFT then
-    dest[0] = sourceX - bounds[0] + 5;
+
+  
+  if offset ~= nill then
+    -- There's an offset. Override to place the window at the exact offset from the
+    -- specified corner.
+    if corner == TOP_LEFT then
+      dest[0] = offset.x;
+      dest[1] = offset.y + stashBit;
+    elseif corner == TOP_RIGHT then
+      dest[0] = screen[0] - offset.x;
+      dest[1] = offset.y + stashBit;
+    elseif corner == BOTTOM_LEFT then
+      dest[0] = offset.x;
+      dest[1] = screen[1] - offset.y - stashBit;
+    elseif corner == BOTTOM_RIGHT then
+      dest[0] = screen[0] - offset.x;
+      dest[1] = screen[1] - offset.y - stashBit;
+    end
+  else
+    -- No offset, normal logic.
+    dest[0] = screen[0] - size[0] + (sourceX - bounds[0]) - 5;
+    if corner == TOP_LEFT or corner == BOTTOM_LEFT then
+      dest[0] = sourceX - bounds[0] + 5;
+    end
+    dest[1] = screen[1] - size[1] + (sourceY - bounds[1]) - stashBit - 5;
+    if corner == TOP_LEFT or corner == TOP_RIGHT then
+      dest[1] = sourceY - bounds[1] + stashBit + 5;
+    end
   end
-  dest[1] = screen[1] - size[1] + (sourceY - bounds[1]) - stashBit - 5;
-  if corner == TOP_LEFT or corner == TOP_RIGHT then
-    dest[1] = sourceY - bounds[1] + stashBit + 5;
-  end
+  
   safeDrag(sourceX, sourceY, dest[0], dest[1]);
   srSetMousePos(sourceX, sourceY);
   lsSleep(click_delay);
@@ -199,13 +228,25 @@ end
 -- sizeRight (optional) -- amount of space to right of screen, defaults to automato width
 -- offsetWidth (optional) -- adds an additional width offset
 -- offsetHeight (optional) -- adds an additional height offset
-
+-- windowCap (optional) -- a hard limit to the amount of windows to arrange. Will not arrange 
+--                         more if provided.
+-- bottomRightOffset -- overrides the default -20 x -20 from bottom right corner offset when 
+--                      looking for a stashed window to arrange. Used when stashing with an 
+--                      offset as the window may not be present at -20 x -20.
+--                      data structure: bottomRightOffset.x, bottomRightOffset.y
 -------------------------------------------------------------------------------
 
-function arrangeStashed(cascade, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight, windowCap)
+function arrangeStashed(cascade, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight, windowCap, bottomRightOffset)
   local screen = srGetWindowSize();
+
   local bottomRightX = screen[0] - 20;
   local bottomRightY = screen[1] - 20;
+  
+  -- Override bottomRight stuff when that's provided.
+  if bottomRightOffset ~= nil then
+    bottomRightX = screen[0] - bottomRightOffset.x;
+    bottomRightY = screen[1] - bottomRightOffset.y;
+  end
 
  if sizeRight then
   screen[0] = screen[0] - sizeRight;
@@ -225,6 +266,7 @@ function arrangeStashed(cascade, uiGap, varWidth, varHeight, sizeRight, offsetWi
   local yMax = 0;
   local counter = 0
   srReadScreen();
+
   local window = findImageInWindow("windowCorner.png", bottomRightX, bottomRightY, 100);
   while window and (window[0] > lastX or window[1] > lastY) and window[1] > initY do
     counter = counter + 1
