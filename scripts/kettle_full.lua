@@ -190,11 +190,11 @@ function stokeWindow(anchor, stoked)
       local water;
       local woodPos = findImageInWindow("kettle/wood.png", anchor[0], anchor[1], bounds);
       if woodPos then
-        wood = ocrNumber(woodPos[0] + 34, woodPos[1], SMALL_SET);
+        wood = ocrNumber(woodPos[0] + 34, woodPos[1], BLACK_SMALL_SET);
       end
       local waterPos = findImageInWindow("kettle/water.png", anchor[0], anchor[1], bounds);
       if waterPos then
-        water = ocrNumber(waterPos[0] + 34, waterPos[1], SMALL_SET);
+        water = ocrNumber(waterPos[0] + 34, waterPos[1], BLACK_SMALL_SET);
       end
       if wood and water
         and ((wood < 2 and water > 6)

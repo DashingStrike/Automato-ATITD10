@@ -5,9 +5,9 @@ askText = singleLine([[
   ovens simultaneously.
 ]]);
 
-wmText = "Tap Ctrl on Charcoal Hearths or Ovens\nto open and pin. Tap Alt to open, pin\nand stash.";
-
 click_delay = 0;
+
+wmText = "Tap Ctrl on Charcoal Hearths or Ovens\nto open and pin. Tap Alt to open, pin\nand stash.";
 
 buttons = {
   {
@@ -56,8 +56,7 @@ buttons = {
 
 function doit()
   askForWindow(askText);
-	--function windowManager(title, message, allowCascade, allowWaterGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight)
-  windowManager("Charcoal Setup", wmText, nil, nil, nil, nil, nil, nil, 16);   --add 16 extra pixels to window height because window expands with 'Take...' menu after first batch is created
+  windowManager("Charcoal Setup", wmText, nil, nil, nil, nil, nil, nil, 16);  --add 16 extra pixels for 'Take...' menu
   unpinOnExit(ccMenu);
 end
 
@@ -65,7 +64,7 @@ function ccMenu()
   while 1 do
     for i=1, #buttons do
       if showButton(buttons[i]) then
-	runCommand(buttons[i]);
+        runCommand(buttons[i]);
       end
     end
     statusScreen("CC Control Center", 0x00d000ff);

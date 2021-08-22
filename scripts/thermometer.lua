@@ -108,7 +108,7 @@ function doit()
     srReadScreen();
     local max = srFindImage("max.png");
     if max then
-      safeClick(max[0]+5,max[1]+5,1);
+      safeClick(max[0]+5,max[1]+5);
       sleepWithStatus(100, "Clicking Max button");
     end
     clickAll("Ok.png");

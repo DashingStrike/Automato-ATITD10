@@ -290,8 +290,8 @@ end
 function clickSequence()
 	sleepWithStatus(1500, "Starting... Don\'t move mouse!");
 	startTime = lsGetTimer();
-  tubCounter = 1;
   for l=1, passCount do
+    tubCounter = 1;
     if gatherWater then
       drawWater();
     end
@@ -424,7 +424,7 @@ clickList = {};
     y = y + 20;
     lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "Click Start to begin checking tubs.")
 
-    if #clickList >= 1 then -- Only show start button if one or more pottery wheel was selected.
+    if #clickList >= 1 then -- Only show start button if one or more tubs was selected.
       if lsButtonText(10, lsScreenY - 30, z, 100, 0x00ff00ff, "Start") then
         is_done = 1;
       end

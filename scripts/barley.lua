@@ -213,9 +213,11 @@ function promptBarleyNumbers()
 
     if readClock then
       autoWater = readSetting("autoWater", autoWater)
-      autoWater = CheckBox(10, y-5, z, 0xFFFFFFff, " Automatically Gather Water (Each new pass)", autoWater, 0.65, 0.65)
+      autoWater = CheckBox(10, y-5, z, 0xFFFFFFff, " Automatically Gather Water (Each new pass)", autoWater, 0.7, 0.7)
       writeSetting("autoWater", autoWater)
       y = y + 20;
+    else
+      autoWater = false;
     end
 
     readClock = readSetting("readClock",readClock);
@@ -234,12 +236,14 @@ function promptBarleyNumbers()
 
       if use_fert then
         lsPrintWrapped(10, y+10, z+10, lsScreenX - 20, 0.7, 0.7, 0xD0D0D0ff, "Plant/Harvest a " .. grid_w .. "x" ..
-        grid_w .. " grid, " .. num_loops .. " times.\nYield: 2-10+ per plant (10 = no weeds)\n\nRequires:\n(" .. math.floor(grid_w * grid_w * num_loops) ..
-        ") Barley, (" .. math.floor(grid_w * grid_w * num_loops*totalWater) .. ") Water & " ..
-        "(" .. math.floor(grid_w * grid_w * num_loops*totalFertilizer) .. ") Fertilizer");
+        grid_w .. " grid, " .. num_loops .. " times.\nYield: 2-10+ per plant (10 = no weeds)" ..
+        "\n\nRequires:\n(" .. math.floor(grid_w * grid_w * num_loops) ..
+        ") Barley, (" .. math.floor(grid_w * grid_w * num_loops * totalWater) .. ") Water & " ..
+        "(" .. math.floor(grid_w * grid_w * num_loops * totalFertilizer) .. ") Fertilizer");
       else
         lsPrintWrapped(10, y+10, z+10, lsScreenX - 20, 0.7, 0.7, 0xD0D0D0ff,"Plant/Harvest a " .. grid_w .. "x" ..
-        grid_w .. " grid, " .. num_loops .. " times.\nYield: 2+ per plant\n\nRequires:\n(" .. math.floor(grid_w * grid_w * num_loops) ..
+        grid_w .. " grid, " .. num_loops .. " times.\nYield: 2+ per plant" ..
+        "\n\nRequires:\n(" .. math.floor(grid_w * grid_w * num_loops) ..
         ") Barley & (" .. math.floor(grid_w * grid_w * num_loops*totalWater) .. ") Water\n\n" ..
         "");
       end
@@ -663,7 +667,8 @@ function harvestAll()
     while #harvest > 0 do
       srReadScreen();
       harvest = findAllImages("barley/BarleyHarvest.png");
-      sleepWithStatus(100, "Harvested " .. totalHarvested .. " plants!\n\nWaiting for windows to catch up!\n\nElapsed Time: " .. getElapsedTime(startTime) .. finish_up_message, nil, 0.7, "Please standby");
+      sleepWithStatus(100, "Harvested " .. totalHarvested .. " plants!\n\nWaiting for windows to catch up!" ..
+      "\n\nElapsed Time: " .. getElapsedTime(startTime) .. finish_up_message, nil, 0.7, "Please standby");
     end
   closeWindowsFast();
 end
@@ -671,9 +676,10 @@ end
 function closeWindowsFast()
 	srReadScreen();
 	local allTextReferences = findAllText("This is");
-	for buttons=1, #allTextReferences do
-		srClickMouseNoMove(allTextReferences[buttons][0]+20, allTextReferences[buttons][1]+5, 1);
-	end
+    for buttons=1, #allTextReferences do
+      srClickMouseNoMove(allTextReferences[buttons][0]+20, allTextReferences[buttons][1]+5);
+    end
+    lsSleep(75);
 end
 
 -------------------------------------------------------------------------------

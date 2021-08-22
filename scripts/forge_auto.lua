@@ -150,7 +150,17 @@ function chooseItems(itemList, multiple)
     for i=1, #currentItem.parents do
       leafParentsString = leafParentsString .. currentItem.parents[i] .. "/";
     end
+
+    -- less confusing name
+    x_pos = string.find(leafParentsString,"x");
+      if x_pos then
+        x_pos = x_pos - 2; -- find the character before the " x"
+        leafParentsString = string.sub(leafParentsString,1,x_pos);
+        leafParentsString = leafParentsString .. "/";
+      end
+
     batchItemName = leafParentsString .. currentItem.name;
+
     currentItem.num = promptNumber(string.format("How many %s%s would you like to make?", leafParentsString, currentItem.name),nil,0.66);
     if multiple then
       if currentItem.num ~= 0 then
@@ -240,7 +250,7 @@ local function makeItem(currentItem, window)
   if lastParent == "Small Gear x1" then
     local t = waitForText("Small Gear...");
     safeClick(t[0]+20,t[1]+4);
-    local t = waitForText("Make 1...");
+    local t = waitForText("Make 1 ...");
     safeClick(t[0]+20,t[1]+4);
     text = name .. " Small Gear";
   elseif lastParent == "Small Gear x10" then
@@ -258,7 +268,7 @@ local function makeItem(currentItem, window)
   elseif lastParent == "Medium Gear x1" then
     local t = waitForText("Medium Gear...");
     safeClick(t[0]+20,t[1]+4);
-    local t = waitForText("Make 1...");
+    local t = waitForText("Make 1 ...");
     safeClick(t[0]+20,t[1]+4);
     text = name .. " Medium Gear";
   elseif lastParent == "Medium Gear x10" then
@@ -389,6 +399,10 @@ end
 boxTypes = {"Student's Forge", "Student's Casting Box", "Master's Forge", "Master's Casting Box"};
 
 function doit()
+  unpinOnExit(runForges);
+end
+
+function runForges()
   local t;
   success, forgeItems = deserialize("forge_items.txt");
   if success == false then
@@ -398,6 +412,9 @@ function doit()
   if success == false then
     error("Could not read casting box info");
   end
+
+  askForWindow("Hover mouse over ATITD Window and press SHIFT");
+  windowManager(nil,nil, false, false, 480, 200, nil, 10, 20,false);
 
   local topLevel = {};
   topLevel.Forge = forgeItems;
@@ -506,9 +523,9 @@ function doit()
     local toAdd = ccamount - curCC;
     if t and toAdd > 0 then
       clickText(findText("Fill this ", win[i]));
-      waitForText("Add how much Charcoal?", nil, "Waiting for Charcoal message");
+      waitForImage("max.png", nil, "Waiting for Charcoal message");
       srKeyEvent(string.format("%d\n", toAdd));
-      waitForNoText("Add how much Charcoal?");
+      waitForNoImage("max.png");
       lsSleep(100);
       closePopUp();
     end

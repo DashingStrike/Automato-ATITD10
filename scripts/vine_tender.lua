@@ -1,164 +1,271 @@
 dofile("common.inc");
 
-----------------------------------------
---          Global Variables          --
-----------------------------------------
-alsoTend = 1;
-alsoCutting = 0;
-alsoHarvest = 0;
-replant = 0;
-harvestFlag = 0;
-vineForReplanting=1;
-tendedCount = 0
-vines = {};
-vinesUsed = {};
-vineCustomsUsed = {};
+local flavorTest = false;
+local alsoTend = true;
+local alsoCutting = false;
+local alsoHarvest = false;
+local harvestFlag = 0;
+local vineForReplanting = 1;
+local tendedCount = 0
+local vines = {};
+local vinesUsed = {};
+local vineCustomsUsed = {};
 
-knownVineNames = {
-  { name = "Amusement",
-    image = "Amusement" },
-  { name = "Appreciation",
-    image = "Appreciation" },
-  { name = "Balance",
-    image = "Balance" },
-  { name = "Brilliance",
-    image = "Brilliance" },
-  { name = "Distraction",
-    image = "Distraction" },
-  { name = "Frivolity",
-    image = "Frivolity" },
-  { name = "Wisdom",
-    image = "Wisdom" }
+local knownVineNames = {
+  {
+    name = "Amusement",
+    image = "Amusement"
+  },
+  {
+    name = "Appreciation",
+    image = "Appreciation"
+  },
+  {
+    name = "Balance",
+    image = "Balance"
+  },
+  {
+    name = "Brilliance",
+    image = "Brilliance"
+  },
+  {
+    name = "Distraction",
+    image = "Distraction"
+  },
+  {
+    name = "Frivolity",
+    image = "Frivolity"
+  },
+  {
+    name = "Wisdom",
+    image = "Wisdom"
+  }
 };
 
-vineyardActions = { "Tend", "Harvest", "Cutting" };
-vineyardImages = { "", "Harvest the Gr", "Take a Cutting of the V" };
+local  vineyardActions = {"Tend", "Harvest", "Cutting"};
+local vineyardImages = {"", "Harvest the Gr", "Take a Cutting of the V"};
 
-stateNames = {"Fat", "Musty", "Rustle", "Sagging", "Shimmer",
-	      "Shrivel", "Wilting"};
+local stateNames = {
+  "Fat",
+  "Musty",
+  "Rustle",
+  "Sagging",
+  "Shimmer",
+  "Shrivel",
+  "Wilting"
+};
 
-vineStates = { "vineyard/State_Fat.png", "vineyard/State_Musty.png",
-	       "vineyard/State_Rustle.png", "vineyard/State_Sagging.png",
-	       "vineyard/State_Shimmer.png", "vineyard/State_Shrivel.png",
-	       "vineyard/State_Wilting.png" };
+local vineStates = {
+  "vineyard/State_Fat.png",
+  "vineyard/State_Musty.png",
+  "vineyard/State_Rustle.png",
+  "vineyard/State_Sagging.png",
+  "vineyard/State_Shimmer.png",
+  "vineyard/State_Shrivel.png",
+  "vineyard/State_Wilting.png"
+};
 
-tendActions = {"AS", "MG", "PO", "SL", "SV", "TL", "TV"};
-tendIndices = { ["AS"] = 1, ["MG"] = 2, ["PO"] = 3, ["SL"] = 4, ["SV"] = 5,
-		["TL"] = 6, ["TV"] = 7 };
+local tendActions = {"AS", "MG", "PO", "SL", "SV", "TL", "TV"};
+local tendIndices = {
+  ["AS"] = 1,
+  ["MG"] = 2,
+  ["PO"] = 3,
+  ["SL"] = 4,
+  ["SV"] = 5,
+  ["TL"] = 6,
+  ["TV"] = 7
+};
 
-tendImages = {
+local tendImages = {
   ["AS"] = "vineyard/Action_AS.png",
   ["MG"] = "vineyard/Action_MG.png",
   ["PO"] = "vineyard/Action_PO.png",
   ["SL"] = "vineyard/Action_SL.png",
   ["SV"] = "vineyard/Action_SV.png",
   ["TL"] = "vineyard/Action_TL.png",
-  ["TV"] = "vineyard/Action_TV.png" };
+  ["TV"] = "vineyard/Action_TV.png"
+};
 
-vigorNames = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
-	       "12", "13", "14", "15" };
-
-askText = "Automatically tends vineyards based on vine type.\n\n"
-.. "Make sure you are standing to where vineyard windows open away from VT screen."
-.. " This version uses OCR and reads text, that will fail if the window"
-.. " (or borders) is even slightly blocked from view.";
+local vigorNames = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" };
 
 ----------------------------------------
 function doit()
-  askForWindow(askText);
+  askForWindow([[
+Automatically tends vineyards based on vine type.
+
+Make sure you are standing to where vineyard windowsopen away from VT screen.
+
+This version uses OCR and reads text, that will fail if the window (or borders) is even slightly blocked from view.
+]]);
   parseVines();
   local status = "";
   while 1 do
     promptVineyard(status);
-    local x, y = srMousePos();
-    openAndPin(x, y, 2000);
-    srReadScreen();
-    local activeVine = getVineName();
-    if alsoTend  then
-      status = processVineyard();
-    end
-    if alsoCutting then
-      status = status .. "\n\n" .. cutMe();
-    end
-    if harvestFlag == 2 then
-      --harvest first
-      status = status .. "\n\n" .. harvestMe()
-      if replant then
-        if vineForReplanting==1 then
-          status = status .. "\n\n" .. plantMe(activeVine.name);
-        else
-          status = status .. "\n\n" .. plantMe(vines[vineForReplanting-1].name);
-        end
-        if alsoTend then
-          sleepWithStatus(1000, "Waiting for plants to grow");
-          if refreshVineyard() then
-            waitForImage("vineyard/CanBeTended.png",2000,"Waiting for refresh")
-            sleepWithStatus(500, "Preparing to tend");
-            status = status .. "\n\n" .. processVineyard();
-          else
-            status = status .. "\n\nCould not locate vineyard";
-          end
-        end
-      end
-    else
-      if replant then
-        status = status .. "\n\n" .. plantMe(vines[vineForReplanting-1].name);
-      end
-    end
-    --Using this to close the window instead of CloseAllWindows() as this appears to havew a double click issue.
-    srReadScreen();
-    clickAllText("Vineyard", 20, 2, 1)
+    status = processVineyard();
   end
 end
 
-function promptVineyard(status)
-    local scale = 0.7;
-    while not lsControlHeld() do
-    local checkStart = 150
+function processVineyard()
+  local status = "";
+  local x, y = srMousePos();
+  openAndPin(x, y, 2000);
+  srReadScreen();
+  local activeVine = getVineName();
 
-    local edit = lsButtonText(10, lsScreenY - 30, 0, 120, 0xBBA661FF, "Edit Tends");
-    lsPrint(10, lsScreenY - 103, 0, 0.7, 0.7, 0xffff40ff,
-    "----------------------------------------------------------------");
-    alsoTend = CheckBox(20, lsScreenY - checkStart + 63, 10, 0xFFFFFFFF,
-    " Tend Vine", alsoTend, scale, scale);
-    alsoCutting = CheckBox(20, lsScreenY - checkStart + 83, 10, 0xFFFFFFFF,
-    " Take Cuttings", alsoCutting, scale, scale);
-    alsoHarvest = CheckBox(170, lsScreenY - checkStart + 63, 10, 0xFFFFFFFF,
-    " Auto Harvest", alsoHarvest, scale, scale);
-    replant = CheckBox(170, lsScreenY - checkStart + 83, 10, 0xFFFFFFFF,
-    " Auto Replant", replant, scale, scale);
-    lsPrint(10, lsScreenY - checkStart + 96, 0, 0.7, 0.7, 0xffff40ff,
-    "----------------------------------------------------------------");
+  if flavorTest > 1 then
+    return processFlavorTest();
+  end
 
-    if replant then
-      local tends = {};
-      tends[1] = "same as harvested"
-      if #vines > 0 then
-        for i=1,#vines do
-          tends[i+1] = vines[i].name;
+  if alsoTend  then
+    status = tendVineyard();
+  end
+  if alsoCutting then
+    status = status .. "\n\n" .. cutMe();
+  end
+  if harvestFlag == 2 then
+    status = status .. "\n\n" .. harvestMe()
+    if vineForReplanting > 1 then
+      if vineForReplanting == 2 then
+        status = status .. "\n\n" .. plantMe(activeVine.name);
+      else
+        status = status .. "\n\n" .. plantMe(vines[vineForReplanting - 2].name);
+      end
+      if alsoTend then
+        if refreshVineyard() then
+          waitForImage("vineyard/CanBeTended.png",2000,"Waiting for refresh")
+          sleepWithStatus(500, "Preparing to tend");
+          status = status .. "\n\n" .. tendVineyard();
+        else
+          status = status .. "\n\nCould not locate vineyard";
         end
-        lsPrint(10, 56, 0, 0.7, 0.7, 0xffff40ff,"----------------------------------------------------------------");
-        lsPrint(30, 40, 0, 0.7, 0.7, 0x00ff00ff,"Replant Vine: ");
-        lsSetCamera(0,0,lsScreenX*1.4,lsScreenY*1.4);
-        vineForReplanting = lsDropdown("With", 180, 56, 0, 200, vineForReplanting, tends);
-        lsSetCamera(0,0,lsScreenX*1.0,lsScreenY*1.0);
       end
     end
+  else
+    if vineForReplanting > 2 then
+      status = status .. "\n\n" .. plantMe(vines[vineForReplanting - 2].name);
+    end
+  end
+  --Using this to close the window instead of CloseAllWindows() as this appears to have a double click issue.
+  srReadScreen();
+  clickAllText("Vineyard", 20, 2, 1);
 
-    lsSetCamera(0,0,lsScreenX*1.0,lsScreenY*1.0);
-    lsPrint(10, 9, 0, 0.7, 0.7, 0xffd0d0ff,"Tap Ctrl key over a vineyard");
-    lsPrint(10, 24, 0, 0.7, 0.7, 0xffff40ff,"----------------------------------------------------------------");
-    statusScreen(status,nil,false,0.7);
-      if edit then
-        promptTends();
-      end
+  return status;
+end
+
+function processFlavorTest()
+  if getVineName() then
+    return "Flavor test aborted.\nVineyard not empty.";
+  end
+
+  local harvests = {};
+  local grapeCount = 0;
+  while grapeCount < 21 do
+    plantMe(vines[flavorTest - 1].name);
+    if not refreshVineyard(true) then
+      return "Flavor test aborted.\nUnable to find vineyard."
+    end
+
+    tendVineyard();
+    lsSleep(200);
+
+    local grapes = findText("Grapes:");
+    if not grapes then
+      return "Flavor test aborted.\nUnable to read grape count.";
+    end
+
+    local number = tonumber(string.match(grapes[2], "Grapes: ([-0-9]+)"));
+    if not number or number == 0 then
+      return "Flavor test aborted.\nUnable to parse grape count."
+    end
+
+    table.insert(harvests, number);
+    grapeCount = grapeCount + number;
+    harvestMe();
+  end
+
+  clickAllText("Vineyard", 20, 2, 1);
+
+  local status = "Flavor test complete.\n";
+  for i = 1, #harvests do
+    status = status .. "Vine " .. i .. ": " .. harvests[i] .. " grapes harvested.\n";
+  end
+  return status;
+end
+
+function replantOptions()
+  local options = {
+    "None",
+    "Replace",
+  };
+  for i=1, #vines do
+    options[i + 2] = vines[i].name;
+  end
+  return options;
+end
+
+function flavorTestOptions()
+  local options = {
+    "None",
+  };
+  for i=1, #vines do
+    options[i + 1] = vines[i].name;
+  end
+  return options;
+end
+
+function promptVineyard(status)
+  local scale = 1;
+  while not lsControlHeld() do
+    checkBreak();
+    local y = 10;
+
+    lsSetCamera(0, 0, lsScreenX * 1.2, lsScreenY * 1.2)
+
+    lsPrint(10, y, 0, scale, scale, 0xFFFFFFff,"Flavor Test:");
+    flavorTest = lsDropdown("flavor_test", 150, y, 0, 200, flavorTest, flavorTestOptions());
+    y = y + 30;
+    if flavorTest == 1 then
+      lsPrint(10, y, 0, scale, scale, 0xFFFFFFff,"Replant:");
+      vineForReplanting = lsDropdown("replant", 150, y, 0, 200, vineForReplanting, replantOptions());
+      y = y + 30;
+
+      lsPrint(10, y, 0, scale, scale, 0xFFFFFFff,"Auto Harvest:");
+      alsoHarvest = lsCheckBox(150, y, 10, 0xFFFFFFFF, "", alsoHarvest);
+
+      lsPrint(175, y, 0, scale, scale, 0xFFFFFFff,"Take Cuttings:");
+      alsoCutting = lsCheckBox(325, y, 10, 0xFFFFFFFF, "", alsoCutting);
+      y = y + 30;
+
+      lsPrint(10, y, 0, scale, scale, 0xFFFFFFff,"Tend:");
+      alsoTend = lsCheckBox(150, y, 10, 0xFFFFFFFF, "", alsoTend);
+      y = y + 30;
+    end
+
+    y = y  - 10;
+    lsPrint(10, y, 0, scale, scale, 0xffff40ff, "----------------------------------------------------------------");
+    y = y + 20;
+
+    lsPrint(10, y, 0, scale, scale, 0xffd0d0ff,"Tap Ctrl key over a vineyard");
+    y = y + 30;
+
+    lsPrintWrapped(10, y, 0, lsScreenX - 20, scale, scale, 0xFFFFFFff, status);
+
+    lsSetCamera(0, 0, lsScreenX * 1.0, lsScreenY * 1.0)
+
+    if lsButtonText(10, lsScreenY - 35, 0, 120, 0x6666FFff, "Edit Tends") then
+      promptTends();
+    end
+    if lsButtonText(lsScreenX - 110, lsScreenY - 35, z, 100, 0xFFFFFFff, "End script") then
+      error("Script exited by user");
+    end
     lsSleep(tick_delay);
+    lsDoFrame();
   end
 
   while lsControlHeld() do
     statusScreen("Release control (Ctrl)");
   end
-  return 1;
+  return;
 end
 
 function harvestMe()
@@ -174,43 +281,57 @@ function harvestMe()
   else
     myStatus = "Cannot find " .. vineyardActions[2] .. " button";
   end
-return myStatus;
+  return myStatus;
 end
 
 function noCuttings()
-local hasNoCuttings = waitForImage("OK.png",250,"Waiting for popup");
+  local hasNoCuttings = waitForImage("OK.png",250,"Waiting for popup");
   if hasNoCuttings then
-      safeClick(hasNoCuttings[0] + 10, hasNoCuttings[1] + 10);
-      return "No Cuttings";
+    safeClick(hasNoCuttings[0] + 10, hasNoCuttings[1] + 10);
+    return "No Cuttings";
   else
-      return vineyardActions[3]
-	  .. " complete";
+    return vineyardActions[3]
+      .. " complete";
   end
 end
 
 function cutMe()
   local clickPos = findText(vineyardImages[3]);
-    if clickPos then
-      safeClick(clickPos[0] + 10, clickPos[1] + 5);
-      myStatus = noCuttings();
-    else
-      myStatus = "Cannot find " .. vineyardActions[3] .. " button";
-    end
+  if clickPos then
+    safeClick(clickPos[0] + 10, clickPos[1] + 5);
+    myStatus = noCuttings();
+  else
+    myStatus = "Cannot find " .. vineyardActions[3] .. " button";
+  end
   return myStatus;
 end
 
-function refreshVineyard()
-  srReadScreen();
-  refreshPos = findAllText("Vineyard");
-    for i=1,#refreshPos do
-      clickText(refreshPos[i]);
+function refreshVineyard(waitPlanted)
+  waitForText("Vineyard", 10000, "Waiting for Vineyard to open");
+
+  while true do
+    checkBreak();
+
+    local count = clickAllText("Vineyard");
+    if count == 0 then
+      return false;
     end
-  return refreshPos
+
+    if not waitPlanted then
+      break;
+    end
+
+    if findText("Harvest") then
+      break;
+    end
+
+    sleepWithStatus(1000, "Waiting for vine to be planted");
+  end
+
+  return true;
 end
 
 function plantMe(vineToPlant)
-  --refresh window first
-  sleepWithStatus(500, "Refreshing window");
   myStatus = "Attempting to find (" .. vineToPlant .. ")";
   if refreshVineyard() then
     local PlantPos = waitForText("Plant", 500);
@@ -224,7 +345,6 @@ function plantMe(vineToPlant)
         safeClick(newVine[0] + 25, newVine[1] + 5);
         lsSleep(150);
         closePopUp();
-        sleepWithStatus(250, "Final click");
         refreshVineyard();
         myStatus = "Replanted " .. vineToPlant
       else
@@ -248,12 +368,12 @@ function promptTends()
     local delete = false;
     if #vines > 0 then
       local tends = {};
-        for i=1,#vines do
-          tends[i] = vines[i].name;
-        end
+      for i=1,#vines do
+        tends[i] = vines[i].name;
+      end
       lsSetCamera(0,0,lsScreenX*1.2,lsScreenY*1.2);
       vineIndex = lsDropdown("TendIndex", 30, 100, 0, 250, vineIndex,
-			     tends);
+        tends);
       lsSetCamera(0,0,lsScreenX*1.0,lsScreenY*1.0);
       edit = lsButtonText(lsScreenX/2 - 60, 120, 0, 120, 0xffffffff, "Edit Tend");
       delete = lsButtonText(lsScreenX/2 - 60, 150, 0, 120, 0xffffffff, "Delete Tend");
@@ -265,15 +385,15 @@ function promptTends()
     checkBreak();
     lsSleep(tick_delay);
     lsDoFrame();
-      if add then
-        promptAdd();
-      elseif edit then
-        promptEdit(vines[vineIndex]);
-      elseif delete then
-        table.remove(vines, vineIndex);
-        saveVines();
-        parseVines();
-      end
+    if add then
+      promptAdd();
+    elseif edit then
+      promptEdit(vines[vineIndex]);
+    elseif delete then
+      table.remove(vines, vineIndex);
+      saveVines();
+      parseVines();
+    end
     lsSleep(tick_delay);
   end
 end
@@ -304,7 +424,7 @@ function promptAdd()
 
     lsSetCamera(0,0,lsScreenX*1.2,lsScreenY*1.2);
     addIndex = lsDropdown("VineAddIndex", 30, 50, 0, 250, addIndex,
-			  vineNames);
+      vineNames);
     lsSetCamera(0,0,lsScreenX*1.0,lsScreenY*1.0);
 
     local vineName, vineCustom;
@@ -313,12 +433,12 @@ function promptAdd()
       lsPrint(10, 80, 0, 0.7, 0.7, 0xd0d0d0ff, "Title Name (Displayed in menus):");
       lsSetCamera(0,0,lsScreenX*1.2,lsScreenY*1.2);
       foo, vineName = lsEditBox("aVineName", 30, 125, 0, 250, 30, 1.0, 1.0,
-				0x000000ff, "Custom");
+        0x000000ff, "Custom");
       lsSetCamera(0,0,lsScreenX*1.0,lsScreenY*1.0);
       lsPrint(10, 155, 0, 0.7, 0.7, 0xd0d0d0ff, "Vine Cut Name:");
       lsSetCamera(0,0,lsScreenX*1.2,lsScreenY*1.2);
       foo, vineCustom = lsEditBox("avineCustom", 30, 210, 0, 250, 30, 1.0, 1.0,
-				 0x000000ff);
+        0x000000ff);
       lsSetCamera(0,0,lsScreenX*1.0,lsScreenY*1.0);
       lsPrint(10, 225, 0, 0.6, 0.6, 0xd0d0d0ff, "Vine Cut Name is case sensitive!");
       lsPrint(10, 240, 0, 0.6, 0.6, 0xd0d0d0ff, "ie \"Pascarella Hexkin 6K\" - enter exactly.");
@@ -337,10 +457,10 @@ function promptAdd()
       lsPrint(30, 205, 10, 0.7, 0.7, 0xFF2020ff, "Vine Cut Name In Use");
     elseif string.match(vineCustom, ".png$") then
       local status, error = pcall(srImageSize, vineCustom);
-        if not status then
-          done = false;
-          lsPrint(30, 205, 10, 0.7, 0.7, 0xFF2020ff, "Image Not Found");
-        end
+      if not status then
+        done = false;
+        lsPrint(30, 205, 10, 0.7, 0.7, 0xFF2020ff, "Image Not Found");
+      end
     end
 
     checkBreak();
@@ -349,10 +469,10 @@ function promptAdd()
 
     if done then
       vines[#vines + 1] = {
-      name = vineName,
-      image = vineCustom,
-      tends = {1, 1, 1, 1, 1, 1, 1},
-      vigors = {1, 1, 1, 1, 1, 1, 1}
+        name = vineName,
+        image = vineCustom,
+        tends = {1, 1, 1, 1, 1, 1, 1},
+        vigors = {1, 1, 1, 1, 1, 1, 1}
       };
       vinesUsed[vineName] = vines[#vines];
       vineCustomsUsed[vineCustom] = vines[#vines];
@@ -376,10 +496,10 @@ function promptEdit(vine)
       lsPrint(10, y, 0, 0.7, 0.7, 0xd0d0d0ff, stateNames[i] .. ":");
       local tendIndex = tendIndices[vine.tends[i]];
       local tend  = lsDropdown(stateNames[i] .. "T" .. "-" .. vine.name,
-			       85, y, 0, 60, tendIndex, tendActions);
+        85, y, 0, 60, tendIndex, tendActions);
       vine.tends[i] = tendActions[tend];
       vine.vigors[i] = lsDropdown(stateNames[i] .. "V" .. "-" .. vine.name,
-				  160, y, 0, 60, vine.vigors[i], vigorNames);
+        160, y, 0, 60, vine.vigors[i], vigorNames);
       lsSetCamera(0,0,lsScreenX*1.0,lsScreenY*1.0);
       y = y + 30;
     end
@@ -402,7 +522,7 @@ function promptEdit(vine)
   end
 end
 
-function processVineyard()
+function tendVineyard()
   srReadScreen();
   harvestFlag = 0
 
@@ -469,32 +589,25 @@ end
 function statusSuccess(vine)
   srReadScreen();
   tendedCount = tendedCount + 1;
-  local result = "Tend Count: (" .. tendedCount .. ") \nTended: " .. vine.name .. "\n \n";
-  result = result .. statusNumber("Acid:");
-  result = result .. statusNumber("Color:");
+  local result = "Tend Count: (" .. tendedCount .. ") \nTended: " .. vine.name .. "\n";
+  result = result .. statusNumber("Acid:") .. "      ";
+  result = result .. statusNumber("Color:") .. "\n";
   result = result .. statusNumber("Grapes:");
-  result = result .. statusNumber("Quality:");
-  result = result .. statusNumber("Skin:");
-  result = result .. statusNumber("Sugar:");
+  result = result .. statusNumber("Quality:") .. "\n";
+  result = result .. statusNumber("Skin:") .. "       ";
+  result = result .. statusNumber("Sugar:") .. "\n";
   result = result .. statusNumber("Vigor:");
   return result;
 end
 
-function statusNumber(name,endCharacter,suppressName)
+function statusNumber(name)
   local result = "";
   local anchor = findText(name);
-  if not endCharacter then
-    endCharacter = "\n";
-  end
   if anchor then
     local number = string.match(anchor[2], name .. " ([-0-9]+)");
     if number then
-  if not suppressName then
-      result = name .. " " .. number .. endCharacter;
-	else
-      result = number .. endCharacter;
-	end
-	end
+      result = name .. " " .. string.format("%-10s", number);
+    end
   end
   return result;
 end
@@ -522,29 +635,29 @@ function parseVines()
     local fields = explode(",", line);
     if #fields == 9 then
       vines[#vines + 1] = {
-	name = fields[1],
-	image = fields[2],
-	tends = {},
-	vigors = {}
+        name = fields[1],
+        image = fields[2],
+        tends = {},
+        vigors = {}
       };
       vinesUsed[fields[1]] = vines[#vines];
       vineCustomsUsed[fields[2]] = vines[#vines];
 
       for i=3,#fields do
-	-- local sub = csplit(fields[i], "-");
+        -- local sub = csplit(fields[i], "-");
         local sub = explode("-", fields[i]);
-	if #sub ~= 2 then
-	  error("Failed parsing line: " .. line);
-	end
-	if not tendImages[sub[1]] then
-	  error("Failed parsing line: " .. line);
-	end
-	vines[#vines].tends[i-2] = sub[1];
-	local vigor = tonumber(sub[2])
-	if not vigor then
-	  error("Failed parsing line: " .. line);
-	end
-	vines[#vines].vigors[i-2] = vigor;
+        if #sub ~= 2 then
+          error("Failed parsing line: " .. line);
+        end
+        if not tendImages[sub[1]] then
+          error("Failed parsing line: " .. line);
+        end
+        vines[#vines].tends[i-2] = sub[1];
+        local vigor = tonumber(sub[2])
+        if not vigor then
+          error("Failed parsing line: " .. line);
+        end
+        vines[#vines].vigors[i-2] = vigor;
       end
     end
   end
@@ -564,55 +677,23 @@ end
 
 -- Added in an explode function (delimiter, string) to deal with broken csplit.
 function explode(d,p)
-   local t, ll
-   t={}
-   ll=0
-   if(#p == 1) then
-      return {p}
-   end
-   while true do
-      l = string.find(p, d, ll, true) -- find the next d in the string
-      if l ~= nil then -- if "not not" found then..
-         table.insert(t, string.sub(p,ll,l-1)) -- Save it in our array.
-         ll = l + 1 -- save just after where we found it for searching next time.
-      else
-         table.insert(t, string.sub(p,ll)) -- Save what's left in our array.
-         break -- Break at end, as it should be, according to the lua manual.
-      end
-   end
-   return t
-end
-
-function statusScreen(message, color, allow_break, scale)
-  if not message then
-    message = "";
+  local t, ll
+  t={}
+  ll=0
+  if(#p == 1) then
+    return {p}
   end
-  if not color then
-    color = 0xFFFFFFff;
-  end
-  if allow_break == nil then
-    allow_break = true;
-  end
-  if not scale then
-    scale = 0.8;
-  end
-  lsPrintWrapped(10, 80, 0, lsScreenX - 20, scale, scale, color, message);
-  lsPrintWrapped(10, lsScreenY-100, 0, lsScreenX - 20, scale, scale, 0xffd0d0ff,
-                 error_status);
-  if lsButtonText(lsScreenX - 110, lsScreenY - 30, nil, 100, 0xFF0000ff, "End Script") then
-    error(quit_message);
-  end
-  if allow_break then
-    lsPrint(10, 10, 0, 0.7, 0.7, 0xB0B0B0ff,
-            "Hold Ctrl+Shift to end this script.");
-    if allow_pause then
-      lsPrint(10, 24, 0, 0.7, 0.7, 0xB0B0B0ff,
-              "Hold Alt+Shift to pause this script.");
+  while true do
+    l = string.find(p, d, ll, true) -- find the next d in the string
+    if l ~= nil then -- if "not not" found then..
+      table.insert(t, string.sub(p,ll,l-1)) -- Save it in our array.
+      ll = l + 1 -- save just after where we found it for searching next time.
+    else
+      table.insert(t, string.sub(p,ll)) -- Save what's left in our array.
+      break -- Break at end, as it should be, according to the lua manual.
     end
-    checkBreak();
   end
-  lsSleep(tick_delay);
-  lsDoFrame();
+  return t
 end
 
 function closePopUp()
@@ -621,10 +702,10 @@ function closePopUp()
     lsSleep(250);
     srReadScreen();
     ok = srFindImage("OK.png");
-      if ok then
-        srClickMouseNoMove(ok[0],ok[1]);
-      else
-        break;
-      end
+    if ok then
+      srClickMouseNoMove(ok[0],ok[1]);
+    else
+      break;
+    end
   end
 end

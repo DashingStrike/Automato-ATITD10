@@ -264,10 +264,10 @@ end
 function refreshWindows()
   statusScreen("Refreshing Windows ...", nil, 0.7);
   srReadScreen();
-  pinWindows = findAllImages("ThisIs.png");
+  pinWindows = findAllImages("windowCorner.png", nil, 100);
   for i=1, #pinWindows do
     checkBreak();
-    safeClick(pinWindows[i][0], pinWindows[i][1]);
+    safeClick(pinWindows[i][0] + 5, pinWindows[i][1] + 5);
     lsSleep(100);
   end
   lsSleep(500);
