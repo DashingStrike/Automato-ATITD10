@@ -79,6 +79,15 @@ CLICK_MIN_WEED = 15 * 1000
 CLICK_MIN_SEED = 27 * 1000
 numSeedsHarvested = 0
 
+--Offset for window stashing placement. Harvest seeds (longest window)
+-- is 367 x 127 (when guilded). +5 to avoid touching game borders.
+local offset = {};
+offset.x = 372;
+offset.y = 132;
+local bottomRightOffset = {};
+bottomRightOffset.x = 375;
+bottomRightOffset.y = 130;
+
 -------------------------------------------------------------------------------
 -- initGlobals()
 --
@@ -642,7 +651,7 @@ function plantHere(xyPlantFlax, y_pos)
   checkWindowSize()
 
   -- Move window into corner
-  stashWindow(bed[0] + 5, bed[1], BOTTOM_RIGHT)
+  stashWindow(bed[0] + 5, bed[1], BOTTOM_RIGHT, nil, offset)
   return true
 end
 
@@ -676,9 +685,9 @@ function dragWindows(loop_count)
   )
 
   if clearUI then
-    arrangeStashed(nil, true, window_w, window_h, space_to_leave, 35, 20);
+    arrangeStashed(nil, true, window_w, window_h, space_to_leave, 35, 20, nil, bottomRightOffset);
   else
-    arrangeStashed(nil, nil, window_w, window_h, space_to_leave, 35, 20);
+    arrangeStashed(nil, nil, window_w, window_h, space_to_leave, 35, 20, nil, bottomRightOffset);
   end
 
 end
