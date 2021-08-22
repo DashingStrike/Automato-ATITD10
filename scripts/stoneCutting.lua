@@ -11,12 +11,13 @@ askText = "Stone cutting v1.0 - by Rhaom" ..
 "\n\nMerged functionality from rockSaw.lua and masonsBench.lua into a single stoneCutting script." ..
 "\n\nPin up windows manually or use the Arrange Windows option to pin/arrange windows.";
 
+
+
+-------------------------------------------------------------------------------
 function doit()
 	askForWindow(askText);
+  windowManager(nil,nil,false,false,nil,nil,nil,10,25);
 	config();
-		if(arrangeWindows) then
-			arrangeInGrid(nil, nil, nil, nil,nil, 10, 25);
-		end
 	unpinOnExit(start);
 end
 
@@ -44,11 +45,6 @@ function config()
     end
     writeSetting("passCount",tonumber(passCount));
     y = y + 32;
-
-	arrangeWindows = readSetting("arrangeWindows",arrangeWindows);
-	arrangeWindows = CheckBox(15, y, z+10, 0xFFFFFFff, "Arrange windows (Grid format)", arrangeWindows, 0.65, 0.65);
-	writeSetting("arrangeWindows",arrangeWindows);
-	y = y + 28;
 
 	takeAll = readSetting("takeAll",takeAll);
 	takeAll = CheckBox(15, y, z+10, 0xFFFFFFff, "Take all after each pass", takeAll, 0.65, 0.65);
