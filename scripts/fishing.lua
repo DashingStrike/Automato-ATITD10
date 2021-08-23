@@ -8,13 +8,9 @@ dofile("settings.inc");
 CurrentLure = ""; --Don't Edit
 gui_log_fish = {}; --Don't Edit, holds log display
 gui_log_fish2 = {}; --Don't Edit, holds log display
-log_fish = {}; --Don't Edit, holds log display
 lostlure_log = {}; --Don't Edit, holds log display
 CurrentLureIndex = 1; -- 1 = First Lure Player Owns in alphabetical order
 QCurrentLureIndex = 1;
-ChangeLureMenu="";
-LastLureMenu="";
-DownArrowLocs=nil;
 PlayersLures={}; --Don't Edit, Holds Current Player Lures
 
 castcount = 0;
@@ -31,7 +27,6 @@ lastLostLure = "";
 LostLure = 0;
 LureType = "";
 lastLostLureType = "";
-lockLure = false;
 skipLure = false;
 lastCastWait = 0;
 castWait = 0;
@@ -41,317 +36,211 @@ Sfish = "";
 muteSoundEffects = false;
 TotalCasts = 5;
 SkipCommon = false; --Skips to next lure if fish caught is a common (Choose True or False).
-LogFails = false;  	-- Do you want to add Failed Catches to log file? 'Failed to catch anything' or 'No fish bit'. Note the log will still add an entry if you lost lure.
-LogStrangeUnusual = false; 	-- Do you want to add Strange and Unusual fish to the log file? Note the log will still add an entry if you lost lure.
+displayCommon = false; --Does not display common fish in the last 10 caught list
+LogFails = false;  	-- Do you want to add Failed Catches to log file? 'Failed to catch anything' or 'No fish bit'.
+LogStrangeUnusual = false; 	-- Do you want to add Strange and Unusual fish to the log file?
 LogOdd = false; 	-- Do you want to add Odd fish to the log file? Note the log will still add an entry if you lost lure.
 AutoFillet = true; -- Do you want to auto-fillet fish if menu is pinned?
 ----------------------------------------
 
 function setOptions()
-
-    local is_done = false;
-    local count = 1;
+  local is_done = false;
+  local count = 1;
     while not is_done do
-        lsDoFrame();
-        checkBreak();
-        local y = 10;
+      lsDoFrame();
+      checkBreak();
+      local y = 10;
 
-        lsPrint(5, y, 0, 0.7, 0.7, 0xffffffff, "Casts per Lure?");
-        TotalCasts = readSetting("TotalCasts",TotalCasts);
-        is_done, TotalCasts = lsEditBox("totalcasts", 120, y, 0, 40, 0, 0.8, 0.8, 0x000000ff, TotalCasts);
-        TotalCasts = tonumber(TotalCasts);
+      lsPrint(5, y, 0, 0.7, 0.7, 0xffffffff, "# Casts until lure switches");
+      TotalCasts = readSetting("TotalCasts",TotalCasts);
+      is_done, TotalCasts = lsEditBox("totalcasts", 180, y, 0, 40, 0, 0.8, 0.8, 0x000000ff, TotalCasts);
+      TotalCasts = tonumber(TotalCasts);
         if not TotalCasts then
-            is_done = false;
-            lsPrint(190, y+2, 10, 0.7, 0.7, 0xFF2020ff, "<- MUST BE A NUMBER");
-            TotalCasts = 5;
+          is_done = false;
+          lsPrint(160, y, 10, 0.7, 0.7, 0xFF2020ff, "MUST BE A NUMBER");
         end
-        writeSetting("TotalCasts",TotalCasts);
-        y = y + 25;
-        lsPrint(5, y, 0, 0.6, 0.6, 0xffffffff, "Casts per Lure?  # Casts before switching lures.");
-        y = y + 25;
-        lsPrint(5, y, 0, 0.6, 0.6, 0xffffffff, "  Self Click, Options, Chat-Related:");
-        y = y + 16;
-        lsPrint(5, y, 0, 0.6, 0.6, 0xffff80ff, "Minimized chat-channels are still visible: CHECKED");
-        y = y + 16;
-        lsPrint(5, y, 0, 0.6, 0.6, 0xffffffff, "  Self Click, Options, Interface Options:");
-        y = y + 16;
-        lsPrint(5, y, 0, 0.6, 0.6, 0xffff80ff, "Display fishing lures in sub-menus: CHECKED");
-        y = y + 16;
-        lsPrint(5, y, 0, 0.6, 0.6, 0xc0c0ffff, "Main chat MUST be wide enough so no lines wrap!");
-        y = y + 25;
-
-        AutoFillet = readSetting("AutoFillet",AutoFillet);
-        AutoFillet = CheckBox(10, y, 10, 0xFFFFFFff, " Automatically Fillet Fish", AutoFillet, 0.7, 0.7);
-        writeSetting("AutoFillet",AutoFillet);
-        y = y + 20;
-
-        muteSoundEffects = readSetting("muteSoundEffects",muteSoundEffects);
-        muteSoundEffects = CheckBox(10, y, 10, 0xFFFFFFff, " Mute Sound Effects", muteSoundEffects, 0.7, 0.7);
-        writeSetting("muteSoundEffects",muteSoundEffects);
-        y = y + 20;
-        SkipCommon = readSetting("SkipCommon",SkipCommon);
-        SkipCommon = CheckBox(10, y, 10, 0xFFFFFFff, " Skip Common Fish", SkipCommon, 0.7, 0.7);
-        writeSetting("SkipCommon",SkipCommon);
-        y = y + 20;
-        lsPrintWrapped(10, y, 0, lsScreenX, 0.6, 0.6, 0xffff80ff, "If Common Fish caught, then switch to next lure:");
-        y = y + 18
-        lsPrintWrapped(10, y, 0, lsScreenX, 0.6, 0.6, 0xffffffff, "(Abdju, Chromis, Catfish, Carp, Perch, Phagrus, Tilapia)");
-        y = y + 20;
-        lsPrintWrapped(10, y, 0, lsScreenX, 0.6, 0.6, 0x80ff80ff, "Log entries are recorded to FishLog.txt in Automato/games/ATITD folder.");
-        y = y + 35;
-        LogFails = readSetting("LogFails",LogFails);
-        LogFails = CheckBox(10, y, 10, 0xFFFFFFff, " Log Failed Catches (Log Everything)", LogFails, 0.7, 0.7);
-        writeSetting("LogFails",LogFails);
+      writeSetting("TotalCasts",TotalCasts);
+      y = y + 15;
+      lsPrintWrapped(10, y, 0, lsScreenX - 20, 0.7, 0.7, 0xffff40ff,
+      "---------------------------------------------------------------");
+      y = y + 15;
+      lsPrint(10, y+1, 0, 0.6, 0.6, 0xc0c0ffff, "Main chat MUST be wide enough so no lines wrap!");
+      y = y + 15;
+      lsPrintWrapped(10, y, 0, lsScreenX - 20, 0.7, 0.7, 0xffff40ff,
+      "---------------------------------------------------------------");
+      y = y + 20;
+      muteSoundEffects = readSetting("muteSoundEffects",muteSoundEffects);
+      muteSoundEffects = CheckBox(10, y, 10, 0xFFFFFFff, " Mute Sound Effects", muteSoundEffects, 0.7, 0.7);
+      writeSetting("muteSoundEffects",muteSoundEffects);
+      y = y + 20;
+      SkipCommon = readSetting("SkipCommon",SkipCommon);
+      SkipCommon = CheckBox(10, y, 10, 0xFFFFFFff, " Skip Common Fish", SkipCommon, 0.7, 0.7);
+      writeSetting("SkipCommon",SkipCommon);
+      y = y + 20;
+        if SkipCommon then
+          lsPrintWrapped(10, y, 0, lsScreenX, 0.6, 0.6, 0xffff80ff,
+          "If a Common Fish is caught, then switch to next lure.\n"
+          .. "(Abdju, Chromis, Catfish, Carp, Oxyrynchus, Perch, Phagrus, Tilapia)");
+          y = y + 44
+          lsPrintWrapped(10, y, 0, lsScreenX, 0.6, 0.6, 0x80ff80ff,
+          "Log entries are recorded to FishLog.txt in Automato/games/ATITD folder.");
+          y = y + 35;
+        end
+      displayCommon = readSetting("displayCommon",displayCommon);
+      displayCommon = CheckBox(10, y, 10, 0xFFFFFFff, " Display Common Fish Caught", displayCommon, 0.7, 0.7);
+      writeSetting("displayCommon",displayCommon);
+      y = y + 20;
+      AutoFillet = readSetting("AutoFillet",AutoFillet);
+      AutoFillet = CheckBox(10, y, 10, 0xFFFFFFff, " Automatically Fillet Fish", AutoFillet, 0.7, 0.7);
+      writeSetting("AutoFillet",AutoFillet);
+      y = y + 20;
+      lsPrintWrapped(10, y, 0, lsScreenX - 20, 0.7, 0.7, 0xffff40ff,
+      "---------------------------------------------------------------");
+      y = y + 20;
+      LogFails = readSetting("LogFails",LogFails);
+      LogFails = CheckBox(10, y, 10, 0xFFFFFFff, " Log Failed Catches (Log Everything)", LogFails, 0.7, 0.7);
+      writeSetting("LogFails",LogFails);
 
         if LogFails then
-            LogStrangeUnusual = false;
-            LogOdd = false;
+          LogStrangeUnusual = false;
+          LogOdd = false;
         else
-            y = y + 20;
-            LogStrangeUnusual = readSetting("LogStrangeUnusual",LogStrangeUnusual);
-            LogStrangeUnusual = CheckBox(10, y, 10, 0xFFFFFFff, " Log Strange & Unusual Fish Seen ...", LogStrangeUnusual, 0.7, 0.7);
-            writeSetting("LogStrangeUnusual",LogStrangeUnusual);
-            y = y + 20;
-            LogOdd = readSetting("LogOdd",LogOdd);
-            LogOdd = CheckBox(10, y, 10, 0xFFFFFFff, " Log Odd Fish Seen ...", LogOdd, 0.7, 0.7);
-            writeSetting("LogOdd",LogOdd);
-        end
+      y = y + 20;
+      LogStrangeUnusual = readSetting("LogStrangeUnusual",LogStrangeUnusual);
+      LogStrangeUnusual = CheckBox(10, y, 10, 0xFFFFFFff,
+      " Log Strange & Unusual Fish Seen ...", LogStrangeUnusual, 0.7, 0.7);
+      writeSetting("LogStrangeUnusual",LogStrangeUnusual);
+      y = y + 20;
+      LogOdd = readSetting("LogOdd",LogOdd);
+      LogOdd = CheckBox(10, y, 10, 0xFFFFFFff, " Log Odd Fish Seen ...", LogOdd, 0.7, 0.7);
+      writeSetting("LogOdd",LogOdd);
+      end
 
         if setResume then
-            buttonName = "Set/Resume";
+          buttonName = "Set/Resume";
         else
-            buttonName = "Start";
+          buttonName = "Start";
         end
-
-        if lsButtonText(10, lsScreenY - 30, 0, 130, 0xFFFFFFff, buttonName) then
+        if TotalCasts ~= nil then
+          if lsButtonText(10, lsScreenY - 30, 0, 100, 0x00ff00ff, buttonName) then
             is_done = 1;
             setResume = false;
+          end
         end
-        if lsButtonText(lsScreenX - 110, lsScreenY - 30, 0, 100, 0xFFFFFFff,
-            "End script") then
-            error(quitMessage);
+        if lsButtonText(lsScreenX - 110, lsScreenY - 30, 0, 100, 0xFF0000ff,
+          "End script") then
+            error(quit_message);
         end
-        lsSleep(10);
+      lsSleep(10);
     end
-    return count;
+  return count;
 end
-
 
 function SetupLureGroup()
-    TLures = {};
-    FirstLure="";
-    LastLure = "";
+  TLures = {};
+  LastLure = "";
 
-    -- Find Lure Type
-    for i = 1, #Lure_Types, 1 do
-      test = findText(Lure_Types[i] .. "...");
-      if test then
-        LureType = Lure_Types[i];
-          if not muteSoundEffects then
-            lsPlaySound("high_rise.wav");
-          end
-        --Click it!
-        srClickMouseNoMove(test[0]+12,test[1]+5);
-        waitForText("(" .. LureType .. ")")
-        break;
-      end
-    end
-
-    lsDoFrame();
-    statusScreen("Indexing Lures ...",nil, 0.7);
-    checkBreak()
-    srReadScreen();
-    local unpinned = srFindImage("unpinnedPin.png");
-    if unpinned then
-      safeClick(unpinned[0],unpinned[1]);
-    else
-      FirstLure = FindLureNameFirst();
-      LastLure=nil;
-    end
-
-    --[[
-    FindPin = srFindImage("UnPin.png");
-    if FindPin then
-
-    --Click the pinup to refresh the lures window (in case a lure was lost earlier, it would still be showing on menu).
-    --srClickMouseNoMove(FindPin[0]-8,FindPin[1]);
-    -- clickAllImages(image_name, offsetX, offsetY, rightClick, tol)
-    clickAllImages("UnPin.png",-8,0);
-    lsSleep(100);
-    srReadScreen();
-    -- Push Up arrow, just in case its current at bottom of list
-    --DownPin = srFindImageInRange("Fishing/Menu_DownArrow.png",FindPin[0]-10,FindPin[1],50,500);
-    DownPin = srFindImage("Fishing/Menu_DownArrow.png", 6000);
-    if DownPin then
-        --UpArrow = srFindImageInRange("Fishing/Menu_UpArrow.png",FindPin[0]-10,FindPin[1],50,50);
-        UpArrow = srFindImage("Fishing/Menu_UpArrow.png", 6000);
-        if UpArrow then
-            srClickMouseNoMove(UpArrow[0]+5,UpArrow[1]+5);
-            lsSleep(200);
-            srReadScreen();
-            FirstLure = FindLureNameFirst();
-            LastLure=FindLureNameLast();
-        end
-
-    else
-        --No Arrows on lure menu?
-        FirstLure = FindLureNameFirst();
-        LastLure=nil;
-    end
-
-
-        if not muteSoundEffects then
-            lsPlaySound("moneycounter.wav");
-        end
-
-
-    else
-        error("Didn\'t find Lures pinned window - Self Click->Skills, Fishing -> Use Lure, PIN THIS WINDOW!");
-    end
-    ]]--
-
-
-    if  LastLure ~= nil then
-        --We have last lure, and arrows showing
-        ChangeLureMenu = LastLure;
-
-        FirstLurLoc = findText(FirstLure);
-        LastLurLoc = findText(LastLure);
-
-        lureCounter = 0;
+    if LastLure ~= nil then
+      lureCounter = 0;
         for i = 1, #Lures,1 do
-            test = findText(Lures[i]);
-            if test then
-                --Add Lure
-                lureCounter = lureCounter + 1;
-                statusScreen("Indexing Lures [" .. lureCounter .. "]\n" .. Lures[i],nil, 0.7);
-                lsSleep(50);
-                table.insert(TLures,Lures[i]);
-                if Lures[i] == LastLure then
-                    --End of Menu, Use Down Arrow
-                    --arrow=srFindImageInRange("Fishing/menu_downarrow.png",test[0],test[1]-5,175,50);
-                    arrow=srFindImage("Fishing/menu_downarrow.png", 6000);
-                    if arrow then
-                        DownArrowLocs = arrow;
-                        srClickMouseNoMove(arrow[0]+5,arrow[1]+5);
-                        lsSleep(200);
-                        srReadScreen();
-                    --else
-                        --error("no arrow found");
-                    end
-                end
-                LastLureMenu = Lures[i];
-            end
-        end
-
-        --Reset Lure Menu
-        --UpArrow = srFindImageInRange("Fishing/Menu_UpArrow.png",FindPin[0]-10,FindPin[1],50,50);
-        UpArrow = srFindImage("Fishing/Menu_UpArrow.png", 6000);
-        if UpArrow then
-            srClickMouseNoMove(UpArrow[0]+5,UpArrow[1]+5);
-            lsSleep(200);
-        end
-
-    else
-        --No arrows, just get lures
-        lureCounter = 0;
-        for i = 1, #Lures, 1 do
-            test = findText(Lures[i]);
-            if test then
-                lureCounter = lureCounter + 1;
-                statusScreen("Indexing Lures [" .. lureCounter .. "]\n" .. Lures[i],nil, 0.7);
-                lsSleep(50);
-                table.insert(TLures,Lures[i]);
+          lureList = findText(Lures[i]);
+            if lureList then
+              --Add Lure
+              lureCounter = lureCounter + 1;
+              statusScreen("Indexing Lures [" .. lureCounter .. "]\n" .. Lures[i],nil, 0.7);
+              lsSleep(50);
+              table.insert(TLures,Lures[i]);
             end
         end
     end
-    lsSleep(100);
-    return TLures;
+  lsSleep(100);
+  return TLures;
 end
 
 
-function FindLureNameFirst()
-    for i = 1, #Lures, 1 do -- start from first line
-        Lure = findText(Lures[i]);
-        if Lure then
-            return Lures[i]
-        end
-    end
-end
-
-function FindLureNameLast()
-    for i = #Lures, 1, -1 do -- start from last line
-        Lure = findText(Lures[i]);
-        if Lure then
-            return Lures[i]
-        end
-    end
+function getLureList()
+  for i = 1, #Lures, 1 do -- start from first line
+    Lure = findText(Lures[i]);
+      if Lure then
+        return Lures[i]
+      end
+  end
 end
 
 function UseLure()
-    checkBreak();
+  checkBreak();
     if #TLures == 0 then
-        if not muteSoundEffects then
-            lsPlaySound("fail.wav");
-        end
-        error 'Can\'t find any lures on the pinned window. Did you run out of lures?'
+      if not muteSoundEffects then
+        lsPlaySound("fail.wav");
+      end
+      error 'Can\'t find any lures on the pinned window. Did you run out of lures?'
     end
 
-    CurrentLure = PlayersLures[CurrentLureIndex];
+  CurrentLure = PlayersLures[CurrentLureIndex];
 
-    if #TLures == 1 then
-        QCurrentLure = CurrentLure;
-        QCurrentLureIndex = CurrentLureIndex;
-    elseif LostLure == 1 and not lastCast then
-    --Do Nothing, continue...
-    else
-        QCurrentLure = PlayersLures[QCurrentLureIndex];
+  if #TLures == 1 then
+    QCurrentLure = CurrentLure;
+    QCurrentLureIndex = CurrentLureIndex;
+  elseif LostLure == 1 and not lastCast then
+  --Do Nothing, continue...
+  else
+      QCurrentLure = PlayersLures[QCurrentLureIndex];
+  end
+
+  -- Uses lure according to CurrentLureIndex, which is used in PlayersLures which contains each lure the player has.
+  lsDoFrame(); -- Blank the screen so next statusScreen messages isn't mixed/obscured with previous gui_refresh info on screen
+  lsSleep(10);
+  if LostLure == 1 and not lastCast then
+    statusScreen("Lost Lure! | " .. lastLostLure .. "\nUsing same lure again!", nil, 0.7);
+    table.insert(lostlure_log, lastLostLure .. " (" .. lastLostLureType .. ")");
+    lsSleep(1000);
+  elseif LostLure == 1 then
+    statusScreen("Lost Lure! | " .. lastLostLure .. "\nSwitching Lures | " .. QCurrentLure, nil, 0.7);
+    table.insert(lostlure_log, lastLostLure .. " (" .. lastLostLureType .. ")");
+    lsSleep(1000);
+  else
+    statusScreen("Switching Lures | " .. QCurrentLure, nil, 0.7);
+    lsSleep(750);
+  end
+
+  srReadScreen();
+  --Refresh the fishing menu and re-index the new lure order
+  fishingWindow = findText("Fishing Lure");
+  safeClick(fishingWindow[0],fishingWindow[1])
+
+  lsDoFrame();
+  statusScreen("Indexing Lures ...",nil, 0.7);
+  checkBreak()
+  srReadScreen();
+  getLureList();
+
+  if QCurrentLureIndex > 30 then
+    srClickMouseNoMove(down[0]+5,down[1]+5);
+    lsSleep(200);
+  elseif #PlayersLures > 30 then
+    if up then
+     srClickMouseNoMove(up[0]+5,up[1]+5);
     end
+    lsSleep(200);
+  end
 
-    -- Uses lure according to CurrentLureIndex, which is used in PlayersLures which contains each lure the player has.
-    lsDoFrame(); -- Blank the screen so next statusScreen messages isn't mixed/obscured with previous gui_refresh info on screen
-    lsSleep(10);
-    if LostLure == 1 and not lastCast then
-        statusScreen("Lost Lure! | " .. lastLostLure .. "\nUsing same lure again!", nil, 0.7);
-        table.insert(lostlure_log, lastLostLure .. " (" .. lastLostLureType .. ")");
-        lsSleep(1000);
-    elseif LostLure == 1 then
-        statusScreen("Lost Lure! | " .. lastLostLure .. "\nSwitching Lures | " .. QCurrentLure, nil, 0.7);
-        table.insert(lostlure_log, lastLostLure .. " (" .. lastLostLureType .. ")");
-        lsSleep(1000);
-    else
-        statusScreen("Switching Lures | " .. QCurrentLure, nil, 0.7);
-        lsSleep(750);
-    end
+  srReadScreen();
 
+  if LostLure == 1 and not lastCast then
+    lure = findText(PlayersLures[CurrentLureIndex]);
+  else
+    lure = findText(PlayersLures[QCurrentLureIndex]);
+  end
+
+  LostLure = 0;
+
+  if lure then
+    srClickMouseNoMove(lure[0]+12,lure[1]+5);
+    lsSleep(200);
     srReadScreen();
-    --Only the first 30 lures will show in window, 31+ needs the down arrow clicked to be viewed, else click the up arrow (if more than 30 lures).
-    if QCurrentLureIndex > 30 then
-        down = srFindImage("Fishing/Menu_DownArrow.png", 6000);
-        srClickMouseNoMove(down[0]+5,down[1]+5);
-        lsSleep(200);
-    elseif #PlayersLures > 30 then
-        up = srFindImage("Fishing/Menu_UpArrow.png", 6000);
-          if up then
-             srClickMouseNoMove(up[0]+5,up[1]+5);
-           end
-        lsSleep(200);
-    end
-
-    srReadScreen();
-
-    if LostLure == 1 and not lastCast then
-        lure = findText(PlayersLures[CurrentLureIndex]);
-    else
-        lure = findText(PlayersLures[QCurrentLureIndex]);
-    end
-
-    LostLure = 0;
-
-    if lure then
-        srClickMouseNoMove(lure[0]+12,lure[1]+5);
-        lsSleep(200);
-    end
+    clickText(waitForText("Select as preferred Fishing Lure", 500));
+    lsSleep(200);
+  end
 end
 
 function checkIfMain(chatText)
@@ -374,7 +263,7 @@ function ChatReadFish(value)
     if value ~= nil then
       numCaught, fishType = string.match(lastLine, "(%d+) deben ([^.]+)%."); -- Read next to last line of main chat
     else
-      fishType = string.match(lastLine, "Caught a ([^.]+)%."); -- Read last line of main chat
+      fishType = string.match(lastLine, "Caught [%w ']+ ([^.]+)%."); -- Read last line of main chat
     end
     if fishType then
         GrandTotalCaught = GrandTotalCaught + 1
@@ -386,7 +275,7 @@ function ChatReadFish(value)
     end
     if value ~= nil then
       logMessage = ("[" .. CurrentLure .. " (" .. LureType .. ")] "  .. Sfish .. " (" .. SNum .. "db)");
-      logType = "seasonal"
+      fishType = "seasonal"
     else
       logMessage = ("[" .. CurrentLure .. " (" .. LureType .. ")] "  .. Sfish);
       logType = "common"
@@ -413,7 +302,7 @@ function findchat()
         srReadScreen();
         chatText = getChatText();
         onMain = checkIfMain(chatText);
-        sleepWithStatus(500, "Looking for Main chat screen...\n\nMake sure main chat tab is showing and that the window is sized, wide enough, so that no lines wrap to next line.\n\nAlso if you main chat tab is minimized, you need to check Options, Interface Option, Minimized chat-channels are still visible.", nil, 0.7);
+        sleepWithStatus(500, "Looking for Main chat screen...\n\nMake sure main chat tab is showing and that the window is sized, wide enough, so that no lines wrap to next line..", nil, 0.7);
     end
 
     while #chatText < 2 do
@@ -569,29 +458,29 @@ function gui_refresh()
     lsPrintWrapped(10, winsize[1]-130, 0, lsScreenX - 20, 0.5, 0.5, 0xffffffff, "Odd Fish Seen: " .. GrandTotalOdd);
     lsPrintWrapped(10, winsize[1]-118, 0, lsScreenX - 20, 0.5, 0.5, 0xffffffff, "Unusual Fish Seen: " .. GrandTotalUnusual);
     lsPrintWrapped(10, winsize[1]-106, 0, lsScreenX - 20, 0.5, 0.5, 0xffffffff, "Strange Fish Seen: " .. GrandTotalStrange);
-    lsPrintWrapped(10, winsize[1]-94, 0, lsScreenX - 20, 0.5, 0.5, 0xFFFFFFff, "-----------------------------");
+    lsPrintWrapped(10, winsize[1]-94, 0, lsScreenX - 20, 0.5, 0.5, 0xffff40ff, "-----------------------------");
     lsPrintWrapped(10, winsize[1]-82, 0, lsScreenX - 20, 0.5, 0.5, 0xc0ffc0ff, "Lures Switched: " .. GrandTotalLuresUsed-1);
     if lastLostLure ~= "" then
         lsPrintWrapped(10, winsize[1]-70, 0, lsScreenX - 20, 0.5, 0.5, 0xff8080ff, "Lures Lost: " .. GrandTotalLostLures .. "   -  Last: " .. lastLostLure .. " (" .. lastLostLureType .. ")");
     else
         lsPrintWrapped(10, winsize[1]-70, 0, lsScreenX - 20, 0.5, 0.5, 0xff8080ff, "Lures Lost: " .. GrandTotalLostLures);
     end
-    lsPrintWrapped(10, winsize[1]-58, 0, lsScreenX - 20, 0.5, 0.5, 0xFFFFFFff, "-----------------------------");
+    lsPrintWrapped(10, winsize[1]-58, 0, lsScreenX - 20, 0.5, 0.5, 0xffff40ff, "-----------------------------");
     lsPrintWrapped(10, winsize[1]-46, 0, lsScreenX - 20, 0.5, 0.5, 0xc0ffffff, "Completed Casts: " .. GrandTotalCasts);
     lsPrintWrapped(10, winsize[1]-34, 0, lsScreenX - 20, 0.5, 0.5, 0xff8080ff, "Failed Catches: " .. GrandTotalFailed);
     lsPrintWrapped(10, winsize[1]-22, 0, lsScreenX - 20, 0.5, 0.5, 0xffffc0ff, "Fish Caught: " .. GrandTotalCaught .. " (" .. math.floor(GrandTotaldb) .. "db)");
     lsSetCamera(0,0,lsScreenX*1.6,lsScreenY*1.6);
 
-    if lsButtonText(lsScreenX + 40, lsScreenY + 20, 0, 130, 0xFFFFFFff,
+    if lsButtonText(lsScreenX + 40, lsScreenY + 20, 0, 130, 0x6666FFff,
         "Options") then
         lsDoFrame();
         setResume = true;
         setOptions();
     end
 
-    if lsButtonText(lsScreenX + 40, lsScreenY + 50, 0, 130, 0xFFFFFFff,
+    if lsButtonText(lsScreenX + 40, lsScreenY + 50, 0, 130, 0xFF0000ff,
         "End Script") then
-        error(quitMessage);
+        error(quit_message);
     end
 
     if skipLure or ((TotalCasts + 1 - castcount) <= 1 and not LockLure) then
@@ -610,7 +499,7 @@ function gui_refresh()
     end
 
     if not finishUp then
-        if lsButtonText(lsScreenX + 40, lsScreenY + 120, 0, 130, 0xFFFFFFff,
+        if lsButtonText(lsScreenX + 40, lsScreenY + 120, 0, 130, 0xffbb80ff,
             "Finish Up") then
             finishUp = true;
         end
@@ -670,7 +559,7 @@ end
 function doit()
 
     askForWindow("MAIN chat tab MUST be showing and wide enough so that each line doesn't wrap.\n\n"
-    .. "Required: Pin Lures Menu (Click the lure health bar).\n\n"
+    .. "Right click the 'Fishing Lure' menu in your inventory and pin this window.\n\n"
     .. "History will be recorded in FishLog.txt and stats in FishStats.txt.");
 
     setOptions();
@@ -764,12 +653,14 @@ function doit()
 
             --Cast
             checkBreak();
-            filletFish();  -- Search for "All Fish" pinned up. If so, fillet.
             castWait = 0;
             findchat();
             lastLineFound = lastLineParse; -- Record last line before casting
             lastLineFound2 = lastLineParse2; -- Record next to last line before casting
-            srClickMouseNoMove(cast[0]+3,cast[1]+3);
+              if AutoFillet then
+                filletFish();  -- Search for "All Fish" pinned up. If so, fillet.
+              end
+            safeClick(cast[0]+3,cast[1]+3);
             lsSleep(200);
             srReadScreen();
             local cancel = srFindImage("cancel.png")
@@ -900,9 +791,11 @@ function doit()
                         if v == "caught" and string.match(lastLine, "Caught a (%d+) deben ([^.]+)%.") then
                           caughtFish = true;
                           Fish = ChatReadFish(1); -- Parse last line of main chat
-                        elseif v == "caught" and string.match(lastLine, "Caught a ([^.]+)%.") then
-                          caughtFish = true;
-                          Fish = ChatReadFish(); -- Parse next to last line of main chat
+                        elseif v == "caught" and string.match(lastLine, "Caught [%w ']+ ([^.]+)%.") then
+                          if displayCommon then
+                            caughtFish = true;
+                            Fish = ChatReadFish(); -- Parse next to last line of main chat
+                          end
 
                             if not fishType then
                               caughtFish = nil;
@@ -923,27 +816,13 @@ function doit()
                         table.insert(gui_log_fish2, addlog);
                         FishType = Sfish;
                         if SkipCommon == true and LockLure == false then
-                            --FishType = string.sub(Fish,string.find(Fish,",") + 1);
-
-                            if FishType == "Abdju" or FishType == "Chromis" or FishType == "Catfish" or FishType == "Carp" or FishType == "Perch" or FishType == "Phagrus" or FishType == "Tilapia" then
-                                --Skip it
-                                castcount=0;
-
-                            end
+                          if FishType == "Abdju" or FishType == "Chromis" or FishType == "Catfish" or FishType == "Carp" or FishType == "Oxyrynchus" or FishType == "Perch" or FishType == "Phagrus" or FishType == "Tilapia" then
+                            castcount=0;
+                          end
                         end
-                        --if not muteSoundEffects then
-                        --if FishType == "Abdju" or FishType == "Chromis" or FishType == "Catfish" or FishType == "Carp" or FishType == "Perch" or FishType == "Phagrus" or FishType == "Tilapia" then
-                        --lsPlaySound("cheer.wav");
-                        --else
-                        --lsPlaySound("applause.wav");
-                        --end
-                        --end
                         end
                     end
-
-
                     --Add more if v == "something" then statements here if needed
-
                 end
                 gui_refresh();
             end
@@ -974,25 +853,16 @@ function doit()
 end
 
 function round(num, numDecimalPlaces)
-    local mult = 10^(numDecimalPlaces or 0)
-    return math.floor(num * mult + 0.5) / mult
+  local mult = 10^(numDecimalPlaces or 0)
+  return math.floor(num * mult + 0.5) / mult
 end
 
 function filletFish()
-    if AutoFillet then
-        -- Pin your Skills, Fishing, Fillet menu, and we will fillet fish every catch (so they don't go rotten).
-        srReadScreen();
-        emptyWindow = srFindImage("WindowEmpty.png");
-        fillet = findText("All Fish");
-
-        if emptyWindow then
-            --refresh any empty windows; just in case a previous fillet All Fish caused window to become empty
-            clickAllImages("WindowEmpty.png", 5, 5, nil, nil);
-            lsSleep(150);
-        end
-
-        if fillet then
-            clickAllText("All Fish");
-        end
+  srReadScreen();
+  fillet = findText("All Fish");
+    if fillet then
+      clickAllText("All Fish");
+    else
+      clickAllImages("WindowEmpty.png", 5, 5, nil, nil);
     end
 end
