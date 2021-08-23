@@ -126,6 +126,15 @@ function getClickActions()
                   y = y + 35;
                 end
             end
+
+            if items[i][tasks[i]] == "Weave Canvas" or items[i][tasks[i]] == "Weave Linen" 
+              or items[i][tasks[i]] == "Weave Papy Basket" or items[i][tasks[i]] == "Weave Wool Cloth" then 
+              y = y + 35;
+              reloadLoom = readSetting("reloadLoom",reloadLoom);
+              reloadLoom = lsCheckBox(5, y-30, z, 0xFFFFFFff, " Automatically reload Loom", reloadLoom);
+              writeSetting("reloadLoom",reloadLoom);
+            end
+
             if items[i][tasks[i]] == "Tap Rods" then
               y = y + 35;
               retrieveRods = readSetting("retrieveRods",retrieveRods);
@@ -139,11 +148,12 @@ function getClickActions()
               writeSetting("stashRawMaterials",stashRawMaterials);
             end
         end
+
         lsDoFrame();
         lsSleep(tick_delay);
-          if lsButtonText(150, 58, z, 100, 0xFFFFFFff, "OK") then
-            done = true;
-          end
+        if lsButtonText(150, 58, z, 100, 0xFFFFFFff, "OK") then
+          done = true;
+        end
     end
 end
 
@@ -163,6 +173,36 @@ function weave(clothType)
     elseif clothType == "Silk" then
         srcType = "Silk";
         srcQty = "50";
+    end
+    
+    -- Restring student looms
+    srReadScreen();
+    if studloom then
+        srReadScreen();
+        t = srFindImage("statclicks/restring.png");
+        if t ~= nil then
+            safeClick(t[0],t[1]);
+            lsSleep(75);
+            srReadScreen();
+            closePopUp();
+            lsSleep(75);
+        end
+    end
+
+    -- reload the loom
+    if reloadLoom then
+      if not recycleSail then
+        loadImage = srFindImage("statclicks/with_" .. srcType .. ".png");
+        if loadImage ~= nil then
+          safeClick(loadImage[0],loadImage[1]);
+          local t = waitForImage("statclicks/how_much.png", 2000);
+            if t ~= nil then
+              srCharEvent(srcQty .. "\n");
+            end
+          closePopUp();
+          lsSleep(100); -- allow loom to not be busy
+        end
+      end
     end
 
     srReadScreen();
@@ -194,32 +234,7 @@ function weave(clothType)
             srReadScreen();
             closePopUp();
           end
-        -- reload the loom
-        if not recycleSail then
-          loadImage = srFindImage("statclicks/with_" .. srcType .. ".png");
-          if loadImage ~= nil then
-            safeClick(loadImage[0],loadImage[1]);
-            local t = waitForImage("statclicks/how_much.png", 2000);
-              if t ~= nil then
-                srCharEvent(srcQty .. "\n");
-              end
-            closePopUp();
-          end
-        end
-    end
 
-    -- Restring student looms
-    srReadScreen();
-    if studloom then
-        srReadScreen();
-        t = srFindImage("statclicks/restring.png");
-        if t ~= nil then
-            safeClick(t[0],t[1]);
-            lsSleep(75);
-            srReadScreen();
-            closePopUp();
-            lsSleep(75);
-        end
     end
 end
 
