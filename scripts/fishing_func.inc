@@ -61,7 +61,7 @@ Lures = {
 };
 
 Chat_Types = {
-["Caught a"] = "caught",
+["Caught"] = "caught",
 ["You are carrying"] = "overweight",
 ["You have achieved"] = "achievement",
 ["You are already fishing"] = "alreadyfishing",
