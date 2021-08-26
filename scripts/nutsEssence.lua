@@ -42,6 +42,7 @@ function toxinTick(window_pos, state)
     lsSleep(per_click_delay);
     state.status = "Starting new batch";
     state.initCactus = nil;
+    state.initCC = nil;
     return state.status;
   end
 
@@ -109,9 +110,20 @@ function toxinTick(window_pos, state)
     lsSleep(per_click_delay);
   end
 
-  if state.stage == 1 and state.temp < 600 then
+  if state.stage == 1 and state.initCC == nil then
+    image = shImage("toxinkitchen/HeatCharcoal.png", window_pos);
+      for i = 1, 6, 1 do
+        srClickMouseNoMove(image[0] + 2, image[1] + 2);
+        lsSleep(per_click_delay);
+      end
+    state.initCC = 1;
+    lsSleep(1000);
+    state.lastTemp = state.temp;
+  end
+  if state.stage == 1 and state.temp < 600 and state.temp > 0 and state.temp ~= state.lastTemp then
     image = shImage("toxinkitchen/HeatCharcoal.png", window_pos);
     srClickMouseNoMove(image[0] + 2, image[1] + 2);
+    state.lastTemp = state.temp;
     lsSleep(per_click_delay);
   end
 
