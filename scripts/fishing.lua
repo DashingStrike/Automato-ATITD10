@@ -275,7 +275,7 @@ function ChatReadFish(value)
     end
     if value ~= nil then
       logMessage = ("[" .. CurrentLure .. " (" .. LureType .. ")] "  .. Sfish .. " (" .. SNum .. "db)");
-      fishType = "seasonal"
+      logType = "seasonal"
     else
       logMessage = ("[" .. CurrentLure .. " (" .. LureType .. ")] "  .. Sfish);
       logType = "common"
@@ -455,32 +455,32 @@ function gui_refresh()
     end
 
 
-    lsPrintWrapped(10, winsize[1]-130, 0, lsScreenX - 20, 0.5, 0.5, 0xffffffff, "Odd Fish Seen: " .. GrandTotalOdd);
-    lsPrintWrapped(10, winsize[1]-118, 0, lsScreenX - 20, 0.5, 0.5, 0xffffffff, "Unusual Fish Seen: " .. GrandTotalUnusual);
-    lsPrintWrapped(10, winsize[1]-106, 0, lsScreenX - 20, 0.5, 0.5, 0xffffffff, "Strange Fish Seen: " .. GrandTotalStrange);
-    lsPrintWrapped(10, winsize[1]-94, 0, lsScreenX - 20, 0.5, 0.5, 0xffff40ff, "-----------------------------");
+    lsPrintWrapped(115, winsize[1]-46, 0, lsScreenX - 20, 0.5, 0.5, 0xffffffff, "Odd Fish Seen: " .. GrandTotalOdd);
+    lsPrintWrapped(115, winsize[1]-34, 0, lsScreenX - 20, 0.5, 0.5, 0xffffffff, "Unusual Fish Seen: " .. GrandTotalUnusual);
+    lsPrintWrapped(115, winsize[1]-22, 0, lsScreenX - 20, 0.5, 0.5, 0xffffffff, "Strange Fish Seen: " .. GrandTotalStrange);
+    lsPrintWrapped(10, winsize[1]-94, 0, lsScreenX - 20, 0.5, 0.5, 0xffff40ff, "- - - - - - - - - - - - - - - - - - - -");
     lsPrintWrapped(10, winsize[1]-82, 0, lsScreenX - 20, 0.5, 0.5, 0xc0ffc0ff, "Lures Switched: " .. GrandTotalLuresUsed-1);
     if lastLostLure ~= "" then
         lsPrintWrapped(10, winsize[1]-70, 0, lsScreenX - 20, 0.5, 0.5, 0xff8080ff, "Lures Lost: " .. GrandTotalLostLures .. "   -  Last: " .. lastLostLure .. " (" .. lastLostLureType .. ")");
     else
         lsPrintWrapped(10, winsize[1]-70, 0, lsScreenX - 20, 0.5, 0.5, 0xff8080ff, "Lures Lost: " .. GrandTotalLostLures);
     end
-    lsPrintWrapped(10, winsize[1]-58, 0, lsScreenX - 20, 0.5, 0.5, 0xffff40ff, "-----------------------------");
+    lsPrintWrapped(10, winsize[1]-58, 0, lsScreenX - 20, 0.5, 0.5, 0xffff40ff, "- - - - - - - - - - - - - - - - - - - -");
     lsPrintWrapped(10, winsize[1]-46, 0, lsScreenX - 20, 0.5, 0.5, 0xc0ffffff, "Completed Casts: " .. GrandTotalCasts);
     lsPrintWrapped(10, winsize[1]-34, 0, lsScreenX - 20, 0.5, 0.5, 0xff8080ff, "Failed Catches: " .. GrandTotalFailed);
     lsPrintWrapped(10, winsize[1]-22, 0, lsScreenX - 20, 0.5, 0.5, 0xffffc0ff, "Fish Caught: " .. GrandTotalCaught .. " (" .. math.floor(GrandTotaldb) .. "db)");
     lsSetCamera(0,0,lsScreenX*1.6,lsScreenY*1.6);
 
-    if lsButtonText(lsScreenX + 40, lsScreenY + 20, 0, 130, 0x6666FFff,
-        "Options") then
-        lsDoFrame();
-        setResume = true;
-        setOptions();
+    if lsButtonText(lsScreenX + 50, lsScreenY + 20, 0, 120, 0x6666FFff,
+      "Options") then
+      lsDoFrame();
+      setResume = true;
+      setOptions();
     end
 
-    if lsButtonText(lsScreenX + 40, lsScreenY + 50, 0, 130, 0xFF0000ff,
-        "End Script") then
-        error(quit_message);
+    if lsButtonText(lsScreenX + 50, lsScreenY + 50, 0, 120, 0xFF0000ff,
+      "End Script") then
+      error(quit_message);
     end
 
     if skipLure or ((TotalCasts + 1 - castcount) <= 1 and not LockLure) then
@@ -499,18 +499,18 @@ function gui_refresh()
     end
 
     if not finishUp then
-        if lsButtonText(lsScreenX + 40, lsScreenY + 120, 0, 130, 0xffbb80ff,
+        if lsButtonText(lsScreenX + 50, lsScreenY + 120, 0, 120, 0xffbb80ff,
             "Finish Up") then
             finishUp = true;
         end
     else
-        if lsButtonText(lsScreenX + 40, lsScreenY + 120, 0, 130, 0xff8080ff,
+        if lsButtonText(lsScreenX + 50, lsScreenY + 120, 0, 120, 0xff8080ff,
             "Cancel ...") then
             finishUp = false;
         end
     end
 
-    if lsButtonText(lsScreenX + 40, lsScreenY + 150, 0, 130, skipLureTextColor,
+    if lsButtonText(lsScreenX + 50, lsScreenY + 150, 0, 120, skipLureTextColor,
         skipLureText	) then
         if skipLure then
             skipLure = false;
@@ -530,7 +530,7 @@ function gui_refresh()
     end
 
 
-    if lsButtonText(lsScreenX + 40, lsScreenY + 180, 0, 130, LockLureColor,
+    if lsButtonText(lsScreenX + 50, lsScreenY + 180, 0, 120, LockLureColor,
         LockLureText ) then
 
         if LockLure then
@@ -828,7 +828,7 @@ function doit()
             end
 
             if not caughtFish then
-                GrandTotalFailed = GrandTotalFailed + 1;
+              GrandTotalFailed = GrandTotalFailed + 1;
             end
 
             if v == "lure" or v == "alreadyfishing" or noWriteLog or not string.find(lastLine, "^%*%*", 0) then
