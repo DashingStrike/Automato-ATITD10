@@ -11,7 +11,7 @@ function doit()
     checkBreak();
     waitForEnd();
 
-    local wells = findAllText("This is a Deep Well", nil, REGION);
+    local wells = findAllText("This is [a-z]+ Deep Well", nil, REGION + REGEX);
     if #wells == 0 then
       error "Did not find any Deep Wells";
     end
@@ -35,12 +35,11 @@ function doit()
 
     sleepWithStatus(1000, getStatus());
   end
-  lsPlaySound("complete.wav")
 end
 
 function getStatus()
   srReadScreen();
-  local wells = findAllText("This is a Deep Well", nil, REGION);
+  local wells = findAllText("This is [a-z]+ Deep Well", nil, REGION + REGEX);
   if #wells == 0 then
     error "Did not find any Deep Wells";
   end
