@@ -135,7 +135,7 @@ function waitForMonChange(message)
 		for x=1, mon_w do
 			for y=1, mon_h do
 				newvalue = srReadPixelFromBuffer(mon_x + x, mon_y + y);
-				if not (newvalue == last_mon[x][y]) then
+				if (math.abs(math.floor(newvalue/(256*256*256)) - math.floor(last_mon[x][y]/(256*256*256))) > 10) then
 					different = 1;
 				end
 				last_mon[x][y] = newvalue;
@@ -580,18 +580,11 @@ function thistleConfig()
 	    promptRecipe(farms[dropdown_cur_value_farm]);
 	  end
 
-    if foundRecipe then
-	  if lsButtonText(10, lsScreenY - 30, 0, 120, 0x40ff40ff, "Load Farm") then
-			if promptOkay("WARNING: Due to an issue with game windows being partially transparent, even with the setting at 0%.\n\n"
-			.. "You MUST open a blank chat tab and move it behind the thistle windows in order to stop the macro "
-			.. "producing a false positive and ruining your thistle recipe.\n\nSee the FAQ channel in automato "
-			.. "discord for an example", 0xFF0000ff, 0.7, true, false) == nil then
-	      thistleConfig();
-	    else
-				loadSilkFarms(farms[dropdown_cur_value_farm]);
+		if foundRecipe then
+		  if lsButtonText(10, lsScreenY - 30, 0, 120, 0x40ff40ff, "Load Farm") then
+		    loadSilkFarms(farms[dropdown_cur_value_farm]);
 		    config();
-	    end
-	  end
+		  end
     end
   end
 
@@ -641,16 +634,7 @@ function miscButtons()
   checkBreak();
 
   if lsButtonText(lsScreenX/2 - 60, 10, 0, 140, 0xffffffff, "Window Manager") then
-	--function windowManager(title, message, allowCascade, allowWaterGap, varWidth, varHeight, sizeRight, offsetWidth,
---    windowManager("Thistle Garden Setup", nil, true, true, nil, nil, nil, nil, nil, nil, true);
---    windowManager("Thistle Garden Setup", nil, true, true, nil, nil, nil, nil, nil);
-
-
---  windowManager("Thistle Garden Setup", nil, true, true, nil, nil, nil, nil, nil);
-
-    windowManager("Thistle Garden Setup", nil, true, true, nil, nil, nil, nil, nil, nil, false);
-
-
+		windowManager("Thistle Garden Setup", nil, true, true, nil, nil, nil, nil, 15);
   end
 
   lsPrint(10, 80, z, 0.7, 0.7, 0xFFFFFFff, "Use these buttons if pinned in CASCADE:");
