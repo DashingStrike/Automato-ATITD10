@@ -583,6 +583,7 @@ function makeToxin(tid)
 	resetqty();
 	srReadScreen();
 	window_pos = findText("This is [a-z]+ Toxin Kitchen", nil, REGEX);
+	bounds = srGetWindowBorders(window_pos[0], window_pos[1]);
 		if (not window_pos) then
 			error "Did not find any Toxin Kitchen window";
 		end
@@ -597,8 +598,8 @@ function makeToxin(tid)
 					for i=1,#toxinKitchenWindow do
 						local x = toxinKitchenWindow[i][0];
 						local y = toxinKitchenWindow[i][1];
-						local width = 370;
-						local height = 285;
+						local width = 441;
+						local height = 291;
 
 							if PRODUCTS[tid] == "Revelation Solvent (Renenutet's)" then
 								srReadScreen();
@@ -619,8 +620,6 @@ function makeToxin(tid)
 						closePopUp();
 						displayStatus(tid, passno);
 						srReadScreen();
-						window_pos = findText("This is [a-z]+ Toxin Kitchen", nil, REGEX);
-						bounds = srGetWindowBorders(window_pos[0], window_pos[1]);
 							if (bounds) then
 								srClickMouseNoMove(window_pos[0] + 10, window_pos[1] + 2);
 								lsSleep(readDelay);
