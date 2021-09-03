@@ -135,7 +135,7 @@ function waitForMonChange(message)
 		for x=1, mon_w do
 			for y=1, mon_h do
 				newvalue = srReadPixelFromBuffer(mon_x + x, mon_y + y);
-				if not (newvalue == last_mon[x][y]) then
+				if (math.abs(math.floor(newvalue/(256*256*256)) - math.floor(last_mon[x][y]/(256*256*256))) > 10) then
 					different = 1;
 				end
 				last_mon[x][y] = newvalue;
@@ -641,16 +641,7 @@ function miscButtons()
   checkBreak();
 
   if lsButtonText(lsScreenX/2 - 60, 10, 0, 140, 0xffffffff, "Window Manager") then
-	--function windowManager(title, message, allowCascade, allowWaterGap, varWidth, varHeight, sizeRight, offsetWidth,
---    windowManager("Thistle Garden Setup", nil, true, true, nil, nil, nil, nil, nil, nil, true);
---    windowManager("Thistle Garden Setup", nil, true, true, nil, nil, nil, nil, nil);
-
-
---  windowManager("Thistle Garden Setup", nil, true, true, nil, nil, nil, nil, nil);
-
-    windowManager("Thistle Garden Setup", nil, true, true, nil, nil, nil, nil, nil, nil, false);
-
-
+		windowManager("Thistle Garden Setup", nil, true, true, nil, nil, nil, nil, 15);
   end
 
   lsPrint(10, 80, z, 0.7, 0.7, 0xFFFFFFff, "Use these buttons if pinned in CASCADE:");
