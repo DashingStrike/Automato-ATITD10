@@ -580,18 +580,11 @@ function thistleConfig()
 	    promptRecipe(farms[dropdown_cur_value_farm]);
 	  end
 
-    if foundRecipe then
-	  if lsButtonText(10, lsScreenY - 30, 0, 120, 0x40ff40ff, "Load Farm") then
-			if promptOkay("WARNING: Due to an issue with game windows being partially transparent, even with the setting at 0%.\n\n"
-			.. "You MUST open a blank chat tab and move it behind the thistle windows in order to stop the macro "
-			.. "producing a false positive and ruining your thistle recipe.\n\nSee the FAQ channel in automato "
-			.. "discord for an example", 0xFF0000ff, 0.7, true, false) == nil then
-	      thistleConfig();
-	    else
-				loadSilkFarms(farms[dropdown_cur_value_farm]);
+		if foundRecipe then
+		  if lsButtonText(10, lsScreenY - 30, 0, 120, 0x40ff40ff, "Load Farm") then
+		    loadSilkFarms(farms[dropdown_cur_value_farm]);
 		    config();
-	    end
-	  end
+		  end
     end
   end
 
