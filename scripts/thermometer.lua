@@ -77,7 +77,7 @@ function doit()
 	num_rounds = promptNumber("How many thermos?", 1);
 	askForWindowAndPixel("\n\nPin up the 'Start Making' menu.\n\nMake sure your chat is minimized!\n\nClick in ATITD, hover your mouse over the glory hole and press Shift key.\n\nEnsure your heater control is set to Standard.");
 	srReadScreen();
-	thermos = srFindImage("thermometer.png")
+	thermos = srFindImage("gloryhole/thermometer.png")
 	if not thermos then
 	  error('No match on screen for Thermometer.png\nDo you have Start Making menu pinned?');
 	end
@@ -86,7 +86,7 @@ function doit()
 		keystrokes = 0;
 		status = "";
 		checkBreak();
-		clickAll("thermometer.png", true);
+		clickAll("gloryhole/thermometer.png", true);
 		lsSleep(100);
 		srSetMousePos(mouse_x, mouse_y);
 		for j = 1, string.len(recipe) do
