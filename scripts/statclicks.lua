@@ -34,10 +34,10 @@ items = {
           "Weave Canvas",
           "Weave Linen",
           "Weave Papy Basket",
+          "Weave Silk",
           "Weave Wool Cloth",
           --[[
           "Pump Aqueduct",
-          "Weave Silk",
           ]]--
         },
         --con
@@ -127,8 +127,9 @@ function getClickActions()
                 end
             end
 
-            if items[i][tasks[i]] == "Weave Canvas" or items[i][tasks[i]] == "Weave Linen" 
-              or items[i][tasks[i]] == "Weave Papy Basket" or items[i][tasks[i]] == "Weave Wool Cloth" then 
+            if items[i][tasks[i]] == "Weave Canvas" or items[i][tasks[i]] == "Weave Linen"
+              or items[i][tasks[i]] == "Weave Papy Basket" or items[i][tasks[i]] == "Weave Wool Cloth"
+              or items[i][tasks[i]] == "Weave Silk" then
               y = y + 35;
               reloadLoom = readSetting("reloadLoom",reloadLoom);
               reloadLoom = lsCheckBox(5, y-30, z, 0xFFFFFFff, " Automatically reload Loom", reloadLoom);
@@ -174,7 +175,7 @@ function weave(clothType)
         srcType = "Silk";
         srcQty = "50";
     end
-    
+
     -- Restring student looms
     srReadScreen();
     if studloom then
@@ -678,6 +679,8 @@ function doTasks()
                   weave("Wool");
                 elseif curTask == "Weave Papy Basket" then
                   weave("Basket");
+                elseif curTask == "Weave Silk" then
+                  weave("Silk");
                 elseif curTask == "Limestone" then
                   gather("Limestone");
                 elseif curTask == "Dirt" then
@@ -700,8 +703,6 @@ function doTasks()
                   clickText(findText(textLookup[curTask]));
                 end
                 --[[
-                elseif curTask == "Weave Silk" then
-                    weave("Silk");
 
 
 
