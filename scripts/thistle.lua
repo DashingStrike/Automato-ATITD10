@@ -439,7 +439,7 @@ function config()
     end
 
     grid_mode = readSetting("grid_mode",grid_mode);
-    grid_mode = CheckBox(15, y, z+10, grid_color, " Windows Arranged in Grid  (thistle_custom)", grid_mode, 0.65, 0.65);
+    grid_mode = CheckBox(15, y, z+10, grid_color, " Windows Arranged in Grid", grid_mode, 0.65, 0.65);
     writeSetting("grid_mode",grid_mode);
 
     y = y + 20;
