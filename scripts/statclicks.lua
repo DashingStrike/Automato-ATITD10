@@ -606,6 +606,18 @@ function churnButter()
     if t then
       srClickMouseNoMove(t[0]+5, t[1]+60);
     end
+  srReadScreen();
+  local take = findText("Take...")
+    if take then
+      clickText(waitForText("Take..."));
+      clickText(waitForText("Everything"));
+      lsSleep(75);
+      srReadScreen();
+      local drain = findText("Drain")
+        if drain then
+          srClickMouseNoMove(drain[0], drain[1]-25, 1);
+        end
+    end
 end
 
 function doTasks()
