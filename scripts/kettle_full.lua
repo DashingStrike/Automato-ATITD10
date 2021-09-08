@@ -77,17 +77,17 @@ actions = {
     matLabels = {"Rotten Fish", "Water", "Wood"},
     matCounts = {3, 5, 5}
   },
-  --[[
-    {
-      label = "Arsenic",
-      buttonPos = makePoint(30, 220);
-      stoked = false,
-      menuImage = "kettle/arsenic.png",
-      output = 8,
-      matLabels = {"Razor's Edge Mushrooms", "Scorpion's Brood Mushrooms",
-                   "Oil", "Wood"},
-      matCounts = {1, 1, 5, 5}
-    },
+  {
+    label = "Arsenic",
+    buttonPos = makePoint(30, 220);
+    stoked = false,
+    menuImage = "kettle/arsenic.png",
+    output = 8,
+    matLabels = {"Razor's Edge Mushrooms", "Scorpion's Brood Mushrooms",
+                 "Fish Oil", "Wood"},
+    matCounts = {1, 1, 5, 5}
+  },
+    --[[
     {
       label = "Geb's Tears",
       buttonPos = makePoint(30, 250);
