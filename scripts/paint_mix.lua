@@ -14,6 +14,7 @@ WHITE = 0xFFFFFFff;
 recipes = {};
 filename = "paint_recipes.txt"
 exampleRecipes = "Barn Red : Clay 3 RedSand 9 Silver 4 - #example\nBeet : Cabbage 8 Clay 2 - #example"
+foundExample = 0;
 
 function doit()
   recipes = loadRecipes(filename);
@@ -180,6 +181,11 @@ function getUserParams()
                     config.paint_amount = 5;
                     take_paint = false;
                 end
+                if foundExample > 0 then
+                    current_y = current_y - 10;
+                    drawWrappedText("Warning: (" .. foundExample .. ") #example colors appears in .txt !", 0xffff40ff, X_PADDING, current_y);
+                    current_y = current_y + 40;
+                end
 
                 if config.paint_amount then
                     drawWrappedText("Mix " .. config.paint_amount .. " debens of " ..
@@ -284,6 +290,9 @@ function setLine(tree, line, lineNo)
     --local sections = csplit(line, ":");
 	local sections = explode(":",line);
 	--error(sections[2])
+    if string.match(line, "#example") then
+        foundExample = foundExample + 1;
+    end
     if #sections ~= 2 then
         error("Cannot parse line: " .. line .. " Sections equal " .. #sections);
     end
