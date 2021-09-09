@@ -34,13 +34,11 @@ function initialize()
 		return;
 	end
 	settingsInitialized = true;
-	settingsFileName = "Settings." .. lsScriptName() .. ".txt";
+	local baseName = string.gsub(lsScriptName(), "[^/]+/", "") -- trim anything before a slash
+	settingsFileName = "Settings." .. baseName .. ".txt";
 	local success;
 	success, settings = deserialize(settingsFileName);
 	if(not success) then
 		settings = {};
 	end
 end
-
-
-
