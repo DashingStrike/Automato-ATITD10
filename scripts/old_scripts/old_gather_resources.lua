@@ -202,7 +202,6 @@ function gatherResources()
 				  autoMoveColor = 0xffffffff;
 				end
 
-			autoMove = readSetting("autoMove",autoMove);
 
 			if autoMove then
 			 autoMove = CheckBox(35, 170, z, 0x80ff80ff, " Set Automove Direction",
