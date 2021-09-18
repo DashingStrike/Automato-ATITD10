@@ -116,6 +116,8 @@ srReadScreen();
     srReadScreen();
     lsSleep(250);
     clickAllText("Take Everything");
+    sleepWithStatus(1500, "Allowing the server to settle down,"
+    .. " to avoid miss clicking the info menu.", nil, 0.7);
     end
 end
 
