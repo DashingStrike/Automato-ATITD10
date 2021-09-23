@@ -579,7 +579,7 @@ end
 
 function getVineName()
   for i=1,#vines do
-    if findVine(vines[i].name) then
+    if findVine(string.gsub(vines[i].name, "#1","# 1")) then
       local thisVine = vines[i];
       return thisVine;
     end
