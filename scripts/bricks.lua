@@ -315,7 +315,6 @@ function brickHotkeyMode()
           closePopUp();
           lsSleep(150);
           srKeyEvent("t"..brickHotkeys[typeOfBrick]);
-          lsSleep(150);
           needDelay = true;
           racks[x][y].color = black;
           racks[x][y].lastTime = lsGetTimer();
