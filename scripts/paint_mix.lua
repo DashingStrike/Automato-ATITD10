@@ -47,12 +47,12 @@ function setBatchSize(size)
     srReadScreen();
     clickBatchText("Batch Size...");
       if size == "Large" then
-        clickBatchText("Make large batches (x100)");
+        clickBatchText("Make large batches");
       else
         if size == "Medium" then
-          clickBatchText("Make medium batches (x10)");
+          clickBatchText("Make medium batches");
         else
-          clickBatchText("Make small batches (x1)");
+          clickBatchText("Make small batches");
         end
       end
     lsSleep(200);
