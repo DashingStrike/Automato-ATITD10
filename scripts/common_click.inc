@@ -241,12 +241,12 @@ function drawWater(skipTimer)
   -- Second, check for aqueduct
   srReadScreen();
   if not result then
-    local aqueduct = findText("Aqueduct")
+    local aqueduct = findText("an Aqueduct")
     if aqueduct then
       sleepWithStatus(200, "Refreshing aqueduct...", nil, 0.7);
       safeClick(aqueduct[0], aqueduct[1]);
       srReadScreen();
-      local fill = findText("containers with water");
+      local fill = findText("Fill all");
         if fill then
           sleepWithStatus(200, "Refilling water...", nil, 0.7);
           safeClick(fill[0] + 5, fill[1]);
