@@ -27,10 +27,11 @@ function doit()
     local focus = srFindImage("stats/focus.png");
     local strength = srFindImage("stats/strength.png");
     local constitution = srFindImage("stats/constitution.png");
+    local speed = srFindImage("stats/speed.png");
 
     local message = "Time Elapsed: " .. getElapsedTime(startTime) .. "\n\n"
     local color = 0xffffffff;
-    if (endurance or focus or strength or constitution) then
+    if (endurance or focus or strength or constitution or speed) then
       message = message .. "Waiting (stat icon is visible).\n\n";
       if lsGetTimer() - lastClickTime > 60000 then
 	color = 0xff3333ff;
