@@ -12,9 +12,9 @@ essences = {
 	{"esinAcacia",69},
 	{"esinAcaciaYoutn",33},
 	{"esinAcaciaSapling",85},
-	--			{"esinAckee",50}, ???
-	--			{"esinAckeeSapling",37}, ???
-	--			{"esinAckeeuth",24}, ???
+	{"esinAckee",50},
+	{"esinAckeeSapling",37},
+	{"esinAckeeYoutn",24},
 	{"esinAnaxi",74},
 	{"esinAconis",34},
 	{"esinAsnPalm",24},
@@ -99,7 +99,7 @@ essences = {
 	{"esinPeacnesnCeamYoutn",62},
 	{"esinPnoenixPalm",65},
 	{"esinPatyekaTree",19},
-	--		{"esinRanyahn",0},
+	{"esinanyann",0},
 	{"esinazorPalm",20},
 	{"esinedMaple",0},
 	{"esiniveBicn",49},
@@ -440,80 +440,80 @@ end
 
 function getSpirits(goal)
 	local t = {};
-	if goal < 10 then
-		t[1] = {};
-		t[1][1] = "Rock Spirits";
-		t[1][2] = 10-goal;
-		if goal ~= 0 then
-			t[2] = {};
-			t[2][1] = "Wood Spirits";
-			t[2][2] = goal;
-		end
-		return t;
-	end
-	if goal == 81 or goal == 82 or goal == 83 then
-		t[1] = {};
-		t[1][1] = "Fish Spirits";
-		t[1][2] = 10;
-		return t;
-	end
-	if goal == 84 then
-		t[1] = {};
-		t[1][1] = "Grey Spirits";
-		t[1][2] = 9;
-		t[2] = {};
-		t[2][1] = "Grain Spirits";
-		t[2][2] = 1;
-		return t;
-	end
-	if goal == 85 then
-		if goal ~= 0 then
+		if goal < 10 then
 			t[1] = {};
-			t[1][1] = "Mineral Spirits";
-			t[1][2] = 1;
+			t[1][1] = "Rock Spirits";
+			t[1][2] = 10-goal;
+				if goal ~= 0 then
+					t[2] = {};
+					t[2][1] = "Wood Spirits";
+					t[2][2] = goal;
+				end
+			return t;
+		end
+		if goal == 81 or goal == 82 or goal == 83 then
+			t[1] = {};
+			t[1][1] = "Fish Spirits";
+			t[1][2] = 10;
+			return t;
+		end
+		if goal == 84 then
+			t[1] = {};
+			t[1][1] = "Grey Spirits";
+			t[1][2] = 9;
 			t[2] = {};
-			t[2][1] = "Vegetable Spirits";
+			t[2][1] = "Grain Spirits";
 			t[2][2] = 1;
-			t[3] = {};
-			t[3][1] = "Grey Spirits";
-			t[3][2] = 8;
+			return t;
 		end
-		return t;
-	end
-	if goal > 80 then
-		alcType[7] = {"Grey Spirits", 9};
-		alcType[6] = {"Fish Spirits", 8};
-	else
-		alcType[7] = nil;
-		alcType[6] = nil;
-	end
-	if goal > 70 and goal <= 80 then
-		t[1] = {};
-		t[1][1] = "Fish Spirits";
-		t[1][2] = goal - 70;
-		if goal ~= 80 then
-			t[2] = {};
-			t[2][1] = "Mineral Spirits";
-			t[2][2] = 80-goal;
+		if goal == 85 then
+			if goal ~= 0 then
+				t[1] = {};
+				t[1][1] = "Mineral Spirits";
+				t[1][2] = 1;
+				t[2] = {};
+				t[2][1] = "Vegetable Spirits";
+				t[2][2] = 1;
+				t[3] = {};
+				t[3][1] = "Grey Spirits";
+				t[3][2] = 8;
+			end
+			return t;
 		end
-		return t;
-	end
+		if goal > 80 then
+			alcType[7] = {"Grey Spirits", 9};
+			alcType[6] = {"Fish Spirits", 8};
+		else
+			alcType[7] = nil;
+			alcType[6] = nil;
+		end
+		if goal > 70 and goal <= 80 then
+			t[1] = {};
+			t[1][1] = "Fish Spirits";
+			t[1][2] = goal - 70;
+			if goal ~= 80 then
+				t[2] = {};
+				t[2][1] = "Mineral Spirits";
+				t[2][2] = 80-goal;
+			end
+			return t;
+		end
 	for k = 1, #alcType do
 		for l = 1, #alcType do
 			for i = 10, 5, -1 do
 				j = 10 - i;
 				temp = alcType[k][2] * i + alcType[l][2] * j;
-				if temp == goal then
-					t[1] = {};
-					t[1][1] = alcType[k][1];
-					t[1][2] = i;
-					if j ~= 0 then
-						t[2] = {};
-						t[2][1] = alcType[l][1];
-						t[2][2] = j;
+					if temp == goal then
+						t[1] = {};
+						t[1][1] = alcType[k][1];
+						t[1][2] = i;
+							if j ~= 0 then
+								t[2] = {};
+								t[2][1] = alcType[l][1];
+								t[2][2] = j;
+							end
+						return t;
 					end
-					return t;
-				end
 			end
 		end
 	end
@@ -525,18 +525,18 @@ function getSpirits(goal)
 				for i = 8, 5, -1 do
 					j = 10 - i - 1;
 					temp = alcType[k][2] * i + alcType[l][2] * j + alcType[m][2];
-					if temp == goal then
-						t[1] = {};
-						t[2] = {};
-						t[3] = {};
-						t[1][1] = alcType[k][1];
-						t[1][2] = i;
-						t[2][1] = alcType[l][1];
-						t[2][2] = j;
-						t[3][1] = alcType[m][1];
-						t[3][2] = 1;
-						return t;
-					end
+						if temp == goal then
+							t[1] = {};
+							t[2] = {};
+							t[3] = {};
+							t[1][1] = alcType[k][1];
+							t[1][2] = i;
+							t[2][1] = alcType[l][1];
+							t[2][2] = j;
+							t[3][1] = alcType[m][1];
+							t[3][2] = 1;
+							return t;
+						end
 				end
 			end
 		end
@@ -548,7 +548,7 @@ function displayStatus()
 	lsPrint(10, 18, 0, 0.7, 0.7, 0xB0B0B0ff, "Hold Alt+Shift to pause this script.");
 
 	for window_index=1, #labWindows do
-			lsPrint(10, 80 + 15*window_index, 0, 0.7, 0.7, 0xFFFFFFff, "#" .. window_index .. " - " .. labState[window_index].status);
+		lsPrint(10, 80 + 15*window_index, 0, 0.7, 0.7, 0xFFFFFFff, "#" .. window_index .. " - " .. labState[window_index].status);
 	end
 	if lsButtonText(lsScreenX - 110, lsScreenY - 60, z, 100, 0xFFFFFFff, "Finish up") then
 		stop_cooking = 1;
@@ -578,29 +578,27 @@ function labTick(essWin, state)
 
 	--and here is where we add in the essence
 	local outer;
-	while outer == nil do
-		safeClick(essWin.x + 10, essWin.y + essWin.height / 2);
-		srReadScreen();
-		statusScreen("Waiting to Click: Manufacture ...", nil, 0.7, 0.7);
-		outer = findText("Manufacture...", essWin);
-		lsSleep(per_read_delay);
-		checkBreak();
-	end
+		while outer == nil do
+			safeClick(essWin.x + 10, essWin.y + essWin.height / 2);
+			srReadScreen();
+			statusScreen("Waiting to Click: Manufacture ...", nil, 0.7, 0.7);
+			outer = findText("Manufacture...", essWin);
+			lsSleep(per_read_delay);
+			checkBreak();
+		end
 	clickText(outer);
---	lsSleep(per_click_delay);
 
 	statusScreen("Waiting to Click: Essential Distill ...", nil, 0.7, 0.7);
 	local t = waitForText("Essential Distill");
 	clickText(t);
---	lsSleep(per_click_delay);
+
 	statusScreen("Waiting to Click: Place Essential Mat ...", nil, 0.7, 0.7);
 	t = waitForText("Place Essential Mat");
 	clickText(t);
---	lsSleep(per_click_delay);
 
 	statusScreen("Searching for Macerator ...", nil, 0.7, 0.7);
 	--search for something to add
-	local rw = waitForImage("essences/chooseMaterial.png");
+	local rw = waitForImage("essence/chooseMaterial.png");
 	rw.x = rw[0]-122;
 	rw.y = rw[1]+5;
 	rw.width = 204;
@@ -610,6 +608,7 @@ function labTick(essWin, state)
 	if parse then
 		for i = 1, #parse do
 			parse[i][2] = stripCharacters(parse[i][2]);
+			sleepWithStatus(8000,"Parsed: " .. parse[i][2])
 			if foundEss == false then
 				for k = 1, #essences do
 					if essences[k][2] ~= -1 and parse[i][2] == essences[k][1] and foundEss == false then
@@ -627,15 +626,15 @@ function labTick(essWin, state)
 		end
 	end
 
-	if foundEss == false then
-		sleepWithStatus(2000, "foundEss is false")
-		state.status = "Couldn't find essence";
-		numFinished = numFinished + 1;
-		state.finished = 1;
-		clickAllImages("cancel.png")
-		lsSleep(100);
-		return;
-	end
+		if foundEss == false then
+			sleepWithStatus(2000, "foundEss is false")
+			state.status = "Couldn't find essence";
+			numFinished = numFinished + 1;
+			state.finished = 1;
+			clickAllImages("cancel.png")
+			lsSleep(100);
+			return;
+		end
 
 	clickAllImages("OK.png")
 	lsSleep(250);
@@ -677,7 +676,7 @@ function labTick(essWin, state)
 
 	while 1 do
 		srReadScreen();
-		image = srFindImage("essences/StartDistillMini.png");
+		image = srFindImage("essence/StartDistillMini.png");
 		if image then
 			safeClick(image[0] + 2, image[1] + 2);
 			lsSleep(per_click_delay);
@@ -697,85 +696,67 @@ end
 curActive = 1;
 
 function doit()
-
 	last_time = lsGetTimer() + 5000;
-
 	askForWindow("Pin all Chemistry Laboratories");
-
 	srReadScreen();
 	labWindows = findAllText("This is [a-z]+ Chemistry Laboratory", nil, REGION+REGEX);
-
-	if labWindows == nil then
-		error 'Did not find any open windows';
-	end
+		if labWindows == nil then
+			error 'Did not find any open windows';
+		end
 
 	labState = {};
 	local last_ret = {};
-	for window_index=1, #labWindows do
-		labState[window_index] = {};
-		labState[window_index].count = 0;
-		labState[window_index].active = false;
-		labState[window_index].status = "Initial";
-		labState[window_index].needTest = 1;
-	end
+		for window_index=1, #labWindows do
+			labState[window_index] = {};
+			labState[window_index].count = 0;
+			labState[window_index].active = false;
+			labState[window_index].status = "Initial";
+			labState[window_index].needTest = 1;
+		end
 
 	labState[1].active = true;
-
 	while 1 do
 		-- Tick
 		srReadScreen();
-
 		labWindows2 = findAllText("This is [a-z]+ Chemistry Laboratory", nil, REGION+REGEX);
-		--On around October 22, 2018 - Chem Lab window behavior has changed breaking the macro
-		--Once the Chem Lab starts up, the window shrinks down to almost nothing and most options disappear (including This is a Chem Lab)
-		-- See https://i.gyazo.com/4ec9eaf1d3bd7dc65e9dc919ef921215.png for example
-		-- Now we're forced to search for Utility on menu instead.
-		--labWindows2 = findAllText("Utility", nil, REGION+REGEX);
-
-
-
 
 		local should_continue = nil;
+			if #labWindows2 == #labWindows then
+				for window_index=1, #labWindows do
+					local wasActive = labState[window_index].active;
 
-		if #labWindows2 == #labWindows then
-			for window_index=1, #labWindows do
-				local wasActive = labState[window_index].active;
 
-
-				if wasActive == true then
-					local r = labTick(labWindows[window_index], labState[window_index]);
-					--check to see if it's still active
-					if window_index == #labWindows then
-						labState[1].active = true;
-					else
-						labState[window_index + 1].active = true;
+					if wasActive == true then
+						local r = labTick(labWindows[window_index], labState[window_index]);
+						--check to see if it's still active
+						if window_index == #labWindows then
+							labState[1].active = true;
+						else
+							labState[window_index + 1].active = true;
+						end
+						break;
 					end
-					break;
+					if r then
+						should_continue = 1;
+					end
 				end
-				if r then
-					should_continue = 1;
-				end
+			else
+			--refresh windows. Chem Lab window does not refresh itself after it's done making essence. Refresh to force window to update, so we know when it's done.
+			refreshWindows();
 			end
-		else
-		--refresh windows. Chem Lab window does not refresh itself after it's done making essence. Refresh to force window to update, so we know when it's done.
-		refreshWindows();
-		end
 
 		--check to see if we're finished.
-		if numFinished == #labWindows then
-			error "Completed.";
-		end
+			if numFinished == #labWindows then
+				error "Completed.";
+			end
 
 		-- Display status and sleep
-
 		local start_time = lsGetTimer();
-		while tick_time - (lsGetTimer() - start_time) > 0 do
-			time_left = tick_time - (lsGetTimer() - start_time);
-
-			displayStatus(labState);
-			lsSleep(25);
-		end
-
+			while tick_time - (lsGetTimer() - start_time) > 0 do
+				time_left = tick_time - (lsGetTimer() - start_time);
+				displayStatus(labState);
+				lsSleep(25);
+			end
 		checkBreak();
 		-- error 'done';
 	end
@@ -784,10 +765,10 @@ end
 function refreshWindows()
   srReadScreen();
   pinWindows = findAllImages("UnPin.png");
-	for i=1, #pinWindows do
-	  checkBreak();
-	  safeClick(pinWindows[i][0] - 7, pinWindows[i][1]);
-	  lsSleep(100);
+		for i=1, #pinWindows do
+		  checkBreak();
+		  safeClick(pinWindows[i][0] - 7, pinWindows[i][1]);
+		  lsSleep(100);
   	end
   lsSleep(500);
 end
