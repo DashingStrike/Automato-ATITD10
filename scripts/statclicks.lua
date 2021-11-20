@@ -28,6 +28,7 @@ items = {
           "Hackling Rake",
           "Limestone",
           "Oil (Flax Seed)",
+          "Pump Aqueduct",
           "Push Pyramid",
           "Recycle Tattered Sail",
           "Stir Cement",
@@ -36,9 +37,6 @@ items = {
           "Weave Papy Basket",
           "Weave Silk",
           "Weave Wool Cloth",
-          --[[
-          "Pump Aqueduct",
-          ]]--
         },
         --con
         {"",
@@ -80,9 +78,7 @@ local textLookup = {};
 textLookup["Coconuts"] = "Harvest the Coconut Meat";
 textLookup["Gun Powder"] = "Gunpowder";
 textLookup["Ink"] = "Ink";
---[[
 textLookup["Pump Aqueduct"] = "Pump the Aqueduct";
-]]--
 statNames = {"strength", "endurance", "constitution", "focus"};
 statTimer = {};
 askText = singleLine([[

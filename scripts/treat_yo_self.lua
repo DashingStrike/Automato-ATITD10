@@ -689,11 +689,20 @@ function calcPos()
 
   tank = findText("This is [a-z]+ " .. materials[materialIndex].building, nil, REGION + REGEX);
   treat = findText("Treat...", tank);
+  	if materials[materialIndex].building == "Wood Treatment Tank" then
+			treat = findText("Treat...", tank);
+		elseif materials[materialIndex].building == "Chemical Bath" then
+			treat = findText("Dissolve...", tank);
+		end
   while not tank or not treat do
     checkBreak();
     srReadScreen();
     tank = findText("This is [a-z]+ " .. materials[materialIndex].building, nil, REGION + REGEX);
-    treat = findText("Treat...", tank);
+      if materials[materialIndex].building == "Wood Treatment Tank" then
+        treat = findText("Treat...", tank);
+      elseif materials[materialIndex].building == "Chemical Bath" then
+        treat = findText("Dissolve...", tank);
+      end
     sleepWithStatus(250,"Waiting for " .. materials[materialIndex].building .. " window", nil, 0.7);
   end
 

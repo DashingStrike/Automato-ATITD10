@@ -357,16 +357,19 @@ end
 function clickSequence()
 	startTime = lsGetTimer();
 		for l=1, potteryPasses do
-			for i=1,#clickList do
-        checkBreak();
-        srSetMousePos(clickList[i][1], clickList[i][2]);
-        lsSleep(150); -- ~65+ delay needed before the mouse can actually move.
-        MakeProduct();
-      end
+			wheelCounter = 1;
+				for i=1,#clickList do
+					statusScreen("Processsing Task\n\n" .. wheelCounter .. " / " .. #clickList .. " Remaining",nil, nil, 0.7);
+	        checkBreak();
+	        srSetMousePos(clickList[i][1], clickList[i][2]);
+	        lsSleep(150); -- ~65+ delay needed before the mouse can actually move.
+	        MakeProduct();
+					wheelCounter = wheelCounter + 1
+	      end
 			local time_left = total_delay_time - #clickList * mouseDelay;
 			lsSleep(100);
 			closePopUp(); -- Screen clean up
-			sleepWithStatus(time_left,"Pass " .. l .. " of " .. potteryPasses .. "\nWaiting for jugs to finish");
+			sleepWithStatus(time_left,"Pass " .. l .. " of " .. potteryPasses .. "\nWaiting for " .. product .. "s to finish");
 	end
   lsPlaySound("Complete.wav");
   lsMessageBox("Elapsed Time:", getElapsedTime(startTime), 1);

@@ -221,38 +221,43 @@ function drawWater(skipTimer)
   srReadScreen();
 
   -- First, check for rain barrel
-  --local rain = srFindImage("draw_water.png");
   local rain = findText("Storage Barrel")
   if rain then
-    sleepWithStatus(200, "Refilling water...", nil, 0.7);
+    sleepWithStatus(200, "Refreshing barrel...", nil, 0.7);
     safeClick(rain[0], rain[1]);
-    local max = waitForImage("max.png", 3000, "Waiting for Max button");
-    if max then
-      safeClick(max[0]+5, max[1]+5);
-      result = true;
-    end
+    srReadScreen();
+    local fill = findText("Draw water");
+      if fill then
+        sleepWithStatus(200, "Refilling water...", nil, 0.7);
+        safeClick(fill[0] + 5, fill[1]);
+        local max = waitForImage("max.png", 3000, "Waiting for Max button");
+          if max then
+            safeClick(max[0]+5, max[1]+5);
+            result = true;
+          end
+      end
   end
 
-
   -- Second, check for aqueduct
-  --srReadScreen();
-  --if not result then
-  --  local aqueduct = srFindImage("Aqueduct.png");
-  --  if not aqueduct then
-  --    aqueduct = srFindImage("Aqueduct2.png");
-  --  end
-  --  if aqueduct then
-  --  sleepWithStatus(200, "Refilling water...", nil, 0.7);
-  --    safeClick(aqueduct[0], aqueduct[1]);
-  --    sleepWithStatus(200, "Refreshing aqueduct...", nil, 0.7);
-  --    srReadScreen();
-  --    local fill = srFindImage("FillWithWater.png");
-  --    if fill then
-  --      safeClick(fill[0] + 5, fill[1]);
-  --      result = true;
-  --    end
-  --  end
-  --end
+  srReadScreen();
+  if not result then
+    local aqueduct = findText("an Aqueduct")
+    if aqueduct then
+      sleepWithStatus(200, "Refreshing aqueduct...", nil, 0.7);
+      safeClick(aqueduct[0], aqueduct[1]);
+      srReadScreen();
+      local fill = findText("Fill all");
+        if fill then
+          sleepWithStatus(200, "Refilling water...", nil, 0.7);
+          safeClick(fill[0] + 5, fill[1]);
+          local max = waitForImage("max.png", 3000, "Waiting for Max button");
+            if max then
+              safeClick(max[0]+5, max[1]+5);
+              result = true;
+            end
+        end
+    end
+  end
 
   -- Last, check for nearby pond
   srReadScreen();

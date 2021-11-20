@@ -214,7 +214,7 @@ local function makeItem(currentItem, window)
   lsPrintln("Making " .. name);
   if #parents >= 2 then
 
-    if parents[2] == "Bars x1" or parents[2] == "Bars x5" then
+    if parents[2] == "Bars x1" or parents[2] == "Bars x5" or parents[2] == "Bars x10" then
       t = findText("Bars" .. "...", window);
       clickText(t);
     elseif parents[2] == "Small Gear x1" or parents[2] == "Small Gear x10" or parents[2] == "Small Gear x20" then
@@ -283,6 +283,10 @@ local function makeItem(currentItem, window)
     local t = waitForText("Make 20...");
     safeClick(t[0]+20,t[1]+4);
     text = name .. " Medium Gear";
+  elseif lastParent == "Bars x10" then
+    local t = waitForText("Make 10 sets");
+    safeClick(t[0]+20,t[1]+4);
+    text = name .. " Bars";
   elseif lastParent == "Bars x5" then
     local t = waitForText("Make 5 sets");
     safeClick(t[0]+20,t[1]+4);
@@ -295,7 +299,7 @@ local function makeItem(currentItem, window)
   lsSleep(100);
 
   -- Check if we have to click down arrow button (scrollable menu)
-  if (lastParent == "Bars x1" or lastParent == "Bars x5") and name > "Titanium" then
+  if (lastParent == "Bars x1" or lastParent == "Bars x5" or lastParent == "Bars x10") and name > "Titanium" then
     local t = waitForText("Aluminum Bars", nil, nil, nil, REGION);
     downArrow(); -- Click the Down arrow button to scroll
   end
@@ -333,7 +337,7 @@ local function makeItem(currentItem, window)
 
   if #parents == 1 then
     t = waitForText(text, 1000, nil, window);
-  elseif lastParent == "Bars x1" or lastParent == "Bars x5" then
+  elseif lastParent == "Bars x1" or lastParent == "Bars x5" or lastParent == "Bars x10" then
     t = waitForText(text, 1000, nil, nil, EXACT);
   else
     t = waitForText(text, 1000);
