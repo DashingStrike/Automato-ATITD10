@@ -608,7 +608,6 @@ function labTick(essWin, state)
 	if parse then
 		for i = 1, #parse do
 			parse[i][2] = stripCharacters(parse[i][2]);
-			sleepWithStatus(8000,"Parsed: " .. parse[i][2])
 			if foundEss == false then
 				for k = 1, #essences do
 					if essences[k][2] ~= -1 and parse[i][2] == essences[k][1] and foundEss == false then
