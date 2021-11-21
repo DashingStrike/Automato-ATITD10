@@ -550,9 +550,6 @@ function displayStatus()
 	for window_index=1, #labWindows do
 		lsPrint(10, 80 + 15*window_index, 0, 0.7, 0.7, 0xFFFFFFff, "#" .. window_index .. " - " .. labState[window_index].status);
 	end
-	if lsButtonText(lsScreenX - 110, lsScreenY - 60, z, 100, 0xFFFFFFff, "Finish up") then
-		stop_cooking = 1;
-	end
 	if lsButtonText(lsScreenX - 110, lsScreenY - 30, z, 100, 0xFFFFFFff, "End script") then
 		error "Clicked End Script button";
 	end
@@ -717,22 +714,20 @@ function doit()
 	while 1 do
 		-- Tick
 		srReadScreen();
-		labWindows2 = findAllText("This is [a-z]+ Chemistry Laboratory", nil, REGION+REGEX);
+		labWindows2 = findAllText("Upgrades...", nil, REGION+REGEX);
 
 		local should_continue = nil;
 			if #labWindows2 == #labWindows then
 				for window_index=1, #labWindows do
 					local wasActive = labState[window_index].active;
-
-
 					if wasActive == true then
 						local r = labTick(labWindows[window_index], labState[window_index]);
 						--check to see if it's still active
-						if window_index == #labWindows then
-							labState[1].active = true;
-						else
-							labState[window_index + 1].active = true;
-						end
+							if window_index == #labWindows then
+								labState[1].active = true;
+							else
+								labState[window_index + 1].active = true;
+							end
 						break;
 					end
 					if r then
