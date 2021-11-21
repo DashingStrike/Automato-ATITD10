@@ -111,7 +111,7 @@ essences = {
 	{"esinSavaka",1},
 	{"esinScaleyHalwood",5},
 	{"esinSilkyOak",82},
-	{"esinSpikedfisntee",90},
+	{"esinSpikedFisntee",90},
 	{"esinSpindleTee",20},
 	{"esinStoutPalm",26},
 	{"esinSummeMaple",46},
@@ -714,10 +714,10 @@ function doit()
 	while 1 do
 		-- Tick
 		srReadScreen();
-		labWindows2 = findAllText("Upgrades...", nil, REGION+REGEX);
+		upgrades = findText("Upgrades...", labWindows[window_index])
 
 		local should_continue = nil;
-			if #labWindows2 == #labWindows then
+			if upgrades then
 				for window_index=1, #labWindows do
 					local wasActive = labState[window_index].active;
 					if wasActive == true then
