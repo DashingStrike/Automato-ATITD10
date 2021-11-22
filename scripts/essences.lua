@@ -32,7 +32,7 @@ essences = {
 	{"esinButteleafTee",74},
 	{"esinCeuleanBlue",77},
 	{"esinCnakkanutTee",45},
-	{"esinCnicoy",51},
+	{"esinCnicoy",62},
 	{"esinCinna",38},
 	{"esinCoconutPalm",14},
 	{"esinCicklewood",10},
