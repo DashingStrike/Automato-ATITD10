@@ -488,105 +488,105 @@ local materials = {
       {
         name = "Arsenic",
         targets = {
-          72,
+          16,
           40,
           48,
+          72,
           0,
-          16,
-          8,
           56,
-          24,
+          8,
+          32,
         }
       },
       {
         name = "Cabbage Juice",
         targets = {
+          8,
           24,
-          48,
-          56,
           32,
-          0,
+          56,
           64,
           16,
-          72,
+          40,
+          48,
         }
       },
       {
         name = "Cactus Sap",
         targets = {
-          16,
+          24,
           64,
           8,
+          16,
+          32,
           72,
           56,
-          24,
-          40,
           0,
         }
       },
       {
         name = "Coal",
         targets = {
-          40,
+          48,
           56,
-          72,
-          16,
-          64,
           0,
+          40,
+          72,
           24,
-          32,
+          16,
+          8,
         }
       },
       {
         name = "Gravel",
         targets = {
-          48,
-          72,
+          32,
+          16,
           24,
+          0,
           8,
           40,
-          16,
-          32,
+          72,
           64,
         }
       },
       {
         name = "Lime",
         targets = {
+          56,
+          72,
+          40,
+          64,
+          48,
           0,
           24,
           16,
-          56,
-          32,
-          48,
-          64,
-          40,
         }
       },
       {
         name = "Potash",
         targets = {
-          8,
-          16,
-          64,
-          48,
-          24,
-          30,
           0,
-          56,
+          8,
+          64,
+          24,
+          16,
+          32,
+          48,
+          40,
         }
       },
       {
         name = "Salt",
         targets = {
-          32,
-          8,
-          0,
-          40,
+          72,
           48,
           56,
-          72,
-          16,
+          32,
+          40,
+          8,
+          64,
+          24,
         }
       },
       {
@@ -594,25 +594,25 @@ local materials = {
         targets = {
           64,
           32,
-          40,
-          24,
-          8,
           72,
-          16,
+          8,
+          24,
           48,
+          0,
+          56,
         }
       },
       {
         name = "Sulfur",
         targets = {
-          56,
-          0,
-          32,
-          64,
-          72,
           40,
+          0,
+          16,
           48,
-          8,
+          56,
+          64,
+          32,
+          72,
         }
       },
     },
@@ -707,8 +707,13 @@ function calcPos()
   end
 
   if treat then
-    statsX = treat[0] + 104;
-    statsY = treat[1] + 96;
+    if materials[materialIndex].building == "Chemical Bath" then
+      statsX = treat[0] + 104;
+      statsY = treat[1] + 126;
+    elseif materials[materialIndex].building == "Wood Treatment Tank" then
+      statsX = treat[0] + 104;
+      statsY = treat[1] + 96;
+    end
 
     for index, data in pairs(materials[materialIndex].attributes) do
       materials[materialIndex].attributes[index].pos = {statsX, statsY};
