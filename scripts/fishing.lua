@@ -724,7 +724,6 @@ function doit()
 
             castcount = castcount + 1;
             GrandTotalCasts = GrandTotalCasts + 1;
-            findClockInfo();
 
             --Parse Chat
             CurrentLure = PlayersLures[CurrentLureIndex];

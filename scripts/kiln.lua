@@ -5,7 +5,7 @@ dofile("settings.inc");
 --          Global Variables          --
 ----------------------------------------
 dropdown_values = {"Shift Key", "Ctrl Key", "Alt Key", "Mouse Wheel Click"};
-kilnList = {"True Kiln"};
+kilnList = {"True Kiln","Reinforced Kiln"};
 productNames = { "Wet Clay Bricks", "Wet Clay Mortars", "Wet Firebricks", "Wet Jugs", "Wet Claypots" };
 dropdown_cur_value = 1;
 total_delay_time = 155000;
