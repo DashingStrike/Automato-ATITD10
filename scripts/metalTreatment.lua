@@ -154,11 +154,9 @@ function makeMetalBatch(config, num_batches, remainder, batchSize)
         srReadScreen();
         local max = srFindImage("max.png");
             if remainder ~= nil then
-              sleepWithStatus(2500,"AAAA")
               srKeyEvent(remainder); -- Add the treatment value
               srKeyEvent(string.char(13));  -- Send Enter Key to close the window
             elseif batchSize ~= nil then
-              sleepWithStatus(2500,"BBBB")
               srKeyEvent(batchSize); -- Add the treatment value
               srKeyEvent(string.char(13));  -- Send Enter Key to close the window
             else
