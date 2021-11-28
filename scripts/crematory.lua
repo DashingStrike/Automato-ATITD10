@@ -220,10 +220,9 @@ function start()
     end
     srReadScreen();
     OK = srFindImage("OK.png");
-    if OK then
-	--error('Popup detected while firing crematory.\n\nThat suggests No Wood in inventory');
-	srClickMouseNoMove(OK[0]+2,OK[1]+2);
-    end
+      if OK then
+        srClickMouseNoMove(OK[0]+5,OK[1]);
+      end
   end
   sleepWithStatus(longWait, updateMessage("Finding my Chi"));
   srReadScreen();
@@ -646,7 +645,7 @@ function loadAll()
 	  OK = srFindImage("OK.png");
   		if OK then
   		  foundOK = true;
-  		  srClickMouseNoMove(OK[0]+2,OK[1]+2);
+  		  srClickMouseNoMove(OK[0]+5,OK[1]);
         sleepWithStatus(500,"Popup Detected, Oops");
   		else
         sleepWithStatus(500,"Loaded: " .. v);
