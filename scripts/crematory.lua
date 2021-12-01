@@ -246,6 +246,7 @@ function tick()
   srReadScreen();
   for i=1,#windows do
     tickWindow(windows[i]);
+    closePopUp();
   end
   checkBreak();
 end
@@ -759,6 +760,27 @@ function sleepWithStatus(delay_time, message, color, scale)
   end
 end
 
+-------------------------------------------------------------------------------
+-- closePopUp()
+-------------------------------------------------------------------------------
+
+function closePopUp()
+  while 1 do
+    srReadScreen()
+    local ok = srFindImage("OK.png")
+	    if ok then
+	      statusScreen("Found and Closing Popups ...", nil, 0.7);
+	      srClickMouseNoMove(ok[0]+5,ok[1]);
+	      lsSleep(100);
+	    else
+	      break;
+	    end
+  end
+end
+
+-------------------------------------------------------------------------------
+-- refreshWindows()
+-------------------------------------------------------------------------------
 
 function refreshWindows()
   srReadScreen();
