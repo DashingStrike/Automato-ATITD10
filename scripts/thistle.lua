@@ -98,7 +98,7 @@ function clickAllComplex(image_names, message)
 	-- refocus
 	for i=2, #window_locs do
 		srReadScreen()
-		local batchSize = findText("Batch Size...")
+		batchSize = findText("Batch Size...")
 			if batchSize then
 				cascade_offset = 295
 			else
@@ -131,8 +131,14 @@ function waitForMonChange(message)
 	if not first_nit then
 		error "Could not find first Nit";
 	end
-	mon_x = first_nit[0] - 25;
-	mon_y = first_nit[1] + 13;
+	srReadScreen();
+		if batchSize then
+			mon_x = first_nit[0] - 17;
+			mon_y = first_nit[1] + 35;
+		else
+			mon_x = first_nit[0] - 25;
+			mon_y = first_nit[1] + 13;
+		end
 
 	local different = nil;
 	local skip_next = nil;
