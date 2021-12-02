@@ -97,8 +97,15 @@ function clickAllComplex(image_names, message)
 	statusScreen(message .. " Refocusing...", nil, nil, 0.7);
 	-- refocus
 	for i=2, #window_locs do
+		srReadScreen()
+		local batchSize = findText("Batch Size...")
+			if batchSize then
+				cascade_offset = 295
+			else
+				cascade_offset = 275
+			end
 		setWaitSpot(window_locs[i][0], window_locs[i][1]);
-		srClickMouseNoMove(window_locs[i][0], window_locs[i][1] + 275);
+		srClickMouseNoMove(window_locs[i][0], window_locs[i][1] + cascade_offset);
 		waitForChange();
 	end
 	lsSleep(100);
