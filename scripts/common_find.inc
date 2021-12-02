@@ -9,7 +9,7 @@
 -- T8: WINDOW_COLORS = {0x72502EFF, 0x714f2eff, 0x6f4e2dff, 0x785431ff};
 
 --This version includes changes to how OCR works
-lsRequireVersion(2,59);
+lsRequireVersion(2,66);
 
 -- The colors used by srFindFirst/NextTextRegion and srGetWindowBorders to determine
 -- the innermost border pixels, for thin border windows
