@@ -814,9 +814,7 @@ function doit()
                         -- All fish caught that displays in fishstats.txt
                         table.insert(gui_log_fish2, addlog);
                         FishType = Sfish;
-                        sleepWithStatus(2000,"FishType is... " .. FishType)
                         if SkipCommon == true and LockLure == false then
-                          sleepWithStatus(2000,"FishType is... " .. FishType)
                           if FishType == "Abdju" or FishType == "Chromis" or FishType == "Catfish" or FishType == "Carp" or FishType == "Oxyrynchus" or FishType == "Perch" or FishType == "Phagrus" or FishType == "Tilapia" then
                             castcount=0;
                           end
