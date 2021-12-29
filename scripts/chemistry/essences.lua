@@ -694,6 +694,7 @@ end
 curActive = 1;
 
 function doit()
+	lsRequireVersion(2, 66);
 	last_time = lsGetTimer() + 5000;
 	askForWindow("Pin all Chemistry Laboratories");
 	srReadScreen();
