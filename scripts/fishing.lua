@@ -266,12 +266,11 @@ function ChatReadFish(value)
       fishType = string.match(lastLine, "Caught [%w ']+ ([^.]+)%."); -- Read last line of main chat
     end
     if fishType then
-        GrandTotalCaught = GrandTotalCaught + 1
-        Sfish = string.gsub(fishType, "%W", "");
-        if value ~= nil then
-          SNum = numCaught
-          GrandTotaldb = GrandTotaldb + SNum
-        end
+      Sfish = string.gsub(fishType, "%W", "");
+      if value ~= nil then
+        SNum = numCaught
+        GrandTotaldb = GrandTotaldb + SNum
+      end
     end
     if value ~= nil then
       logMessage = ("[" .. CurrentLure .. " (" .. LureType .. ")] "  .. Sfish .. " (" .. SNum .. "db)");
@@ -791,10 +790,8 @@ function doit()
                           caughtFish = true;
                           Fish = ChatReadFish(1); -- Parse last line of main chat
                         elseif v == "caught" and string.match(lastLine, "Caught [%w ']+ ([^.]+)%.") then
-                          if displayCommon then
-                            caughtFish = true;
-                            Fish = ChatReadFish(); -- Parse next to last line of main chat
-                          end
+                          caughtFish = true;
+                          Fish = ChatReadFish(); -- Parse next to last line of main chat
 
                             if not fishType then
                               caughtFish = nil;
@@ -805,16 +802,21 @@ function doit()
 
                         if caughtFish then
                         --Last 10 fish caught that displays on GUI
-                          if logType == "common" then
+                          if logType == "common" and displayCommon then
+                            GrandTotalCaught = GrandTotalCaught + 1
                             addlog = Sfish .. " | " .. CurrentLure
+                            table.insert(gui_log_fish, 1, addlog);
                           elseif logType == "seasonal" then
+                            GrandTotalCaught = GrandTotalCaught + 1
                             addlog = Sfish .. " (" .. SNum .. "db) | " .. CurrentLure
+                            table.insert(gui_log_fish, 1, addlog);
                           end
-                        table.insert(gui_log_fish, 1, addlog);
                         -- All fish caught that displays in fishstats.txt
                         table.insert(gui_log_fish2, addlog);
                         FishType = Sfish;
+                        sleepWithStatus(2000,"FishType is... " .. FishType)
                         if SkipCommon == true and LockLure == false then
+                          sleepWithStatus(2000,"FishType is... " .. FishType)
                           if FishType == "Abdju" or FishType == "Chromis" or FishType == "Catfish" or FishType == "Carp" or FishType == "Oxyrynchus" or FishType == "Perch" or FishType == "Phagrus" or FishType == "Tilapia" then
                             castcount=0;
                           end
