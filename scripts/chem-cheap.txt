@@ -1,0 +1,394 @@
+Ra,Ar+++++,So-----|Acacia Youth,Katsura Youth,Dikbas Youth,Deadwood Tree,Khaya Youth
+Ra,Ar-----,So+++++|Dikbas,Trilobellia,Salts Of Lead,Acacia,Kaeshra
+Ra,Ar-----,Sw+++++|Bramble Hedge,Salts Of Lead,Powdered Amethyst,Hawthorn,Tiny Oil Palm
+Ra,As+++++,Sa-----|Parrotia,Bottle Tree,Delta Palm,Umbrella Palm,Orrorin
+Ra,Bi+++++,So-----|Acacia Youth,Coconut Palm,Deadwood Tree,Illawara,Katsura Youth
+Ra,Bi-----,Sp+++++|Pratyeka Tree,Broadleaf Palm,Locust Palm,Elephantia,Monterey Pine
+Ra,Sa-----,Sp+++++|Hawthorn,Jacaranda,Kotukutuku,Young Golden Hemlock,Salts Of Silver
+Ra,Sa-----,Sw+++++|Hawthorn,Acacia Sapling,Blaze Maple Sapling,Salts Of Lead,Orrorin
+Ra,So+++++,To-----|Khaya Sapling,Safsaf Sapling,Powdered Sapphire,Arconis,Butterleaf Tree
+Ra,So-----,Ar+++++|Acacia Youth,Katsura Youth,Dikbas Youth,Deadwood Tree,Khaya Youth
+Ra,So+++++,Ar-----|Dikbas,Trilobellia,Salts Of Lead,Acacia,Kaeshra
+Ra,Sw+++++,Ar-----|Bramble Hedge,Salts Of Lead,Powdered Amethyst,Hawthorn,Tiny Oil Palm
+Ra,Sa-----,As+++++|Parrotia,Bottle Tree,Delta Palm,Umbrella Palm,Orrorin
+Ra,So-----,Bi+++++|Acacia Youth,Coconut Palm,Deadwood Tree,Illawara,Katsura Youth
+Ra,Sp+++++,Bi-----|Pratyeka Tree,Broadleaf Palm,Locust Palm,Elephantia,Monterey Pine
+Ra,Sp+++++,Sa-----|Hawthorn,Jacaranda,Kotukutuku,Young Golden Hemlock,Salts Of Silver
+Ra,Sw+++++,Sa-----|Hawthorn,Acacia Sapling,Blaze Maple Sapling,Salts Of Lead,Orrorin
+Ra,To-----,So+++++|Khaya Sapling,Safsaf Sapling,Powdered Sapphire,Arconis,Butterleaf Tree
+Thoth,Ar++++,As----,So----|Illawara,Khaya Youth,Deadwood Tree,Jacaranda,Katsura Youth
+Thoth,Ar++++,Bi++++,So----|Deadwood Tree,Dikbas Youth,Illawara,Katsura Youth,Folded Birch
+Thoth,Ar++++,Bi----,Sa----|Peaches 'n Cream Maple,White Pine Sapling,Powdered Ruby,Salts Of Cobalt,Broadleaf Palm
+Thoth,Ar++++,Bi----,To----|Peaches 'n Cream Maple,Peaches 'n Cream Sapling,Peaches 'n Cream Youth,Salts Of Platinum,White Pine Sapling
+Thoth,Ar++++,Sa----,To----|Dikbas Youth,White Pine Sapling,Young Golden Hemlock,Powdered Ruby,Salts Of Cobalt
+Thoth,Ar++++,So----,Sw----|Acacia Youth,Chicory,Katsura Youth,Monkey Palm,Powdered Quartz
+Thoth,Ar++++,So----,To----|Dikbas Youth,Katsura Youth,Cinnar,Parrotia Sapling,White Pine Sapling
+Thoth,Ar----,As++++,Sa----|Umbrella Palm,Salts Of Nickel,Kotukutuku,Kaeshra,Powdered Diamond
+Thoth,Ar----,As++++,Sw----|Ackee,Bottle Tree,Powdered Diamond,Powdered Garnet,Powdered Almandine
+Thoth,Ar----,As++++,To----|Umbrella Palm,Powdered Amethyst,Salts Of Antimony,Salts Of Nickel,Cricklewood
+Thoth,Ar----,Bi----,So++++|Dikbas,Dikbas Sapling,Razor Palm,Powdered Jade,Silky Oak
+Thoth,Ar----,Bi----,Sp++++|Powdered Garnet,Elephantia,Jacaranda,Locust Palm,Ash Palm
+Thoth,Ar----,Sa----,So++++|Kaeshra,Dikbas,Umbrella Palm,Salts Of Lead,Arconis
+Thoth,Ar----,Sa----,Sw++++|Hawthorn,Bramble Hedge,Salts Of Lead,Salts Of Nickel,Parrotia
+Thoth,Ar----,So++++,Sw++++|Red Maple,Safsaf Sapling,Salts Of Lead,Dikbas,Bramble Hedge
+Thoth,Ar----,So++++,To----|Khaya Sapling,Safsaf Sapling,Towering Palm,Trilobellia,Umbrella Palm
+Thoth,Ar----,Sp----,Sw++++|Powdered Amethyst,Powdered Aquamarine,Salts Of Lead,Bramble Hedge,Powdered Kunzite
+Thoth,Ar----,Sw++++,To++++|Autumn Bloodbark,Hokkaido,Tiny Oil Palm,Salts Of Lead,Bramble Hedge
+Thoth,Ar----,Sw++++,To----|Powdered Amethyst,Salts Of Nickel,Safsaf Sapling,Hawthorn,Towering Palm
+Thoth,As++++,Bi----,Sa----|Phoenix Palm,Parrotia,Dikbas Sapling,Acacia Sapling,Blaze Maple Sapling
+Thoth,As++++,Sa----,Sp----|Blaze Maple Sapling,Parrotia,Bottle Tree,Spindle Tree,White Pine
+Thoth,As++++,Sa----,Sw++++|Parrotia,Blaze Maple Sapling,Acacia Sapling,Umbrella Palm,Hawthorn
+Thoth,As++++,Sa----,Sw----|Bottle Tree,Umbrella Palm,Bloodbark,Kotukutuku,Royal Palm
+Thoth,As++++,Sa----,To----|Delta Palm,Montu Maple,Umbrella Palm,Young Golden Hemlock,River Birch Youth
+Thoth,As----,Bi++++,So----|Coconut Palm,Illawara,Deadwood Tree,Fern Palm,Parrotia Sapling
+Thoth,As----,Bi----,Sp++++|Feather Tree,Locust Palm,Pratyeka Tree,Monterey Pine,Dwarf Safsaf
+Thoth,As----,Sa++++,So----|Katsura Sapling,Feather Tree Sapling,Powdered Topaz,Cinnar,Coconut Palm
+Thoth,As----,Sa----,Sp++++|Hawthorn,Jacaranda,Locust Palm,Monterey Pine Sapling,Salts Of Gold
+Thoth,As----,So----,To++++|Blaze Maple Youth,Summer Maple Youth,Salts Of Gold,Tiny Oil Palm,Feather Tree Sapling
+Thoth,Bi----,Sa++++,Sp++++|Monterey Pine,Passam,Pratyeka Tree,Locust Palm,Cinnar
+Thoth,Bi----,Sa++++,To----|Butterleaf Tree,Cinnar,Cricklewood,Golden Hemlock,Khaya Sapling
+Thoth,Bi----,Sa----,Sw++++|Acacia Sapling,Broadleaf Palm,Salts Of Cobalt,White Pine Sapling,Hawthorn
+Thoth,Bi----,So++++,Sp----|Dikbas Sapling,Peaches 'n Cream Maple,Stout Palm,Sweet Pine,Salts Of Aluminum
+Thoth,Bi----,So++++,To----|Butterleaf Tree,Cricklewood,Young Golden Hemlock,Razor Palm,Khaya Sapling
+Thoth,Sa----,So----,Sw++++|Hawthorn,Orrorin,Parrotia Sapling,Ackee Sapling,Acacia Sapling
+Thoth,Sa----,Sp++++,To----|Young Golden Hemlock,Salts Of Silver,Folded Birch,Kotukutuku,River Birch
+Thoth,Sa----,Sp----,Sw++++|Parrotia,Blaze Maple Sapling,White Pine,Bramble Hedge,Golden Hemlock Sapling
+Thoth,Sa----,Sw++++,To----|Powdered Morganite,Salts Of Cobalt,Hawthorn,Salts Of Platinum,Dikbas Youth
+Thoth,So++++,Sw----,To----|Arconis,Giant Cricklewood,Powdered Sapphire,Butterleaf Tree,Mimosa Youth
+Thoth,So----,Sw++++,To----|Cerulean Blue,Khaya Youth,Parrotia Sapling,Summer Maple Sapling,Salts Of Platinum
+Thoth,As----,So----,Ar++++|Illawara,Khaya Youth,Deadwood Tree,Jacaranda,Katsura Youth
+Thoth,Bi++++,So----,Ar++++|Deadwood Tree,Dikbas Youth,Illawara,Katsura Youth,Folded Birch
+Thoth,Bi----,Sa----,Ar++++|Peaches 'n Cream Maple,White Pine Sapling,Powdered Ruby,Salts Of Cobalt,Broadleaf Palm
+Thoth,Bi----,To----,Ar++++|Peaches 'n Cream Maple,Peaches 'n Cream Sapling,Peaches 'n Cream Youth,Salts Of Platinum,White Pine Sapling
+Thoth,Sa----,To----,Ar++++|Dikbas Youth,White Pine Sapling,Young Golden Hemlock,Powdered Ruby,Salts Of Cobalt
+Thoth,So----,Sw----,Ar++++|Acacia Youth,Chicory,Katsura Youth,Monkey Palm,Powdered Quartz
+Thoth,So----,To----,Ar++++|Dikbas Youth,Katsura Youth,Cinnar,Parrotia Sapling,White Pine Sapling
+Thoth,As++++,Sa----,Ar----|Umbrella Palm,Salts Of Nickel,Kotukutuku,Kaeshra,Powdered Diamond
+Thoth,As++++,Sw----,Ar----|Ackee,Bottle Tree,Powdered Diamond,Powdered Garnet,Powdered Almandine
+Thoth,As++++,To----,Ar----|Umbrella Palm,Powdered Amethyst,Salts Of Antimony,Salts Of Nickel,Cricklewood
+Thoth,Bi----,So++++,Ar----|Dikbas,Dikbas Sapling,Razor Palm,Powdered Jade,Silky Oak
+Thoth,Bi----,Sp++++,Ar----|Powdered Garnet,Elephantia,Jacaranda,Locust Palm,Ash Palm
+Thoth,Sa----,So++++,Ar----|Kaeshra,Dikbas,Umbrella Palm,Salts Of Lead,Arconis
+Thoth,Sa----,Sw++++,Ar----|Hawthorn,Bramble Hedge,Salts Of Lead,Salts Of Nickel,Parrotia
+Thoth,So++++,Sw++++,Ar----|Red Maple,Safsaf Sapling,Salts Of Lead,Dikbas,Bramble Hedge
+Thoth,So++++,To----,Ar----|Khaya Sapling,Safsaf Sapling,Towering Palm,Trilobellia,Umbrella Palm
+Thoth,Sp----,Sw++++,Ar----|Powdered Amethyst,Powdered Aquamarine,Salts Of Lead,Bramble Hedge,Powdered Kunzite
+Thoth,Sw++++,To++++,Ar----|Autumn Bloodbark,Hokkaido,Tiny Oil Palm,Salts Of Lead,Bramble Hedge
+Thoth,Sw++++,To----,Ar----|Powdered Amethyst,Salts Of Nickel,Safsaf Sapling,Hawthorn,Towering Palm
+Thoth,Bi----,Sa----,As++++|Phoenix Palm,Parrotia,Dikbas Sapling,Acacia Sapling,Blaze Maple Sapling
+Thoth,Sa----,Sp----,As++++|Blaze Maple Sapling,Parrotia,Bottle Tree,Spindle Tree,White Pine
+Thoth,Sa----,Sw++++,As++++|Parrotia,Blaze Maple Sapling,Acacia Sapling,Umbrella Palm,Hawthorn
+Thoth,Sa----,Sw----,As++++|Bottle Tree,Umbrella Palm,Bloodbark,Kotukutuku,Royal Palm
+Thoth,Sa----,To----,As++++|Delta Palm,Montu Maple,Umbrella Palm,Young Golden Hemlock,River Birch Youth
+Thoth,Bi++++,So----,As----|Coconut Palm,Illawara,Deadwood Tree,Fern Palm,Parrotia Sapling
+Thoth,Bi----,Sp++++,As----|Feather Tree,Locust Palm,Pratyeka Tree,Monterey Pine,Dwarf Safsaf
+Thoth,Sa++++,So----,As----|Katsura Sapling,Feather Tree Sapling,Powdered Topaz,Cinnar,Coconut Palm
+Thoth,Sa----,Sp++++,As----|Hawthorn,Jacaranda,Locust Palm,Monterey Pine Sapling,Salts Of Gold
+Thoth,So----,To++++,As----|Blaze Maple Youth,Summer Maple Youth,Salts Of Gold,Tiny Oil Palm,Feather Tree Sapling
+Thoth,Sa++++,Sp++++,Bi----|Monterey Pine,Passam,Pratyeka Tree,Locust Palm,Cinnar
+Thoth,Sa++++,To----,Bi----|Butterleaf Tree,Cinnar,Cricklewood,Golden Hemlock,Khaya Sapling
+Thoth,Sa----,Sw++++,Bi----|Acacia Sapling,Broadleaf Palm,Salts Of Cobalt,White Pine Sapling,Hawthorn
+Thoth,So++++,Sp----,Bi----|Dikbas Sapling,Peaches 'n Cream Maple,Stout Palm,Sweet Pine,Salts Of Aluminum
+Thoth,So++++,To----,Bi----|Butterleaf Tree,Cricklewood,Young Golden Hemlock,Razor Palm,Khaya Sapling
+Thoth,So----,Sw++++,Sa----|Hawthorn,Orrorin,Parrotia Sapling,Ackee Sapling,Acacia Sapling
+Thoth,Sp++++,To----,Sa----|Young Golden Hemlock,Salts Of Silver,Folded Birch,Kotukutuku,River Birch
+Thoth,Sp----,Sw++++,Sa----|Parrotia,Blaze Maple Sapling,White Pine,Bramble Hedge,Golden Hemlock Sapling
+Thoth,Sw++++,To----,Sa----|Powdered Morganite,Salts Of Cobalt,Hawthorn,Salts Of Platinum,Dikbas Youth
+Thoth,Sw----,To----,So++++|Arconis,Giant Cricklewood,Powdered Sapphire,Butterleaf Tree,Mimosa Youth
+Thoth,Sw++++,To----,So----|Cerulean Blue,Khaya Youth,Parrotia Sapling,Summer Maple Sapling,Salts Of Platinum
+Thoth,So----,Ar++++,As----|Illawara,Khaya Youth,Deadwood Tree,Jacaranda,Katsura Youth
+Thoth,So----,Ar++++,Bi++++|Deadwood Tree,Dikbas Youth,Illawara,Katsura Youth,Folded Birch
+Thoth,Sa----,Ar++++,Bi----|Peaches 'n Cream Maple,White Pine Sapling,Powdered Ruby,Salts Of Cobalt,Broadleaf Palm
+Thoth,To----,Ar++++,Bi----|Peaches 'n Cream Maple,Peaches 'n Cream Sapling,Peaches 'n Cream Youth,Salts Of Platinum,White Pine Sapling
+Thoth,To----,Ar++++,Sa----|Dikbas Youth,White Pine Sapling,Young Golden Hemlock,Powdered Ruby,Salts Of Cobalt
+Thoth,Sw----,Ar++++,So----|Acacia Youth,Chicory,Katsura Youth,Monkey Palm,Powdered Quartz
+Thoth,To----,Ar++++,So----|Dikbas Youth,Katsura Youth,Cinnar,Parrotia Sapling,White Pine Sapling
+Thoth,Sa----,Ar----,As++++|Umbrella Palm,Salts Of Nickel,Kotukutuku,Kaeshra,Powdered Diamond
+Thoth,Sw----,Ar----,As++++|Ackee,Bottle Tree,Powdered Diamond,Powdered Garnet,Powdered Almandine
+Thoth,To----,Ar----,As++++|Umbrella Palm,Powdered Amethyst,Salts Of Antimony,Salts Of Nickel,Cricklewood
+Thoth,So++++,Ar----,Bi----|Dikbas,Dikbas Sapling,Razor Palm,Powdered Jade,Silky Oak
+Thoth,Sp++++,Ar----,Bi----|Powdered Garnet,Elephantia,Jacaranda,Locust Palm,Ash Palm
+Thoth,So++++,Ar----,Sa----|Kaeshra,Dikbas,Umbrella Palm,Salts Of Lead,Arconis
+Thoth,Sw++++,Ar----,Sa----|Hawthorn,Bramble Hedge,Salts Of Lead,Salts Of Nickel,Parrotia
+Thoth,Sw++++,Ar----,So++++|Red Maple,Safsaf Sapling,Salts Of Lead,Dikbas,Bramble Hedge
+Thoth,To----,Ar----,So++++|Khaya Sapling,Safsaf Sapling,Towering Palm,Trilobellia,Umbrella Palm
+Thoth,Sw++++,Ar----,Sp----|Powdered Amethyst,Powdered Aquamarine,Salts Of Lead,Bramble Hedge,Powdered Kunzite
+Thoth,To++++,Ar----,Sw++++|Autumn Bloodbark,Hokkaido,Tiny Oil Palm,Salts Of Lead,Bramble Hedge
+Thoth,To----,Ar----,Sw++++|Powdered Amethyst,Salts Of Nickel,Safsaf Sapling,Hawthorn,Towering Palm
+Thoth,Sa----,As++++,Bi----|Phoenix Palm,Parrotia,Dikbas Sapling,Acacia Sapling,Blaze Maple Sapling
+Thoth,Sp----,As++++,Sa----|Blaze Maple Sapling,Parrotia,Bottle Tree,Spindle Tree,White Pine
+Thoth,Sw++++,As++++,Sa----|Parrotia,Blaze Maple Sapling,Acacia Sapling,Umbrella Palm,Hawthorn
+Thoth,Sw----,As++++,Sa----|Bottle Tree,Umbrella Palm,Bloodbark,Kotukutuku,Royal Palm
+Thoth,To----,As++++,Sa----|Delta Palm,Montu Maple,Umbrella Palm,Young Golden Hemlock,River Birch Youth
+Thoth,So----,As----,Bi++++|Coconut Palm,Illawara,Deadwood Tree,Fern Palm,Parrotia Sapling
+Thoth,Sp++++,As----,Bi----|Feather Tree,Locust Palm,Pratyeka Tree,Monterey Pine,Dwarf Safsaf
+Thoth,So----,As----,Sa++++|Katsura Sapling,Feather Tree Sapling,Powdered Topaz,Cinnar,Coconut Palm
+Thoth,Sp++++,As----,Sa----|Hawthorn,Jacaranda,Locust Palm,Monterey Pine Sapling,Salts Of Gold
+Thoth,To++++,As----,So----|Blaze Maple Youth,Summer Maple Youth,Salts Of Gold,Tiny Oil Palm,Feather Tree Sapling
+Thoth,Sp++++,Bi----,Sa++++|Monterey Pine,Passam,Pratyeka Tree,Locust Palm,Cinnar
+Thoth,To----,Bi----,Sa++++|Butterleaf Tree,Cinnar,Cricklewood,Golden Hemlock,Khaya Sapling
+Thoth,Sw++++,Bi----,Sa----|Acacia Sapling,Broadleaf Palm,Salts Of Cobalt,White Pine Sapling,Hawthorn
+Thoth,Sp----,Bi----,So++++|Dikbas Sapling,Peaches 'n Cream Maple,Stout Palm,Sweet Pine,Salts Of Aluminum
+Thoth,To----,Bi----,So++++|Butterleaf Tree,Cricklewood,Young Golden Hemlock,Razor Palm,Khaya Sapling
+Thoth,Sw++++,Sa----,So----|Hawthorn,Orrorin,Parrotia Sapling,Ackee Sapling,Acacia Sapling
+Thoth,To----,Sa----,Sp++++|Young Golden Hemlock,Salts Of Silver,Folded Birch,Kotukutuku,River Birch
+Thoth,Sw++++,Sa----,Sp----|Parrotia,Blaze Maple Sapling,White Pine,Bramble Hedge,Golden Hemlock Sapling
+Thoth,To----,Sa----,Sw++++|Powdered Morganite,Salts Of Cobalt,Hawthorn,Salts Of Platinum,Dikbas Youth
+Thoth,To----,So++++,Sw----|Arconis,Giant Cricklewood,Powdered Sapphire,Butterleaf Tree,Mimosa Youth
+Thoth,To----,So----,Sw++++|Cerulean Blue,Khaya Youth,Parrotia Sapling,Summer Maple Sapling,Salts Of Platinum
+Thoth,So----,As----,Ar++++|Illawara,Khaya Youth,Deadwood Tree,Jacaranda,Katsura Youth
+Thoth,So----,Bi++++,Ar++++|Deadwood Tree,Dikbas Youth,Illawara,Katsura Youth,Folded Birch
+Thoth,Sa----,Bi----,Ar++++|Peaches 'n Cream Maple,White Pine Sapling,Powdered Ruby,Salts Of Cobalt,Broadleaf Palm
+Thoth,To----,Bi----,Ar++++|Peaches 'n Cream Maple,Peaches 'n Cream Sapling,Peaches 'n Cream Youth,Salts Of Platinum,White Pine Sapling
+Thoth,To----,Sa----,Ar++++|Dikbas Youth,White Pine Sapling,Young Golden Hemlock,Powdered Ruby,Salts Of Cobalt
+Thoth,Sw----,So----,Ar++++|Acacia Youth,Chicory,Katsura Youth,Monkey Palm,Powdered Quartz
+Thoth,To----,So----,Ar++++|Dikbas Youth,Katsura Youth,Cinnar,Parrotia Sapling,White Pine Sapling
+Thoth,Sa----,As++++,Ar----|Umbrella Palm,Salts Of Nickel,Kotukutuku,Kaeshra,Powdered Diamond
+Thoth,Sw----,As++++,Ar----|Ackee,Bottle Tree,Powdered Diamond,Powdered Garnet,Powdered Almandine
+Thoth,To----,As++++,Ar----|Umbrella Palm,Powdered Amethyst,Salts Of Antimony,Salts Of Nickel,Cricklewood
+Thoth,So++++,Bi----,Ar----|Dikbas,Dikbas Sapling,Razor Palm,Powdered Jade,Silky Oak
+Thoth,Sp++++,Bi----,Ar----|Powdered Garnet,Elephantia,Jacaranda,Locust Palm,Ash Palm
+Thoth,So++++,Sa----,Ar----|Kaeshra,Dikbas,Umbrella Palm,Salts Of Lead,Arconis
+Thoth,Sw++++,Sa----,Ar----|Hawthorn,Bramble Hedge,Salts Of Lead,Salts Of Nickel,Parrotia
+Thoth,Sw++++,So++++,Ar----|Red Maple,Safsaf Sapling,Salts Of Lead,Dikbas,Bramble Hedge
+Thoth,To----,So++++,Ar----|Khaya Sapling,Safsaf Sapling,Towering Palm,Trilobellia,Umbrella Palm
+Thoth,Sw++++,Sp----,Ar----|Powdered Amethyst,Powdered Aquamarine,Salts Of Lead,Bramble Hedge,Powdered Kunzite
+Thoth,To++++,Sw++++,Ar----|Autumn Bloodbark,Hokkaido,Tiny Oil Palm,Salts Of Lead,Bramble Hedge
+Thoth,To----,Sw++++,Ar----|Powdered Amethyst,Salts Of Nickel,Safsaf Sapling,Hawthorn,Towering Palm
+Thoth,Sa----,Bi----,As++++|Phoenix Palm,Parrotia,Dikbas Sapling,Acacia Sapling,Blaze Maple Sapling
+Thoth,Sp----,Sa----,As++++|Blaze Maple Sapling,Parrotia,Bottle Tree,Spindle Tree,White Pine
+Thoth,Sw++++,Sa----,As++++|Parrotia,Blaze Maple Sapling,Acacia Sapling,Umbrella Palm,Hawthorn
+Thoth,Sw----,Sa----,As++++|Bottle Tree,Umbrella Palm,Bloodbark,Kotukutuku,Royal Palm
+Thoth,To----,Sa----,As++++|Delta Palm,Montu Maple,Umbrella Palm,Young Golden Hemlock,River Birch Youth
+Thoth,So----,Bi++++,As----|Coconut Palm,Illawara,Deadwood Tree,Fern Palm,Parrotia Sapling
+Thoth,Sp++++,Bi----,As----|Feather Tree,Locust Palm,Pratyeka Tree,Monterey Pine,Dwarf Safsaf
+Thoth,So----,Sa++++,As----|Katsura Sapling,Feather Tree Sapling,Powdered Topaz,Cinnar,Coconut Palm
+Thoth,Sp++++,Sa----,As----|Hawthorn,Jacaranda,Locust Palm,Monterey Pine Sapling,Salts Of Gold
+Thoth,To++++,So----,As----|Blaze Maple Youth,Summer Maple Youth,Salts Of Gold,Tiny Oil Palm,Feather Tree Sapling
+Thoth,Sp++++,Sa++++,Bi----|Monterey Pine,Passam,Pratyeka Tree,Locust Palm,Cinnar
+Thoth,To----,Sa++++,Bi----|Butterleaf Tree,Cinnar,Cricklewood,Golden Hemlock,Khaya Sapling
+Thoth,Sw++++,Sa----,Bi----|Acacia Sapling,Broadleaf Palm,Salts Of Cobalt,White Pine Sapling,Hawthorn
+Thoth,Sp----,So++++,Bi----|Dikbas Sapling,Peaches 'n Cream Maple,Stout Palm,Sweet Pine,Salts Of Aluminum
+Thoth,To----,So++++,Bi----|Butterleaf Tree,Cricklewood,Young Golden Hemlock,Razor Palm,Khaya Sapling
+Thoth,Sw++++,So----,Sa----|Hawthorn,Orrorin,Parrotia Sapling,Ackee Sapling,Acacia Sapling
+Thoth,To----,Sp++++,Sa----|Young Golden Hemlock,Salts Of Silver,Folded Birch,Kotukutuku,River Birch
+Thoth,Sw++++,Sp----,Sa----|Parrotia,Blaze Maple Sapling,White Pine,Bramble Hedge,Golden Hemlock Sapling
+Thoth,To----,Sw++++,Sa----|Powdered Morganite,Salts Of Cobalt,Hawthorn,Salts Of Platinum,Dikbas Youth
+Thoth,To----,Sw----,So++++|Arconis,Giant Cricklewood,Powdered Sapphire,Butterleaf Tree,Mimosa Youth
+Thoth,To----,Sw++++,So----|Cerulean Blue,Khaya Youth,Parrotia Sapling,Summer Maple Sapling,Salts Of Platinum
+Thoth,As----,Ar++++,So----|Illawara,Khaya Youth,Deadwood Tree,Jacaranda,Katsura Youth
+Thoth,Bi++++,Ar++++,So----|Deadwood Tree,Dikbas Youth,Illawara,Katsura Youth,Folded Birch
+Thoth,Bi----,Ar++++,Sa----|Peaches 'n Cream Maple,White Pine Sapling,Powdered Ruby,Salts Of Cobalt,Broadleaf Palm
+Thoth,Bi----,Ar++++,To----|Peaches 'n Cream Maple,Peaches 'n Cream Sapling,Peaches 'n Cream Youth,Salts Of Platinum,White Pine Sapling
+Thoth,Sa----,Ar++++,To----|Dikbas Youth,White Pine Sapling,Young Golden Hemlock,Powdered Ruby,Salts Of Cobalt
+Thoth,So----,Ar++++,Sw----|Acacia Youth,Chicory,Katsura Youth,Monkey Palm,Powdered Quartz
+Thoth,So----,Ar++++,To----|Dikbas Youth,Katsura Youth,Cinnar,Parrotia Sapling,White Pine Sapling
+Thoth,As++++,Ar----,Sa----|Umbrella Palm,Salts Of Nickel,Kotukutuku,Kaeshra,Powdered Diamond
+Thoth,As++++,Ar----,Sw----|Ackee,Bottle Tree,Powdered Diamond,Powdered Garnet,Powdered Almandine
+Thoth,As++++,Ar----,To----|Umbrella Palm,Powdered Amethyst,Salts Of Antimony,Salts Of Nickel,Cricklewood
+Thoth,Bi----,Ar----,So++++|Dikbas,Dikbas Sapling,Razor Palm,Powdered Jade,Silky Oak
+Thoth,Bi----,Ar----,Sp++++|Powdered Garnet,Elephantia,Jacaranda,Locust Palm,Ash Palm
+Thoth,Sa----,Ar----,So++++|Kaeshra,Dikbas,Umbrella Palm,Salts Of Lead,Arconis
+Thoth,Sa----,Ar----,Sw++++|Hawthorn,Bramble Hedge,Salts Of Lead,Salts Of Nickel,Parrotia
+Thoth,So++++,Ar----,Sw++++|Red Maple,Safsaf Sapling,Salts Of Lead,Dikbas,Bramble Hedge
+Thoth,So++++,Ar----,To----|Khaya Sapling,Safsaf Sapling,Towering Palm,Trilobellia,Umbrella Palm
+Thoth,Sp----,Ar----,Sw++++|Powdered Amethyst,Powdered Aquamarine,Salts Of Lead,Bramble Hedge,Powdered Kunzite
+Thoth,Sw++++,Ar----,To++++|Autumn Bloodbark,Hokkaido,Tiny Oil Palm,Salts Of Lead,Bramble Hedge
+Thoth,Sw++++,Ar----,To----|Powdered Amethyst,Salts Of Nickel,Safsaf Sapling,Hawthorn,Towering Palm
+Thoth,Bi----,As++++,Sa----|Phoenix Palm,Parrotia,Dikbas Sapling,Acacia Sapling,Blaze Maple Sapling
+Thoth,Sa----,As++++,Sp----|Blaze Maple Sapling,Parrotia,Bottle Tree,Spindle Tree,White Pine
+Thoth,Sa----,As++++,Sw++++|Parrotia,Blaze Maple Sapling,Acacia Sapling,Umbrella Palm,Hawthorn
+Thoth,Sa----,As++++,Sw----|Bottle Tree,Umbrella Palm,Bloodbark,Kotukutuku,Royal Palm
+Thoth,Sa----,As++++,To----|Delta Palm,Montu Maple,Umbrella Palm,Young Golden Hemlock,River Birch Youth
+Thoth,Bi++++,As----,So----|Coconut Palm,Illawara,Deadwood Tree,Fern Palm,Parrotia Sapling
+Thoth,Bi----,As----,Sp++++|Feather Tree,Locust Palm,Pratyeka Tree,Monterey Pine,Dwarf Safsaf
+Thoth,Sa++++,As----,So----|Katsura Sapling,Feather Tree Sapling,Powdered Topaz,Cinnar,Coconut Palm
+Thoth,Sa----,As----,Sp++++|Hawthorn,Jacaranda,Locust Palm,Monterey Pine Sapling,Salts Of Gold
+Thoth,So----,As----,To++++|Blaze Maple Youth,Summer Maple Youth,Salts Of Gold,Tiny Oil Palm,Feather Tree Sapling
+Thoth,Sa++++,Bi----,Sp++++|Monterey Pine,Passam,Pratyeka Tree,Locust Palm,Cinnar
+Thoth,Sa++++,Bi----,To----|Butterleaf Tree,Cinnar,Cricklewood,Golden Hemlock,Khaya Sapling
+Thoth,Sa----,Bi----,Sw++++|Acacia Sapling,Broadleaf Palm,Salts Of Cobalt,White Pine Sapling,Hawthorn
+Thoth,So++++,Bi----,Sp----|Dikbas Sapling,Peaches 'n Cream Maple,Stout Palm,Sweet Pine,Salts Of Aluminum
+Thoth,So++++,Bi----,To----|Butterleaf Tree,Cricklewood,Young Golden Hemlock,Razor Palm,Khaya Sapling
+Thoth,So----,Sa----,Sw++++|Hawthorn,Orrorin,Parrotia Sapling,Ackee Sapling,Acacia Sapling
+Thoth,Sp++++,Sa----,To----|Young Golden Hemlock,Salts Of Silver,Folded Birch,Kotukutuku,River Birch
+Thoth,Sp----,Sa----,Sw++++|Parrotia,Blaze Maple Sapling,White Pine,Bramble Hedge,Golden Hemlock Sapling
+Thoth,Sw++++,Sa----,To----|Powdered Morganite,Salts Of Cobalt,Hawthorn,Salts Of Platinum,Dikbas Youth
+Thoth,Sw----,So++++,To----|Arconis,Giant Cricklewood,Powdered Sapphire,Butterleaf Tree,Mimosa Youth
+Thoth,Sw++++,So----,To----|Cerulean Blue,Khaya Youth,Parrotia Sapling,Summer Maple Sapling,Salts Of Platinum
+Thoth,Ar++++,So----,As----|Illawara,Khaya Youth,Deadwood Tree,Jacaranda,Katsura Youth
+Thoth,Ar++++,So----,Bi++++|Deadwood Tree,Dikbas Youth,Illawara,Katsura Youth,Folded Birch
+Thoth,Ar++++,Sa----,Bi----|Peaches 'n Cream Maple,White Pine Sapling,Powdered Ruby,Salts Of Cobalt,Broadleaf Palm
+Thoth,Ar++++,To----,Bi----|Peaches 'n Cream Maple,Peaches 'n Cream Sapling,Peaches 'n Cream Youth,Salts Of Platinum,White Pine Sapling
+Thoth,Ar++++,To----,Sa----|Dikbas Youth,White Pine Sapling,Young Golden Hemlock,Powdered Ruby,Salts Of Cobalt
+Thoth,Ar++++,Sw----,So----|Acacia Youth,Chicory,Katsura Youth,Monkey Palm,Powdered Quartz
+Thoth,Ar++++,To----,So----|Dikbas Youth,Katsura Youth,Cinnar,Parrotia Sapling,White Pine Sapling
+Thoth,Ar----,Sa----,As++++|Umbrella Palm,Salts Of Nickel,Kotukutuku,Kaeshra,Powdered Diamond
+Thoth,Ar----,Sw----,As++++|Ackee,Bottle Tree,Powdered Diamond,Powdered Garnet,Powdered Almandine
+Thoth,Ar----,To----,As++++|Umbrella Palm,Powdered Amethyst,Salts Of Antimony,Salts Of Nickel,Cricklewood
+Thoth,Ar----,So++++,Bi----|Dikbas,Dikbas Sapling,Razor Palm,Powdered Jade,Silky Oak
+Thoth,Ar----,Sp++++,Bi----|Powdered Garnet,Elephantia,Jacaranda,Locust Palm,Ash Palm
+Thoth,Ar----,So++++,Sa----|Kaeshra,Dikbas,Umbrella Palm,Salts Of Lead,Arconis
+Thoth,Ar----,Sw++++,Sa----|Hawthorn,Bramble Hedge,Salts Of Lead,Salts Of Nickel,Parrotia
+Thoth,Ar----,Sw++++,So++++|Red Maple,Safsaf Sapling,Salts Of Lead,Dikbas,Bramble Hedge
+Thoth,Ar----,To----,So++++|Khaya Sapling,Safsaf Sapling,Towering Palm,Trilobellia,Umbrella Palm
+Thoth,Ar----,Sw++++,Sp----|Powdered Amethyst,Powdered Aquamarine,Salts Of Lead,Bramble Hedge,Powdered Kunzite
+Thoth,Ar----,To++++,Sw++++|Autumn Bloodbark,Hokkaido,Tiny Oil Palm,Salts Of Lead,Bramble Hedge
+Thoth,Ar----,To----,Sw++++|Powdered Amethyst,Salts Of Nickel,Safsaf Sapling,Hawthorn,Towering Palm
+Thoth,As++++,Sa----,Bi----|Phoenix Palm,Parrotia,Dikbas Sapling,Acacia Sapling,Blaze Maple Sapling
+Thoth,As++++,Sp----,Sa----|Blaze Maple Sapling,Parrotia,Bottle Tree,Spindle Tree,White Pine
+Thoth,As++++,Sw++++,Sa----|Parrotia,Blaze Maple Sapling,Acacia Sapling,Umbrella Palm,Hawthorn
+Thoth,As++++,Sw----,Sa----|Bottle Tree,Umbrella Palm,Bloodbark,Kotukutuku,Royal Palm
+Thoth,As++++,To----,Sa----|Delta Palm,Montu Maple,Umbrella Palm,Young Golden Hemlock,River Birch Youth
+Thoth,As----,So----,Bi++++|Coconut Palm,Illawara,Deadwood Tree,Fern Palm,Parrotia Sapling
+Thoth,As----,Sp++++,Bi----|Feather Tree,Locust Palm,Pratyeka Tree,Monterey Pine,Dwarf Safsaf
+Thoth,As----,So----,Sa++++|Katsura Sapling,Feather Tree Sapling,Powdered Topaz,Cinnar,Coconut Palm
+Thoth,As----,Sp++++,Sa----|Hawthorn,Jacaranda,Locust Palm,Monterey Pine Sapling,Salts Of Gold
+Thoth,As----,To++++,So----|Blaze Maple Youth,Summer Maple Youth,Salts Of Gold,Tiny Oil Palm,Feather Tree Sapling
+Thoth,Bi----,Sp++++,Sa++++|Monterey Pine,Passam,Pratyeka Tree,Locust Palm,Cinnar
+Thoth,Bi----,To----,Sa++++|Butterleaf Tree,Cinnar,Cricklewood,Golden Hemlock,Khaya Sapling
+Thoth,Bi----,Sw++++,Sa----|Acacia Sapling,Broadleaf Palm,Salts Of Cobalt,White Pine Sapling,Hawthorn
+Thoth,Bi----,Sp----,So++++|Dikbas Sapling,Peaches 'n Cream Maple,Stout Palm,Sweet Pine,Salts Of Aluminum
+Thoth,Bi----,To----,So++++|Butterleaf Tree,Cricklewood,Young Golden Hemlock,Razor Palm,Khaya Sapling
+Thoth,Sa----,Sw++++,So----|Hawthorn,Orrorin,Parrotia Sapling,Ackee Sapling,Acacia Sapling
+Thoth,Sa----,To----,Sp++++|Young Golden Hemlock,Salts Of Silver,Folded Birch,Kotukutuku,River Birch
+Thoth,Sa----,Sw++++,Sp----|Parrotia,Blaze Maple Sapling,White Pine,Bramble Hedge,Golden Hemlock Sapling
+Thoth,Sa----,To----,Sw++++|Powdered Morganite,Salts Of Cobalt,Hawthorn,Salts Of Platinum,Dikbas Youth
+Thoth,So++++,To----,Sw----|Arconis,Giant Cricklewood,Powdered Sapphire,Butterleaf Tree,Mimosa Youth
+Thoth,So----,To----,Sw++++|Cerulean Blue,Khaya Youth,Parrotia Sapling,Summer Maple Sapling,Salts Of Platinum
+Osiris,Ar++++,As----|Khaya Youth,Deadwood Tree,Feather Tree,Illawara,Peaches 'n Cream Maple
+Osiris,Ar++++,Bi++++|Katsura Youth,Mimosa,Deadwood Tree,Dikbas Youth,Oleaceae
+Osiris,Ar++++,Bi----|Peaches 'n Cream Maple,Peaches 'n Cream Youth,Peaches 'n Cream Sapling,White Pine Sapling,Butterleaf Tree
+Osiris,Ar++++,Sa----|White Pine Sapling,Peaches 'n Cream Maple,Powdered Ruby,Salts Of Cobalt,Parrotia
+Osiris,Ar++++,So----|Acacia Youth,Deadwood Tree,White Pine Sapling,Khaya Youth,Cerulean Blue
+Osiris,Ar++++,Sp----|Mimosa,Peaches 'n Cream Maple,Monterey Pine Middle Age,Chicory,Parrotia
+Osiris,Ar++++,Sw----|Chicory,Peaches 'n Cream Maple,Powdered Ruby,Powdered Quartz,Folded Birch
+Osiris,Ar++++,To----|Dikbas Youth,White Pine Sapling,Peaches 'n Cream Youth,Peaches 'n Cream Sapling,Razor Palm
+Osiris,Ar----,As++++|Elephantia,Ackee,Parrotia,Ash Palm,Powdered Diamond
+Osiris,Ar----,As----|Silky Oak,Summer Maple,Fern Palm,Ackee Youth,Autumn Bloodbark
+Osiris,Ar----,Bi++++|Bramble Hedge,Trilobellia,Summer Maple,Anaxi,Fern Palm
+Osiris,Ar----,Bi----|Elephantia,Dikbas,Ash Palm,Miniature Fern Palm,Razor Palm
+Osiris,Ar----,Sa++++|River Birch Sapling,Khaya Sapling,Powdered Topaz,Silky Oak,Powdered Jade
+Osiris,Ar----,Sa----|Bramble Hedge,Hawthorn,Kaeshra,Kotukutuku,Ash Palm
+Osiris,Ar----,So++++|Razor Palm,Dikbas,Autumn Bloodbark,Khaya Sapling,Trilobellia
+Osiris,Ar----,So----|Ash Palm,Tiny Oil Palm,Summer Maple Sapling,Monkey Palm,Silky Oak
+Osiris,Ar----,Sp++++|Kotukutuku,Summer Maple,Dikbas,Jacaranda,Pratyeka Tree
+Osiris,Ar----,Sp----|Tiny Oil Palm,Bramble Hedge,Autumn Bloodbark Sapling,Safsaf Sapling,Sweet Pine
+Osiris,Ar----,Sw++++|Bramble Hedge,River Birch Sapling,Tiny Oil Palm,Hawthorn,Fern Palm
+Osiris,Ar----,Sw----|Trilobellia,Bottle Tree,Autumn Bloodbark Sapling,Summer Maple,Mimosa Youth
+Osiris,Ar----,To++++|Tiny Oil Palm,Autumn Bloodbark Sapling,Autumn Bloodbark,Ash Palm,Stout Palm
+Osiris,Ar----,To----|Khaya Sapling,Towering Palm,Ash Palm,Silky Oak,Cerulean Blue
+Osiris,As++++,Bi++++|Beetlenut,Bottle Tree,Japanese Cherry Youth,Kotukutuku Sapling,Oranje
+Osiris,As++++,Bi----|Parrotia,Elephantia,Cricklewood,Delta Palm,Broadleaf Palm
+Osiris,As++++,Sa----|Bottle Tree,Parrotia,Orrorin,Delta Palm,Chicory
+Osiris,As++++,So++++|Delta Palm,Dikbas Sapling,Cricklewood,Katsura Tree,Giant Cricklewood
+Osiris,As++++,So----|Ackee Sapling,Parrotia,Monkey Palm,Powdered Diamond,Hawthorn
+Osiris,As++++,Sp++++|Kotukutuku,Ackee,Bloodbark,Elephantia,Young Golden Hemlock
+Osiris,As++++,Sp----|Bottle Tree,Mimosa,Blaze Maple Sapling,Stout Palm,Parrotia
+Osiris,As++++,Sw++++|Parrotia,Blaze Maple Sapling,Delta Palm,Acacia Sapling,Hawthorn
+Osiris,As++++,Sw----|Bottle Tree,Bloodbark,Royal Palm,Montu Maple,Spindle Tree
+Osiris,As++++,To----|Montu Maple,Katsura Tree,Towering Palm,Cricklewood,Bottle Tree
+Osiris,As----,Bi++++|Anaxi,Coconut Palm,Windriver Palm,Illawara,Fern Palm
+Osiris,As----,Bi----|Locust Palm,Pratyeka Tree,Feather Tree,Razor Palm,Silky Oak
+Osiris,As----,Sa++++|Pratyeka Tree,Khaya Youth,Feather Tree Sapling,Green Ash,Cinnar
+Osiris,As----,Sa----|Anaxi,Fern Palm,Kaeshra,Autumn Bloodbark,Jacaranda Youth
+Osiris,As----,So----|Coconut Palm,Summer Maple Youth,Hawthorn,Khaya Youth,Pratyeka Tree
+Osiris,As----,Sp++++|Pratyeka Tree,Locust Palm,Windriver Palm,Autumn Bloodbark,Feather Tree
+Osiris,As----,Sp----|Green Ash,Chakkanut Tree,Powdered Kunzite,Coconut Palm,Peaches 'n Cream Maple
+Osiris,As----,Sw++++|Fern Palm,Khaya Youth,Tiny Oil Palm,Chakkanut Tree,Hokkaido
+Osiris,As----,Sw----|Parrotia Sapling,Chakkanut Tree,Fern Palm,Khaya Youth,Hawthorn
+Osiris,As----,To++++|Summer Maple Youth,Blaze Maple Youth,Autumn Bloodbark,Tiny Oil Palm,Coconut Palm
+Osiris,As----,To----|Khaya Youth,Japanese Cherry Sapling,Cerulean Blue,Chakkanut Tree,Salts Of Platinum
+Osiris,Bi++++,Sa----|Anaxi,Bramble Hedge,Deadwood Tree,Kotukutuku,Hawthorn
+Osiris,Bi++++,Sw++++|Bramble Hedge,Hokkaido,Oranje,Anaxi,Hawthorn
+Osiris,Bi++++,Sw----|Giant Cricklewood,Bottle Tree,Coconut Palm,Oleaceae,Summer Maple
+Osiris,Bi++++,So++++|Giant Cricklewood,Oleaceae,Trilobellia,Anaxi,Acacia
+Osiris,Bi++++,So----|Deadwood Tree,Coconut Palm,Windriver Palm,Bramble Hedge,Cinnar
+Osiris,Bi++++,Sp++++|Anaxi,Deadwood Tree,Kotukutuku,Summer Maple,Windriver Palm
+Osiris,Bi++++,To----|Dikbas Youth,Oleaceae,Oranje,Beetlenut,Cerulean Blue
+Osiris,Bi----,Sa++++|Cricklewood,Cinnar,Butterleaf Tree,Pratyeka Tree,Mini Palmetto
+Osiris,Bi----,Sa----|Broadleaf Palm,Acacia Sapling,Dikbas Sapling,Parrotia,Hawthorn
+Osiris,Bi----,So++++|Butterleaf Tree,Dikbas Sapling,Stout Palm,Razor Palm,Autumn Bloodbark
+Osiris,Bi----,So----|Cinnar,Tapacae Miralis,Monkey Palm,Broadleaf Palm,Pratyeka Tree
+Osiris,Bi----,Sp++++|Broadleaf Palm,Locust Palm,Pratyeka Tree,Elephantia,Hawthorn
+Osiris,Bi----,Sp----|Peaches 'n Cream Maple,Sweet Pine,Stout Palm,Golden Hemlock,Peaches 'n Cream Youth
+Osiris,Bi----,Sw++++|Kotukutuku Youth,Locust Palm,Acacia Sapling,Hawthorn,Phoenix Palm
+Osiris,Bi----,Sw----|Powdered Quartz,Stout Palm,Butterleaf Tree,Cricklewood,Monkey Palm
+Osiris,Bi----,To----|Cricklewood,Butterleaf Tree,Cerulean Blue,Locust Palm,Cinnar
+Osiris,Sa++++,So----|Feather Tree Sapling,Pratyeka Tree,Cinnar,Katsura Sapling,Oranje
+Osiris,Sa++++,Sp++++|Jacaranda Sapling,Monterey Pine,Pratyeka Tree,Windriver Palm,Cinnar
+Osiris,Sa++++,Sp----|Powdered Almandine,Salts Of Zinc,Green Ash,Spindle Tree,Golden Hemlock
+Osiris,Sa++++,Sw----|Oleaceae,Mini Palmetto,Katsura Sapling,Powdered Emerald,Cricklewood
+Osiris,Sa++++,To----|Cinnar,Khaya Sapling,Golden Hemlock,Butterleaf Tree,Oleaceae
+Osiris,Sa----,So++++|Delta Palm,Dikbas Sapling,Giant Cricklewood,Kaeshra,Parrotia
+Osiris,Sa----,So----|Hawthorn,Tapacae Miralis,Orrorin,Ackee Sapling,Dikbas Youth
+Osiris,Sa----,Sp++++|Peaches 'n Cream Sapling,Kotukutuku,Jacaranda Youth,Broadleaf Palm,Hawthorn
+Osiris,Sa----,Sp----|Parrotia,Mimosa,Peaches 'n Cream Maple,Blaze Maple Sapling,Kaeshra
+Osiris,Sa----,Sw++++|Fern Palm,Kaeshra,Orrorin,Hawthorn,Spiked Fishtree
+Osiris,Sa----,Sw----|Bottle Tree,Monterey Pine Sapling,Royal Palm,Giant Cricklewood,Anaxi
+Osiris,Sa----,To----|River Birch Youth,Towering Palm,Arconis,Kaeshra,Salts Of Silver
+Osiris,So++++,Sp----|Peaches 'n Cream Maple,Dikbas,Safsaf Sapling,Stout Palm,Sweet Pine
+Osiris,So++++,Sw++++|Red Maple,Salts Of Lead,Safsaf Sapling,Dikbas,Parrotia
+Osiris,So++++,Sw----|Oleaceae,Stout Palm,Giant Cricklewood,Butterleaf Tree,Delta Palm
+Osiris,So++++,To----|Giant Cricklewood,Arconis,Butterleaf Tree,Towering Palm,Delta Palm
+Osiris,So----,Sp++++|Pratyeka Tree,Oil Palm,Deadwood Tree,Hawthorn,Windriver Palm
+Osiris,So----,Sp----|Mimosa,Summer Maple Youth,Salts Of Zinc,Spindle Tree,Feather Tree Sapling
+Osiris,So----,Sw++++|Summer Maple Sapling,Tiny Oil Palm,Hawthorn,Deadwood Tree,Spiked Fishtree
+Osiris,So----,Sw----|Bottle Tree,Coconut Palm,Monkey Palm,Feather Tree Sapling,Green Ash Youth
+Osiris,So----,To++++|Tiny Oil Palm,Summer Maple Youth,Tapacae Miralis,Green Ash Youth,Feather Tree Sapling
+Osiris,So----,To----|Cerulean Blue,Folded Birch,Dikbas Youth,Cinnar,Hawthorn
+Osiris,Sp++++,Sw----|Folded Birch,Kotukutuku,Mimosa Sapling,Monterey Pine,Chicory
+Osiris,Sp++++,To----|Folded Birch,Oil Palm,Japanese Cherry Sapling,Dikbas Youth,Hawthorn
+Osiris,Sp----,Sw++++|Spiked Fishtree,Bramble Hedge,Parrotia,Blaze Maple Sapling,Chakkanut Tree
+Osiris,Sp----,Sw----|Stout Palm,Royal Palm,Parrotia Youth,Bottle Tree,Mimosa
+Osiris,Sp----,To----|Safsaf Sapling,Montu Maple,Powdered Aquamarine,Peaches 'n Cream Youth,Mimosa
+Osiris,Sw++++,To----|Safsaf Sapling,Parrotia Sapling,Cerulean Blue,Khaya Youth,Oranje
+Osiris,Sw++++,To++++|Hokkaido,Tiny Oil Palm,Autumn Bloodbark,Kotukutuku Youth,Bramble Hedge
+Osiris,Sw----,To++++|Royal Palm,Green Ash Youth,Autumn Bloodbark Sapling,Autumn Bloodbark Youth,Stout Palm
+Osiris,Sw----,To----|Arconis,Folded Birch,Montu Maple,Oleaceae,Towering Palm
+Osiris,Sw++++,Bi++++|Bramble Hedge,Hokkaido,Oranje,Anaxi,Hawthorn
+Osiris,Sw----,Bi++++|Giant Cricklewood,Bottle Tree,Coconut Palm,Oleaceae,Summer Maple
+Osiris,So++++,Bi++++|Giant Cricklewood,Oleaceae,Trilobellia,Anaxi,Acacia
+Osiris,So----,Bi++++|Deadwood Tree,Coconut Palm,Windriver Palm,Bramble Hedge,Cinnar
+Osiris,Sp++++,Bi++++|Anaxi,Deadwood Tree,Kotukutuku,Summer Maple,Windriver Palm
+Osiris,To----,Bi++++|Dikbas Youth,Oleaceae,Oranje,Beetlenut,Cerulean Blue
+Osiris,Sa++++,Bi----|Cricklewood,Cinnar,Butterleaf Tree,Pratyeka Tree,Mini Palmetto
+Osiris,Sa----,Bi----|Broadleaf Palm,Acacia Sapling,Dikbas Sapling,Parrotia,Hawthorn
+Osiris,So++++,Bi----|Butterleaf Tree,Dikbas Sapling,Stout Palm,Razor Palm,Autumn Bloodbark
+Osiris,So----,Bi----|Cinnar,Tapacae Miralis,Monkey Palm,Broadleaf Palm,Pratyeka Tree
+Osiris,Sp++++,Bi----|Broadleaf Palm,Locust Palm,Pratyeka Tree,Elephantia,Hawthorn
+Osiris,Sp----,Bi----|Peaches 'n Cream Maple,Sweet Pine,Stout Palm,Golden Hemlock,Peaches 'n Cream Youth
+Osiris,Sw++++,Bi----|Kotukutuku Youth,Locust Palm,Acacia Sapling,Hawthorn,Phoenix Palm
+Osiris,Sw----,Bi----|Powdered Quartz,Stout Palm,Butterleaf Tree,Cricklewood,Monkey Palm
+Osiris,To----,Bi----|Cricklewood,Butterleaf Tree,Cerulean Blue,Locust Palm,Cinnar
+Osiris,So----,Sa++++|Feather Tree Sapling,Pratyeka Tree,Cinnar,Katsura Sapling,Oranje
+Osiris,Sp++++,Sa++++|Jacaranda Sapling,Monterey Pine,Pratyeka Tree,Windriver Palm,Cinnar
+Osiris,Sp----,Sa++++|Powdered Almandine,Salts Of Zinc,Green Ash,Spindle Tree,Golden Hemlock
+Osiris,Sw----,Sa++++|Oleaceae,Mini Palmetto,Katsura Sapling,Powdered Emerald,Cricklewood
+Osiris,To----,Sa++++|Cinnar,Khaya Sapling,Golden Hemlock,Butterleaf Tree,Oleaceae
+Osiris,So++++,Sa----|Delta Palm,Dikbas Sapling,Giant Cricklewood,Kaeshra,Parrotia
+Osiris,So----,Sa----|Hawthorn,Tapacae Miralis,Orrorin,Ackee Sapling,Dikbas Youth
+Osiris,Sp++++,Sa----|Peaches 'n Cream Sapling,Kotukutuku,Jacaranda Youth,Broadleaf Palm,Hawthorn
+Osiris,Sp----,Sa----|Parrotia,Mimosa,Peaches 'n Cream Maple,Blaze Maple Sapling,Kaeshra
+Osiris,Sw++++,Sa----|Fern Palm,Kaeshra,Orrorin,Hawthorn,Spiked Fishtree
+Osiris,Sw----,Sa----|Bottle Tree,Monterey Pine Sapling,Royal Palm,Giant Cricklewood,Anaxi
+Osiris,To----,Sa----|River Birch Youth,Towering Palm,Arconis,Kaeshra,Salts Of Silver
+Osiris,Sp----,So++++|Peaches 'n Cream Maple,Dikbas,Safsaf Sapling,Stout Palm,Sweet Pine
+Osiris,Sw++++,So++++|Red Maple,Salts Of Lead,Safsaf Sapling,Dikbas,Parrotia
+Osiris,Sw----,So++++|Oleaceae,Stout Palm,Giant Cricklewood,Butterleaf Tree,Delta Palm
+Osiris,To----,So++++|Giant Cricklewood,Arconis,Butterleaf Tree,Towering Palm,Delta Palm
+Osiris,Sp++++,So----|Pratyeka Tree,Oil Palm,Deadwood Tree,Hawthorn,Windriver Palm
+Osiris,Sp----,So----|Mimosa,Summer Maple Youth,Salts Of Zinc,Spindle Tree,Feather Tree Sapling
+Osiris,Sw++++,So----|Summer Maple Sapling,Tiny Oil Palm,Hawthorn,Deadwood Tree,Spiked Fishtree
+Osiris,Sw----,So----|Bottle Tree,Coconut Palm,Monkey Palm,Feather Tree Sapling,Green Ash Youth
+Osiris,To++++,So----|Tiny Oil Palm,Summer Maple Youth,Tapacae Miralis,Green Ash Youth,Feather Tree Sapling
+Osiris,To----,So----|Cerulean Blue,Folded Birch,Dikbas Youth,Cinnar,Hawthorn
+Osiris,Sw----,Sp++++|Folded Birch,Kotukutuku,Mimosa Sapling,Monterey Pine,Chicory
+Osiris,To----,Sp++++|Folded Birch,Oil Palm,Japanese Cherry Sapling,Dikbas Youth,Hawthorn
+Osiris,Sw++++,Sp----|Spiked Fishtree,Bramble Hedge,Parrotia,Blaze Maple Sapling,Chakkanut Tree
+Osiris,Sw----,Sp----|Stout Palm,Royal Palm,Parrotia Youth,Bottle Tree,Mimosa
+Osiris,To----,Sp----|Safsaf Sapling,Montu Maple,Powdered Aquamarine,Peaches 'n Cream Youth,Mimosa
+Osiris,To----,Sw++++|Safsaf Sapling,Parrotia Sapling,Cerulean Blue,Khaya Youth,Oranje
+Osiris,To++++,Sw++++|Hokkaido,Tiny Oil Palm,Autumn Bloodbark,Kotukutuku Youth,Bramble Hedge
+Osiris,To++++,Sw----|Royal Palm,Green Ash Youth,Autumn Bloodbark Sapling,Autumn Bloodbark Youth,Stout Palm
+Osiris,To----,Sw----|Arconis,Folded Birch,Montu Maple,Oleaceae,Towering Palm
