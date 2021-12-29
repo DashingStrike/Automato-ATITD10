@@ -133,7 +133,7 @@ function makeRecipe(recipe, window)
 	waitForImage("extract/succeeded.png", 60000, status);
   srKeyEvent("autocompound\n");
   sleepWithStatus(2000, "Refreshing Lab Window: Allowing compound creation latency to settle");
-  clickAllText("Chemistry Lab");s
+  clickAllText("Chemistry Lab");
   sleepWithStatus(500, status);
   t = waitForText("Take...", nil, status);
   safeClick(t[0]+10, t[1]+5);
