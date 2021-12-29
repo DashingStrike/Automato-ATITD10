@@ -209,7 +209,7 @@ end
 -------------------------------------------------------------------------------
 -- drawWater(skipTimer)
 --
--- Attempts to draw water from an aqueduct, rain barrel, or pond.
+-- Attempts to draw water from an aqueduct, storage barrel, or pond.
 --
 -- Use drawWater(1) to avoid the 3500 sleepWithStatus message 'Waiting for water pickup animation...'
 -- Use drawWater() to wait for animation to finish, before continuing
@@ -220,13 +220,13 @@ function drawWater(skipTimer)
   local result = false;
   srReadScreen();
 
-  -- First, check for rain barrel
-  local rain = findText("Storage Barrel")
-  if rain then
+  -- First, check for storage barrel
+  local barrel = findText("Storage Barrel")
+  if barrel then
     sleepWithStatus(200, "Refreshing barrel...", nil, 0.7);
-    safeClick(rain[0], rain[1]);
+    safeClick(barrel[0], barrel[1]);
     srReadScreen();
-    local fill = findText("Draw water");
+    local fill = findText("Draw Water");
       if fill then
         sleepWithStatus(200, "Refilling water...", nil, 0.7);
         safeClick(fill[0] + 5, fill[1]);
