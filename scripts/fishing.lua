@@ -656,9 +656,6 @@ function doit()
             findchat();
             lastLineFound = lastLineParse; -- Record last line before casting
             lastLineFound2 = lastLineParse2; -- Record next to last line before casting
-              if AutoFillet then
-                filletFish();  -- Search for "All Fish" pinned up. If so, fillet.
-              end
             safeClick(cast[0]+3,cast[1]+3);
             lsSleep(200);
             srReadScreen();
@@ -848,6 +845,10 @@ function doit()
             error("Finished up, per your request!");
         end
         gui_refresh();
+        if AutoFillet then
+          filletFish();  -- Search for "All Fish" pinned up. If so, fillet.
+          lsSleep(400); -- Required to avoid constant "already fishing" spam.
+        end
     end
 end
 
