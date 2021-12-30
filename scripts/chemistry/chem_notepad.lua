@@ -2,7 +2,7 @@
 dofile("common.inc");
 
 function doit()
-  local tree = loadNotes("scripts/chem-cheap.txt");
+  local tree = loadNotes("scripts/chemistry/chem-cheap.txt");
   browseMenu(tree);
 end
 
