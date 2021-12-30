@@ -87,17 +87,15 @@ actions = {
                  "Fish Oil", "Wood"},
     matCounts = {1, 1, 5, 5}
   },
-    --[[
-    {
-      label = "Geb's Tears",
-      buttonPos = makePoint(30, 250);
-      stoked = false,
-      menuImage = "kettle/gebs_tears.png",
-      output = 1,
-      matLabels = {"Flower Bulbs", "Water", "Wood"},
-      matCounts = {30, 20, 20}
-    }
-  ]]
+  {
+    label = "Geb's Tears",
+    buttonPos = makePoint(30, 250);
+    stoked = false,
+    menuImage = "kettle/gebs_tears.png",
+    output = 1,
+    matLabels = {"Flower Bulbs", "Water", "Wood"},
+    matCounts = {30, 20, 20}
+  }
 };
 
 function runKettles(num_loops, action)
