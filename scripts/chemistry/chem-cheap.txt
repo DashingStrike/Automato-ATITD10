@@ -333,7 +333,7 @@ Osiris,So++++,Sw----|Oleaceae,Stout Palm,Giant Cricklewood,Butterleaf Tree,Delta
 Osiris,So++++,To----|Giant Cricklewood,Arconis,Butterleaf Tree,Towering Palm,Delta Palm
 Osiris,So----,Sp++++|Pratyeka Tree,Oil Palm,Deadwood Tree,Hawthorn,Windriver Palm
 Osiris,So----,Sp----|Mimosa,Summer Maple Youth,Salts Of Zinc,Spindle Tree,Feather Tree Sapling
-Osiris,So----,Sw++++|Summer Maple Sapling,Tiny Oil Palm,Hawthorn,Deadwood Tree,Spiked Fishtree
+Osiris,So----,Sw++++|Summer Maple Sapling,Khaya Youth,Orrorin,Acacia Sapling,Cinnar
 Osiris,So----,Sw----|Bottle Tree,Coconut Palm,Monkey Palm,Feather Tree Sapling,Green Ash Youth
 Osiris,So----,To++++|Tiny Oil Palm,Summer Maple Youth,Tapacae Miralis,Green Ash Youth,Feather Tree Sapling
 Osiris,So----,To----|Cerulean Blue,Folded Birch,Dikbas Youth,Cinnar,Hawthorn
@@ -346,6 +346,50 @@ Osiris,Sw++++,To----|Safsaf Sapling,Parrotia Sapling,Cerulean Blue,Khaya Youth,O
 Osiris,Sw++++,To++++|Hokkaido,Tiny Oil Palm,Autumn Bloodbark,Kotukutuku Youth,Bramble Hedge
 Osiris,Sw----,To++++|Royal Palm,Green Ash Youth,Autumn Bloodbark Sapling,Autumn Bloodbark Youth,Stout Palm
 Osiris,Sw----,To----|Arconis,Folded Birch,Montu Maple,Oleaceae,Towering Palm
+Osiris,As----,Ar++++|Khaya Youth,Deadwood Tree,Feather Tree,Illawara,Peaches 'n Cream Maple
+Osiris,Bi++++,Ar++++|Katsura Youth,Mimosa,Deadwood Tree,Dikbas Youth,Oleaceae
+Osiris,Bi----,Ar++++|Peaches 'n Cream Maple,Peaches 'n Cream Youth,Peaches 'n Cream Sapling,White Pine Sapling,Butterleaf Tree
+Osiris,Sa----,Ar++++|White Pine Sapling,Peaches 'n Cream Maple,Powdered Ruby,Salts Of Cobalt,Parrotia
+Osiris,So----,Ar++++|Acacia Youth,Deadwood Tree,White Pine Sapling,Khaya Youth,Cerulean Blue
+Osiris,Sp----,Ar++++|Mimosa,Peaches 'n Cream Maple,Monterey Pine Middle Age,Chicory,Parrotia
+Osiris,Sw----,Ar++++|Chicory,Peaches 'n Cream Maple,Powdered Ruby,Powdered Quartz,Folded Birch
+Osiris,To----,Ar++++|Dikbas Youth,White Pine Sapling,Peaches 'n Cream Youth,Peaches 'n Cream Sapling,Razor Palm
+Osiris,As++++,Ar----|Elephantia,Ackee,Parrotia,Ash Palm,Powdered Diamond
+Osiris,As----,Ar----|Silky Oak,Summer Maple,Fern Palm,Ackee Youth,Autumn Bloodbark
+Osiris,Bi++++,Ar----|Bramble Hedge,Trilobellia,Summer Maple,Anaxi,Fern Palm
+Osiris,Bi----,Ar----|Elephantia,Dikbas,Ash Palm,Miniature Fern Palm,Razor Palm
+Osiris,Sa++++,Ar----|River Birch Sapling,Khaya Sapling,Powdered Topaz,Silky Oak,Powdered Jade
+Osiris,Sa----,Ar----|Bramble Hedge,Hawthorn,Kaeshra,Kotukutuku,Ash Palm
+Osiris,So++++,Ar----|Razor Palm,Dikbas,Autumn Bloodbark,Khaya Sapling,Trilobellia
+Osiris,So----,Ar----|Ash Palm,Tiny Oil Palm,Summer Maple Sapling,Monkey Palm,Silky Oak
+Osiris,Sp++++,Ar----|Kotukutuku,Summer Maple,Dikbas,Jacaranda,Pratyeka Tree
+Osiris,Sp----,Ar----|Tiny Oil Palm,Bramble Hedge,Autumn Bloodbark Sapling,Safsaf Sapling,Sweet Pine
+Osiris,Sw++++,Ar----|Bramble Hedge,River Birch Sapling,Tiny Oil Palm,Hawthorn,Fern Palm
+Osiris,Sw----,Ar----|Trilobellia,Bottle Tree,Autumn Bloodbark Sapling,Summer Maple,Mimosa Youth
+Osiris,To++++,Ar----|Tiny Oil Palm,Autumn Bloodbark Sapling,Autumn Bloodbark,Ash Palm,Stout Palm
+Osiris,To----,Ar----|Khaya Sapling,Towering Palm,Ash Palm,Silky Oak,Cerulean Blue
+Osiris,Bi++++,As++++|Beetlenut,Bottle Tree,Japanese Cherry Youth,Kotukutuku Sapling,Oranje
+Osiris,Bi----,As++++|Parrotia,Elephantia,Cricklewood,Delta Palm,Broadleaf Palm
+Osiris,Sa----,As++++|Bottle Tree,Parrotia,Orrorin,Delta Palm,Chicory
+Osiris,So++++,As++++|Delta Palm,Dikbas Sapling,Cricklewood,Katsura Tree,Giant Cricklewood
+Osiris,So----,As++++|Ackee Sapling,Parrotia,Monkey Palm,Powdered Diamond,Hawthorn
+Osiris,Sp++++,As++++|Kotukutuku,Ackee,Bloodbark,Elephantia,Young Golden Hemlock
+Osiris,Sp----,As++++|Bottle Tree,Mimosa,Blaze Maple Sapling,Stout Palm,Parrotia
+Osiris,Sw++++,As++++|Parrotia,Blaze Maple Sapling,Delta Palm,Acacia Sapling,Hawthorn
+Osiris,Sw----,As++++|Bottle Tree,Bloodbark,Royal Palm,Montu Maple,Spindle Tree
+Osiris,To----,As++++|Montu Maple,Katsura Tree,Towering Palm,Cricklewood,Bottle Tree
+Osiris,Bi++++,As----|Anaxi,Coconut Palm,Windriver Palm,Illawara,Fern Palm
+Osiris,Bi----,As----|Locust Palm,Pratyeka Tree,Feather Tree,Razor Palm,Silky Oak
+Osiris,Sa++++,As----|Pratyeka Tree,Khaya Youth,Feather Tree Sapling,Green Ash,Cinnar
+Osiris,Sa----,As----|Anaxi,Fern Palm,Kaeshra,Autumn Bloodbark,Jacaranda Youth
+Osiris,So----,As----|Coconut Palm,Summer Maple Youth,Hawthorn,Khaya Youth,Pratyeka Tree
+Osiris,Sp++++,As----|Pratyeka Tree,Locust Palm,Windriver Palm,Autumn Bloodbark,Feather Tree
+Osiris,Sp----,As----|Green Ash,Chakkanut Tree,Powdered Kunzite,Coconut Palm,Peaches 'n Cream Maple
+Osiris,Sw++++,As----|Fern Palm,Khaya Youth,Tiny Oil Palm,Chakkanut Tree,Hokkaido
+Osiris,Sw----,As----|Parrotia Sapling,Chakkanut Tree,Fern Palm,Khaya Youth,Hawthorn
+Osiris,To++++,As----|Summer Maple Youth,Blaze Maple Youth,Autumn Bloodbark,Tiny Oil Palm,Coconut Palm
+Osiris,To----,As----|Khaya Youth,Japanese Cherry Sapling,Cerulean Blue,Chakkanut Tree,Salts Of Platinum
+Osiris,Sa----,Bi++++|Anaxi,Bramble Hedge,Deadwood Tree,Kotukutuku,Hawthorn
 Osiris,Sw++++,Bi++++|Bramble Hedge,Hokkaido,Oranje,Anaxi,Hawthorn
 Osiris,Sw----,Bi++++|Giant Cricklewood,Bottle Tree,Coconut Palm,Oleaceae,Summer Maple
 Osiris,So++++,Bi++++|Giant Cricklewood,Oleaceae,Trilobellia,Anaxi,Acacia
@@ -379,7 +423,7 @@ Osiris,Sw----,So++++|Oleaceae,Stout Palm,Giant Cricklewood,Butterleaf Tree,Delta
 Osiris,To----,So++++|Giant Cricklewood,Arconis,Butterleaf Tree,Towering Palm,Delta Palm
 Osiris,Sp++++,So----|Pratyeka Tree,Oil Palm,Deadwood Tree,Hawthorn,Windriver Palm
 Osiris,Sp----,So----|Mimosa,Summer Maple Youth,Salts Of Zinc,Spindle Tree,Feather Tree Sapling
-Osiris,Sw++++,So----|Summer Maple Sapling,Tiny Oil Palm,Hawthorn,Deadwood Tree,Spiked Fishtree
+Osiris,Sw++++,So----|Summer Maple Sapling,Khaya Youth,Orrorin,Acacia Sapling,Cinnar
 Osiris,Sw----,So----|Bottle Tree,Coconut Palm,Monkey Palm,Feather Tree Sapling,Green Ash Youth
 Osiris,To++++,So----|Tiny Oil Palm,Summer Maple Youth,Tapacae Miralis,Green Ash Youth,Feather Tree Sapling
 Osiris,To----,So----|Cerulean Blue,Folded Birch,Dikbas Youth,Cinnar,Hawthorn
