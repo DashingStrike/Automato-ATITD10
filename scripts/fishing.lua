@@ -238,7 +238,14 @@ function UseLure()
     srClickMouseNoMove(lure[0]+12,lure[1]+5);
     lsSleep(200);
     srReadScreen();
-    clickText(waitForText("Select as preferred Fishing Lure", 500));
+    local deselect = findText("Deselect as preferred Fishing Lure");
+      if deselect then
+        local escape = "\27"
+        srKeyEvent(escape) -- Hit ESC to close out possible pinned menu.
+      else
+        local t = waitForText("Select as preferred Fishing Lure", 500)
+        clickText(t);
+      end
     lsSleep(200);
   end
 end
