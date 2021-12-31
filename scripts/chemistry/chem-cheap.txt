@@ -43,7 +43,6 @@ Thoth,As++++,Sa----,To----|Delta Palm,Montu Maple,Umbrella Palm,Young Golden Hem
 Thoth,As----,Bi++++,So----|Coconut Palm,Illawara,Deadwood Tree,Fern Palm,Parrotia Sapling
 Thoth,As----,Bi----,Sp++++|Feather Tree,Locust Palm,Pratyeka Tree,Monterey Pine,Dwarf Safsaf
 Thoth,As----,Sa++++,So----|Katsura Sapling,Feather Tree Sapling,Powdered Topaz,Cinnar,Coconut Palm
-Thoth,As----,Sa----,Sp++++|Hawthorn,Jacaranda,Locust Palm,Monterey Pine Sapling,Salts Of Gold
 Thoth,As----,So----,To++++|Blaze Maple Youth,Summer Maple Youth,Salts Of Gold,Tiny Oil Palm,Feather Tree Sapling
 Thoth,Bi----,Sa++++,Sp++++|Monterey Pine,Passam,Pratyeka Tree,Locust Palm,Cinnar
 Thoth,Bi----,Sa++++,To----|Butterleaf Tree,Cinnar,Cricklewood,Golden Hemlock,Khaya Sapling
@@ -83,7 +82,6 @@ Thoth,Sa----,To----,As++++|Delta Palm,Montu Maple,Umbrella Palm,Young Golden Hem
 Thoth,Bi++++,So----,As----|Coconut Palm,Illawara,Deadwood Tree,Fern Palm,Parrotia Sapling
 Thoth,Bi----,Sp++++,As----|Feather Tree,Locust Palm,Pratyeka Tree,Monterey Pine,Dwarf Safsaf
 Thoth,Sa++++,So----,As----|Katsura Sapling,Feather Tree Sapling,Powdered Topaz,Cinnar,Coconut Palm
-Thoth,Sa----,Sp++++,As----|Hawthorn,Jacaranda,Locust Palm,Monterey Pine Sapling,Salts Of Gold
 Thoth,So----,To++++,As----|Blaze Maple Youth,Summer Maple Youth,Salts Of Gold,Tiny Oil Palm,Feather Tree Sapling
 Thoth,Sa++++,Sp++++,Bi----|Monterey Pine,Passam,Pratyeka Tree,Locust Palm,Cinnar
 Thoth,Sa++++,To----,Bi----|Butterleaf Tree,Cinnar,Cricklewood,Golden Hemlock,Khaya Sapling
@@ -123,7 +121,6 @@ Thoth,To----,As++++,Sa----|Delta Palm,Montu Maple,Umbrella Palm,Young Golden Hem
 Thoth,So----,As----,Bi++++|Coconut Palm,Illawara,Deadwood Tree,Fern Palm,Parrotia Sapling
 Thoth,Sp++++,As----,Bi----|Feather Tree,Locust Palm,Pratyeka Tree,Monterey Pine,Dwarf Safsaf
 Thoth,So----,As----,Sa++++|Katsura Sapling,Feather Tree Sapling,Powdered Topaz,Cinnar,Coconut Palm
-Thoth,Sp++++,As----,Sa----|Hawthorn,Jacaranda,Locust Palm,Monterey Pine Sapling,Salts Of Gold
 Thoth,To++++,As----,So----|Blaze Maple Youth,Summer Maple Youth,Salts Of Gold,Tiny Oil Palm,Feather Tree Sapling
 Thoth,Sp++++,Bi----,Sa++++|Monterey Pine,Passam,Pratyeka Tree,Locust Palm,Cinnar
 Thoth,To----,Bi----,Sa++++|Butterleaf Tree,Cinnar,Cricklewood,Golden Hemlock,Khaya Sapling
@@ -163,7 +160,6 @@ Thoth,To----,Sa----,As++++|Delta Palm,Montu Maple,Umbrella Palm,Young Golden Hem
 Thoth,So----,Bi++++,As----|Coconut Palm,Illawara,Deadwood Tree,Fern Palm,Parrotia Sapling
 Thoth,Sp++++,Bi----,As----|Feather Tree,Locust Palm,Pratyeka Tree,Monterey Pine,Dwarf Safsaf
 Thoth,So----,Sa++++,As----|Katsura Sapling,Feather Tree Sapling,Powdered Topaz,Cinnar,Coconut Palm
-Thoth,Sp++++,Sa----,As----|Hawthorn,Jacaranda,Locust Palm,Monterey Pine Sapling,Salts Of Gold
 Thoth,To++++,So----,As----|Blaze Maple Youth,Summer Maple Youth,Salts Of Gold,Tiny Oil Palm,Feather Tree Sapling
 Thoth,Sp++++,Sa++++,Bi----|Monterey Pine,Passam,Pratyeka Tree,Locust Palm,Cinnar
 Thoth,To----,Sa++++,Bi----|Butterleaf Tree,Cinnar,Cricklewood,Golden Hemlock,Khaya Sapling
@@ -203,7 +199,6 @@ Thoth,Sa----,As++++,To----|Delta Palm,Montu Maple,Umbrella Palm,Young Golden Hem
 Thoth,Bi++++,As----,So----|Coconut Palm,Illawara,Deadwood Tree,Fern Palm,Parrotia Sapling
 Thoth,Bi----,As----,Sp++++|Feather Tree,Locust Palm,Pratyeka Tree,Monterey Pine,Dwarf Safsaf
 Thoth,Sa++++,As----,So----|Katsura Sapling,Feather Tree Sapling,Powdered Topaz,Cinnar,Coconut Palm
-Thoth,Sa----,As----,Sp++++|Hawthorn,Jacaranda,Locust Palm,Monterey Pine Sapling,Salts Of Gold
 Thoth,So----,As----,To++++|Blaze Maple Youth,Summer Maple Youth,Salts Of Gold,Tiny Oil Palm,Feather Tree Sapling
 Thoth,Sa++++,Bi----,Sp++++|Monterey Pine,Passam,Pratyeka Tree,Locust Palm,Cinnar
 Thoth,Sa++++,Bi----,To----|Butterleaf Tree,Cinnar,Cricklewood,Golden Hemlock,Khaya Sapling
@@ -243,7 +238,6 @@ Thoth,As++++,To----,Sa----|Delta Palm,Montu Maple,Umbrella Palm,Young Golden Hem
 Thoth,As----,So----,Bi++++|Coconut Palm,Illawara,Deadwood Tree,Fern Palm,Parrotia Sapling
 Thoth,As----,Sp++++,Bi----|Feather Tree,Locust Palm,Pratyeka Tree,Monterey Pine,Dwarf Safsaf
 Thoth,As----,So----,Sa++++|Katsura Sapling,Feather Tree Sapling,Powdered Topaz,Cinnar,Coconut Palm
-Thoth,As----,Sp++++,Sa----|Hawthorn,Jacaranda,Locust Palm,Monterey Pine Sapling,Salts Of Gold
 Thoth,As----,To++++,So----|Blaze Maple Youth,Summer Maple Youth,Salts Of Gold,Tiny Oil Palm,Feather Tree Sapling
 Thoth,Bi----,Sp++++,Sa++++|Monterey Pine,Passam,Pratyeka Tree,Locust Palm,Cinnar
 Thoth,Bi----,To----,Sa++++|Butterleaf Tree,Cinnar,Cricklewood,Golden Hemlock,Khaya Sapling
@@ -466,7 +460,7 @@ Geb,To++,Ar--|Ash Palm,Coconut Palm,Bottle Tree,Tiny Oil Palm,Stout Palm
 Geb,To--,Ar--|Butterleaf Tree,Bottle Tree,Coconut Palm,Towering Palm,Umbrella Palm
 Geb,Bi++,As++|Bottle Tree,Oleaceae,Towering Palm,Spindle Tree,Royal Palm
 Geb,Bi--,As++|Bottle Tree,Butterleaf Tree,Broadleaf Palm,Spindle Tree,Stout Palm
-Geb,Sa++,As++|Cinnar,Hokkaido,Spindle Tree,Cricklewood,Oleaceae
+Geb,Sa++,As++|Cinnar,Chicory,Spindle Tree,Cricklewood,Oleaceae
 Geb,Sa--,As++|Bottle Tree,Coconut Palm,Umbrella Palm,Folded Birch,Delta Palm
 Geb,So++,As++|Arconis,Butterleaf Tree,Bottle Tree,Delta Palm,Folded Birch
 Geb,So--,As++|Bottle Tree,Cinnar,Cricklewood,Cerulean Blue,Folded Birch
@@ -496,7 +490,7 @@ Geb,Sp++,Bi++|Anaxi,Cerulean Blue,Coconut Palm,Folded Birch,Oil Palm
 Geb,Sp--,Bi++|Bottle Tree,Spindle Tree,Oleaceae,Orrorin,Cerulean Blue
 Geb,Sw++,Bi++|Cerulean Blue,Beetlenut,Hokkaido,Orrorin,Folded Birch
 Geb,Sw--,Bi++|Bottle Tree,Coconut Palm,Cerulean Blue,Arconis,Spindle Tree
-Geb,To++,Bi++|Tiny Oil Palm,Hokkaido,Coconut Palm,Delta Palm,Orrorin
+Geb,To++,Bi++|Tiny Oil Palm,Hokkaido,Coconut Palm,Bramble Hedge,Orrorin
 Geb,To--,Bi++|Bottle Tree,Arconis,Beetlenut,Anaxi,Cerulean Blue
 Geb,Sa++,Bi--|Butterleaf Tree,Cricklewood,Razor Palm,Spindle Tree,Pratyeka Tree
 Geb,Sa--,Bi--|Bottle Tree,Broadleaf Palm,Butterleaf Tree,Locust Palm,Phoenix Palm
@@ -541,7 +535,7 @@ Geb,Sw--,Sp++|Folded Birch,Umbrella Palm,Pratyeka Tree,Royal Palm,Monkey Palm
 Geb,To++,Sp++|Tiny Oil Palm,Pratyeka Tree,Windriver Palm,Hokkaido,Phoenix Palm
 Geb,To--,Sp++|Arconis,Broadleaf Palm,Cerulean Blue,Chicory,Pratyeka Tree
 Geb,Sw++,Sp--|Cerulean Blue,Beetlenut,Orrorin,Spindle Tree,Tiny Oil Palm
-Geb,Sw--,Sp--|Bottle Tree,Beetlenut,Butterleaf Tree,Phoenix Palm,Spindle Tree
+Geb,Sw--,Sp--|Bottle Tree,Beetlenut,Butterleaf Tree,Stout Palm,Spindle Tree
 Geb,To++,Sp--|Ash Palm,Spindle Tree,Tiny Oil Palm,Stout Palm,Monkey Palm
 Geb,To--,Sp--|Cerulean Blue,Cinnar,Cricklewood,Spindle Tree,Stout Palm
 Geb,To++,Sw++|Coconut Palm,Hokkaido,Tiny Oil Palm,Tapacae Miralis,Razor Palm
@@ -578,7 +572,7 @@ Geb,Ar--,To++|Ash Palm,Coconut Palm,Bottle Tree,Tiny Oil Palm,Stout Palm
 Geb,Ar--,To--|Butterleaf Tree,Bottle Tree,Coconut Palm,Towering Palm,Umbrella Palm
 Geb,As++,Bi++|Bottle Tree,Oleaceae,Towering Palm,Spindle Tree,Royal Palm
 Geb,As++,Bi--|Bottle Tree,Butterleaf Tree,Broadleaf Palm,Spindle Tree,Stout Palm
-Geb,As++,Sa++|Cinnar,Hokkaido,Spindle Tree,Cricklewood,Oleaceae
+Geb,As++,Sa++|Cinnar,Chicory,Spindle Tree,Cricklewood,Oleaceae
 Geb,As++,Sa--|Bottle Tree,Coconut Palm,Umbrella Palm,Folded Birch,Delta Palm
 Geb,As++,So++|Arconis,Butterleaf Tree,Bottle Tree,Delta Palm,Folded Birch
 Geb,As++,So--|Bottle Tree,Cinnar,Cricklewood,Cerulean Blue,Folded Birch
@@ -608,7 +602,7 @@ Geb,Bi++,Sp++|Anaxi,Cerulean Blue,Coconut Palm,Folded Birch,Oil Palm
 Geb,Bi++,Sp--|Bottle Tree,Spindle Tree,Oleaceae,Orrorin,Cerulean Blue
 Geb,Bi++,Sw++|Cerulean Blue,Beetlenut,Hokkaido,Orrorin,Folded Birch
 Geb,Bi++,Sw--|Bottle Tree,Coconut Palm,Cerulean Blue,Arconis,Spindle Tree
-Geb,Bi++,To++|Tiny Oil Palm,Hokkaido,Coconut Palm,Delta Palm,Orrorin
+Geb,Bi++,To++|Tiny Oil Palm,Hokkaido,Coconut Palm,Bramble Hedge,Orrorin
 Geb,Bi++,To--|Bottle Tree,Arconis,Beetlenut,Anaxi,Cerulean Blue
 Geb,Bi--,Sa++|Butterleaf Tree,Cricklewood,Razor Palm,Spindle Tree,Pratyeka Tree
 Geb,Bi--,Sa--|Bottle Tree,Broadleaf Palm,Butterleaf Tree,Locust Palm,Phoenix Palm
@@ -653,7 +647,7 @@ Geb,Sp++,Sw--|Folded Birch,Umbrella Palm,Pratyeka Tree,Royal Palm,Monkey Palm
 Geb,Sp++,To++|Tiny Oil Palm,Pratyeka Tree,Windriver Palm,Hokkaido,Phoenix Palm
 Geb,Sp++,To--|Arconis,Broadleaf Palm,Cerulean Blue,Chicory,Pratyeka Tree
 Geb,Sp--,Sw++|Cerulean Blue,Beetlenut,Orrorin,Spindle Tree,Tiny Oil Palm
-Geb,Sp--,Sw--|Bottle Tree,Beetlenut,Butterleaf Tree,Phoenix Palm,Spindle Tree
+Geb,Sp--,Sw--|Bottle Tree,Beetlenut,Butterleaf Tree,Stout Palm,Spindle Tree
 Geb,Sp--,To++|Ash Palm,Spindle Tree,Tiny Oil Palm,Stout Palm,Monkey Palm
 Geb,Sp--,To--|Cerulean Blue,Cinnar,Cricklewood,Spindle Tree,Stout Palm
 Geb,Sw++,To++|Coconut Palm,Hokkaido,Tiny Oil Palm,Tapacae Miralis,Razor Palm
