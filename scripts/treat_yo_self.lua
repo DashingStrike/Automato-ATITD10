@@ -708,8 +708,15 @@ function calcPos()
 
   if treat then
     if materials[materialIndex].building == "Chemical Bath" then
-      statsX = treat[0] + 104;
-      statsY = treat[1] + 126;
+      srReadScreen();
+      local tongUpgrade = findText("Upgrades");
+        if tongUpgrade then
+          statsX = treat[0] + 104;
+          statsY = treat[1] + 138;
+        else
+          statsX = treat[0] + 104;
+          statsY = treat[1] + 126;
+        end
     elseif materials[materialIndex].building == "Wood Treatment Tank" then
       statsX = treat[0] + 104;
       statsY = treat[1] + 96;
