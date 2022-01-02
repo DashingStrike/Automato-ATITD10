@@ -16,7 +16,7 @@ Ra,Sp+++++,Bi-----|Pratyeka Tree,Broadleaf Palm,Locust Palm,Elephantia,Monterey 
 Ra,Sp+++++,Sa-----|Hawthorn,Jacaranda,Kotukutuku,Young Golden Hemlock,Salts Of Silver
 Ra,Sw+++++,Sa-----|Hawthorn,Acacia Sapling,Blaze Maple Sapling,Salts Of Lead,Orrorin
 Ra,To-----,So+++++|Khaya Sapling,Safsaf Sapling,Powdered Sapphire,Arconis,Butterleaf Tree
-Thoth,Ar++++,As----,So----|Illawara,Khaya Youth,Deadwood Tree,Jacaranda,Katsura Youth
+Thoth,Ar++++,As----,So----|Illawara,Khaya Youth,Deadwood Tree,Feather Tree,Katsura Youth
 Thoth,Ar++++,Bi++++,So----|Deadwood Tree,Dikbas Youth,Illawara,Katsura Youth,Folded Birch
 Thoth,Ar++++,Bi----,Sa----|Peaches 'n Cream Maple,White Pine Sapling,Powdered Ruby,Salts Of Cobalt,Broadleaf Palm
 Thoth,Ar++++,Bi----,To----|Peaches 'n Cream Maple,Peaches 'n Cream Sapling,Peaches 'n Cream Youth,Salts Of Platinum,White Pine Sapling
@@ -55,7 +55,7 @@ Thoth,Sa----,Sp----,Sw++++|Parrotia,Blaze Maple Sapling,White Pine,Bramble Hedge
 Thoth,Sa----,Sw++++,To----|Powdered Morganite,Salts Of Cobalt,Hawthorn,Salts Of Platinum,Dikbas Youth
 Thoth,So++++,Sw----,To----|Arconis,Giant Cricklewood,Powdered Sapphire,Butterleaf Tree,Mimosa Youth
 Thoth,So----,Sw++++,To----|Cerulean Blue,Khaya Youth,Parrotia Sapling,Summer Maple Sapling,Salts Of Platinum
-Thoth,As----,So----,Ar++++|Illawara,Khaya Youth,Deadwood Tree,Jacaranda,Katsura Youth
+Thoth,As----,So----,Ar++++|Illawara,Khaya Youth,Deadwood Tree,Feather Tree,Katsura Youth
 Thoth,Bi++++,So----,Ar++++|Deadwood Tree,Dikbas Youth,Illawara,Katsura Youth,Folded Birch
 Thoth,Bi----,Sa----,Ar++++|Peaches 'n Cream Maple,White Pine Sapling,Powdered Ruby,Salts Of Cobalt,Broadleaf Palm
 Thoth,Bi----,To----,Ar++++|Peaches 'n Cream Maple,Peaches 'n Cream Sapling,Peaches 'n Cream Youth,Salts Of Platinum,White Pine Sapling
@@ -94,7 +94,7 @@ Thoth,Sp----,Sw++++,Sa----|Parrotia,Blaze Maple Sapling,White Pine,Bramble Hedge
 Thoth,Sw++++,To----,Sa----|Powdered Morganite,Salts Of Cobalt,Hawthorn,Salts Of Platinum,Dikbas Youth
 Thoth,Sw----,To----,So++++|Arconis,Giant Cricklewood,Powdered Sapphire,Butterleaf Tree,Mimosa Youth
 Thoth,Sw++++,To----,So----|Cerulean Blue,Khaya Youth,Parrotia Sapling,Summer Maple Sapling,Salts Of Platinum
-Thoth,So----,Ar++++,As----|Illawara,Khaya Youth,Deadwood Tree,Jacaranda,Katsura Youth
+Thoth,So----,Ar++++,As----|Illawara,Khaya Youth,Deadwood Tree,Feather Tree,Katsura Youth
 Thoth,So----,Ar++++,Bi++++|Deadwood Tree,Dikbas Youth,Illawara,Katsura Youth,Folded Birch
 Thoth,Sa----,Ar++++,Bi----|Peaches 'n Cream Maple,White Pine Sapling,Powdered Ruby,Salts Of Cobalt,Broadleaf Palm
 Thoth,To----,Ar++++,Bi----|Peaches 'n Cream Maple,Peaches 'n Cream Sapling,Peaches 'n Cream Youth,Salts Of Platinum,White Pine Sapling
@@ -133,7 +133,7 @@ Thoth,Sw++++,Sa----,Sp----|Parrotia,Blaze Maple Sapling,White Pine,Bramble Hedge
 Thoth,To----,Sa----,Sw++++|Powdered Morganite,Salts Of Cobalt,Hawthorn,Salts Of Platinum,Dikbas Youth
 Thoth,To----,So++++,Sw----|Arconis,Giant Cricklewood,Powdered Sapphire,Butterleaf Tree,Mimosa Youth
 Thoth,To----,So----,Sw++++|Cerulean Blue,Khaya Youth,Parrotia Sapling,Summer Maple Sapling,Salts Of Platinum
-Thoth,So----,As----,Ar++++|Illawara,Khaya Youth,Deadwood Tree,Jacaranda,Katsura Youth
+Thoth,So----,As----,Ar++++|Illawara,Khaya Youth,Deadwood Tree,Feather Tree,Katsura Youth
 Thoth,So----,Bi++++,Ar++++|Deadwood Tree,Dikbas Youth,Illawara,Katsura Youth,Folded Birch
 Thoth,Sa----,Bi----,Ar++++|Peaches 'n Cream Maple,White Pine Sapling,Powdered Ruby,Salts Of Cobalt,Broadleaf Palm
 Thoth,To----,Bi----,Ar++++|Peaches 'n Cream Maple,Peaches 'n Cream Sapling,Peaches 'n Cream Youth,Salts Of Platinum,White Pine Sapling
@@ -172,7 +172,7 @@ Thoth,Sw++++,Sp----,Sa----|Parrotia,Blaze Maple Sapling,White Pine,Bramble Hedge
 Thoth,To----,Sw++++,Sa----|Powdered Morganite,Salts Of Cobalt,Hawthorn,Salts Of Platinum,Dikbas Youth
 Thoth,To----,Sw----,So++++|Arconis,Giant Cricklewood,Powdered Sapphire,Butterleaf Tree,Mimosa Youth
 Thoth,To----,Sw++++,So----|Cerulean Blue,Khaya Youth,Parrotia Sapling,Summer Maple Sapling,Salts Of Platinum
-Thoth,As----,Ar++++,So----|Illawara,Khaya Youth,Deadwood Tree,Jacaranda,Katsura Youth
+Thoth,As----,Ar++++,So----|Illawara,Khaya Youth,Deadwood Tree,Feather Tree,Katsura Youth
 Thoth,Bi++++,Ar++++,So----|Deadwood Tree,Dikbas Youth,Illawara,Katsura Youth,Folded Birch
 Thoth,Bi----,Ar++++,Sa----|Peaches 'n Cream Maple,White Pine Sapling,Powdered Ruby,Salts Of Cobalt,Broadleaf Palm
 Thoth,Bi----,Ar++++,To----|Peaches 'n Cream Maple,Peaches 'n Cream Sapling,Peaches 'n Cream Youth,Salts Of Platinum,White Pine Sapling
@@ -211,7 +211,7 @@ Thoth,Sp----,Sa----,Sw++++|Parrotia,Blaze Maple Sapling,White Pine,Bramble Hedge
 Thoth,Sw++++,Sa----,To----|Powdered Morganite,Salts Of Cobalt,Hawthorn,Salts Of Platinum,Dikbas Youth
 Thoth,Sw----,So++++,To----|Arconis,Giant Cricklewood,Powdered Sapphire,Butterleaf Tree,Mimosa Youth
 Thoth,Sw++++,So----,To----|Cerulean Blue,Khaya Youth,Parrotia Sapling,Summer Maple Sapling,Salts Of Platinum
-Thoth,Ar++++,So----,As----|Illawara,Khaya Youth,Deadwood Tree,Jacaranda,Katsura Youth
+Thoth,Ar++++,So----,As----|Illawara,Khaya Youth,Deadwood Tree,Feather Tree,Katsura Youth
 Thoth,Ar++++,So----,Bi++++|Deadwood Tree,Dikbas Youth,Illawara,Katsura Youth,Folded Birch
 Thoth,Ar++++,Sa----,Bi----|Peaches 'n Cream Maple,White Pine Sapling,Powdered Ruby,Salts Of Cobalt,Broadleaf Palm
 Thoth,Ar++++,To----,Bi----|Peaches 'n Cream Maple,Peaches 'n Cream Sapling,Peaches 'n Cream Youth,Salts Of Platinum,White Pine Sapling
@@ -440,7 +440,7 @@ Geb,So++,Ar++|Chicory,Giant Cricklewood,Folded Birch,Delta Palm,Stout Palm
 Geb,So--,Ar++|Bottle Tree,Cinnar,Chicory,Royal Palm,Folded Birch
 Geb,Sp++,Ar++|Deadwood Tree,Delta Palm,Feather Tree,Folded Birch,Locust Palm
 Geb,Sp--,Ar++|Chicory,Deadwood Tree,Chakkanut Tree,Spindle Tree,Coconut Palm
-Geb,Sw++,Ar++|Delta Palm,Cinnar,Hokkaido,Cerulean Blue,Deadwood Tree
+Geb,Sw++,Ar++|Spiked Fishtree,Cricklewood,Deadwood Tree,Chicory,Oranje
 Geb,Sw--,Ar++|Bottle Tree,Folded Birch,Feather Tree,Delta Palm,Cinnar
 Geb,To++,Ar++|Chicory,Deadwood Tree,Hokkaido,Royal Palm,Tapacae Miralis
 Geb,To--,Ar++|Folded Birch,Locust Palm,Feather Tree,Delta Palm,Chicory
@@ -454,7 +454,7 @@ Geb,So++,Ar--|Cricklewood,Bottle Tree,Umbrella Palm,Towering Palm,Stout Palm
 Geb,So--,Ar--|Bottle Tree,Coconut Palm,Cerulean Blue,Tiny Oil Palm,Towering Palm
 Geb,Sp++,Ar--|Ash Palm,Arconis,Broadleaf Palm,Fern Palm,Locust Palm
 Geb,Sp--,Ar--|Cerulean Blue,Tiny Oil Palm,Spindle Tree,Stout Palm,Towering Palm
-Geb,Sw++,Ar--|Ash Palm,Cerulean Blue,Fern Palm,Hokkaido,Umbrella Palm
+Geb,Sw++,Ar++|Spiked Fishtree,Cinnar,Feather Tree,Oranje,Delta Palm
 Geb,Sw--,Ar--|Ash Palm,Butterleaf Tree,Broadleaf Palm,Bottle Tree,Towering Palm
 Geb,To++,Ar--|Ash Palm,Coconut Palm,Bottle Tree,Tiny Oil Palm,Stout Palm
 Geb,To--,Ar--|Butterleaf Tree,Bottle Tree,Coconut Palm,Towering Palm,Umbrella Palm
@@ -488,7 +488,7 @@ Geb,So++,Bi++|Bottle Tree,Anaxi,Arconis,Delta Palm,Oleaceae
 Geb,So--,Bi++|Bottle Tree,Coconut Palm,Anaxi,Cerulean Blue,Feather Tree
 Geb,Sp++,Bi++|Anaxi,Cerulean Blue,Coconut Palm,Folded Birch,Oil Palm
 Geb,Sp--,Bi++|Bottle Tree,Spindle Tree,Oleaceae,Orrorin,Cerulean Blue
-Geb,Sw++,Bi++|Cerulean Blue,Beetlenut,Hokkaido,Orrorin,Folded Birch
+Geb,Sw++,Bi++|Cerulean Blue,Beetlenut,Bramble Hedge,Orrorin,Coconut Palm
 Geb,Sw--,Bi++|Bottle Tree,Coconut Palm,Cerulean Blue,Arconis,Spindle Tree
 Geb,To++,Bi++|Tiny Oil Palm,Hokkaido,Coconut Palm,Bramble Hedge,Orrorin
 Geb,To--,Bi++|Bottle Tree,Arconis,Beetlenut,Anaxi,Cerulean Blue
@@ -552,7 +552,7 @@ Geb,Ar++,So++|Chicory,Giant Cricklewood,Folded Birch,Delta Palm,Stout Palm
 Geb,Ar++,So--|Bottle Tree,Cinnar,Chicory,Royal Palm,Folded Birch
 Geb,Ar++,Sp++|Deadwood Tree,Delta Palm,Feather Tree,Folded Birch,Locust Palm
 Geb,Ar++,Sp--|Chicory,Deadwood Tree,Chakkanut Tree,Spindle Tree,Coconut Palm
-Geb,Ar++,Sw++|Delta Palm,Cinnar,Hokkaido,Cerulean Blue,Deadwood Tree
+Geb,Ar++,Sw++|Spiked Fishtree,Cinnar,Feather Tree,Oranje,Delta Palm
 Geb,Ar++,Sw--|Bottle Tree,Folded Birch,Feather Tree,Delta Palm,Cinnar
 Geb,Ar++,To++|Chicory,Deadwood Tree,Hokkaido,Royal Palm,Tapacae Miralis
 Geb,Ar++,To--|Folded Birch,Locust Palm,Feather Tree,Delta Palm,Chicory
@@ -600,7 +600,7 @@ Geb,Bi++,So++|Bottle Tree,Anaxi,Arconis,Delta Palm,Oleaceae
 Geb,Bi++,So--|Bottle Tree,Coconut Palm,Anaxi,Cerulean Blue,Feather Tree
 Geb,Bi++,Sp++|Anaxi,Cerulean Blue,Coconut Palm,Folded Birch,Oil Palm
 Geb,Bi++,Sp--|Bottle Tree,Spindle Tree,Oleaceae,Orrorin,Cerulean Blue
-Geb,Bi++,Sw++|Cerulean Blue,Beetlenut,Hokkaido,Orrorin,Folded Birch
+Geb,Bi++,Sw++|Cerulean Blue,Beetlenut,Bramble Hedge,Orrorin,Coconut Palm
 Geb,Bi++,Sw--|Bottle Tree,Coconut Palm,Cerulean Blue,Arconis,Spindle Tree
 Geb,Bi++,To++|Tiny Oil Palm,Hokkaido,Coconut Palm,Bramble Hedge,Orrorin
 Geb,Bi++,To--|Bottle Tree,Arconis,Beetlenut,Anaxi,Cerulean Blue
