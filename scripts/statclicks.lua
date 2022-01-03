@@ -16,6 +16,7 @@ items = {
         --strength
         {"",
           "Coconuts",
+          "Wet Paper",
         },
         --end
         {"",
@@ -238,13 +239,13 @@ end
 function carve(item)
   srReadScreen();
   carveItem = findText(item);
-  if carveItem ~= nil then
+    if carveItem ~= nil then
       safeClick(carveItem[0]+5,carveItem[1]+3);
       lsSleep(per_tick);
       srReadScreen();
       closePopUp();
       lsSleep(per_tick);
-  end
+    end
 end
 
 function digHole()
@@ -253,7 +254,7 @@ function digHole()
   local consume = srFindImage("consume.png");
     if digdeeper ~= nil then
       if consume then
-          eatOnion();
+        eatOnion();
       end
       safeClick(digdeeper[0], digdeeper[1])
       lsSleep(per_tick);
@@ -571,13 +572,13 @@ end
 
 local function excavateBlocks()
     local window = findAllText("This is [a-z]+ Pyramid Block(Roll", nil, REGION + REGEX);
-    if window then
+      if window then
         for i = 1, #window do
-            unpinWindow(window[i]);
+          unpinWindow(window[i]);
         end
         lsSleep(50);
         srReadScreen();
-    end
+      end
     window = findText("This is [a-z]+ Tooth Limestone Bl", nil, REGION + REGEX);
     if window == nil then
         return;
@@ -614,6 +615,32 @@ function churnButter()
           srClickMouseNoMove(drain[0], drain[1]-25, 1);
         end
     end
+end
+
+function wetPaper()
+  drawWater();
+  srReadScreen();
+  local take = findText("Take...")
+    if take then
+      clickText(take);
+      clickText(waitForText("Everything"));
+    end
+
+  srReadScreen();
+  clickText(findText("This is [a-z]+ Certificate Press", nil, REGEX));
+  lsSleep(500);
+
+  sleepWithStatus(1750, "Adding Pulp to the Certificate Press.")
+  clickText(waitForText("Put Paper Pulp"));
+  closePopUp();
+
+  sleepWithStatus(1750, "Filling the Deckle with Water.")
+  clickText(waitForText("Fill the Deckle"));
+  closePopUp();
+
+  sleepWithStatus(1750, "Pressing Wet Paper.")
+  clickText(waitForText("Press the Plate"));
+  closePopUp();
 end
 
 function doTasks()
@@ -660,7 +687,7 @@ function doTasks()
                 elseif curTask == "Flint Hammer" then
                   carve(curTask);
                 elseif curTask == "Heavy Mallet" then
-                    carve(curTask);
+                  carve(curTask);
                 elseif curTask == "Wooden Peg" then
                   carve(curTask);
                 elseif curTask == "Wooden Pestle" then
@@ -707,6 +734,8 @@ function doTasks()
                   pyramidPush();
                 elseif curTask == "Tap Rods" then
                   tapRods();
+                elseif curTask == "Wet Paper" then
+                  wetPaper();
                 else
                   clickText(findText(textLookup[curTask]));
                 end
