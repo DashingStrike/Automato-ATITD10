@@ -430,6 +430,230 @@ Osiris,To----,Sw++++|Safsaf Sapling,Parrotia Sapling,Cerulean Blue,Khaya Youth,O
 Osiris,To++++,Sw++++|Hokkaido,Tiny Oil Palm,Autumn Bloodbark,Kotukutuku Youth,Bramble Hedge
 Osiris,To++++,Sw----|Royal Palm,Green Ash Youth,Autumn Bloodbark Sapling,Autumn Bloodbark Youth,Stout Palm
 Osiris,To----,Sw----|Arconis,Folded Birch,Montu Maple,Oleaceae,Towering Palm
+Maat,Ar+++,As+++|Parrotia,Delta Palm,Peaches 'n Cream Maple,Peaches 'n Cream Sapling,Bottle Tree
+Maat,Ar+++,As---|Feather Tree,Cerulean Blue,Chicory,Peaches 'n Cream Maple,Illawara
+Maat,Ar+++,Bi+++|Anaxi,Coconut Palm,Chicory,Dikbas Youth,Monterey Pine Middle Age
+Maat,Ar+++,Bi---|Acacia Sapling,Cinnar,Peaches 'n Cream Youth,Peaches 'n Cream Maple,Peaches 'n Cream Sapling
+Maat,Ar+++,Sa+++|Cinnar,Peaches 'n Cream Sapling,Peaches 'n Cream Youth,Monterey Pine Middle Age,Katsura Sapling
+Maat,Ar+++,Sa---|Anaxi,Chicory,Bottle Tree,Mimosa,Peaches 'n Cream Maple
+Maat,Ar+++,So+++|Arconis,Peaches 'n Cream Maple,Peaches 'n Cream Sapling,Stout Palm,Oranje
+Maat,Ar+++,So---|Anaxi,Cerulean Blue,Khaya Youth,Mimosa,Deadwood Tree
+Maat,Ar+++,Sp+++|Acacia Youth,Folded Birch,Pratyeka Tree,Peaches 'n Cream Sapling,Oil Palm
+Maat,Ar+++,Sp---|Acacia Youth,Blaze Maple Sapling,Feather Tree,Peaches 'n Cream Maple,Monterey Pine Middle Age
+Maat,Ar+++,Sw+++|Acacia Youth,Acacia Sapling,Blaze Maple Sapling,Peaches 'n Cream Sapling,Oranje
+Maat,Ar+++,Sw---|Acacia Youth,Arconis,Bottle Tree,Peaches 'n Cream Maple,Folded Birch
+Maat,Ar+++,To+++|Acacia Youth,Autumn Bloodbark,Green Ash Youth,Peaches 'n Cream Maple,Chicory
+Maat,Ar+++,To---|Acacia Youth,Arconis,Peaches 'n Cream Sapling,White Pine Youth,Cinnar
+Maat,Ar---,As+++|Ackee Sapling,Ackee,Ash Palm,Autumn Bloodbark Sapling,Umbrella Palm
+Maat,Ar---,As---|Autumn Bloodbark,Ash Palm,Autumn Bloodbark Sapling,Feather Tree Sapling,Coconut Palm
+Maat,Ar---,Bi+++|Anaxi,Autumn Bloodbark Sapling,Coconut Palm,Trilobellia,Umbrella Palm
+Maat,Ar---,Bi---|Anaxi,Tiny Oil Palm,Trilobellia,Ash Palm,Oranje
+Maat,Ar---,Sa+++|Autumn Bloodbark Sapling,Cinnar,Tiny Oil Palm,River Birch Sapling,Golden Hemlock
+Maat,Ar---,Sa---|Tapacae Miralis,Umbrella Palm,Hawthorn,Trilobellia,Towering Palm
+Maat,Ar---,So+++|Umbrella Palm,Trilobellia,Towering Palm,Stout Palm,Bottle Tree
+Maat,Ar---,So---|Ash Palm,Hawthorn,Monkey Palm,Tiny Oil Palm,Bottle Tree
+Maat,Ar---,Sp+++|Elephantia,Ash Palm,Hawthorn,Pratyeka Tree,Razor Palm
+Maat,Ar---,Sp---|Bramble Hedge,Tiny Oil Palm,Spindle Tree,Royal Palm,Umbrella Palm
+Maat,Ar---,Sw+++|Tiny Oil Palm,Umbrella Palm,Ash Palm,Spiked Fishtree,Orrorin
+Maat,Ar---,Sw---|Ash Palm,Oleaceae,Trilobellia,Towering Palm,Monkey Palm
+Maat,Ar---,To+++|Tiny Oil Palm,Bloodbark,Bramble Hedge,Phoenix Palm,Razor Palm
+Maat,Ar---,To---|Butterleaf Tree,Trilobellia,Towering Palm,Umbrella Palm,Cerulean Blue
+Maat,As+++,Bi+++|Bottle Tree,Oranje,Oleaceae,Umbrella Palm,Orrorin
+Maat,As+++,Bi---|Broadleaf Palm,Bottle Tree,Monkey Palm,Phoenix Palm,Elephantia
+Maat,As+++,Sa+++|Cinnar,Cricklewood,Spindle Tree,Oleaceae,Monkey Palm
+Maat,As+++,Sa---|Bottle Tree,Orrorin,Umbrella Palm,Folded Birch,Royal Palm
+Maat,As+++,So+++|Delta Palm,Umbrella Palm,Stout Palm,Trilobellia,Bottle Tree
+Maat,As+++,So---|Ash Palm,Bottle Tree,Cinnar,Spindle Tree,Parrotia
+Maat,As+++,Sp+++|Oil Palm,Delta Palm,Elephantia,Folded Birch,Umbrella Palm
+Maat,As+++,Sp---|Bottle Tree,Autumn Bloodbark Sapling,Blaze Maple Sapling,Acacia Sapling,Stout Palm
+Maat,As+++,Sw+++|Orrorin,Spiked Fishtree,Umbrella Palm,Delta Palm,Oranje
+Maat,As+++,Sw---|Bottle Tree,Monkey Palm,Umbrella Palm,Butterleaf Tree,Folded Birch
+Maat,As+++,To+++|Bloodbark,Tiny Oil Palm,Phoenix Palm,Royal Palm,Bottle Tree
+Maat,As+++,To---|Umbrella Palm,Towering Palm,Bottle Tree,Folded Birch,Monkey Palm
+Maat,As---,Bi+++|Cerulean Blue,Windriver Palm,Coconut Palm,Anaxi,Fern Palm
+Maat,As---,Bi---|Feather Tree,Razor Palm,Pratyeka Tree,Tapacae Miralis,Coconut Palm
+Maat,As---,Sa+++|Pratyeka Tree,Cinnar,Mini Palmetto,Feather Tree,Coconut Palm
+Maat,As---,Sa---|Fern Palm,Broadleaf Palm,Hawthorn,Feather Tree,Razor Palm
+Maat,As---,So+++|Feather Tree,Razor Palm,Trilobellia,Butterleaf Tree,Locust Palm
+Maat,As---,So---|Cerulean Blue,Pratyeka Tree,Tapacae Miralis,Coconut Palm,Locust Palm
+Maat,As---,Sp+++|Locust Palm,Pratyeka Tree,Coconut Palm,Fern Palm,Folded Birch
+Maat,As---,Sp---|Coconut Palm,Stout Palm,Sweet Pine,Chakkanut Tree,Autumn Bloodbark Sapling
+Maat,As---,Sw+++|Fern Palm,Locust Palm,Razor Palm,Oil Palm,Spiked Fishtree
+Maat,As---,Sw---|Ash Palm,Fern Palm,Cerulean Blue,Hokkaido,Locust Palm
+Maat,As---,To+++|Fern Palm,Summer Maple Youth,Stout Palm,Blaze Maple Youth,Tiny Oil Palm
+Maat,As---,To---|Cerulean Blue,Feather Tree,Arconis,Coconut Palm,Oleaceae
+Maat,Bi+++,Sa+++|Feather Tree Sapling,Oleaceae,Oranje,Trilobellia,Cinnar
+Maat,Bi+++,Sa---|Anaxi,Coconut Palm,Umbrella Palm,Royal Palm,Oranje
+Maat,Bi+++,So+++|Beetlenut,Anaxi,Delta Palm,Trilobellia,Stout Palm
+Maat,Bi+++,So---|Coconut Palm,Tiny Oil Palm,Windriver Palm,Monkey Palm,Oleaceae
+Maat,Bi+++,Sp+++|Oil Palm,Oleaceae,Oranje,Windriver Palm,Arconis
+Maat,Bi+++,Sp---|Chakkanut Tree,Bramble Hedge,Bottle Tree,Stout Palm,Coconut Palm
+Maat,Bi+++,Sw+++|Oranje,Fern Palm,Orrorin,Hawthorn,Anaxi
+Maat,Bi+++,Sw---|Bottle Tree,Towering Palm,Oleaceae,Royal Palm,Coconut Palm
+Maat,Bi+++,To+++|Tiny Oil Palm,Autumn Bloodbark Sapling,Bramble Hedge,Anaxi,Bottle Tree
+Maat,Bi+++,To---|Cerulean Blue,Bottle Tree,Towering Palm,Oranje,Anaxi
+Maat,Bi---,Sa+++|Pratyeka Tree,Mini Palmetto,Cinnar,Stout Palm,Razor Palm
+Maat,Bi---,Sa---|Broadleaf Palm,Tapacae Miralis,Umbrella Palm,Stout Palm,Royal Palm
+Maat,Bi---,So+++|Butterleaf Tree,Razor Palm,Umbrella Palm,Locust Palm,Arconis
+Maat,Bi---,So---|Ash Palm,Broadleaf Palm,Monkey Palm,Tapacae Miralis,Pratyeka Tree
+Maat,Bi---,Sp+++|Broadleaf Palm,Butterleaf Tree,Locust Palm,Pratyeka Tree,Umbrella Palm
+Maat,Bi---,Sp---|Ash Palm,Blaze Maple Sapling,Parrotia,Golden Hemlock,Stout Palm
+Maat,Bi---,Sw+++|Broadleaf Palm,Dikbas Sapling,Hawthorn,Spiked Fishtree,Cerulean Blue
+Maat,Bi---,Sw---|Butterleaf Tree,Broadleaf Palm,Stout Palm,Royal Palm,Folded Birch
+Maat,Bi---,To+++|Tapacae Miralis,Tiny Oil Palm,Phoenix Palm,Bloodbark,Feather Tree
+Maat,Bi---,To---|Arconis,Butterleaf Tree,Broadleaf Palm,Cerulean Blue,Monkey Palm
+Maat,Sa+++,So+++|Butterleaf Tree,Cricklewood,Mini Palmetto,Oleaceae,Razor Palm
+Maat,Sa+++,So---|Anaxi,Arconis,Dikbas,Giant Cricklewood,Royal Palm
+Maat,Sa+++,Sp+++|Pratyeka Tree,Windriver Palm,Oleaceae,Cinnar,Locust Palm
+Maat,Sa+++,Sp---|Cinnar,Spiked Fishtree,Peaches 'n Cream Youth,Golden Hemlock,Sweet Pine
+Maat,Sa+++,Sw+++|Cinnar,Tiny Oil Palm,River Birch Sapling,Spiked Fishtree,Razor Palm
+Maat,Sa+++,Sw---|Mini Palmetto,Stout Palm,Cinnar,Butterleaf Tree,Oleaceae
+Maat,Sa+++,To+++|Feather Tree Sapling,Tiny Oil Palm,Pratyeka Tree,Autumn Bloodbark,River Birch Sapling
+Maat,Sa+++,To---|Cinnar,Folded Birch,Pratyeka Tree,Oleaceae,Locust Palm
+Maat,Sa---,So+++|Umbrella Palm,Stout Palm,Anaxi,Arconis,Razor Palm
+Maat,Sa---,So---|Orrorin,Tapacae Miralis,Hawthorn,Coconut Palm,Anaxi
+Maat,Sa---,Sp+++|Broadleaf Palm,Anaxi,Arconis,Locust Palm,Phoenix Palm
+Maat,Sa---,Sp---|Parrotia,Monterey Pine Middle Age,Blaze Maple Sapling,Arconis,White Pine
+Maat,Sa---,Sw+++|Fern Palm,Orrorin,Hawthorn,Cerulean Blue,Anaxi
+Maat,Sa---,Sw---|Bottle Tree,Royal Palm,Umbrella Palm,Towering Palm,Coconut Palm
+Maat,Sa---,To+++|Bloodbark,Tiny Oil Palm,Royal Palm,Anaxi,Phoenix Palm
+Maat,Sa---,To---|Arconis,Cerulean Blue,Hawthorn,Orrorin,Folded Birch
+Maat,So+++,Sp+++|Arconis,Giant Cricklewood,Locust Palm,Pratyeka Tree,Trilobellia
+Maat,So+++,Sp---|Arconis,Parrotia,Peaches 'n Cream Maple,Autumn Bloodbark Sapling,Safsaf Sapling
+Maat,So+++,Sw+++|Autumn Bloodbark,Parrotia,Dikbas,Safsaf Sapling,Acacia Sapling
+Maat,So+++,Sw---|Arconis,Butterleaf Tree,Stout Palm,Towering Palm,Razor Palm
+Maat,So+++,To+++|Autumn Bloodbark,Autumn Bloodbark Sapling,Autumn Bloodbark Youth,Peaches 'n Cream Maple,Acacia
+Maat,So+++,To---|Butterleaf Tree,Towering Palm,Umbrella Palm,Arconis,Oleaceae
+Maat,So---,Sp+++|Broadleaf Palm,Cerulean Blue,Pratyeka Tree,Oil Palm,Folded Birch
+Maat,So---,Sp---|Ash Palm,Monkey Palm,Monterey Pine Middle Age,Parrotia,Mimosa
+Maat,So---,Sw+++|Cerulean Blue,Cinnar,Tiny Oil Palm,Hawthorn,Oranje
+Maat,So---,Sw---|Bottle Tree,Cinnar,Coconut Palm,Monkey Palm,Folded Birch
+Maat,So---,To+++|Tiny Oil Palm,Monkey Palm,Bloodbark,Tapacae Miralis,Phoenix Palm
+Maat,So---,To---|Cerulean Blue,Cinnar,Folded Birch,Monkey Palm,Razor Palm
+Maat,Sp+++,Sw+++|Broadleaf Palm,Cerulean Blue,Hawthorn,Oil Palm,Oranje
+Maat,Sp+++,Sw---|Chicory,Folded Birch,Pratyeka Tree,Locust Palm,Oleaceae
+Maat,Sp+++,To+++|Pratyeka Tree,Mimosa Sapling,Autumn Bloodbark,Autumn Bloodbark Sapling,Kotukutuku
+Maat,Sp+++,To---|Arconis,Broadleaf Palm,Cerulean Blue,Locust Palm,Oil Palm
+Maat,Sp---,Sw+++|Tiny Oil Palm,Spiked Fishtree,Chakkanut Tree,Bramble Hedge,Ash Palm
+Maat,Sp---,Sw---|Bottle Tree,Royal Palm,Stout Palm,Chakkanut Tree,Beetlenut
+Maat,Sp---,To+++|Tiny Oil Palm,Bramble Hedge,Stout Palm,Bloodbark,Sweet Pine
+Maat,Sp---,To---|Cerulean Blue,Chakkanut Tree,Spiked Fishtree,Towering Palm,Sweet Pine
+Maat,Sw+++,To+++|Autumn Bloodbark,Autumn Bloodbark Sapling,Tiny Oil Palm,Spiked Fishtree,Hawthorn
+Maat,Sw+++,To---|Cerulean Blue,Oranje,Spiked Fishtree,Hawthorn,Folded Birch
+Maat,Sw---,To+++|Bloodbark,Royal Palm,Stout Palm,Tiny Oil Palm,Coconut Palm
+Maat,Sw---,To---|Arconis,Bottle Tree,Cerulean Blue,Folded Birch,Feather Tree
+Maat,As+++,Ar+++|Parrotia,Delta Palm,Peaches 'n Cream Maple,Peaches 'n Cream Sapling,Bottle Tree
+Maat,As---,Ar+++|Feather Tree,Cerulean Blue,Chicory,Peaches 'n Cream Maple,Illawara
+Maat,Bi+++,Ar+++|Anaxi,Coconut Palm,Chicory,Dikbas Youth,Monterey Pine Middle Age
+Maat,Bi---,Ar+++|Acacia Sapling,Cinnar,Peaches 'n Cream Youth,Peaches 'n Cream Maple,Peaches 'n Cream Sapling
+Maat,Sa+++,Ar+++|Cinnar,Peaches 'n Cream Sapling,Peaches 'n Cream Youth,Monterey Pine Middle Age,Katsura Sapling
+Maat,Sa---,Ar+++|Anaxi,Chicory,Bottle Tree,Mimosa,Peaches 'n Cream Maple
+Maat,So+++,Ar+++|Arconis,Peaches 'n Cream Maple,Peaches 'n Cream Sapling,Stout Palm,Oranje
+Maat,So---,Ar+++|Anaxi,Cerulean Blue,Khaya Youth,Mimosa,Deadwood Tree
+Maat,Sp+++,Ar+++|Acacia Youth,Folded Birch,Pratyeka Tree,Peaches 'n Cream Sapling,Oil Palm
+Maat,Sp---,Ar+++|Acacia Youth,Blaze Maple Sapling,Feather Tree,Peaches 'n Cream Maple,Monterey Pine Middle Age
+Maat,Sw+++,Ar+++|Acacia Youth,Acacia Sapling,Blaze Maple Sapling,Peaches 'n Cream Sapling,Oranje
+Maat,Sw---,Ar+++|Acacia Youth,Arconis,Bottle Tree,Peaches 'n Cream Maple,Folded Birch
+Maat,To+++,Ar+++|Acacia Youth,Autumn Bloodbark,Green Ash Youth,Peaches 'n Cream Maple,Chicory
+Maat,To---,Ar+++|Acacia Youth,Arconis,Peaches 'n Cream Sapling,White Pine Youth,Cinnar
+Maat,As+++,Ar---|Ackee Sapling,Ackee,Ash Palm,Autumn Bloodbark Sapling,Umbrella Palm
+Maat,As---,Ar---|Autumn Bloodbark,Ash Palm,Autumn Bloodbark Sapling,Feather Tree Sapling,Coconut Palm
+Maat,Bi+++,Ar---|Anaxi,Autumn Bloodbark Sapling,Coconut Palm,Trilobellia,Umbrella Palm
+Maat,Bi---,Ar---|Anaxi,Tiny Oil Palm,Trilobellia,Ash Palm,Oranje
+Maat,Sa+++,Ar---|Autumn Bloodbark Sapling,Cinnar,Tiny Oil Palm,River Birch Sapling,Golden Hemlock
+Maat,Sa---,Ar---|Tapacae Miralis,Umbrella Palm,Hawthorn,Trilobellia,Towering Palm
+Maat,So+++,Ar---|Umbrella Palm,Trilobellia,Towering Palm,Stout Palm,Bottle Tree
+Maat,So---,Ar---|Ash Palm,Hawthorn,Monkey Palm,Tiny Oil Palm,Bottle Tree
+Maat,Sp+++,Ar---|Elephantia,Ash Palm,Hawthorn,Pratyeka Tree,Razor Palm
+Maat,Sp---,Ar---|Bramble Hedge,Tiny Oil Palm,Spindle Tree,Royal Palm,Umbrella Palm
+Maat,Sw+++,Ar---|Tiny Oil Palm,Umbrella Palm,Ash Palm,Spiked Fishtree,Orrorin
+Maat,Sw---,Ar---|Ash Palm,Oleaceae,Trilobellia,Towering Palm,Monkey Palm
+Maat,To+++,Ar---|Tiny Oil Palm,Bloodbark,Bramble Hedge,Phoenix Palm,Razor Palm
+Maat,To---,Ar---|Butterleaf Tree,Trilobellia,Towering Palm,Umbrella Palm,Cerulean Blue
+Maat,Bi+++,As+++|Bottle Tree,Oranje,Oleaceae,Umbrella Palm,Orrorin
+Maat,Bi---,As+++|Broadleaf Palm,Bottle Tree,Monkey Palm,Phoenix Palm,Elephantia
+Maat,Sa+++,As+++|Cinnar,Cricklewood,Spindle Tree,Oleaceae,Monkey Palm
+Maat,Sa---,As+++|Bottle Tree,Orrorin,Umbrella Palm,Folded Birch,Royal Palm
+Maat,So+++,As+++|Delta Palm,Umbrella Palm,Stout Palm,Trilobellia,Bottle Tree
+Maat,So---,As+++|Ash Palm,Bottle Tree,Cinnar,Spindle Tree,Parrotia
+Maat,Sp+++,As+++|Oil Palm,Delta Palm,Elephantia,Folded Birch,Umbrella Palm
+Maat,Sp---,As+++|Bottle Tree,Autumn Bloodbark Sapling,Blaze Maple Sapling,Acacia Sapling,Stout Palm
+Maat,Sw+++,As+++|Orrorin,Spiked Fishtree,Umbrella Palm,Delta Palm,Oranje
+Maat,Sw---,As+++|Bottle Tree,Monkey Palm,Umbrella Palm,Butterleaf Tree,Folded Birch
+Maat,To+++,As+++|Bloodbark,Tiny Oil Palm,Phoenix Palm,Royal Palm,Bottle Tree
+Maat,To---,As+++|Umbrella Palm,Towering Palm,Bottle Tree,Folded Birch,Monkey Palm
+Maat,Bi+++,As---|Cerulean Blue,Windriver Palm,Coconut Palm,Anaxi,Fern Palm
+Maat,Bi---,As---|Feather Tree,Razor Palm,Pratyeka Tree,Tapacae Miralis,Coconut Palm
+Maat,Sa+++,As---|Pratyeka Tree,Cinnar,Mini Palmetto,Feather Tree,Coconut Palm
+Maat,Sa---,As---|Fern Palm,Broadleaf Palm,Hawthorn,Feather Tree,Razor Palm
+Maat,So+++,As---|Feather Tree,Razor Palm,Trilobellia,Butterleaf Tree,Locust Palm
+Maat,So---,As---|Cerulean Blue,Pratyeka Tree,Tapacae Miralis,Coconut Palm,Locust Palm
+Maat,Sp+++,As---|Locust Palm,Pratyeka Tree,Coconut Palm,Fern Palm,Folded Birch
+Maat,Sp---,As---|Coconut Palm,Stout Palm,Sweet Pine,Chakkanut Tree,Autumn Bloodbark Sapling
+Maat,Sw+++,As---|Fern Palm,Locust Palm,Razor Palm,Oil Palm,Spiked Fishtree
+Maat,Sw---,As---|Ash Palm,Fern Palm,Cerulean Blue,Hokkaido,Locust Palm
+Maat,To+++,As---|Fern Palm,Summer Maple Youth,Stout Palm,Blaze Maple Youth,Tiny Oil Palm
+Maat,To---,As---|Cerulean Blue,Feather Tree,Arconis,Coconut Palm,Oleaceae
+Maat,Sa+++,Bi+++|Feather Tree Sapling,Oleaceae,Oranje,Trilobellia,Cinnar
+Maat,Sa---,Bi+++|Anaxi,Coconut Palm,Umbrella Palm,Royal Palm,Oranje
+Maat,So+++,Bi+++|Beetlenut,Anaxi,Delta Palm,Trilobellia,Stout Palm
+Maat,So---,Bi+++|Coconut Palm,Tiny Oil Palm,Windriver Palm,Monkey Palm,Oleaceae
+Maat,Sp+++,Bi+++|Oil Palm,Oleaceae,Oranje,Windriver Palm,Arconis
+Maat,Sp---,Bi+++|Chakkanut Tree,Bramble Hedge,Bottle Tree,Stout Palm,Coconut Palm
+Maat,Sw+++,Bi+++|Oranje,Fern Palm,Orrorin,Hawthorn,Anaxi
+Maat,Sw---,Bi+++|Bottle Tree,Towering Palm,Oleaceae,Royal Palm,Coconut Palm
+Maat,To+++,Bi+++|Tiny Oil Palm,Autumn Bloodbark Sapling,Bramble Hedge,Anaxi,Bottle Tree
+Maat,To---,Bi+++|Cerulean Blue,Bottle Tree,Towering Palm,Oranje,Anaxi
+Maat,Sa+++,Bi---|Pratyeka Tree,Mini Palmetto,Cinnar,Stout Palm,Razor Palm
+Maat,Sa---,Bi---|Broadleaf Palm,Tapacae Miralis,Umbrella Palm,Stout Palm,Royal Palm
+Maat,So+++,Bi---|Butterleaf Tree,Razor Palm,Umbrella Palm,Locust Palm,Arconis
+Maat,So---,Bi---|Ash Palm,Broadleaf Palm,Monkey Palm,Tapacae Miralis,Pratyeka Tree
+Maat,Sp+++,Bi---|Broadleaf Palm,Butterleaf Tree,Locust Palm,Pratyeka Tree,Umbrella Palm
+Maat,Sp---,Bi---|Ash Palm,Blaze Maple Sapling,Parrotia,Golden Hemlock,Stout Palm
+Maat,Sw+++,Bi---|Broadleaf Palm,Dikbas Sapling,Hawthorn,Spiked Fishtree,Cerulean Blue
+Maat,Sw---,Bi---|Butterleaf Tree,Broadleaf Palm,Stout Palm,Royal Palm,Folded Birch
+Maat,To+++,Bi---|Tapacae Miralis,Tiny Oil Palm,Phoenix Palm,Bloodbark,Feather Tree
+Maat,To---,Bi---|Arconis,Butterleaf Tree,Broadleaf Palm,Cerulean Blue,Monkey Palm
+Maat,So+++,Sa+++|Butterleaf Tree,Cricklewood,Mini Palmetto,Oleaceae,Razor Palm
+Maat,So---,Sa+++|Anaxi,Arconis,Dikbas,Giant Cricklewood,Royal Palm
+Maat,Sp+++,Sa+++|Pratyeka Tree,Windriver Palm,Oleaceae,Cinnar,Locust Palm
+Maat,Sp---,Sa+++|Cinnar,Spiked Fishtree,Peaches 'n Cream Youth,Golden Hemlock,Sweet Pine
+Maat,Sw+++,Sa+++|Cinnar,Tiny Oil Palm,River Birch Sapling,Spiked Fishtree,Razor Palm
+Maat,Sw---,Sa+++|Mini Palmetto,Stout Palm,Cinnar,Butterleaf Tree,Oleaceae
+Maat,To+++,Sa+++|Feather Tree Sapling,Tiny Oil Palm,Pratyeka Tree,Autumn Bloodbark,River Birch Sapling
+Maat,To---,Sa+++|Cinnar,Folded Birch,Pratyeka Tree,Oleaceae,Locust Palm
+Maat,So+++,Sa---|Umbrella Palm,Stout Palm,Anaxi,Arconis,Razor Palm
+Maat,So---,Sa---|Orrorin,Tapacae Miralis,Hawthorn,Coconut Palm,Anaxi
+Maat,Sp+++,Sa---|Broadleaf Palm,Anaxi,Arconis,Locust Palm,Phoenix Palm
+Maat,Sp---,Sa---|Parrotia,Monterey Pine Middle Age,Blaze Maple Sapling,Arconis,White Pine
+Maat,Sw+++,Sa---|Fern Palm,Orrorin,Hawthorn,Cerulean Blue,Anaxi
+Maat,Sw---,Sa---|Bottle Tree,Royal Palm,Umbrella Palm,Towering Palm,Coconut Palm
+Maat,To+++,Sa---|Bloodbark,Tiny Oil Palm,Royal Palm,Anaxi,Phoenix Palm
+Maat,To---,Sa---|Arconis,Cerulean Blue,Hawthorn,Orrorin,Folded Birch
+Maat,Sp+++,So+++|Arconis,Giant Cricklewood,Locust Palm,Pratyeka Tree,Trilobellia
+Maat,Sp---,So+++|Arconis,Parrotia,Peaches 'n Cream Maple,Autumn Bloodbark Sapling,Safsaf Sapling
+Maat,Sw+++,So+++|Autumn Bloodbark,Parrotia,Dikbas,Safsaf Sapling,Acacia Sapling
+Maat,Sw---,So+++|Arconis,Butterleaf Tree,Stout Palm,Towering Palm,Razor Palm
+Maat,To+++,So+++|Autumn Bloodbark,Autumn Bloodbark Sapling,Autumn Bloodbark Youth,Peaches 'n Cream Maple,Acacia
+Maat,To---,So+++|Butterleaf Tree,Towering Palm,Umbrella Palm,Arconis,Oleaceae
+Maat,Sp+++,So---|Broadleaf Palm,Cerulean Blue,Pratyeka Tree,Oil Palm,Folded Birch
+Maat,Sp---,So---|Ash Palm,Monkey Palm,Monterey Pine Middle Age,Parrotia,Mimosa
+Maat,Sw+++,So---|Cerulean Blue,Cinnar,Tiny Oil Palm,Hawthorn,Oranje
+Maat,Sw---,So---|Bottle Tree,Cinnar,Coconut Palm,Monkey Palm,Folded Birch
+Maat,To+++,So---|Tiny Oil Palm,Monkey Palm,Bloodbark,Tapacae Miralis,Phoenix Palm
+Maat,To---,So---|Cerulean Blue,Cinnar,Folded Birch,Monkey Palm,Razor Palm
+Maat,Sw+++,Sp+++|Broadleaf Palm,Cerulean Blue,Hawthorn,Oil Palm,Oranje
+Maat,Sw---,Sp+++|Chicory,Folded Birch,Pratyeka Tree,Locust Palm,Oleaceae
+Maat,To+++,Sp+++|Pratyeka Tree,Mimosa Sapling,Autumn Bloodbark,Autumn Bloodbark Sapling,Kotukutuku
+Maat,To---,Sp+++|Arconis,Broadleaf Palm,Cerulean Blue,Locust Palm,Oil Palm
+Maat,Sw+++,Sp---|Tiny Oil Palm,Spiked Fishtree,Chakkanut Tree,Bramble Hedge,Ash Palm
+Maat,Sw---,Sp---|Bottle Tree,Royal Palm,Stout Palm,Chakkanut Tree,Beetlenut
+Maat,To+++,Sp---|Tiny Oil Palm,Bramble Hedge,Stout Palm,Bloodbark,Sweet Pine
+Maat,To---,Sp---|Cerulean Blue,Chakkanut Tree,Spiked Fishtree,Towering Palm,Sweet Pine
+Maat,To+++,Sw+++|Autumn Bloodbark,Autumn Bloodbark Sapling,Tiny Oil Palm,Spiked Fishtree,Hawthorn
+Maat,To---,Sw+++|Cerulean Blue,Oranje,Spiked Fishtree,Hawthorn,Folded Birch
+Maat,To+++,Sw---|Bloodbark,Royal Palm,Stout Palm,Tiny Oil Palm,Coconut Palm
+Maat,To---,Sw---|Arconis,Bottle Tree,Cerulean Blue,Folded Birch,Feather Tree
 Geb,As++,Ar++|Delta Palm,Chicory,Deadwood Tree,Cricklewood,Royal Palm
 Geb,As--,Ar++|Pratyeka Tree,Chicory,Deadwood Tree,Coconut Palm,Royal Palm
 Geb,Bi++,Ar++|Deadwood Tree,Delta Palm,Folded Birch,Coconut Palm,Stout Palm
