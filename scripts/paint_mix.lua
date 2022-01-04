@@ -64,8 +64,8 @@ function makePaintBatch(config, num_batches)
 
     for i=1,#pigmentLab do
       local bounds = srGetWindowBorders(pigmentLab[i][0], pigmentLab[i][1]);
-      local width = 324;
-      local height = 511;
+      local width = 375;
+      local height = 571;
 
       srReadScreen();
       local paint_buttons = findAllImagesInRange("plus.png", bounds[0], bounds[1], width, height);
