@@ -469,6 +469,7 @@ posstats = {
 	["endurance"] = "+End",
 	["speed"] = "+Spd",
 	["strength"] = "+Str",
+	["strenth"] = "+Str", -- This is here due to untrainable OCR characters because of bad font rendering
 }
 
 negstats = {
