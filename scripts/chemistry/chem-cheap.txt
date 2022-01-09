@@ -294,7 +294,6 @@ Osiris,As----,Sw----|Parrotia Sapling,Chakkanut Tree,Fern Palm,Khaya Youth,Hawth
 Osiris,As----,To++++|Summer Maple Youth,Blaze Maple Youth,Autumn Bloodbark,Tiny Oil Palm,Coconut Palm
 Osiris,As----,To----|Khaya Youth,Japanese Cherry Sapling,Cerulean Blue,Chakkanut Tree,Salts Of Platinum
 Osiris,Bi++++,Sa----|Anaxi,Bramble Hedge,Deadwood Tree,Kotukutuku,Hawthorn
-Osiris,Bi++++,Sw++++|Bramble Hedge,Hokkaido,Oranje,Anaxi,Hawthorn
 Osiris,Bi++++,Sw----|Giant Cricklewood,Bottle Tree,Coconut Palm,Oleaceae,Summer Maple
 Osiris,Bi++++,So++++|Giant Cricklewood,Oleaceae,Trilobellia,Anaxi,Acacia
 Osiris,Bi++++,So----|Deadwood Tree,Coconut Palm,Windriver Palm,Bramble Hedge,Cinnar
@@ -384,7 +383,6 @@ Osiris,Sw----,As----|Parrotia Sapling,Chakkanut Tree,Fern Palm,Khaya Youth,Hawth
 Osiris,To++++,As----|Summer Maple Youth,Blaze Maple Youth,Autumn Bloodbark,Tiny Oil Palm,Coconut Palm
 Osiris,To----,As----|Khaya Youth,Japanese Cherry Sapling,Cerulean Blue,Chakkanut Tree,Salts Of Platinum
 Osiris,Sa----,Bi++++|Anaxi,Bramble Hedge,Deadwood Tree,Kotukutuku,Hawthorn
-Osiris,Sw++++,Bi++++|Bramble Hedge,Hokkaido,Oranje,Anaxi,Hawthorn
 Osiris,Sw----,Bi++++|Giant Cricklewood,Bottle Tree,Coconut Palm,Oleaceae,Summer Maple
 Osiris,So++++,Bi++++|Giant Cricklewood,Oleaceae,Trilobellia,Anaxi,Acacia
 Osiris,So----,Bi++++|Deadwood Tree,Coconut Palm,Windriver Palm,Bramble Hedge,Cinnar
@@ -477,7 +475,7 @@ Maat,As---,Sa---|Fern Palm,Broadleaf Palm,Hawthorn,Feather Tree,Razor Palm
 Maat,As---,So+++|Feather Tree,Razor Palm,Trilobellia,Butterleaf Tree,Locust Palm
 Maat,As---,So---|Cerulean Blue,Pratyeka Tree,Tapacae Miralis,Coconut Palm,Locust Palm
 Maat,As---,Sp+++|Locust Palm,Pratyeka Tree,Coconut Palm,Fern Palm,Folded Birch
-Maat,As---,Sp---|Coconut Palm,Stout Palm,Sweet Pine,Chakkanut Tree,Autumn Bloodbark Sapling
+Maat,As---,Sp---|Feather Tree,Autumn Bloodbark Sapling,Blaze Maple Youth,Peaches 'n Cream Maple,White Pine
 Maat,As---,Sw+++|Fern Palm,Locust Palm,Razor Palm,Oil Palm,Spiked Fishtree
 Maat,As---,Sw---|Ash Palm,Fern Palm,Cerulean Blue,Hokkaido,Locust Palm
 Maat,As---,To+++|Fern Palm,Summer Maple Youth,Stout Palm,Blaze Maple Youth,Tiny Oil Palm
@@ -503,7 +501,7 @@ Maat,Bi---,Sw---|Butterleaf Tree,Broadleaf Palm,Stout Palm,Royal Palm,Folded Bir
 Maat,Bi---,To+++|Tapacae Miralis,Tiny Oil Palm,Phoenix Palm,Bloodbark,Feather Tree
 Maat,Bi---,To---|Arconis,Butterleaf Tree,Broadleaf Palm,Cerulean Blue,Monkey Palm
 Maat,Sa+++,So+++|Butterleaf Tree,Cricklewood,Mini Palmetto,Oleaceae,Razor Palm
-Maat,Sa+++,So---|Anaxi,Arconis,Dikbas,Giant Cricklewood,Royal Palm
+Maat,Sa+++,So---|Ash Palm,Cinnar,Cerulean Blue,Pratyeka Tree,Golden Hemlock
 Maat,Sa+++,Sp+++|Pratyeka Tree,Windriver Palm,Oleaceae,Cinnar,Locust Palm
 Maat,Sa+++,Sp---|Cinnar,Spiked Fishtree,Peaches 'n Cream Youth,Golden Hemlock,Sweet Pine
 Maat,Sa+++,Sw+++|Cinnar,Tiny Oil Palm,River Birch Sapling,Spiked Fishtree,Razor Palm
@@ -589,7 +587,7 @@ Maat,Sa---,As---|Fern Palm,Broadleaf Palm,Hawthorn,Feather Tree,Razor Palm
 Maat,So+++,As---|Feather Tree,Razor Palm,Trilobellia,Butterleaf Tree,Locust Palm
 Maat,So---,As---|Cerulean Blue,Pratyeka Tree,Tapacae Miralis,Coconut Palm,Locust Palm
 Maat,Sp+++,As---|Locust Palm,Pratyeka Tree,Coconut Palm,Fern Palm,Folded Birch
-Maat,Sp---,As---|Coconut Palm,Stout Palm,Sweet Pine,Chakkanut Tree,Autumn Bloodbark Sapling
+Maat,Sp---,As---|Feather Tree,Autumn Bloodbark Sapling,Blaze Maple Youth,Peaches 'n Cream Maple,White Pine
 Maat,Sw+++,As---|Fern Palm,Locust Palm,Razor Palm,Oil Palm,Spiked Fishtree
 Maat,Sw---,As---|Ash Palm,Fern Palm,Cerulean Blue,Hokkaido,Locust Palm
 Maat,To+++,As---|Fern Palm,Summer Maple Youth,Stout Palm,Blaze Maple Youth,Tiny Oil Palm
@@ -615,7 +613,7 @@ Maat,Sw---,Bi---|Butterleaf Tree,Broadleaf Palm,Stout Palm,Royal Palm,Folded Bir
 Maat,To+++,Bi---|Tapacae Miralis,Tiny Oil Palm,Phoenix Palm,Bloodbark,Feather Tree
 Maat,To---,Bi---|Arconis,Butterleaf Tree,Broadleaf Palm,Cerulean Blue,Monkey Palm
 Maat,So+++,Sa+++|Butterleaf Tree,Cricklewood,Mini Palmetto,Oleaceae,Razor Palm
-Maat,So---,Sa+++|Anaxi,Arconis,Dikbas,Giant Cricklewood,Royal Palm
+Maat,So---,Sa+++|Ash Palm,Cinnar,Cerulean Blue,Pratyeka Tree,Golden Hemlock
 Maat,Sp+++,Sa+++|Pratyeka Tree,Windriver Palm,Oleaceae,Cinnar,Locust Palm
 Maat,Sp---,Sa+++|Cinnar,Spiked Fishtree,Peaches 'n Cream Youth,Golden Hemlock,Sweet Pine
 Maat,Sw+++,Sa+++|Cinnar,Tiny Oil Palm,River Birch Sapling,Spiked Fishtree,Razor Palm
