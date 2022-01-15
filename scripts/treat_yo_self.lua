@@ -761,7 +761,11 @@ function displayGoals()
       for attribute, attributeData in pairs(data.attributes) do
         local name = attributeData.name;
         if data.name == "Purity" then
-          name = name .. "+";
+          if name == "10" then
+            name = name;
+          else
+            name = name .. "+";
+          end
         end
 
         table.insert(options, name);
@@ -819,7 +823,7 @@ function printProperty(y, name, value, attribute, goal)
     goalColor = 0xffffffff;
   elseif attribute == goal then
     goalColor = 0x80ff80ff;
-  elseif name == "Purity" and attribute >= goal then
+  elseif name == "Purity" and tonumber(attribute) >= tonumber(goal) then
     goalColor = 0x80ff80ff;
   end
 
