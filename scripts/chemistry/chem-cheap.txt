@@ -675,7 +675,7 @@ Set,As---,Sa---,Sw---|Royal Palm,Monterey Pine Sapling,Feather Tree,Coconut Palm
 Set,As---,Sa---,To+++|Anaxi,Autumn Bloodbark,Autumn Bloodbark Sapling,Royal Palm,Fern Palm
 Set,As---,Sa---,To---|Monterey Pine Sapling,Fern Palm,Cerulean Blue,Kaeshra,Salts Of Platinum
 Set,As---,So+++,Sp+++|Autumn Bloodbark,Locust Palm,Acacia,Pratyeka Tree,Powdered Sapphire
-Set,As---,So+++,Sp---|Autumn Bloodbark,Peaches 'n Cream Maple,Sweet Pine,Chakkanut Tree,Razor Palm
+Set,As---,So+++,Sp---|Chakkanut Tree,Peaches 'n Cream Maple,Powdered Kunzite,Razor Palm,Arconis
 Set,As---,So+++,Sw+++|Fern Palm,Safsaf Sapling,Autumn Bloodbark,Powdered Jade,Spiked Fishtree
 Set,As---,So+++,Sw---|Razor Palm,Giant Cricklewood,Autumn Bloodbark,Stout Palm,Coconut Palm
 Set,As---,So+++,To+++|Autumn Bloodbark,Dikbas Sapling,Stout Palm,Razor Palm,Blaze Maple Youth
@@ -1078,7 +1078,7 @@ Set,Sa---,Sw---,As---|Royal Palm,Monterey Pine Sapling,Feather Tree,Coconut Palm
 Set,Sa---,To+++,As---|Anaxi,Autumn Bloodbark,Autumn Bloodbark Sapling,Royal Palm,Fern Palm
 Set,Sa---,To---,As---|Monterey Pine Sapling,Fern Palm,Cerulean Blue,Kaeshra,Salts Of Platinum
 Set,So+++,Sp+++,As---|Autumn Bloodbark,Locust Palm,Acacia,Pratyeka Tree,Powdered Sapphire
-Set,So+++,Sp---,As---|Autumn Bloodbark,Peaches 'n Cream Maple,Sweet Pine,Chakkanut Tree,Razor Palm
+Set,So+++,Sp---,As---|Chakkanut Tree,Peaches 'n Cream Maple,Powdered Kunzite,Razor Palm,Arconis
 Set,So+++,Sw+++,As---|Fern Palm,Safsaf Sapling,Autumn Bloodbark,Powdered Jade,Spiked Fishtree
 Set,So+++,Sw---,As---|Razor Palm,Giant Cricklewood,Autumn Bloodbark,Stout Palm,Coconut Palm
 Set,So+++,To+++,As---|Autumn Bloodbark,Dikbas Sapling,Stout Palm,Razor Palm,Blaze Maple Youth
@@ -1481,7 +1481,7 @@ Set,Sw---,As---,Sa---|Royal Palm,Monterey Pine Sapling,Feather Tree,Coconut Palm
 Set,To+++,As---,Sa---|Anaxi,Autumn Bloodbark,Autumn Bloodbark Sapling,Royal Palm,Fern Palm
 Set,To---,As---,Sa---|Monterey Pine Sapling,Fern Palm,Cerulean Blue,Kaeshra,Salts Of Platinum
 Set,Sp+++,As---,So+++|Autumn Bloodbark,Locust Palm,Acacia,Pratyeka Tree,Powdered Sapphire
-Set,Sp---,As---,So+++|Autumn Bloodbark,Peaches 'n Cream Maple,Sweet Pine,Chakkanut Tree,Razor Palm
+Set,Sp---,As---,So+++|Chakkanut Tree,Peaches 'n Cream Maple,Powdered Kunzite,Razor Palm,Arconis
 Set,Sw+++,As---,So+++|Fern Palm,Safsaf Sapling,Autumn Bloodbark,Powdered Jade,Spiked Fishtree
 Set,Sw---,As---,So+++|Razor Palm,Giant Cricklewood,Autumn Bloodbark,Stout Palm,Coconut Palm
 Set,To+++,As---,So+++|Autumn Bloodbark,Dikbas Sapling,Stout Palm,Razor Palm,Blaze Maple Youth
@@ -1884,7 +1884,7 @@ Set,Sw---,Sa---,As---|Royal Palm,Monterey Pine Sapling,Feather Tree,Coconut Palm
 Set,To+++,Sa---,As---|Anaxi,Autumn Bloodbark,Autumn Bloodbark Sapling,Royal Palm,Fern Palm
 Set,To---,Sa---,As---|Monterey Pine Sapling,Fern Palm,Cerulean Blue,Kaeshra,Salts Of Platinum
 Set,Sp+++,So+++,As---|Autumn Bloodbark,Locust Palm,Acacia,Pratyeka Tree,Powdered Sapphire
-Set,Sp---,So+++,As---|Autumn Bloodbark,Peaches 'n Cream Maple,Sweet Pine,Chakkanut Tree,Razor Palm
+Set,Sp---,So+++,As---|Chakkanut Tree,Peaches 'n Cream Maple,Powdered Kunzite,Razor Palm,Arconis
 Set,Sw+++,So+++,As---|Fern Palm,Safsaf Sapling,Autumn Bloodbark,Powdered Jade,Spiked Fishtree
 Set,Sw---,So+++,As---|Razor Palm,Giant Cricklewood,Autumn Bloodbark,Stout Palm,Coconut Palm
 Set,To+++,So+++,As---|Autumn Bloodbark,Dikbas Sapling,Stout Palm,Razor Palm,Blaze Maple Youth
@@ -2287,7 +2287,7 @@ Set,Sa---,As---,Sw---|Royal Palm,Monterey Pine Sapling,Feather Tree,Coconut Palm
 Set,Sa---,As---,To+++|Anaxi,Autumn Bloodbark,Autumn Bloodbark Sapling,Royal Palm,Fern Palm
 Set,Sa---,As---,To---|Monterey Pine Sapling,Fern Palm,Cerulean Blue,Kaeshra,Salts Of Platinum
 Set,So+++,As---,Sp+++|Autumn Bloodbark,Locust Palm,Acacia,Pratyeka Tree,Powdered Sapphire
-Set,So+++,As---,Sp---|Autumn Bloodbark,Peaches 'n Cream Maple,Sweet Pine,Chakkanut Tree,Razor Palm
+Set,So+++,As---,Sp---|Chakkanut Tree,Peaches 'n Cream Maple,Powdered Kunzite,Razor Palm,Arconis
 Set,So+++,As---,Sw+++|Fern Palm,Safsaf Sapling,Autumn Bloodbark,Powdered Jade,Spiked Fishtree
 Set,So+++,As---,Sw---|Razor Palm,Giant Cricklewood,Autumn Bloodbark,Stout Palm,Coconut Palm
 Set,So+++,As---,To+++|Autumn Bloodbark,Dikbas Sapling,Stout Palm,Razor Palm,Blaze Maple Youth
@@ -2690,7 +2690,7 @@ Set,As---,Sw---,Sa---|Royal Palm,Monterey Pine Sapling,Feather Tree,Coconut Palm
 Set,As---,To+++,Sa---|Anaxi,Autumn Bloodbark,Autumn Bloodbark Sapling,Royal Palm,Fern Palm
 Set,As---,To---,Sa---|Monterey Pine Sapling,Fern Palm,Cerulean Blue,Kaeshra,Salts Of Platinum
 Set,As---,Sp+++,So+++|Autumn Bloodbark,Locust Palm,Acacia,Pratyeka Tree,Powdered Sapphire
-Set,As---,Sp---,So+++|Autumn Bloodbark,Peaches 'n Cream Maple,Sweet Pine,Chakkanut Tree,Razor Palm
+Set,As---,Sp---,So+++|Chakkanut Tree,Peaches 'n Cream Maple,Powdered Kunzite,Razor Palm,Arconis
 Set,As---,Sw+++,So+++|Fern Palm,Safsaf Sapling,Autumn Bloodbark,Powdered Jade,Spiked Fishtree
 Set,As---,Sw---,So+++|Razor Palm,Giant Cricklewood,Autumn Bloodbark,Stout Palm,Coconut Palm
 Set,As---,To+++,So+++|Autumn Bloodbark,Dikbas Sapling,Stout Palm,Razor Palm,Blaze Maple Youth
