@@ -823,7 +823,7 @@ function printProperty(y, name, value, attribute, goal)
     goalColor = 0xffffffff;
   elseif attribute == goal then
     goalColor = 0x80ff80ff;
-  elseif name == "Purity" and tonumber(attribute) >= tonumber(goal) then
+  elseif name == "Purity" and goal ~= "" and tonumber(attribute) >= tonumber(goal) then
     goalColor = 0x80ff80ff;
   end
 
