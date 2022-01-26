@@ -9,7 +9,8 @@ compound_type = 6;
 attrib_reqs = {
 	{5,-1},
 	{8,1},
-	{7,1}
+	{7,1},
+	{6,1}
 };
 
 max_essences = 5;
@@ -21,7 +22,8 @@ compound_reqs = {
 	{"Set",3,7},
 	{"Osiris",2,10},
 	{"Thoth",3,10},
-	{"Ra",2,13}
+	{"Ra",2,13},
+	{"Ra Brilliant",4,7}
 };
 
 mods = {
@@ -334,7 +336,7 @@ function dodp(left, index, vars)
 	local i;
 	local j;
 
-	-- Try not using this index	
+	-- Try not using this index
 	local ret = dodp(left, index+1, vars);
 	if ret then
 		for i=1, #ret do
@@ -342,7 +344,7 @@ function dodp(left, index, vars)
 			cache(left, index, key, ret[i]);
 		end
 	end
-	
+
 	-- Try using this index
 	local newvars = {};
 	for i=1, compound_reqs[compound_type][2] do
@@ -367,7 +369,7 @@ function dodp(left, index, vars)
 			local sign = attrib_reqs[i][2];
 			if vars[i]*sign + left*3 < compound_reqs[compound_type][3] then
 				possible = nil;
-			end		 
+			end
 		end
 		if not possible then
 			-- not searching below
@@ -385,7 +387,7 @@ function dodp(left, index, vars)
 			end
 		end
 	end
-	
+
 	if not iscached(left, index, key) then
 		cache(left, index, key, {0});
 		if not iscached(left, index, key) then
@@ -393,7 +395,7 @@ function dodp(left, index, vars)
 		end
 	end
 
-	return getcache(left, index, key);	
+	return getcache(left, index, key);
 end
 
 function solve()
@@ -472,11 +474,11 @@ function doit()
 				compound_type = i
 			end
 		end
-		
+
 		x=10;
 		y=32;
 		for i=1, compound_reqs[compound_type][2] do
-		
+
 			attrib_reqs[i][1] = lsDropdown("ChemDropDown" .. i, x, y, z, 50,
 				attrib_reqs[i][1], attribs);
 			if lsButtonText(x+50, y, z, 100, 0xFFFFFFff, mods[compound_reqs[compound_type][3]][attrib_reqs[i][2]]) then
@@ -485,9 +487,9 @@ function doit()
 
 			y=y+26;
 		end
-		
+
 		y = y+5;
-		
+
 		if lsButtonText(0, y, z, 100, 0xFFFFFFff, "Solve") then
 			statusScreen("Solving... (this may take a while)");
 			statusScreen("Solving... (this may take a while)");
@@ -525,15 +527,15 @@ function doit()
 				end
 			end
 		end
-		
+
 		y=y+45;
 
-		
+
 		local max_solutions = #solve_result;
 		if max_solutions > 30 then
 			max_solutions = 30;
 		end
-		
+
 		for i=1, max_solutions do
 			if solve_tooltip[i] then
 				if lsButtonText(10, y, z, maxX - 12, 0xFFFFFFff, solve_result[i]) then
@@ -548,7 +550,7 @@ function doit()
 		if tip then
 			lsPrintWrapped(150, 32, z+1, maxX - 150, 0.7, 0.7, 0xFFFFFFff, tip);
 		end
-		
+
 		-- heirarchical display
 		for i=#selected, 1, -1 do
 			if lsButtonText(165, 32+(i-1)*26, z, maxX - 165, color(chem_data[selected[i]][1]), chem_data[selected[i]][1] .. " (" .. chem_data[selected[i]][3] .. ")") then
@@ -560,7 +562,7 @@ function doit()
 				chem_cache = nil;
 			end
 		end
-		
+
 		local build_cache = false;
 		if not chem_cache then
 			build_cache = true;
@@ -605,7 +607,7 @@ function doit()
 			if build_cache then
 				local skip=false;
 				recipe_count = ingredient_recipe_count[i];
-				
+
 				if (#solve_lists > 0) and (recipe_count == #solve_lists) then
 					selected[#selected+1] = i;
 					clear_cache = true;
@@ -626,9 +628,9 @@ function doit()
 		if clear_cache then
 			chem_cache = nil;
 		end
-		
+
 		lsScrollAreaEnd(y);
-		
+
 		if (maxX < 465) or (maxY < 400) then
 			lsPrint(10, maxY-30, z+3, 0.7, 0.7, 0x801010ff, "You may need to resize this window to see everything.");
 		end
