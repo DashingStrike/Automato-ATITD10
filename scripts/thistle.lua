@@ -133,8 +133,8 @@ function waitForMonChange(message)
 	end
 	srReadScreen();
 		if batchSize then
-			mon_x = first_nit[0] - 17;
-			mon_y = first_nit[1] + 35;
+			mon_x = first_nit[0] - 15;
+			mon_y = first_nit[1] + 33;
 		else
 			mon_x = first_nit[0] - 25;
 			mon_y = first_nit[1] + 13;
