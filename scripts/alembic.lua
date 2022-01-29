@@ -17,8 +17,8 @@ tempBackgroundColor = 0x1f1e1c
 heatSpots = {
   makePoint(tempBar, 230 - flow[1]), -- Fish
   makePoint(tempBar, 242 - flow[1]), -- Mineral
-  makePoint(tempBar, 254 - flow[1]), -- Vegetable
-  makePoint(tempBar, 292 - flow[1]), -- Grain
+  makePoint(tempBar, 262 - flow[1]), -- Vegetable
+  makePoint(tempBar, 284 - flow[1]), -- Grain
   makePoint(tempBar, 304 - flow[1]), -- Worm
   makePoint(tempBar, 318 - flow[1]), -- Wood
   makePoint(tempBar, 329 - flow[1]), -- Rock
