@@ -62,7 +62,7 @@ essences = {
 	{"esinJacaanda",41},
 	{"esinJacaandaSapling",75},
 	{"esinJacaandaYoutn",80},
-	{"esinJapanesecney",21},
+	{"esinJapanesecne",21},
 	{"esinJapaneseCneSapling",67},
 	{"esinJapaneseCneYoutn",11},
 	{"esinKaesna",64},
