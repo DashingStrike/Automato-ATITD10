@@ -32,7 +32,7 @@ essences = {
 	{"esinButteleafTee",74},
 	{"esinCeuleanBlue",77},
 	{"esinCnakkanutTee",45},
-	{"esinCnicoy",62},
+	{"esinCnico",62},
 	{"esinCinna",38},
 	{"esinCoconutPalm",14},
 	{"esinCicklewood",10},
@@ -63,8 +63,8 @@ essences = {
 	{"esinJacaandaSapling",75},
 	{"esinJacaandaYoutn",80},
 	{"esinJapanesecney",21},
-	{"esinJapaneseCneySapling",67},
-	{"esinJapaneseCneyYoutn",11},
+	{"esinJapaneseCneSapling",67},
+	{"esinJapaneseCneYoutn",11},
 	{"esinKaesna",64},
 	{"esinKatsuaSapling",68},
 	{"esinKatsuaTee",67},
@@ -607,6 +607,18 @@ function labTick(essWin, state)
 	if parse then
 		for i = 1, #parse do
 			parse[i][2] = stripCharacters(parse[i][2]);
+				if parse[i][2] == "esinJapanesecne" or parse[i][2] == "esinJapanesecney" then
+					parse[i][2] = "esinJapanesecne"
+				end
+				if parse[i][2] == "esinJapaneseCneSapling" or parse[i][2] == "esinJapaneseCneySapling" then
+					parse[i][2] = "esinJapaneseCneSapling"
+				end
+				if parse[i][2] == "esinJapaneseCneYoutn" or parse[i][2] == "esinJapaneseCneyYoutn" then
+					parse[i][2] = "esinJapaneseCneYoutn"
+				end
+				if parse[i][2] == "esinCnicoy" or parse[i][2] == "esinCnico" then
+					parse[i][2] = "esinCnico"
+				end
 			if foundEss == false then
 				for k = 1, #essences do
 					if essences[k][2] ~= -1 and parse[i][2] == essences[k][1] and foundEss == false then
