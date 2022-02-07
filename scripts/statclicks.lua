@@ -4,6 +4,7 @@ dofile("settings.inc");
 gatherCounter = 0
 
 fuelList = {"Coal", "Charcoal", "Petroleum"};
+metalList = {"Silver", "Aluminum"};
 
 local stashList = {
   insect   = {"Insect.", "All Insect"},
@@ -145,11 +146,25 @@ function getClickActions()
               stashRawMaterials = lsCheckBox(5, y-30, z, 0xFFFFFFff, " Automatically stash while digging (Pin WH)", stashRawMaterials);
               writeSetting("stashRawMaterials",stashRawMaterials);
             end
+            if items[i][tasks[i]] == "Barrel Grinder" then
+              y = y + 35;
+              refilGrinder = readSetting("refilGrinder",refilGrinder);
+              refilGrinder = lsCheckBox(5, y-30, z, 0xFFFFFFff, " Automatically fill the Barrel Grinder", refilGrinder);
+              writeSetting("refilGrinder",refilGrinder);
+                if refilGrinder == true then
+                  metalGrind = readSetting("metalGrind",metalGrind);
+                  lsPrint(5, y, 0, 1, 1, 0xffffffff, "Metal Type:");
+                  metalGrind = lsDropdown("metalGrind", 115, y, 0, 150, metalGrind, metalList);
+                  lsPrint(5, y+32, 0, 1, 1, 0xffff40ff, "Pin the 'Take... > Metal... > All Metal' window");
+                  writeSetting("metalGrind",metalGrind);
+                  y = y + 65;
+                end
+            end
         end
 
         lsDoFrame();
         lsSleep(tick_delay);
-        if lsButtonText(150, 58, z, 100, 0xFFFFFFff, "OK") then
+        if lsButtonText(150, 58, z, 100, 0x00ff00ff, "OK") then
           done = true;
         end
     end
@@ -205,9 +220,9 @@ function weave(clothType)
 
     srReadScreen();
     local consume = srFindImage("consume.png");
-    if consume then
+      if consume then
         eatOnion();
-    end
+      end
 
     if clothType == "Basket" then
       weaveImage = srFindImage("statclicks/weave_papyrus.png");
@@ -293,12 +308,12 @@ function clickMenus(menus)
     checkBreak();
     srReadScreen();
     local found = findText(menu);
-    if found then
-      clickText(found);
-      lsSleep(200);
-    else
-      return false;
-    end
+      if found then
+        clickText(found);
+        lsSleep(200);
+      else
+        return false;
+      end
   end
   return true;
 end
@@ -321,16 +336,23 @@ end
 
 function searchRottenWood()
   searchForBugs = findText("Search for Bugs");
-  if searchForBugs ~= nil then
+    if searchForBugs ~= nil then
       clickText(searchForBugs);
       lsSleep(per_tick);
       srReadScreen();
       closePopUp();
       lsSleep(per_tick);
-  end
+    end
 end
 
 function grindMetal()
+
+  if metalGrind == 1 then
+    metalType = "Silver"
+  elseif metalGrind == 2 then
+    metalType = "Aluminum"
+  end
+
   local startGrinder = findText("Start");
   local repairGrinder = findText("Repair")
 
@@ -346,16 +368,43 @@ function grindMetal()
       srReadScreen();
       local wind = findText("Wind");
         if wind ~= nil then
+          if refilGrinder then
+            srReadScreen();
+            local loadGrinder = findText("Grinder with " .. metalType);
+              if loadGrinder then
+                local metalWindow = findText("All Metal", nil, REGION);
+                  if metalType == "Silver" then
+                    local grindingMetal = findText("Silver", metalWindow);
+                    safeClick(grindingMetal[0]+150,grindingMetal[1]+5);
+                    metalVolume = tonumber(string.match(grindingMetal[2], "([-0-9]+)"));
+                  elseif metalType == "Aluminum" then
+                    local grindingMetal = findText("Aluminum", metalWindow);
+                    safeClick(grindingMetal[0]+150,grindingMetal[1]+5);
+                    metalVolume = tonumber(string.match(grindingMetal[2], "([-0-9]+)"));
+                  end
+                    if metalVolume < 50 then
+                      clickText(loadGrinder);
+                      waitForImage("max.png");
+                      srReadScreen();
+                      local maxButton = srFindImage("max.png");
+                        if(maxButton) then
+                            srClickMouseNoMove(maxButton[0]+5,maxButton[1]);
+                        else
+                            fatalError("Unable to find the Max button");
+                        end
+                        waitForNoImage("max.png");
+                    end
+              end
+          end
           clickText(wind);
           lsSleep(per_tick);
           srReadScreen();
           closePopUp();
           lsSleep(per_tick);
+          srReadScreen();
         end
     end
 end
-
-
 
 function flaxOil()
   srReadScreen();
@@ -369,41 +418,39 @@ end
 
 function combFlax()
     local comb = srFindImage("statclicks/comb.png", 6000);
-    if comb == nil then
+      if comb == nil then
         return;
-    end
+      end
     safeClick(comb[0], comb[1]);
     lsSleep(per_tick);
     srReadScreen();
     local fix = srFindImage("repair.png", 6000);
-    if (fix) then
-      repairRake("comb");
-      lsSleep(75);
-      srReadScreen();
-      safeClick(comb[0],comb[1]);
-      lsSleep(75);
-    end
-
+      if (fix) then
+        repairRake("comb");
+        lsSleep(75);
+        srReadScreen();
+        safeClick(comb[0],comb[1]);
+        lsSleep(75);
+      end
     srReadScreen();
     local consume = srFindImage("consume.png");
-    if consume then
+      if consume then
         eatOnion();
-    end
-
+      end
     local s1 = srFindImage("rake/separate.png", 6000);
     local s23 = srFindImage("rake/process.png", 6000);
     local clean = srFindImage("rake/clean.png", 6000);
-    if s1 then
-      safeClick(s1[0], s1[1]);
-    elseif s23 then
-      safeClick(s23[0], s23[1]);
-    elseif clean then
-      safeClick(clean[0], clean[1]);
-    else
+      if s1 then
+        safeClick(s1[0], s1[1]);
+      elseif s23 then
+        safeClick(s23[0], s23[1]);
+      elseif clean then
+        safeClick(clean[0], clean[1]);
+      else
         lsPrint(5, 0, 10, 1, 1, "Found Stats");
         lsDoFrame();
         lsSleep(2000);
-    end
+      end
 end
 
 function eatOnion()
@@ -548,24 +595,24 @@ end
 
 local function tapRods()
     local window = findText("This is [a-z]+ Bore Hole", nil, REGION + REGEX);
-    if window == nil then
+      if window == nil then
         return;
-    end
+      end
     local t = findText("Tap the Bore Rod", window);
     local foundOne = false;
-    if t then
+      if t then
         clickText(t);
         foundOne = true;
-    end
+      end
     t = waitForText("Crack an outline", 300);
-    if t then
+      if t then
         clickText(t);
         foundOne = true;
-    end
+      end
     if foundOne == false and retrieveRods == true then
-        t = findText("Retrieve the bore", window);
+      t = findText("Retrieve the bore", window);
         if t then
-            clickText(t);
+          clickText(t);
         end
     end
 end
@@ -580,21 +627,21 @@ local function excavateBlocks()
         srReadScreen();
       end
     window = findText("This is [a-z]+ Tooth Limestone Bl", nil, REGION + REGEX);
-    if window == nil then
+      if window == nil then
         return;
-    end
+      end
     local t = findText("Dig around", window);
-    if t then
+      if t then
         clickText(t);
-    end
+      end
     t = waitForText("Slide a rolling rack", 300);
-    if t then
+      if t then
         clickText(t);
         t = waitForText("This is [a-z]+ Pyramid Block(Roll", 300, nil, nil, REGION + REGEX);
-        if t then
+          if t then
             unpinWindow(t);
-        end
-    end
+          end
+      end
     return;
 end
 
@@ -739,12 +786,6 @@ function doTasks()
                 else
                   clickText(findText(textLookup[curTask]));
                 end
-                --[[
-
-
-
-                end
-                ]]--
                 statTimer[i] = lsGetTimer();
                 didTask = true;
             end
