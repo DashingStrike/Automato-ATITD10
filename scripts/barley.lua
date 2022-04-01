@@ -1,23 +1,29 @@
 dofile("common.inc");
 dofile("settings.inc");
 
+askText = "Two methods available: Use Fertilizer or Water Only.\n\n"
+.. "'Right click pins/unpins a menu' must be ON.\n\n"
+.. "'Plant all crops where you stand' must be ON.\n\n"
+.. "Pin Barley Plant window in TOP-RIGHT.\n\n"
+.. "Automato: Slighty in TOP-RIGHT.";
+
 ----------------------------------------
 --          Global Variables          --
 ----------------------------------------
-num_loops = 1;
+xyCenter = {};
+xyFlaxMenu = {};
+
+-- The barley bed window
+window_w = 258;
+window_h = 218;
+
+is_plant = true;
+num_loops = 5;
 grid_w = 4;
 grid_h = 4;
-is_plant = true;
 
 finish_up = 0;
 finish_up_message = "";
-use_fert = true;
-readClock = false;
-
-autoWater = false
-water_coords = {}
-water_coords[0] = 0
-water_coords[1] = 0
 
 -- Tweakable delay values
 refresh_time = 75; -- Time to wait for windows to update
@@ -27,13 +33,6 @@ walk_time = 550; -- Reduce to 300 if you're fast.
 walk_px_y = 320;
 walk_px_x = 340;
 
-xyCenter = {};
-xyFlaxMenu = {};
-
--- The barley bed window
-window_w = 258;
-window_h = 218
-
 --[[
 How much of the ATITD screen to ignore (protect the right side of screen from closing windows when finished
 max_width_offset will prevent it from reading all the way to the right edge of game client
@@ -41,12 +40,52 @@ This should be about 425 if we can use aquaduct. We can use 350 if no aquaduct w
 --]]
 max_width_offset = 350
 
-askText = "Two methods available: Use Fertilizer or Water Only.\n\n"
-.. "'Right click pins/unpins a menu' must be ON.\n\n"
-.. "'Plant all crops where you stand' must be ON.\n\n"
-.. "Pin Barley Plant window in TOP-RIGHT.\n\n"
-.. "Automato: Slighty in TOP-RIGHT.";
 ----------------------------------------
+--         walkTo() Parameters        --
+----------------------------------------
+use_fert = true;
+readClock = false;
+autoWater = false
+water_coords = {}
+water_coords[0] = 0
+water_coords[1] = 0
+----------------------------------------
+
+-------------------------------------------------------------------------------
+-- checkForEnd()
+--
+-- Similar to checkBreak, but also looks for a clean exit.
+-------------------------------------------------------------------------------
+
+local ending = false
+
+function checkForEnd()
+  if ((lsAltHeld() and lsControlHeld()) and not ending) then
+    ending = true
+    closeAllWindows(0, 0, xyWindowSize[0] - max_width_offset, xyWindowSize[1])
+    error "broke out with Alt+Ctrl"
+  end
+  if (lsShiftHeld() and lsControlHeld()) then
+    if lsMessageBox("Break", "Are you sure you want to exit?", MB_YES + MB_NO) == MB_YES then
+      error "broke out with Shift+Ctrl"
+    end
+  end
+  if lsAltHeld() and lsShiftHeld() then
+    -- Pause
+    while lsAltHeld() or lsShiftHeld() do
+      statusScreen("Please release Alt+Shift", 0x808080ff, false)
+    end
+    local done = false
+    while not done do
+      local unpaused = lsButtonText(lsScreenX - 110, lsScreenY - 60, nil, 100, 0xFFFFFFff, "Unpause")
+      statusScreen("Hold Alt+Shift to resume", 0xFFFFFFff, false)
+      done = (unpaused or (lsAltHeld() and lsShiftHeld()))
+    end
+    while lsAltHeld() or lsShiftHeld() do
+      statusScreen("Please release Alt+Shift", 0x808080ff, false)
+    end
+  end
+end
 
 -------------------------------------------------------------------------------
 -- initGlobals()
@@ -56,7 +95,6 @@ askText = "Two methods available: Use Fertilizer or Water Only.\n\n"
 
 function initGlobals()
   -- Macro written with 1720 pixel wide window
-
   srReadScreen();
   xyWindowSize = srGetWindowSize();
 
@@ -95,7 +133,6 @@ function checkWindowSize()
   if not window_check_done_once then
     srReadScreen();
     window_check_done_once = true;
---     local pos = srFindImageInRange(imgUseable, x-5, y-50, 150, 100)
      local pos = findText("Useable by");
      if pos then
         window_h = window_h + 15;
@@ -293,7 +330,6 @@ end
 -------------------------------------------------------------------------------
 
 function doit()
-
   promptBarleyNumbers();
   askForWindow(askText);
   initGlobals();
@@ -488,11 +524,10 @@ function plantHere(xyPlantFlax)
 
   -- Bring up menu
   lsPrintln('menu ' .. bed[0] .. ',' .. bed[1]);
-  if not openAndPin(bed[0], bed[1], 3500) then
-    error_status = "No window came up after planting.";
-    return false;
-  end
-
+    if not openAndPin(bed[0], bed[1], 3500) then
+      error_status = "No window came up after planting.";
+      return false;
+    end
   goodPlantings = goodPlantings + 1;
 
   -- Check for window size
@@ -510,10 +545,10 @@ function clickPlant(xyPlantFlax)
 
   spot = getWaitSpot(xyFlaxMenu[0], xyFlaxMenu[1])
   local plantSuccess = waitForChange(spot, 1500);
-  if not plantSuccess then
-    error_status = "No barley bed was placed when planting.";
-    result = nil;
-  end
+    if not plantSuccess then
+      error_status = "No barley bed was placed when planting.";
+      result = nil;
+    end
   return result;
 end
 
@@ -581,11 +616,11 @@ end
 function checkForMenu()
   srReadScreen()
   pos = srFindImage("unpinnedPin.png", 5000)
-  if pos then
-    safeClick(pos[0] - 5, pos[1])
-    lsPrintln("checkForMenu(): Found a menu...returning true")
-    return true
-  end
+    if pos then
+      safeClick(pos[0] - 5, pos[1])
+      lsPrintln("checkForMenu(): Found a menu...returning true")
+      return true
+    end
   return false
 end
 
@@ -597,58 +632,54 @@ end
 
 function walkHome(finalPos)
   -- Close all empty windows
---  closeEmptyAndErrorWindows();
   closeAllWindows(0,0, xyWindowSize[0]-max_width_offset, xyWindowSize[1]);
-
-  if readClock then
-    walkTo(finalPos);
-  end
+    if readClock then
+      walkTo(finalPos);
+    end
 
   -- Refresh any empty windows (in case we used out last seed, re-vive the previously plant window
   srReadScreen();
   closedPlantWindow = srFindImage("WindowEmpty.png")
-  if closedPlantWindow then
-    srClickMouseNoMove(closedPlantWindow[0]+2, closedPlantWindow[1]+2);
-  end
+    if closedPlantWindow then
+      srClickMouseNoMove(closedPlantWindow[0]+2, closedPlantWindow[1]+2);
+    end
 end
-
+-------------------------------------------------------------------------------
 
 function waterBarley()
   srReadScreen();
-  barleyWaterImage = findAllImages("barley/barleyWater.png");
-    if #barleyWaterImage == 0 then
-      error("Could not find 'Water:' text in barley pinned menu (Top Left corner only)");
+  barleyHarvest = findAllImages("barley/BarleyHarvest.png");
+    if #barleyHarvest == 0 then
+      error("Could not find barley window");
     else
-		for i=#barleyWaterImage, 1, -1  do
-			checkBreak();
-			safeClick(barleyWaterImage[i][0]+192, barleyWaterImage[i][1]+3);
-			waterUsed = waterUsed + 1;
-		end
+  		for i=#barleyHarvest, 1, -1  do
+  			checkBreak();
+        --Offset click position of 'barley/BarleyHarvest.png' to click '+ water'
+  			safeClick(barleyHarvest[i][0]+128, barleyHarvest[i][1]-60);
+  			waterUsed = waterUsed + 1;
+  		end
     end
 end
-
 
 function fertilizeBarley()
   srReadScreen();
-  barleyWaterImage = findAllImages("barley/barleyWater.png");
-    if #barleyWaterImage == 0 then
-      error("Could not find 'Water:' text in barley pinned menu (Top Left corner only)");
+  barleyHarvest = findAllImages("barley/BarleyHarvest.png");
+    if #barleyHarvest == 0 then
+      error("Could not find barley window");
     elseif use_fert then
-		for i=#barleyWaterImage, 1, -1  do
-			checkBreak();
-			safeClick(barleyWaterImage[i][0]+192, barleyWaterImage[i][1]+23);
-			fertilizerUsed = fertilizerUsed + 1;
-		end
+  		for i=#barleyHarvest, 1, -1  do
+  			checkBreak();
+        --Offset click position of 'barley/BarleyHarvest.png' to click '+ fert'
+  			safeClick(barleyHarvest[i][0]+128, barleyHarvest[i][1]-40);
+  			fertilizerUsed = fertilizerUsed + 1;
+  		end
     end
 end
-
 
 function findWaterBar()
   srReadScreen();
   barleyWaterBar = srFindImageInRange("barley/barleyWaterFull.png", 0, 0, window_w, window_h);
 end
-
-
 
 function harvestAll()
   srReadScreen();
@@ -680,40 +711,4 @@ function closeWindowsFast()
       srClickMouseNoMove(allTextReferences[buttons][0]+20, allTextReferences[buttons][1]+5);
     end
     lsSleep(75);
-end
-
--------------------------------------------------------------------------------
--- checkForEnd()
---
--- Similar to checkBreak, but also looks for a clean exit.
--------------------------------------------------------------------------------
-
-local ending = false
-
-function checkForEnd()
-  if ((lsAltHeld() and lsControlHeld()) and not ending) then
-    ending = true
-    closeAllWindows(0, 0, xyWindowSize[0] - max_width_offset, xyWindowSize[1])
-    error "broke out with Alt+Ctrl"
-  end
-  if (lsShiftHeld() and lsControlHeld()) then
-    if lsMessageBox("Break", "Are you sure you want to exit?", MB_YES + MB_NO) == MB_YES then
-      error "broke out with Shift+Ctrl"
-    end
-  end
-  if lsAltHeld() and lsShiftHeld() then
-    -- Pause
-    while lsAltHeld() or lsShiftHeld() do
-      statusScreen("Please release Alt+Shift", 0x808080ff, false)
-    end
-    local done = false
-    while not done do
-      local unpaused = lsButtonText(lsScreenX - 110, lsScreenY - 60, nil, 100, 0xFFFFFFff, "Unpause")
-      statusScreen("Hold Alt+Shift to resume", 0xFFFFFFff, false)
-      done = (unpaused or (lsAltHeld() and lsShiftHeld()))
-    end
-    while lsAltHeld() or lsShiftHeld() do
-      statusScreen("Please release Alt+Shift", 0x808080ff, false)
-    end
-  end
 end
