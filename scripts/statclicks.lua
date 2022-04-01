@@ -693,8 +693,11 @@ end
 
 function sporePaper()
   srReadScreen();
-  clickText(findText("Mushrooms"));
-  clickText(waitForText("Inspect"))
+  local mushroom = findText("Mushrooms")
+    if mushroom then
+      clickText(mushroom);
+      clickText(waitForText("Inspect"));
+    end
 
   local rw = waitForImage("spores/which.png");
 	rw.x = rw[0]-155;
@@ -703,9 +706,8 @@ function sporePaper()
 	rw.height = 240;
 	local parse = findAllText(nil, rw);
   local foundPaper = false
-	if parse then
-		for i = 1, #parse do
-			parse[i][2] = stripCharacters(parse[i][2]);
+  	for i = 1, #parse do
+  		parse[i][2] = stripCharacters(parse[i][2]);
       if foundPaper == false then
         if string.find(parse[i][2], "SpoePape") then
           foundPaper = true;
@@ -718,8 +720,7 @@ function sporePaper()
             end
         end
       end
-		end
-	end
+  	end
 end
 
 function doTasks()
