@@ -702,10 +702,13 @@ function sporePaper()
 	rw.width = 204;
 	rw.height = 240;
 	local parse = findAllText(nil, rw);
+  local foundPaper = false
 	if parse then
 		for i = 1, #parse do
 			parse[i][2] = stripCharacters(parse[i][2]);
+      if foundPaper == false then
         if string.find(parse[i][2], "SpoePape") then
+          foundPaper = true;
           clickText(parse[i]);
         else
           srReadScreen();
@@ -714,6 +717,7 @@ function sporePaper()
               safeClick(cancel[0],cancel[1])
             end
         end
+      end
 		end
 	end
 end
