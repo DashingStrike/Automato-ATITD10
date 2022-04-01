@@ -702,13 +702,13 @@ function sporePaper()
 	rw.width = 204;
 	rw.height = 240;
 	local parse = findAllText(nil, rw);
-  local foundMushroom = false
+  local foundPaper = false
 	if parse then
 		for i = 1, #parse do
 			parse[i][2] = stripCharacters(parse[i][2]);
-      if foundMushroom == false then
+      if foundPaper == false then
         if string.find(parse[i][2], "SpoePape") then
-          foundMushroom = true;
+          foundPaper = true;
           clickText(parse[i]);
         else
           srReadScreen();
