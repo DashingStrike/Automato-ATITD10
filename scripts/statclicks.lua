@@ -59,6 +59,7 @@ items = {
           "Rawhide Strips",
           "Search Rotten Wood",
           "Sharpened Stick",
+          "Spore Paper",
           "Tackle Block",
           "Tap Rods",
           "Tinder",
@@ -388,9 +389,9 @@ function grindMetal()
                       srReadScreen();
                       local maxButton = srFindImage("max.png");
                         if(maxButton) then
-                            srClickMouseNoMove(maxButton[0]+5,maxButton[1]);
+                          srClickMouseNoMove(maxButton[0]+5,maxButton[1]);
                         else
-                            fatalError("Unable to find the Max button");
+                          fatalError("Unable to find the Max button");
                         end
                         waitForNoImage("max.png");
                     end
@@ -690,6 +691,33 @@ function wetPaper()
   closePopUp();
 end
 
+function sporePaper()
+  srReadScreen();
+  clickText(findText("Mushrooms"));
+  clickText(waitForText("Inspect"))
+
+  local rw = waitForImage("spores/which.png");
+	rw.x = rw[0]-155;
+	rw.y = rw[1]+5;
+	rw.width = 204;
+	rw.height = 240;
+	local parse = findAllText(nil, rw);
+	if parse then
+		for i = 1, #parse do
+			parse[i][2] = stripCharacters(parse[i][2]);
+        if string.find(parse[i][2], "SpoePape") then
+          clickText(parse[i]);
+        else
+          srReadScreen();
+          local cancel = srFindImage("cancel.png")
+            if cancel then
+              safeClick(cancel[0],cancel[1])
+            end
+        end
+		end
+	end
+end
+
 function doTasks()
     didTask = false;
     for i = 1, 4 do
@@ -783,6 +811,8 @@ function doTasks()
                   tapRods();
                 elseif curTask == "Wet Paper" then
                   wetPaper();
+                elseif curTask == "Spore Paper" then
+                  sporePaper();
                 else
                   clickText(findText(textLookup[curTask]));
                 end
@@ -888,6 +918,12 @@ function repairRake(type)
 		end -- if OK
 	end -- for loop
   end -- if repair
+end
+
+function stripCharacters(s)
+	local badChars = "%:%(%)%-%,%'%d%s";
+	s = string.gsub(s, "[" .. badChars .. "]", "");
+	return s;
 end
 
 function doit()
