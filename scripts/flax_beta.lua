@@ -1,19 +1,9 @@
--- flax_stable.lua v1.2 -- by Jimbly, tweaked by Cegaiel and
---   KasumiGhia, revised by Tallow.
---
--- Plant flax and harvest either flax or seeds.
---
--- Works Reliably: 2x2, 3x3, 4x4, 5x5
--- May Work (depends on your computer): 6x6, 7x7
---
-
 dofile("common.inc")
 dofile("settings.inc")
 
 askText =
   singleLine(
   [[
-  flax_beta (Updated for T10)
   Plant flax and harvest either flax or seeds. --
   Make sure the plant flax window is pinned and on the RIGHT side of
   the screen. Your Automato window should also be on the RIGHT side
@@ -27,57 +17,38 @@ askText =
 ]]
 )
 
--- Global parameters set by prompt box.
-is_plant = true
-readClock = false
-num_loops = 5
-grid_w = 4
-grid_h = 4
-seeds_per_pass = 4
-finish_up = 0
-finish_up_message = ""
---[[
-harvest = "Harvest this"
-weedAndWater = "Weed and Water"
-weedThis = "Weed this"
-harvestSeeds = "Harvest seeds"
-thisIs = "This is"
-utility = "Utility"
-]]--
--- walkTo() Parameters
-rot_flax = false
-water_needed = false
-water_location = {}
-water_location[0] = 0
-water_location[1] = 0
-
--- Tweakable delay values
-refresh_time = 75 -- Time to wait for windows to update
-walk_time = 550 -- Reduce to 300 if you're fast.
-
--- Don't touch. These are set according to Jimbly's black magic.
-walk_px_x = 355
-walk_px_y = 315
-
--- Declare an array
+----------------------------------------
+--          Global Variables          --
+----------------------------------------
 xyCenter = {}
 xyFlaxMenu = {}
+window_h = 120;
 
--- The flax bed window
-window_h = 120
+is_plant = true;
+readClock = false;
+num_loops = 5;
+grid_w = 4;
+grid_h = 4;
+grid_direction = 1;
+grid_directions = { "Northeast", "Northwest", "Southeast", "Southwest" };
+grid_deltas =
+{
+  { {1, 0, -1, 0}, {0, -1, 0, 1} },
+  { {-1, 0, 1, 0}, {0, -1, 0, 1} },
+  { {1, 0, -1, 0}, {0, 1, 0, -1} },
+  { {-1, 0, 1, 0}, {0, 1, 0, -1} }
+};
+seeds_per_pass = 4;
+seeds_per_harvest = 1;
+finish_up = 0;
+finish_up_message = "";
 
---[[
-How much of the ATITD screen to ignore (protect the right side of screen from closing windows when finished
-max_width_offset will prevent it from reading all the way to the right edge of game client
-This should be about 425 if we can use aquaduct. We can use 350 if no aquaduct window is present (to refill jugs).
---]]
-max_width_offset = 350
+-- How many seeds are left
+seeds_in_pocket = 26;
 
-FLAX = 0
-plantType = FLAX
-CLICK_MIN_WEED = 15 * 1000
-CLICK_MIN_SEED = 27 * 1000
-numSeedsHarvested = 0
+-- Don't touch. These are set according to Jimbly's black magic.
+walk_px_x = 355;
+walk_px_y = 315;
 
 --Offset for window stashing placement. Harvest seeds (longest window)
 -- is 367 x 127 (when guilded). +5 to avoid touching game borders.
@@ -87,6 +58,26 @@ offset.y = 132;
 local bottomRightOffset = {};
 bottomRightOffset.x = 375;
 bottomRightOffset.y = 130;
+----------------------------------------
+
+----------------------------------------
+--         walkTo() Parameters        --
+----------------------------------------
+rot_flax = false;
+
+water_needed = false;
+water_location = {}
+water_location[0] = 0;
+water_location[1] = 0;
+----------------------------------------
+
+-- Tweakable delay values
+refresh_time = 75; -- Time to wait for windows to update
+
+max_width_offset = 350;
+CLICK_MIN_WEED = 15 * 1000;
+CLICK_MIN_SEED = 27 * 1000;
+numSeedsHarvested = 0;
 
 -------------------------------------------------------------------------------
 -- initGlobals()
@@ -96,7 +87,6 @@ bottomRightOffset.y = 130;
 
 function initGlobals()
   -- Macro written with 1720 pixel wide window
-
   srReadScreen()
   xyWindowSize = srGetWindowSize()
 
@@ -120,13 +110,9 @@ function initGlobals()
 
   xyCenter[0] = xyWindowSize[0] / 2 - walk_x_drift
   xyCenter[1] = xyWindowSize[1] / 2 + walk_y_drift
-  if plantType == FLAX then
-    xyFlaxMenu[0] = xyCenter[0] - 43 * pixel_scale
-    xyFlaxMenu[1] = xyCenter[1] + 0
-  else
-    xyFlaxMenu[0] = xyCenter[0] - 20
-    xyFlaxMenu[1] = xyCenter[1] - 10
-  end
+
+  xyFlaxMenu[0] = xyCenter[0] - 43 * pixel_scale
+  xyFlaxMenu[1] = xyCenter[1] + 0
 end
 
 -------------------------------------------------------------------------------
@@ -177,13 +163,13 @@ function checkWindowSize()
     srReadScreen()
     window_check_done_once = true
     local pos = findText("Useable by")
-    if pos then
-      window_h = window_h + 15
-    end
+      if pos then
+        window_h = window_h + 15
+      end
     pos = findText("Game Master")
-    if pos then
-      window_h = window_h + 30
-    end
+      if pos then
+        window_h = window_h + 30
+      end
   end
 end
 
@@ -202,16 +188,12 @@ function promptFlaxNumbers()
   while not is_done do
     -- Make sure we don't lock up with no easy way to escape!
     checkBreak()
-
-    -- lsEditBox needs a key to uniquely name this edit box
-    --   let's just use the prompt!
-    -- lsEditBox returns two different things (a state and a value)
     local y = 10
 
     num_loops = readSetting("num_loops", num_loops)
     lsPrint(10, y, z, scale, scale, 0xFFFFFFff, "Passes:")
 
-    is_done, num_loops = lsEditBox("num_loops", 120, y, z, 50, 0, scale, scale, 0x000000ff, num_loops)
+    is_done, num_loops = lsEditBox("num_loops", 105, y, z, 45, 0, scale, scale, 0x000000ff, num_loops)
     if not tonumber(num_loops) then
       is_done = nil
       lsPrint(10, y + 18, z + 10, 0.7, 0.7, 0xFF2020ff, "MUST BE A NUMBER")
@@ -224,7 +206,7 @@ function promptFlaxNumbers()
 
     grid_w = readSetting("grid_w", grid_w)
     lsPrint(10, y, z, scale, scale, 0xFFFFFFff, "Grid size:")
-    is_done, grid_w = lsEditBox("grid", 120, y, z, 50, 0, scale, scale, 0x000000ff, grid_w)
+    is_done, grid_w = lsEditBox("grid", 105, y, z, 45, 0, scale, scale, 0x000000ff, grid_w)
     if not tonumber(grid_w) then
       is_done = nil
       lsPrint(10, y + 18, z + 10, 0.7, 0.7, 0xFF2020ff, "MUST BE A NUMBER")
@@ -236,70 +218,113 @@ function promptFlaxNumbers()
     writeSetting("grid_w", grid_w)
     y = y + 26
 
-    if not is_plant then
-      lsPrint(10, y, z, scale, scale, 0xFFFFFFff, "Seeds per:")
-      seeds_per_pass = readSetting("seeds_per_pass", seeds_per_pass)
-      is_done, seeds_per_pass = lsEditBox("seedsper", 120, y, z, 50, 0, scale, scale, 0x000000ff, seeds_per_pass)
-      seeds_per_pass = tonumber(seeds_per_pass)
-      if not seeds_per_pass then
-        is_done = nil
-        lsPrint(10, y + 18, z + 10, 0.7, 0.7, 0xFF2020ff, "MUST BE A NUMBER")
-        seeds_per_pass = 1
-      end
-      seeds_per_pass = tonumber(seeds_per_pass)
-      writeSetting("seeds_per_pass", seeds_per_pass)
-      y = y + 27
+    if setWalkDelay then
+      lsPrint(10, y, z, scale, scale, 0xFFFFFFff, "Walk delay:")
+      walkSpeed = readSetting("walkSpeed", walkSpeed)
+      is_done, walkSpeed = lsEditBox("walkSpeed", 105, y, z, 45, 0, scale, scale, 0x000000ff, walkSpeed)
+      walkSpeed = tonumber(walkSpeed)
+        if not walkSpeed then
+          is_done = nil
+          lsPrint(10, y + 18, z + 10, 0.7, 0.7, 0xFF2020ff, "MUST BE A NUMBER")
+        end
+      walkSpeed = tonumber(walkSpeed)
+      writeSetting("walkSpeed", walkSpeed)
+      y = y + 26
+    else
+      walkSpeed = 550
     end
 
+    lsPrint(10, y, z, scale, scale, 0xFFFFFFff, "Plant to the:");
+    lsSetCamera(0,0,lsScreenX*1.4,lsScreenY*1.4);
+  	grid_direction = readSetting("grid_direction",grid_direction);
+      if setWalkDelay then
+    	  grid_direction = lsDropdown("grid_direction", 145, y+36, 0, 145, grid_direction, grid_directions);
+      else
+        grid_direction = lsDropdown("grid_direction", 145, y+26, 0, 145, grid_direction, grid_directions);
+      end
+  	writeSetting("grid_direction",grid_direction);
+    lsSetCamera(0,0,lsScreenX,lsScreenY);
+    y = y + 26
+
+    lsPrintWrapped(
+      10,
+      y,
+      z + 10,
+      lsScreenX - 20,
+      0.7,
+      0.7,
+      0xffff40ff,
+      "Macro Settings:\n-------------------------------------------"
+    )
+
+    is_plant = readSetting("is_plant", is_plant)
+    is_plant = CheckBox(10, y + 28, z, 0xFFFFFFff, " Grow Flax", is_plant, 0.7, 0.7)
+    writeSetting("is_plant", is_plant)
+
+    readClock = readSetting("readClock", readClock)
+    readClock = CheckBox(145, y + 28 , z, 0xFFFFFFff, " Read Coords", readClock, 0.7, 0.7)
+    writeSetting("readClock", readClock)
+    y = y + 17;
+
+    clearUI = readSetting("clearUI",clearUI);
+    clearUI = CheckBox(10, y + 28, z + 10, 0xFFFFFFff, " Pin grid below UI", clearUI, 0.7, 0.7);
+    writeSetting("clearUI",clearUI);
+
+    setWalkDelay = readSetting("setWalkDelay",setWalkDelay);
+    setWalkDelay = CheckBox(145, y + 28, z + 10, 0xFFFFFFff, " Set walk delay", setWalkDelay, 0.7, 0.7);
+    writeSetting("setWalkDelay",setWalkDelay);
+    y = y + 17;
+
+    lsPrintWrapped(
+      10,
+      y + 27,
+      z + 10,
+      lsScreenX - 20,
+      0.7,
+      0.7,
+      0xffff40ff,
+      "-------------------------------------------"
+    )
+    y = y + 40
+
     if readClock and is_plant then
+      water_needed = readSetting("water_needed", water_needed)
+      water_needed = CheckBox(10, y+5, z, 0xFFFFFFff, " Water Required", water_needed, 0.7, 0.7)
+      writeSetting("water_needed", water_needed)
+      y = y + 17;
+
+      rot_flax = readSetting("rot_flax", rot_flax)
+      rot_flax = CheckBox(10, y+5, z, 0xFFFFFFff, " Rot Flax", rot_flax, 0.7, 0.7)
+      writeSetting("rot_flax", rot_flax)
+
       if rot_flax or water_needed then
-        lsPrint(10, y, z, scale, scale, 0xFFFFFFff, "Water coords:")
+        lsSetCamera(0,0,lsScreenX*1.2,lsScreenY*1.2);
+        lsPrint(170, y+23, z, scale, scale, 0xFFFFFFff, "Coords:")
         water_location[0] = readSetting("water_locationX", water_location[0])
-        is_done, water_location[0] =
-          lsEditBox("water_locationX", 120, y, z, 55, 0, scale, scale, 0x000000ff, water_location[0])
+        is_done, water_location[0] = lsEditBox("water_locationX", 230, y+23, z, 55, 0, scale, scale, 0x000000ff, water_location[0])
         water_location[0] = tonumber(water_location[0])
-        if not water_location[0] then
-          is_done = nil
-          lsPrint(135, y + 28, z + 10, 0.7, 0.7, 0xFF2020ff, "MUST BE A NUMBER")
-          water_location[0] = 1
-        end
+          if not water_location[0] then
+            is_done = nil
+            lsPrint(135, y + 28, z + 10, 0.7, 0.7, 0xFF2020ff, "MUST BE A NUMBER")
+            water_location[0] = 1
+          end
         writeSetting("water_locationX", water_location[0])
 
         water_location[1] = readSetting("water_locationY", water_location[1])
         is_done, water_location[1] =
-          lsEditBox("water_locationY", 180, y, z, 55, 0, scale, scale, 0x000000ff, water_location[1])
+          lsEditBox("water_locationY", 290, y+23, z, 55, 0, scale, scale, 0x000000ff, water_location[1])
         water_location[1] = tonumber(water_location[1])
-        if not water_location[1] then
-          is_done = nil
-          lsPrint(135, y + 28, z + 10, 0.7, 0.7, 0xFF2020ff, "MUST BE A NUMBER")
-          water_location[1] = 1
-        end
+          if not water_location[1] then
+            is_done = nil
+            lsPrint(135, y + 28, z + 10, 0.7, 0.7, 0xFF2020ff, "MUST BE A NUMBER")
+            water_location[1] = 1
+          end
         writeSetting("water_locationY", water_location[1])
-        y = y + 28
+        lsSetCamera(0,0,lsScreenX,lsScreenY);
       end
-
       lsPrintWrapped(
         10,
-        y,
-        z + 10,
-        lsScreenX - 20,
-        0.7,
-        0.7,
-        0xffff40ff,
-        "Walk To Settings:\n-------------------------------------------"
-      )
-
-      water_needed = readSetting("water_needed", water_needed)
-      water_needed = CheckBox(10, y + 30, z + 10, 0xFFFFFFff, " Water Required", water_needed, 0.65, 0.65)
-      writeSetting("water_needed", water_needed)
-
-      rot_flax = readSetting("rot_flax", rot_flax)
-      rot_flax = CheckBox(10, y + 45, z + 10, 0xFFFFFFff, " Rot Flax", rot_flax, 0.65, 0.65)
-      writeSetting("rot_flax", rot_flax)
-
-      lsPrintWrapped(
-        10,
-        y + 57,
+        y + 17,
         z + 10,
         lsScreenX - 20,
         0.7,
@@ -307,39 +332,25 @@ function promptFlaxNumbers()
         0xffff40ff,
         "-------------------------------------------"
       )
-      y = y + 65
+      y = y + 40
     end
 
-    readClock = readSetting("readClock", readClock)
-    readClock = CheckBox(120, y + 5, z + 10, 0xFFFFFFff, " Read Clock Coords", readClock, 0.7, 0.7)
-    writeSetting("readClock", readClock)
-    y = y + 2
-
-    clearUI = readSetting("clearUI",clearUI);
-    clearUI = CheckBox(120, y + 19, z + 10, 0xFFFFFFff, " Pin grid below the UI", clearUI, 0.7, 0.7);
-    writeSetting("clearUI",clearUI);
-    y = y + 2
-
-    is_plant = readSetting("is_plant", is_plant)
-    is_plant = CheckBox(120, y + 33, z + 10, 0xFFFFFFff, " Grow Flax", is_plant, 0.7, 0.7)
-    writeSetting("is_plant", is_plant)
-    y = y + 50
-
-    if ButtonText(10, y - 33, z, 100, 0x00ff00ff, "Start !", 0.9, 0.9) then
-      is_done = 1
+    if walkSpeed ~= nil then
+      if lsButtonText(10, lsScreenY - 30, 0, 100, 0x00ff00ff, "Start !", 0.9, 0.9) then
+          is_done = 1;
+      end
     end
-    y = y + 10
 
     if is_plant then
       -- Will plant and harvest flax
       window_w = 270
       space_to_leave = false
 
-      lsPrintWrapped(10, y+10, z + 10, lsScreenX - 20, 0.7, 0.7, 0xffff40ff, 'Uncheck "Grow Flax" for SEEDS!')
+      lsPrintWrapped(10, y, z + 10, lsScreenX - 20, 0.7, 0.7, 0xffff40ff, 'Uncheck "Grow Flax" for SEEDS!')
       y = y + 24
       lsPrintWrapped(
         10,
-        y + 7,
+        y,
         z + 10,
         lsScreenX - 20,
         0.7,
@@ -521,20 +532,20 @@ end
 function rotFlax()
   srReadScreen();
   local flax = srFindImage("flax/flaxInv.png")
-  if not flax then
-    error("'Flax' was not visible in the inventory window");
-  else
-    safeClick(flax[0]+5, flax[1]);
-    lsSleep(refresh_time)
-    srReadScreen()
-    local rot = srFindImage("flax/rotFlax.png")
-    if rot then
-      safeClick(rot[0], rot[1]);
+    if not flax then
+      error("'Flax' was not visible in the inventory window");
+    else
+      safeClick(flax[0]+5, flax[1]);
       lsSleep(refresh_time)
       srReadScreen()
-      clickMax()
+      local rot = srFindImage("flax/rotFlax.png")
+        if rot then
+          safeClick(rot[0], rot[1]);
+          lsSleep(refresh_time)
+          srReadScreen()
+          clickMax()
+        end
     end
-  end
 end
 
 -------------------------------------------------------------------------------
@@ -555,8 +566,13 @@ function plantAndPin(loop_count)
   local dxi = 1
   local dt_max = grid_w
   local dt = grid_w
-  local dx = {1, 0, -1, 0}
-  local dy = {0, -1, 0, 1}
+  local i;
+  local dx = {};
+  local dy = {};
+    for i=1, 4 do
+      dx[i] = grid_deltas[grid_direction][1][i];
+      dy[i] = grid_deltas[grid_direction][2][i];
+    end
   local num_at_this_length = 3
   local x_pos = 0
   local y_pos = 0
@@ -590,7 +606,7 @@ function plantAndPin(loop_count)
           error_status = "Did not move on click."
           break
         end
-        lsSleep(walk_time)
+        lsSleep(walkSpeed)
         waitForStasis(spot, 1500)
         dt = dt - 1
         if dt == 1 then
@@ -825,28 +841,9 @@ end
 -------------------------------------------------------------------------------
 
 function walkHome(finalPos)
-  -- Close all empty windows
-  --closeEmptyAndErrorWindows();
--- closeAllWindows is now above, at end of harvestAll()
---  closeAllWindows(0, 0, xyWindowSize[0] - max_width_offset, xyWindowSize[1])
-
   if readClock then
     walkTo(finalPos)
   end
-
-  -- Walk back
-  --  for x=1, finalPos[0] do
-  --    local spot = getWaitSpot(xyCenter[0] - walk_px_x, xyCenter[1]);
-  --    safeClick(xyCenter[0] - walk_px_x, xyCenter[1], 0);
-  --    lsSleep(walk_time);
-  --    waitForStasis(spot, 1000);
-  --  end
-  --  for x=1, -(finalPos[1]) do
-  --    local spot = getWaitSpot(xyCenter[0], xyCenter[1] + walk_px_y);
-  --    safeClick(xyCenter[0], xyCenter[1] + walk_px_y, 0);
-  --    lsSleep(walk_time);
-  --    waitForStasis(spot, 1000);
-  --  end
 end
 
 -------------------------------------------------------------------------------
