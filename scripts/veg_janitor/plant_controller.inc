@@ -258,6 +258,7 @@ function PlantController:harvest()
     return false
   end
 
+  srReadScreen();
   local harvest_vec = findImageInWindowVec("harvest", self.window_pos)
   if not harvest_vec then
     return false
@@ -353,5 +354,3 @@ end
 function PlantController:set_search_box(box)
   self.location.box = box
 end
-
-
