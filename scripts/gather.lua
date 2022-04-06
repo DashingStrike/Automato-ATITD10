@@ -370,14 +370,11 @@ local movements = {
 };
 
 function doit()
-    askForWindow([[
-  Make sure your chats are minimized.
+  askForWindow(chat_minimized .. [[
+This macro will automatically configure ATITD Interface, Video, and One Click Options
 
-  This macro will automatically configure
-  ATITD Interface, Video, and One Click Options
-
-  Hover ATITD window and press Shift to start.
-    ]]);
+Hover ATITD window and press Shift to start.
+  ]]);
 
   math.randomseed(lsGetTimer());
   gather_randomNumber = math.random();
@@ -1357,7 +1354,7 @@ function walkTo(x, y, showStatus, promptIfNotMoving)
                 moving = false;
                 if(lsGetTimer() > lastMoveTime + 8000) then
                     if(promptIfNotMoving) then
-                        if(not promptOkay("You don't appear to be moving.  Are your chats minimized?  Is your \"Use arrow keys for movement\" option enabled?")) then
+                        if(not promptOkay("You don't appear to be moving.  Is 'Press Enter to Chat' visible within your chat window?  Is your \"Use arrow keys for movement\" option enabled?")) then
                             stopMoving();
                             return false;
                         end

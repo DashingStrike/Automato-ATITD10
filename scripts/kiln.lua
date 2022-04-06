@@ -310,13 +310,9 @@ clickList = {};
     y = y + 20
     lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "Lock ATITD screen with Alt+L")
     y = y + 40;
-    lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "MAKE SURE CHAT IS MINIMIZED!")
-    y = y + 40;
     lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "1) Set all Kiln locations:");
     y = y + 20;
-    lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "Hover mouse, " .. key .. " over each")
-    y = y + 20;
-    lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "Kiln.")
+    lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "Hover mouse, " .. key .. " over each Kiln.")
     y = y + 30;
     lsPrint(5, y, z, 0.6, 0.6, 0xf0f0f0ff, "2) After setting all Kiln locations:")
     y = y + 20;

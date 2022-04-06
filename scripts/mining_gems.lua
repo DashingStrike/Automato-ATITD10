@@ -2,7 +2,7 @@ dofile("common.inc");
 dofile("settings.inc");
 
 
-askText = "Additional Author Credits in Comments!\n\nMake sure chat is MINIMIZED and Main chat tab is visible!\n\nPress Shift over ATITD window to start.\n\nOptional: Pin the mine's Take... Gems... menu (\"All Gems\" will appear in pinned window).\n\nThis optionally pinned window will be refreshed every time the mine is worked.\n\nAlso, if Huge Gem appears in this window, it will alert you with an applause sound.";
+askText = chat_minimized .. "Press Shift over ATITD window to start.\n\nOptional: Pin the mine's Take... Gems... menu (\"All Gems\" will appear in pinned window).\n\nThis optionally pinned window will be refreshed every time the mine is worked.\n\nAlso, if Huge Gem appears in this window, it will alert you with an applause sound.";
 
 bonusRegion = false;
 noMouseMove = false;
@@ -855,16 +855,10 @@ function promptDelays()
     y = y + 16;
     lsPrint(5, y, 0, 0.6, 0.6, 0xffffffff, "Decrease value to run faster (try increments of 50)");
     y = y + 30;
-    lsPrint(5, y, 0, 0.6, 0.6, 0xffff80ff, "Minimized chat-channels MUST be ON!");
-    y = y + 16;
-    lsPrint(5, y, 0, 0.6, 0.6, 0xffff80ff, "See: Options, Chat-Related, 'Minimize' section.");
-    y = y + 28;
     lsPrint(5, y, 0, 0.6, 0.6, 0xffff80ff, "Main chat tab MUST be showing and wide enough");
     y = y + 16;
     lsPrint(5, y, 0, 0.6, 0.6, 0xffff80ff, "so that word wrapping does NOT occur.");
     y = y + 28;
-    lsPrint(5, y, 0, 0.6, 0.6, 0xffff80ff, "Chat window MUST be minimized!");
-    y = y + 16;
     lsPrint(5, y, 0, 0.6, 0.6, 0xffff80ff, "Main chat tab MUST be showing!");
 
     if lsButtonText(10, lsScreenY - 30, 0, 100, 0xFFFFFFff, "Next") then

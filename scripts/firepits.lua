@@ -2,7 +2,7 @@
 dofile("common.inc");
 dofile("settings.inc");
 
-askWinText = "Firepits Stoker v1.0 by Ashen --\n\nRecommended to run in F8F8 mode zoomed all the way in with screen locked. Chat MUST be minimized as this script will use hotkeys to stoke. The script will run indefinitely until told to quit.\n\nPress Shift over ATITD window.";
+askWinText = "Firepits Stoker v1.0 by Ashen --\n\nRecommended to run in F8F8 mode zoomed all the way in with screen locked.\n\n" .. chat_minimized .. "The script will run indefinitely until told to quit.\n\nPress Shift over ATITD window.";
 
 stokedelay = 100;
 pitcount = readSetting("firepits_count", 4);
