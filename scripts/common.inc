@@ -19,6 +19,10 @@ error_status = "";
 -- Standard message to print when the user aborts the macro.
 quit_message = "Macro aborted by user";
 
+-- Standard message to print about chat window being 'minimized'
+chat_minimized = "The chat window should be locked... Make sure " ..
+"'Press Enter to Chat' is visible within your chat window before you continue\n\n"
+
 
 -------------------------------------------------------------------------------
 -- singleLine(message)

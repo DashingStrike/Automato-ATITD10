@@ -37,8 +37,8 @@ local isContinueMaking = true;
 function doit()
   local macroStartTime = lsGetTimer();
   promptParameters();
-  askForWindow("Make sure your chats are minimized and brick rack menus"
-  .. " are pinned then hover ATITD window and press Shift to continue.");
+  askForWindow(chat_minimized + "Pin all your brick rack menus"
+  .. " then hover ATITD window and press Shift to continue.");
   if pinnedMode then
     if(arrangeWindows) then
       arrangeInGrid(false, false, 350, 110, nil, 10, 20);

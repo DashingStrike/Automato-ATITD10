@@ -16,7 +16,7 @@ offset = {};
 
 function doit()
 
-  askForWindow("Make sure your chats are minimized.\n\nEnable 'Supress the flyaway messages, only use the console'"
+  askForWindow(chat_minimized .. "Enable 'Supress the flyaway messages, only use the console'"
   .. " otherwise there is a chance the flyaway will block automato seeing the 'Complete Project' option."
   .. "\n\nNote that anvils need to have been rotated 180 degrees from the default rotation when built,"
   .. " so the sharp edge of the carp blade is to the left.\n\nSee comments in .lua for link to screenshot."

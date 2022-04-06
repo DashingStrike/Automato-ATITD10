@@ -75,13 +75,13 @@ function doit()
 	local num_rounds;
 	local keystrokes;
 	num_rounds = promptNumber("How many thermos?", 1);
-	askForWindowAndPixel("\n\nPin up the 'Start Making' menu.\n\nMake sure your chat is minimized!\n\nClick in ATITD, hover your mouse over the glory hole and press Shift key.\n\nEnsure your heater control is set to Standard.");
+	askForWindowAndPixel("\n\nPin up the 'Start Making' menu.\n\n" .. chat_minimized .. "Click in ATITD, hover your mouse over the glory hole and press Shift key.\n\nEnsure your heater control is set to Standard.");
 	srReadScreen();
 	thermos = srFindImage("gloryhole/thermometer.png")
 	if not thermos then
 	  error('No match on screen for Thermometer.png\nDo you have Start Making menu pinned?');
 	end
-	sleepWithStatus(5000, "Preparing to start macro!\n\nDon\'t touch mouse, EVER, while running!\n\nAre you sure chat is minimized?\n\nNow is your chance to Abort if not...", nil, 0.7);
+	sleepWithStatus(5000, "Preparing to start macro!\n\nDon\'t touch mouse, EVER, while running!", nil, 0.7);
 	for i = 1, num_rounds do
 		keystrokes = 0;
 		status = "";
@@ -89,33 +89,29 @@ function doit()
 		clickAll("gloryhole/thermometer.png", true);
 		lsSleep(100);
 		srSetMousePos(mouse_x, mouse_y);
-		for j = 1, string.len(recipe) do
-			--recipe time
-            checkBreak();
-            local currKey = string.sub(recipe, j, j);
-            srSetMousePos(mouse_x, mouse_y);
-            srKeyEvent(currKey);
-            keystrokes = keystrokes + 1;
-            status = status .. currKey;
-			lsSleep(keyDelay);
-
-            statusScreen("[" .. i .. "/" .. num_rounds .. "] Thermometer(s)\n[" .. keystrokes .. "/" .. recipeLen .. "] Keystrokes remaining\n\nPlease be patient; Don\'t touch mouse!\nSending keystrokes to the glory hole...\n\n" .. status, nil, 0.7);
-
-		end
-
+			for j = 1, string.len(recipe) do
+				--recipe time
+	      checkBreak();
+	      local currKey = string.sub(recipe, j, j);
+	      srSetMousePos(mouse_x, mouse_y);
+	      srKeyEvent(currKey);
+	      keystrokes = keystrokes + 1;
+	      status = status .. currKey;
+				lsSleep(keyDelay);
+	      statusScreen("[" .. i .. "/" .. num_rounds .. "] Thermometer(s)\n[" .. keystrokes .. "/" .. recipeLen .. "] Keystrokes remaining\n\nPlease be patient; Don\'t touch mouse!\nSending keystrokes to the glory hole...\n\n" .. status, nil, 0.7);
+			end
     srKeyEvent("u");
     lsSleep(1000);
     srReadScreen();
     local max = srFindImage("max.png");
-    if max then
-      safeClick(max[0]+5,max[1]+5);
-      sleepWithStatus(100, "Clicking Max button");
-    end
+	    if max then
+	      safeClick(max[0]+5,max[1]+5);
+	      sleepWithStatus(100, "Clicking Max button");
+	    end
     clickAll("Ok.png");
     lsSleep(keyDelay);
     clickAll("WindowEmpty.png");
     lsSleep(keyDelay);
-
 	end
 lsPlaySound("Complete.wav");
 end
