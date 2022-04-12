@@ -619,28 +619,23 @@ local function tapRods()
 end
 
 local function excavateBlocks()
-    local window = findAllText("This is [a-z]+ Pyramid Block(Roll", nil, REGION + REGEX);
+    local window = findAllText("Pyramid Block");
       if window then
         for i = 1, #window do
-          unpinWindow(window[i]);
+          srClickMouseNoMove(window[i][0],window[i][1],1)
         end
-        lsSleep(50);
         srReadScreen();
       end
-    window = findText("This is [a-z]+ Tooth Limestone Bl", nil, REGION + REGEX);
-      if window == nil then
-        return;
-      end
-    local t = findText("Dig around", window);
+    local t = findText("Dig around");
       if t then
         clickText(t);
       end
     t = waitForText("Slide a rolling rack", 300);
       if t then
         clickText(t);
-        t = waitForText("This is [a-z]+ Pyramid Block(Roll", 300, nil, nil, REGION + REGEX);
+        t = waitForText("Pyramid Block", 300);
           if t then
-            unpinWindow(t);
+            srClickMouseNoMove(t[0],t[1],1)
           end
       end
     return;
