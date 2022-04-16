@@ -130,6 +130,22 @@ function explode(d,p)
    return t
 end
 
+-------------------------------------------------------------------------------
+-- refreshWindows()
+--
+-- Searches the screen for all instances of "This" text
+-- Clicks all matches instances
+-------------------------------------------------------------------------------
+
+function refreshWindows()
+  srReadScreen();
+  this = findAllText("This");
+	  for i = 1, #this do
+	    clickText(this[i]);
+	  end
+  lsSleep(100);
+end
+
 
 
 dofile("common_fix.inc");

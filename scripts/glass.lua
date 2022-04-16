@@ -286,6 +286,8 @@ function glassTick(window_pos, state)
          state.MinTempReachedOnce and not ((state.spiking or state.want_spike) and not cookDuringSpike) then
 				local made_one=nil;
 				for item_index=1, #item_priority do
+          refreshWindows();
+          srReadScreen();
 					pos = srFindImageInRange("glass/" .. item_priority[item_index], bounds[0]+5, bounds[1]+5, window_w, window_h, tol);
 					if pos then
 							for pngName, glassName in pairs(item_name) do
@@ -294,11 +296,10 @@ function glassTick(window_pos, state)
 								  break;
 								end
 							end
-						--state.status = state.status .. " Making:" .. item_priority[item_index];
 						state.status = state.status .. " Making:" .. making;
-						lsSleep(100);
+						lsSleep(250);
 						srClickMouseNoMove(pos[0]+15, pos[1]+2);
-						lsSleep(100);
+						lsSleep(250);
 						made_one = 1;
 						break;
 					end
@@ -317,7 +318,6 @@ function glassTick(window_pos, state)
 					  state.status = state.status .. " NothingToMake - Error Refreshing Window";
 					else
 					  state.status = state.status .. " NothingToMake - Refreshing Window";
-					--srSetMousePos(thisIs[0], thisIs[1]);
 					  srClickMouseNoMove(thisIs[0], thisIs[1]);
 					  lsSleep(1000);
 					end
