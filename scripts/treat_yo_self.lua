@@ -711,10 +711,10 @@ function calcPos()
       srReadScreen();
       local tongUpgrade = findText("Upgrades");
         if tongUpgrade then
-          statsX = treat[0] + 104;
+          statsX = treat[0] + 103;
           statsY = treat[1] + 138;
         else
-          statsX = treat[0] + 104;
+          statsX = treat[0] + 103;
           statsY = treat[1] + 126;
         end
     elseif materials[materialIndex].building == "Wood Treatment Tank" then
