@@ -37,7 +37,7 @@ local isContinueMaking = true;
 function doit()
   local macroStartTime = lsGetTimer();
   promptParameters();
-  askForWindow(chat_minimized + "Pin all your brick rack menus"
+  askForWindow(chat_minimized .. "Pin all your brick rack menus"
   .. " then hover ATITD window and press Shift to continue.");
   if pinnedMode then
     if(arrangeWindows) then
