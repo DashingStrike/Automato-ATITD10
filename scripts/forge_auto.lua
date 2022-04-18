@@ -1,9 +1,9 @@
 dofile("common.inc");
 dofile("serialize.inc");
+dofile("settings.inc")
 
 -- Some notes in this macro. You may pin any variety of student casting boxes, master casting boxes, and forges. The macro will prioritize making master only stuff in master boxes, but will then make student goods in them. SELECT HOW MANY OF AN ITEM YOU WANT TO MAKE, NOT HOW MANY ROUNDS TO DO. The macro does know, for instance, that each time you click to make nails it makes 12 nails. - Skyfeather
 debug = false; -- This simply prevents the popup box (that tells you what materials you need) from closing, so you can view what it needs. No materials in inventory
-
 
 function pairsByKeys (t, f)
   local a = {}
@@ -40,7 +40,6 @@ function chooseItems(itemList, multiple)
   local x, y, z;
   local numRows = 9;
   local pickedOne = false;
-  --scale = 1.5;
   local retList = {};
   while true do
     local currentItem = {};
@@ -54,11 +53,10 @@ function chooseItems(itemList, multiple)
         parentString = parentString .. currentItem.parents[i] .. suff;
         suff = "/";
       end
-      --lsSetCamera(0,0,lsScreenX*scale,lsScreenY*scale);
       if parentString == "" then
-        lsPrint(5, 2, z, scale, scale, 0xffffffff, "What would you like to make?");
+        lsPrint(5, 2, z, scale, scale, 0xffffffff, "What would you like to do?");
       else
-        lsPrint(5, 2, z, scale, scale, 0xffffffff, string.format("What kind of %s would you like to make?", parentString));
+        lsPrint(5, 2, z, scale, scale, 0xffffffff, string.format("What kind of %s would you like to do?", parentString));
       end
       x = 10;
       y = 30;
@@ -95,10 +93,13 @@ function chooseItems(itemList, multiple)
         c = c + 1;
         y = y + 22;
       end
+      auto_extinguish = readSetting("auto_extinguish", auto_extinguish)
+      auto_extinguish = CheckBox(10, 232, z, 0xFFFFFFff, " Automatically extinguish forges", auto_extinguish, scale, scale)
+      writeSetting("auto_extinguish", auto_extinguish)
       x = 10;
       y = 30 + numRows *22;
       if pickedOne then
-        lsPrint(x, y, z, scale, scale, 0xffffffff, #retList .. " Items Queued:");
+        lsPrint(x, y+26, z, scale, scale, 0x00ff00ff, #retList .. " Items Queued:");
         y = y + 22;
         for i=1, #retList do
           local leafParentsString = "";
@@ -111,15 +112,17 @@ function chooseItems(itemList, multiple)
           else
             num = "" .. num;
           end
-          lsPrint(x, y, z, scale, scale, 0xffffffff, string.format("%s %s%s", num, leafParentsString, retList[i].name));
-          y = y + 22;
+          lsPrint(x, y+21, z, scale, scale, 0x00ff00ff, string.format("%s %s%s", num, leafParentsString, retList[i].name));
+          y = y + 15;
         end
-        lsPrintWrapped(x, y, z, lsScreenX + 80, 0.67, 0.67, 0xFFFFFFff, shenanigans);
+        if shenanigans ~= null then
+          lsPrintWrapped(x, y+27, z, lsScreenX + 80, 0.67, 0.67, 0xffff40ff, shenanigans);
+        end
       end
       -- Add in exit and optionally done and Back buttons.
       --lsSetCamera(0,0,lsScreenX,lsScreenY);
       if #currentItem.parents ~= 0 then
-        if ButtonText(lsScreenX - 80, lsScreenY - 50, z, 90, 0xFFFFFFff, "Back") then
+        if ButtonText(lsScreenX - 80, lsScreenY - 50, z, 90, 0xffff40ff, "Back") then
           local p = currentItem.parents;
           currentItem = {};
           currentItem.parents = {};
@@ -133,15 +136,14 @@ function chooseItems(itemList, multiple)
           end
         end
       end
-      if ButtonText(lsScreenX - 80, lsScreenY - 25, z, 90, 0xFFFFFFff, "Exit") then
+      if ButtonText(lsScreenX - 80, lsScreenY - 25, z, 90, 0xFF0000ff, "Exit") then
         return nil;
       end
       if pickedOne then
-        if ButtonText(10, lsScreenY - 25, z, 90, 0xFFFFFFff, "Done") then
+        if ButtonText(10, lsScreenY - 25, z, 90, 0x00ff00ff, "Done") then
           return retList;
         end
       end
-      --lsSetCamera(0,0,lsScreenX*scale,lsScreenY*scale);
       lsDoFrame();
       lsSleep(10);
     end
@@ -188,8 +190,6 @@ function chooseItems(itemList, multiple)
           batchWord = "Batches";
         end
 
-
-
         if v.item.time ~= nil then
           batchTime = v.item.time;
           batchTimeWord = "\nTime Req. Per Batch: " .. batchTime .. "m  ( Total: " .. batchTime * batchReq .. "m )\n";
@@ -198,7 +198,6 @@ function chooseItems(itemList, multiple)
           batchTimeWord = "\n";
         end
       end
-      shenanigans = "----------------------------\nRequires: " .. math.ceil(batchNum/batchProd) .. " " .. batchWord .. "\nEach Batch Produces: " .. batchProd .. "\nMetal Req. Per Batch: " .. batchQty .. "   ( Total: " .. batchQty * batchReq ..  " )" .. batchTimeWord .. batchReq*batchProd .. " " .. batchItemName .. " will be created.";
     else --if currentItem.num ~= 0
       shenanigans = "You chose 0 quantity.\nItem ignored/excluded from list.";
     end --if currentItem.num ~= 0
@@ -216,13 +215,13 @@ local function makeItem(currentItem, window)
 
     if parents[2] == "Bars x1" or parents[2] == "Bars x5" or parents[2] == "Bars x10" then
       t = findText("Bars" .. "...", window);
-      clickText(t);
+      clickText(t, true, 310, 5);
     elseif parents[2] == "Small Gear x1" or parents[2] == "Small Gear x10" or parents[2] == "Small Gear x20" then
       t = findText("Gearwork" .. "...", window);
-      clickText(t);
+      clickText(t, true, 310, 5);
     elseif parents[2] == "Medium Gear x1" or parents[2] == "Medium Gear x10" or parents[2] == "Medium Gear x20" then
       t = findText("Gearwork" .. "...", window);
-      clickText(t);
+      clickText(t, true, 310, 5);
     else
       t = findText(parents[2] .. "...", window);
     end
@@ -231,7 +230,7 @@ local function makeItem(currentItem, window)
       lsPrintln("Initial window error");
       return false;
     end
-    clickText(t);
+    clickText(t, true, 310, 5);
     lsSleep(100);
   end
 
@@ -350,28 +349,33 @@ local function makeItem(currentItem, window)
   if #parents ~= 1 then
     waitForNoText(text, 1000);
   end
-  -- Special case for complex items
-  --   if name == "Stainless Steel Pot" then
-  --      local win = waitForText("A stainless Steel Pot requires", 1000, nil, nil, REGION);
-  --      if win ~= nil then
-  --         t = findText("Steel:", nil, nil, CPLX_ITEM_CHOOSE);
-  --         if t ~= nil then
-  --            clickText(t);
-  --            waitForNoText("Steel:", 1000, nil, nil, nil, CPLX_ITEM_CHOOSE);
-  --            t = findText("Steel:", nil, nil, CPLX_ITEM_CHOOSE);
-  --            if t ~= nil then
-  --               lsPrintln(string.format("tl: %d, %d", win.x, win.y));
-  --               safeClick(win.x+93, win.y + 290);
-  --               waitForNoText("A stainless Steel Pot requires", 1500);
-  --            end
-  --         else
-  --            lsPrintln("Couldn't find Steel:");
-  --         end
-  --      end
-  --   end
+
+  if name == "Pincher Axle" or name == "Pincher Claw" then
+
+    if name == "Pincher Axel" then
+      pincherPlating = "Platinum"
+    elseif name == "Pincher Claw" then
+      pincherPlating = "Aluminum"
+    end
+
+    srSetWindowBorderColorRange(minThickWindowBorderColorRange, maxThickWindowBorderColorRange);
+    lsSleep(1000);
+    srReadScreen();
+    requiresWindow = findText("requires:", nil, REGION);
+    t = findText(pincherPlating .. "-Plated",requiresWindow);
+      if t ~= nil then
+        safeClick(t[0],t[1]);
+        lsSleep(per_tick);
+        srReadScreen()
+        ok = srFindImage("ok.png")
+          if ok then
+            safeClick(ok[0],ok[1]);
+          end -- if ok
+      end -- if t
+    srSetWindowBorderColorRange(minThinWindowBorderColorRange, maxThinWindowBorderColorRange);
+  end -- if name
 
   -- Quick/dirty hack to get Stainless working on T8. Above commented section doesn't work due to how the text displays
-
   if name == "Stainless Steel Pot" then
     local win = waitForText("A stainless Steel Pot requires", 1000, nil, nil, REGION);
 
@@ -397,10 +401,16 @@ function putOutWindows(text)
   t = findAllText(text .. " is lit", nil, REGION);
   for i=1, #t do
     clickText(findText("Put out", t[i]));
+    local yes = waitForImage(
+      "Yes.png",
+      60000,
+      "Waiting for 'Yes' text on the screen."
+    );
+    waitAndClickImage("Yes.png");
   end
+  sleepWithStatus(2500, "Latency check", nil, 0.7);
+  refreshWindows();
 end
-
-boxTypes = {"Student's Forge", "Student's Casting Box", "Master's Forge", "Master's Casting Box"};
 
 function doit()
   unpinOnExit(runForges);
@@ -416,6 +426,10 @@ function runForges()
   if success == false then
     error("Could not read casting box info");
   end
+  success, ancientItems = deserialize("ancientforge_items.txt");
+  if success == false then
+    error("Could not read ancient forge info");
+  end
 
   askForWindow("Hover mouse over ATITD Window and press SHIFT");
   windowManager(nil,nil, false, false, 480, 200, nil, 10, 20,false);
@@ -423,6 +437,7 @@ function runForges()
   local topLevel = {};
   topLevel.Forge = forgeItems;
   topLevel.Casting = castingItems;
+  topLevel.Ancient = ancientItems;
   desiredItems = chooseItems(topLevel, true);
   if desiredItems == nil then
     return;
@@ -434,7 +449,7 @@ function runForges()
     lsPrintln(string.format("num = %d, prod = %d, q = %d", v.num, v.item.prod, v.item.q));
     local num = math.ceil(v.num/v.item.prod)*v.item.q;
     local metalType;
-    if v.parents[1] == "Casting" then
+    if v.parents[1] == "Casting" or v.parents[1] == "Ancient" then
       if v.item.beeswax == nil then
         beeswax = beeswax + num;
       else
@@ -474,11 +489,13 @@ function runForges()
   itemQueue["Master's Forge"] = {};
   itemQueue["Student's Casting Box"] = {};
   itemQueue["Master's Casting Box"] = {};
+  itemQueue["Ancient Forge"] = {};
   viableQueue = {}
   viableQueue["Student's Forge"] = {"Student's Forge"};
   viableQueue["Master's Forge"] = {"Master's Forge", "Student's Forge"};
   viableQueue["Student's Casting Box"] = {"Student's Casting Box"};
   viableQueue["Master's Casting Box"] = {"Master's Casting Box", "Student's Casting Box"};
+  viableQueue["Ancient Forge"] = {"Ancient Forge"};
 
   -- Build item queues that we're going to pull from to make stuff.
   -- Add them in backwards so that we can pop cheaply
@@ -498,6 +515,9 @@ function runForges()
         else
           table.insert(itemQueue["Student's Casting Box"], {v.name, v.parents});
         end
+      elseif v.parents[1] == "Ancient" then
+        ancientForging = true;
+        table.insert(itemQueue["Ancient Forge"], {v.name, v.parents});
       else
         error("Invalid data type for queue");
       end
@@ -509,31 +529,41 @@ function runForges()
   lsSleep(200);
   srReadScreen();
   local win = findAllText("in the chamber", nil, REGION);
-  for i=1, #win do
-    -- is it lit? if not, light it.
-    t = findText("is out", win[i]);
-    local ccamount;
-    local u = findText("in the chamber", win[i]);
-    local curCC = tonumber(string.match(u[2], "(%d+) Charcoal in the chamber."));
-    if findText("Student's Forge", win[i]) then
-      ccamount = 60;
-    elseif findText("Master's Forge", win[i]) then
-      ccamount = 250;
-    elseif findText("Student's Casting Box", win[i]) then
-      ccamount = 100;
-    elseif findText("Master's Casting Box", win[i]) then
-      ccamount = 600;
+    for i=1, #win do
+      -- is it lit? if not, light it.
+      t = findText("is out", win[i]);
+      local ccamount;
+      local u = findText("in the chamber", win[i]);
+      if ancientForging then
+        curCC = tonumber(string.match(u[2], "(%d+) Orichalcum Pellet in the chamber."));
+      else
+        curCC = tonumber(string.match(u[2], "(%d+) Charcoal in the chamber."));
+      end
+        if findText("Student's Forge", win[i]) then
+          ccamount = 60;
+        elseif findText("Master's Forge", win[i]) then
+          ccamount = 250;
+        elseif findText("Student's Casting Box", win[i]) then
+          ccamount = 100;
+        elseif findText("Master's Casting Box", win[i]) then
+          ccamount = 600;
+        elseif findText("Ancient Forge", win[i]) then
+          ccamount = 60;
+        end
+      local toAdd = ccamount - curCC;
+        if t and toAdd > 0 then
+          clickText(findText("Fill this ", win[i]));
+            if ancientForging then
+              waitForImage("max.png", nil, "Waiting for Orichalcum Pellet message");
+            else
+              waitForImage("max.png", nil, "Waiting for Charcoal message");
+            end
+          srKeyEvent(string.format("%d\n", toAdd));
+          waitForNoImage("max.png");
+          lsSleep(100);
+          closePopUp();
+        end
     end
-    local toAdd = ccamount - curCC;
-    if t and toAdd > 0 then
-      clickText(findText("Fill this ", win[i]));
-      waitForImage("max.png", nil, "Waiting for Charcoal message");
-      srKeyEvent(string.format("%d\n", toAdd));
-      waitForNoImage("max.png");
-      lsSleep(100);
-      closePopUp();
-    end
-  end
   clickAllText("Start fire");
 
   -- Begin infinite loop. Broken out of by finishing making all items.
@@ -541,50 +571,45 @@ function runForges()
     local t, u;
     sleepWithStatus(1500, "Sleeping before checking forges again", nil, 0.7);
     srReadScreen();
-    -- TODO: Put out the forges when they're done.
     foundOne = false;
     for k, v in pairs(itemQueue) do
       if #v > 0 then
         foundOne = true;
       end
     end
-    -- if foundOne == false then
-    -- error("done making items");
-    -- end
 
-    -- if #itemQueue["Student's Forge"] == 0 then
-    -- putOutWindows("Student's Forge");
-    -- end
-    -- if #masterForgeQ == 0 and #studentForgeQ == 0 then
-    -- putOutWindows("Master's Forge");
-    -- end
-    -- if #studentCastingQ == 0 then
-    -- putOutWindows("Student's Casting Box");
-    -- end
-    -- if #masterCastingQ == 0 and #studentCastingQ == 0 then
-    -- putOutWindows("Master's Casting Box");
-    -- end
-    t = findText("is cooling");
+    t = findText("cooling");
     local numItemsLeft = 0;
     for k, v in pairs(itemQueue) do
       numItemsLeft = numItemsLeft + #itemQueue[k];
     end
     if t == nil and numItemsLeft == 0 then
-      lsPrintln("Finished all items");
-      return;
+      -- Queue is empty, put out the forges
+      if auto_extinguish then
+        putOutWindows("The fire");
+        return;
+      end
     end
     local windows = findAllText("is lit", nil, REGION);
     for i=1, #windows do
       local charcoalText = findText("in the chamber", windows[i]);
       if charcoalText then
-        local cc = tonumber(string.match(charcoalText[2], "(%d+) Charcoal in the chamber"));
-        if cc and cc <= 10 then
-          t = findText("Fill this ", windows[i]);
-          clickText(t);
-          waitForImage("max.png", nil, "Waiting for charcoal topoff");
-          srKeyEvent("10\n");
-          waitForNoImage("max.png");
+        if ancientForging then
+          local cc = tonumber(string.match(charcoalText[2], "(%d+) Orichalcum Pellet in the chamber."));
+        else
+          local cc = tonumber(string.match(charcoalText[2], "(%d+) Charcoal in the chamber"));
         end
+          if cc and cc <= 10 then
+            t = findText("Fill this ", windows[i]);
+            clickText(t);
+              if ancientForging then
+                waitForImage("max.png", nil, "Waiting for orichalcum pellet topoff");
+              else
+                waitForImage("max.png", nil, "Waiting for charcoal topoff");
+              end
+            srKeyEvent("10\n");
+            waitForNoImage("max.png");
+          end
       end
       t = findText("is cooling", windows[i]);
       if t == nil then
@@ -596,6 +621,8 @@ function runForges()
           buildingType = "Master's Forge";
         elseif findText("Student's Forge", windows[i]) then
           buildingType = "Student's Forge";
+        elseif findText("Ancient Forge", windows[i]) then
+          buildingType = "Ancient Forge";
         end
         local currentItem, currentQueue;
         if #itemQueue[buildingType] ~= 0 then
@@ -624,15 +651,13 @@ function runForges()
   end
 end
 
-
 function downArrow()
   srReadScreen();
   downPin = srFindImage("Fishing/Menu_DownArrow.png");
-  if downPin then
-    --srSetMousePos(downPin[0]+8,downPin[1]+5);
-    srClickMouseNoMove(downPin[0]+8,downPin[1]+5);
-    lsSleep(100);
-  end
+    if downPin then
+      srClickMouseNoMove(downPin[0]+8,downPin[1]+5);
+      lsSleep(100);
+    end
 end
 
 function closePopUp()
