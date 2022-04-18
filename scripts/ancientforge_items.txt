@@ -1,0 +1,21 @@
+return
+{
+	["Pincher Axle"] =
+	{
+		["beeswax"] = 25,
+		["metal"] = "Metal Blue: Stainless, Platinum-Plated, Tarnished, Hard & Purity 6+",
+		["prod"] = 1,
+		["q"] = 25,
+		["time"] = 5,
+	}
+	,
+	["Pincher Claw"] =
+	{
+		["beeswax"] = 50,
+		["metal"] = "Metal Blue: Stainless, Toxic, Aluminum-Plated, Hard & Purity 6+",
+		["prod"] = 1,
+		["q"] = 50,
+		["time"] = 5,
+	}
+	,
+}
