@@ -4,7 +4,7 @@ dofile("settings.inc");
 ----------------------------------------
 --          Global Variables          --
 ----------------------------------------
-window_w = 320;
+window_w = 360;
 window_h = 415;
 temperature_width = 85; -- Width of the Temperature label
 tol = 500;
@@ -16,7 +16,10 @@ max_add_temp = 2290; -- Rare (0.5%) occurance of temperature too high at 2300
 madeSomeGlass = false; -- Becomes true when you've started to make anything
 showTicks = true;  -- Change to false to supress (Ticks:# / DV:value / HV:value / min/maxTemp:value-value)
 glazierBenchSpec = false;
-writeLogs = false; -- Write out in GlassLogs.txt every time bench status updates
+
+batchProduction = false;
+batchSizes = { "2", "5", "10" };
+
 thisLog = "\n***************  New Session Started  ***************\n\n";
 this_tick = "";
 last_tick = "";
@@ -286,8 +289,8 @@ function glassTick(window_pos, state)
          state.MinTempReachedOnce and not ((state.spiking or state.want_spike) and not cookDuringSpike) then
 				local made_one=nil;
 				for item_index=1, #item_priority do
-          refreshWindows();
           srReadScreen();
+          batchwork = srFindImageInRange("glass/batchwork.png", bounds[0]+5, bounds[1]+5, window_w, window_h, tol);
 					pos = srFindImageInRange("glass/" .. item_priority[item_index], bounds[0]+5, bounds[1]+5, window_w, window_h, tol);
 					if pos then
 							for pngName, glassName in pairs(item_name) do
@@ -296,10 +299,63 @@ function glassTick(window_pos, state)
 								  break;
 								end
 							end
+						--state.status = state.status .. " Making:" .. item_priority[item_index];
 						state.status = state.status .. " Making:" .. making;
-						lsSleep(250);
-						srClickMouseNoMove(pos[0]+15, pos[1]+2);
-						lsSleep(250);
+						lsSleep(100);
+            if batchwork and batchProduction then
+              escape = "\27"
+              pos = srFindImageInRange("glass/batchwork.png", bounds[0]+5, bounds[1]+5, window_w, window_h, tol);
+              srClickMouseNoMove(pos[0]+18, pos[1]);
+              lsSleep(500);
+                if batchSize == 1 then
+                  srReadScreen();
+                  lsSleep(500);
+                  local makeSet = srFindImage("glass/makeTwo.png")
+                    if makeSet then
+                      srClickMouseNoMove(makeSet[0], makeSet[1]);
+                      srReadScreen();
+                        if making == "Fine Rod" then
+                          making = "Fine Glass Rods"
+                        elseif making == "Fine Pipe" then
+                          making = "Fine Glass Pipes"
+                        end
+                      waitAndClickText("2 " .. making)
+                      srKeyEvent(escape) -- Hit ESC to close out unpinned menus.
+                    end
+                elseif batchSize == 2 then
+                  srReadScreen();
+                  lsSleep(500);
+                  local makeSet = srFindImage("glass/makeFive.png")
+                    if makeSet then
+                      srClickMouseNoMove(makeSet[0], makeSet[1]);
+                      lsSleep(350);
+                      srReadScreen();
+                        if making == "Fine Rod" then
+                          making = "Fine Glass Rods"
+                          waitAndClickText("5 " .. making)
+                        elseif making == "Fine Pipe" then
+                          making = "Fine Glass Pipes"
+                          waitAndClickText("5 " .. making)
+                        else
+                          waitAndClickText("5 Glass " .. making .. "s")
+                        end
+                      srKeyEvent(escape) -- Hit ESC to close out unpinned menus.
+                    end
+                  elseif batchSize == 3 then
+                    srReadScreen();
+                    lsSleep(500);
+                    local makeSet = srFindImage("glass/makeTen.png")
+                      if makeSet then
+                        srClickMouseNoMove(makeSet[0], makeSet[1]);
+                        srReadScreen();
+                        waitAndClickText("10 Glass " .. making .. "s")
+                        srKeyEvent(escape) -- Hit ESC to close out unpinned menus.
+                      end
+                  end
+            else
+  						srClickMouseNoMove(pos[0]+15, pos[1]+2);
+            end
+						lsSleep(100);
 						made_one = 1;
 						break;
 					end
@@ -318,6 +374,7 @@ function glassTick(window_pos, state)
 					  state.status = state.status .. " NothingToMake - Error Refreshing Window";
 					else
 					  state.status = state.status .. " NothingToMake - Refreshing Window";
+					--srSetMousePos(thisIs[0], thisIs[1]);
 					  srClickMouseNoMove(thisIs[0], thisIs[1]);
 					  lsSleep(1000);
 					end
@@ -364,7 +421,6 @@ function allowReorder(x, y)
 end
 
 function doit()
-
 	askForWindow("Pin Glazier's Bench(es). [+2cc] adds charcoal (5 temperature ticks, 6 for Jewel Glass)."
   .. " Above high tempearture (3200, or 4400 for jewel) melt materials ([M] to show Melt Material window,"
   .. " [S]=Soda, [N]=Normal, [J]=Jewel). With materials loaded, the macro will take over.  "
@@ -407,7 +463,7 @@ function doit()
 	  lsSetCamera(0,0,lsScreenX*1.1,lsScreenY*1.1);
 	  allowReorder(10, 155);
 
-		if  setPriority then
+		if setPriority then
 			if lsButtonText(15, 35, 0, 100, 0x00FFFFff, "START") then
 			  setPriority = false;
 			  lsDoFrame();
@@ -427,12 +483,24 @@ function doit()
 	end
 
 	  showTicks = lsCheckBox(200, lsScreenY - 70, 10, 0xFFFFFFff, " Display Ticks/HV/DV", showTicks);
-	  writeLogs = lsCheckBox(200, lsScreenY - 40, 10, 0xFFFFFFff, " Write Log File", writeLogs);
-
 	  glazierBenchSpec = readSetting("glazierBenchSpec",glazierBenchSpec);
-	  glazierBenchSpec = lsCheckBox(200, lsScreenY - 10, 10, 0xFFFFFFff,
+	  glazierBenchSpec = lsCheckBox(200, lsScreenY - 40, 10, 0xFFFFFFff,
     " Have Glazier\'s Bench Handling Spec?", glazierBenchSpec);
 	  writeSetting("glazierBenchSpec",glazierBenchSpec);
+
+    batchProduction = lsCheckBox(200, lsScreenY - 10, 10, 0xFFFFFFff, " Batch Produce Glass", batchProduction);
+
+    if batchProduction then
+      lsSetCamera(0,0,lsScreenX*1.4,lsScreenY*1.4);
+      lsPrint(210, lsScreenY - 4, 0, 1.0, 1.0, 0xFFFFFFff, "Sets of: ");
+      batchSize = lsDropdown("batchSize", 285, lsScreenY - 5, 0, 60, batchSize, batchSizes);
+        if batchSize == 1 then
+          lsPrint(210, lsScreenY + 30, 0, 1.0, 1.0, 0xFF0000ff, "Jewel Glass Only! ");
+        elseif batchSize == 3 then
+          lsPrint(210, lsScreenY + 30, 0, 1.0, 1.0, 0xFF0000ff, "Not Valid For Jewel Glass! ");
+        end
+      lsSetCamera(0,0,lsScreenX*1.5,lsScreenY*1.5);
+    end
 
 	  lsDoFrame();
 	  lsSleep(10);
@@ -495,25 +563,9 @@ function doit()
 				if last_ret[window_index] then
 					should_continue = 1;
 					lsPrint(10, 65 + 15*window_index, 0, 0.7, 0.7, 0xFFFFFFff, "#" .. window_index .. " - " .. last_ret[window_index]);
-						if writeLogs then
-						  thisLog = thisLog  ..  "#" .. window_index .. last_ret[window_index] .. "\n";
-						  this_tick = this_tick .. last_ret[window_index];
-						end
 				else
 					lsPrint(10, 65 + 15*window_index, 0, 0.7, 0.7, 0xFFFFFFff, "#" .. window_index .. "  - COOL DOWN");
 				end
-			end
-
-			if writeLogs then
-				if this_tick ~= last_tick then
-					if #glass_windows > 1 then
-					  thisLog = thisLog .. "\n";
-					end
-          WriteGlassLogs(thisLog);
-				end
-			  last_tick = this_tick;
-			  this_tick = "";
-			  thisLog = "";
 			end
 
 		  lsSetCamera(0,0,lsScreenX*1.5,lsScreenY*1.5);
@@ -525,17 +577,35 @@ function doit()
         " Suspend Cooking (Maintain Heat, no New Projects)", maintainHeatNoCook);
 		  end
 		    showTicks = lsCheckBox(200, lsScreenY - 70, 10, 0xFFFFFFff, " Display Ticks/HV/DV", showTicks);
-		    writeLogs = lsCheckBox(200, lsScreenY - 40, 10, 0xFFFFFFff, " Write Log File", writeLogs);
-		    glazierBenchSpec = lsCheckBox(200, lsScreenY - 10, 10, 0xFFFFFFff,
+		    glazierBenchSpec = lsCheckBox(200, lsScreenY - 40, 10, 0xFFFFFFff,
         " Have Glazier\'s Bench Handling Spec?", glazierBenchSpec);
 
+        batchProduction = lsCheckBox(200, lsScreenY - 10, 10, 0xFFFFFFff, " Batch Produce Glass", batchProduction);
+
+          if batchProduction then
+            lsSetCamera(0,0,lsScreenX*1.4,lsScreenY*1.4);
+            lsPrint(210, lsScreenY - 4, 0, 1.0, 1.0, 0xFFFFFFff, "Sets of: ");
+            batchSize = lsDropdown("batchSize", 285, lsScreenY - 5, 0, 60, batchSize, batchSizes);
+              if batchSize == 1 then
+                lsPrint(210, lsScreenY + 30, 0, 1.0, 1.0, 0xFF0000ff, "Jewel Glass Only! ");
+              elseif batchSize == 3 then
+                lsPrint(210, lsScreenY + 30, 0, 1.0, 1.0, 0xFF0000ff, "Not Valid For Jewel Glass! ");
+              end
+            lsSetCamera(0,0,lsScreenX*1.5,lsScreenY*1.5);
+          end
+
       lsSetCamera(0,0,lsScreenX*1.1,lsScreenY*1.1);
+      if glazierBenchSpec then
+        ccQty = 1
+      else
+        ccQty = 2
+      end
 
-			if lsButtonText(lsScreenX - 59, lsScreenY - 100, 0, 60, 0x00FFFFff, "+" .. ccQty .. "cc") then
-				menuButtonSelected = 1;
-			end
+      if lsButtonText(lsScreenX - 149, lsScreenY - 65, 0, 60, 0x00FFFFff, "+" .. ccQty .. "cc") then
+        menuButtonSelected = 1;
+      end
 
-			if lsButtonText(lsScreenX - 86, lsScreenY - 65, 0, 22, 0xFFFF00ff, "M") then
+			if lsButtonText(lsScreenX - 86, lsScreenY - 65, 0, 24, 0xFFFF00ff, "M") then
 				menuButtonSelected = 2;
 			end
 
@@ -563,7 +633,7 @@ function doit()
 			end
 
 
-			if lsButtonText(lsScreenX - 80, lsScreenY, 0, 100, 0xFFFFFFff, "End script") then
+			if lsButtonText(lsScreenX - 80, lsScreenY, 0, 100, 0xFF0000ff, "End script") then
 				error "Clicked End Script button";
 			end
 
