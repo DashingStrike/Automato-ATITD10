@@ -289,8 +289,11 @@ function glassTick(window_pos, state)
          state.MinTempReachedOnce and not ((state.spiking or state.want_spike) and not cookDuringSpike) then
 				local made_one=nil;
 				for item_index=1, #item_priority do
+<<<<<<< HEAD
           srReadScreen();
           batchwork = srFindImageInRange("glass/batchwork.png", bounds[0]+5, bounds[1]+5, window_w, window_h, tol);
+=======
+>>>>>>> 2a1c1c4d0a0f1627bf5ca2f8b95de593db0c4d3c
 					pos = srFindImageInRange("glass/" .. item_priority[item_index], bounds[0]+5, bounds[1]+5, window_w, window_h, tol);
 					if pos then
 							for pngName, glassName in pairs(item_name) do
@@ -302,6 +305,7 @@ function glassTick(window_pos, state)
 						--state.status = state.status .. " Making:" .. item_priority[item_index];
 						state.status = state.status .. " Making:" .. making;
 						lsSleep(100);
+<<<<<<< HEAD
             if batchwork and batchProduction then
               escape = "\27"
               pos = srFindImageInRange("glass/batchwork.png", bounds[0]+5, bounds[1]+5, window_w, window_h, tol);
@@ -355,6 +359,9 @@ function glassTick(window_pos, state)
             else
   						srClickMouseNoMove(pos[0]+15, pos[1]+2);
             end
+=======
+						srClickMouseNoMove(pos[0]+15, pos[1]+2);
+>>>>>>> 2a1c1c4d0a0f1627bf5ca2f8b95de593db0c4d3c
 						lsSleep(100);
 						made_one = 1;
 						break;
