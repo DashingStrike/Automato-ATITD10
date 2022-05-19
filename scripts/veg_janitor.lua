@@ -27,7 +27,7 @@ WARNING = [[
     1. You must DISABLE: "Plant all crops where you stand"
     2. You must ENABLE: "Auto take piles of upto 50 portable items"
 3. In Options -> Video
-    1. You must set: "Shadow Quality" and "Time of Day" lighting to the lowest possible settings
+    1. You must set: "Tufts of Grass", "Shadow Quality", and "Time-of-Day Lighting" to the lowest possible settings
     2. Ideally run Veg Janitor in windowed mode with the window resized to be about 1280x1000 in size.
 4. Press F8 F8 F8 to set the camera in top down mode
 5. Press ALT-L to lock the camera so it doesn't move accidentally
