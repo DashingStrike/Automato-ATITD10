@@ -161,7 +161,7 @@ function closePopUp()
 	    if ok then
 	      statusScreen("Found and Closing Popups ...", nil, 0.7);
 	      srClickMouseNoMove(ok[0]+5,ok[1]);
-				waitForNoImage("ok.png");
+	      waitForNoImage("ok.png");
 	    else
 	      break;
 	    end
