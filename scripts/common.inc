@@ -146,6 +146,27 @@ function refreshWindows()
   lsSleep(100);
 end
 
+-------------------------------------------------------------------------------
+-- closePopUp()
+--
+-- Searches the screen for all instances of "ok.png" and if found
+-- click "ok.png" to close popup and wait for the image to disappear
+-- as to avoid character movement from additional clicks
+-------------------------------------------------------------------------------
+
+function closePopUp()
+  while 1 do
+    srReadScreen()
+    local ok = srFindImage("OK.png")
+	    if ok then
+	      statusScreen("Found and Closing Popups ...", nil, 0.7);
+	      srClickMouseNoMove(ok[0]+5,ok[1]);
+	      waitForNoImage("ok.png");
+	    else
+	      break;
+	    end
+  end
+end
 
 
 dofile("common_fix.inc");
