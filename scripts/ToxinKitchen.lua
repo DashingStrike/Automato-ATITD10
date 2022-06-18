@@ -256,20 +256,6 @@ function resetqty()
 	ccqty = 0;
 end
 
-function closePopUp()
-  while 1 do
-    srReadScreen()
-    local ok = srFindImage("OK.png")
-	    if ok then
-	      statusScreen("Found and Closing Popups ...", nil, 0.7);
-	      srClickMouseNoMove(ok[0]+5,ok[1]);
-	      lsSleep(100);
-	    else
-	      break;
-	    end
-  end
-end
-
 function updateStatus(window_pos)
 	local newstage = curstage;
 	local newtemp = curtemp;
@@ -600,14 +586,9 @@ function makeToxin(tid)
 						local y = toxinKitchenWindow[i][1];
 						local width = 441;
 						local height = 291;
-
-							if PRODUCTS[tid] == "Revelation Solvent (Renenutet's)" then
-								srReadScreen();
-								downArrow = findAllImagesInRange("downArrow.png", x, y, width, height);
-								safeClick(downArrow[#downArrow][0]+5,downArrow[#downArrow][1]+5);
-								lsSleep(250);
-							end
 					end
+				sleepWithStatus(2500, "Allowing the server to settle down,"
+        .. " to avoid 'Could not find " ..  PRODUCTS[tid] .. "'", nil, 0.7);
 				srReadScreen();
 				clickloc = findWinText("Start a batch of " .. PRODUCTS[tid], window_pos);
 					if not clickloc then
