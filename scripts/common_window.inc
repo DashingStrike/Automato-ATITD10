@@ -45,7 +45,7 @@ function stashWindow(sourceX, sourceY, corner, bounds, offset)
   local screen = srGetWindowSize();
   local dest = {};
 
-  
+
   if offset ~= nill then
     -- There's an offset. Override to place the window at the exact offset from the
     -- specified corner.
@@ -73,7 +73,7 @@ function stashWindow(sourceX, sourceY, corner, bounds, offset)
       dest[1] = sourceY - bounds[1] + stashBit + 5;
     end
   end
-  
+
   safeDrag(sourceX, sourceY, dest[0], dest[1]);
   srSetMousePos(sourceX, sourceY);
   lsSleep(click_delay);
@@ -196,7 +196,7 @@ function openAndPin(x, y, timeout)
 end
 
 -------------------------------------------------------------------------------
--- arrangeInGrid(cascade, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight)
+-- arrangeInGrid(cascade, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight, visibleStats)
 --
 -- Arrange all open windows into a grid on the screen. Stashes them first.
 --
@@ -206,17 +206,17 @@ end
 -- sizeRight (optional) -- amount of space to right of screen, defaults to automato width
 -- offsetWidth (optional) -- adds an additional width offset
 -- offsetHeight (optional) -- adds an additional height offset
-
+-- visibleStats (optional) -- adds additional space below top ui to make sure stat bubbles are visible
 -------------------------------------------------------------------------------
 
-function arrangeInGrid(cascade, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight)
+function arrangeInGrid(cascade, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight, visibleStats)
   stashAllWindows(BOTTOM_LEFT);
   stashAllWindows(BOTTOM_RIGHT);
-  arrangeStashed(cascade, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight);
+  arrangeStashed(cascade, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight, windowCap, bottomRightOffset, visibleStats);
 end
 
 -------------------------------------------------------------------------------
--- arrangeStashed(cascade, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight)
+-- arrangeStashed(cascade, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight, visibleStats)
 --
 -- Arrange all open windows into a grid on the screen. Assumes they
 -- are pre-stashed.
@@ -228,20 +228,21 @@ end
 -- sizeRight (optional) -- amount of space to right of screen, defaults to automato width
 -- offsetWidth (optional) -- adds an additional width offset
 -- offsetHeight (optional) -- adds an additional height offset
--- windowCap (optional) -- a hard limit to the amount of windows to arrange. Will not arrange 
+-- windowCap (optional) -- a hard limit to the amount of windows to arrange. Will not arrange
 --                         more if provided.
--- bottomRightOffset -- overrides the default -20 x -20 from bottom right corner offset when 
---                      looking for a stashed window to arrange. Used when stashing with an 
+-- bottomRightOffset -- overrides the default -20 x -20 from bottom right corner offset when
+--                      looking for a stashed window to arrange. Used when stashing with an
 --                      offset as the window may not be present at -20 x -20.
 --                      data structure: bottomRightOffset.x, bottomRightOffset.y
+-- visibleStats (optional) -- adds additional space below top ui to make sure stat bubbles are visible
 -------------------------------------------------------------------------------
 
-function arrangeStashed(cascade, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight, windowCap, bottomRightOffset)
+function arrangeStashed(cascade, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight, windowCap, bottomRightOffset, visibleStats)
   local screen = srGetWindowSize();
 
   local bottomRightX = screen[0] - 20;
   local bottomRightY = screen[1] - 20;
-  
+
   -- Override bottomRight stuff when that's provided.
   if bottomRightOffset ~= nil then
     bottomRightX = screen[0] - bottomRightOffset.x;
@@ -257,7 +258,11 @@ function arrangeStashed(cascade, uiGap, varWidth, varHeight, sizeRight, offsetWi
   local currentX = 8;
   local currentY = 10;
     if uiGap then
-      currentY = 95;
+      if visibleStats then
+        currentY = 130;
+      else
+        currentY = 95;
+      end
     end
   local initY = currentY;
   local lastX = 0;
@@ -442,6 +447,7 @@ function windowManager(title, message, allowCascade, allowUIGap, varWidth, varHe
     message = "Tap Ctrl to open and pin a window.\nTap Alt to open, pin and stash."
   end
   local uiGap = false;
+  local visibleStats = false;
 
   if default_uiGap then
     uiGap = true;
@@ -458,17 +464,17 @@ function windowManager(title, message, allowCascade, allowUIGap, varWidth, varHe
     lsPrint(10, y, 0, 1.0, 1.0, 0xFFFFFFff, title);
     y = y + 50;
 
-    if lsButtonText(30, y, 0, 250, 0x80D080ff, "Form Grid") then
+    if lsButtonText(25, y, 0, 250, 0x80D080ff, "Form Grid") then
       lsDoFrame();
       if pauseForFocus then
         askForWindow(focusMessage);
       end
-      arrangeInGrid(false, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight);
+      arrangeInGrid(false, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight, visibleStats);
     end
     y = y + 30;
 
     if allowCascade then
-      if lsButtonText(30, y, 0, 250, 0x80D080ff, "Form Cascade") then
+      if lsButtonText(25, y, 0, 250, 0x80D080ff, "Form Cascade") then
         lsDoFrame();
         if pauseForFocus then
           askForWindow(focusMessage);
@@ -478,7 +484,7 @@ function windowManager(title, message, allowCascade, allowUIGap, varWidth, varHe
       y = y + 30;
     end
 
-    if lsButtonText(30, y, 0, 250, 0x80D080ff, "Stash Windows (Right)") then
+    if lsButtonText(25, y, 0, 250, 0x80D080ff, "Stash Windows (Right)") then
       lsDoFrame();
       if pauseForFocus then
         askForWindow(focusMessage);
@@ -487,7 +493,7 @@ function windowManager(title, message, allowCascade, allowUIGap, varWidth, varHe
     end
     y = y + 30;
 
-    if lsButtonText(30, y, 0, 250, 0x80D080ff, "Stash Windows (Left)") then
+    if lsButtonText(25, y, 0, 250, 0x80D080ff, "Stash Windows (Left)") then
       lsDoFrame();
       if pauseForFocus then
         askForWindow(focusMessage);
@@ -496,7 +502,7 @@ function windowManager(title, message, allowCascade, allowUIGap, varWidth, varHe
     end
     y = y + 30;
 
-    if lsButtonText(30, y, 0, 250, 0x80D080ff, "Un-Pin Windows") then
+    if lsButtonText(25, y, 0, 250, 0x80D080ff, "Un-Pin Windows") then
       lsDoFrame();
       if pauseForFocus then
         askForWindow(focusMessage);
@@ -505,12 +511,17 @@ function windowManager(title, message, allowCascade, allowUIGap, varWidth, varHe
     end
     y = y + 40;
 
-    pauseForFocus = CheckBox(30, y, 10, 0xffffffff, " Pause for Focus",
+    pauseForFocus = CheckBox(25, y, 10, 0xffffffff, " Pause for Focus",
                             pauseForFocus);
     if allowUIGap then
       y = y + 20;
-      uiGap = CheckBox(30, y, 10, 0xffffffff, " Leave Gap for the UI",
+      uiGap = CheckBox(25, y, 10, 0xffffffff, " Leave Gap for the UI",
                             uiGap);
+        if uiGap then
+          y = y + 20;
+          visibleStats = CheckBox(25, y, 10, 0xffffffff, " Leave space for stat bubbles",
+                                visibleStats);
+        end
     end
       y = y + 30;
 
