@@ -187,7 +187,7 @@ function openAndPin(x, y, timeout)
   end
   if anchor then
     success = true;
-    if not findImageInWindow("UnPin.png", x+5, y) then
+    if findImageInWindow("unpinnedPin.png", x+5, y) then
       safeClick(anchor[0], anchor[1], 1);
       statusScreen("Pinning window");
     end
