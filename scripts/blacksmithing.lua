@@ -550,7 +550,7 @@ function takeProduct()
   end
 
   waitAndClickImage("Yes.png");
-
+  closePopUp(); -- Close 'Artistic Touch' popup that occurs after passing art tests
   waitAndClickText("This is [a-z]+ Anvil", nil, REGEX);
 end
 
@@ -603,5 +603,19 @@ function clickXY(x, y)
     end
   else
     safeClick(clickX, clickY);
+  end
+end
+
+function closePopUp()
+  while 1 do
+    srReadScreen()
+    local ok = srFindImage("OK.png")
+	    if ok then
+	      statusScreen("Found and Closing Popups ...", nil, 0.7);
+	      srClickMouseNoMove(ok[0]+5,ok[1]);
+	      lsSleep(100);
+	    else
+	      break;
+	    end
   end
 end
