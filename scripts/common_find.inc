@@ -24,8 +24,8 @@ maxThickWindowBorderColorRange = 0x6D472A;
 
 -- The colors used by srFindFirst/NextTextRegion and srGetWindowBorders to determine
 -- the innermost border pixels, for utility menus
-minUtilityWindowBorderColorRange = 0x3A3A3C;
-maxUtilityWindowBorderColorRange = 0x3F3F46;
+minUtilityWindowBorderColorRange = 0x9C2425;
+maxUtilityWindowBorderColorRange = 0xA02829;
 
 -- The colors that srStripRegion/Screen() looks for to decide it should invert (and
 -- treat as background when stripping)

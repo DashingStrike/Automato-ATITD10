@@ -1,7 +1,7 @@
 dofile("common.inc");
 dofile("settings.inc");
 
-askText = "Simon v1.13\n\nSets up a list of points and then clicks on them in sequence.\n\nCan optionally add a timer to wait between each pass (ie project takes a few minutes to complete).\n\nOr will watch Stats Timer (red/black) for clicking.";
+askText = "Sets up a list of points and then clicks on them in sequence.\n\nOptionally, add a timer to wait between each pass\n\nCan watch Stats Timer for clicking.";
 
 local is_stats = true;
 local clickDelay = 150;
@@ -20,7 +20,8 @@ local CLICK_ACTIONS = {
 };
 
 function setActions()
-  local was_held = lsControlHeld();
+  local was_ctrl_held = lsControlHeld();
+  local was_alt_held = lsAltHeld();
   local is_done = false;
   local mx = 0;
   local my = 0;
@@ -30,25 +31,42 @@ function setActions()
     checkBreak();
 
     mx, my = srMousePos();
-    local is_held = lsControlHeld();
-    if is_held and not was_held then
-      table.insert(clickList, {CLICK_POS, mx, my});
-      writeSetting("clickList", clickList)
-    end
-    was_held = is_held;
+    local is_ctrl_held = lsControlHeld();
+    local is_alt_held = lsAltHeld();
+      if is_ctrl_held and not was_ctrl_held then
+        -- Ctrl for Left Clicking
+        table.insert(clickList, {CLICK_POS, mx, my, "L"});
+        writeSetting("clickList", clickList)
+      elseif is_alt_held and not was_alt_held then
+        -- Shift for Right Clicking
+        table.insert(clickList, {CLICK_POS, mx, my, "R"});
+        writeSetting("clickList", clickList)
+      end
+    was_ctrl_held = is_ctrl_held;
+    was_alt_held = is_alt_held;
     local y = 10;
 
-    lsPrintWrapped(5, y, z, lsScreenX - 20, 0.7, 0.7, 0xFFFFFFff, "To add a positional click,\nhover over the screen and hit Ctrl.");
+    lsPrintWrapped(5, y, z, lsScreenX - 20, 0.7, 0.7, 0xFFFFFFff, "Hit Ctrl to store a Left Click position.\nHit Alt to store a Right Click position.");
     y = y + 50;
 
     local _, text = lsEditBox("text" .. unique, 5, y, 0, lsScreenX - 10, 30, 0.7, 0.7, 0x000000ff, text);
     y = y + 25;
+        
+    utilityWindow = readSetting("utilityWindow",utilityWindow);
+    utilityWindow = lsCheckBox(lsScreenX - 185, y+2, z, 0xFFFFFFff, "Utility", utilityWindow);
+    writeSetting("utilityWindow",utilityWindow);
+        
     if lsButtonText(5, y, z, 100, 0xFFFFFFff, "Click Text") then
-      table.insert(clickList, {CLICK_TEXT, text});
+      if utilityWindow then
+        table.insert(clickList, {CLICK_TEXT, text, "U"});
+      else
+        table.insert(clickList, {CLICK_TEXT, text});                
+      end
       writeSetting("clickList", clickList)
       text = "";
       unique = math.random();
     end
+
     if lsButtonText(lsScreenX - 105, y, z, 100, 0xFFFFFFff, "Click Image") then
       srFindImage(text); --will error if image doesn't exist
       table.insert(clickList, {CLICK_IMG, text});
@@ -60,7 +78,17 @@ function setActions()
 
     local start = math.max(1, #clickList - 10);
     for i=start, #clickList do
-      local line = i .. ") Click " .. CLICK_ACTIONS[clickList[i][1]] .. ": ";
+      if clickList[i][4] == "L" then
+        line = i .. ") Left Click " .. CLICK_ACTIONS[clickList[i][1]] .. ": ";
+      elseif clickList[i][4] == "R" then
+        line = i .. ") Right Click " .. CLICK_ACTIONS[clickList[i][1]] .. ": ";
+      else
+        if clickList[i][1] == 2 and clickList[i][3] == "U" then
+          line = i .. ") Click (Utility Window) " .. CLICK_ACTIONS[clickList[i][1]] .. ": ";  
+        else
+          line = i .. ") Click " .. CLICK_ACTIONS[clickList[i][1]] .. ": ";                    
+        end
+      end
       if clickList[i][1] == CLICK_POS then
         line = line  .. clickList[i][2] .. ", " .. clickList[i][3];
       else
@@ -176,18 +204,34 @@ function clickSequence(count)
 
     for j=1, #clickList do
       checkBreak();
-
-      local clickedLine = j .. ") Clicked " .. CLICK_ACTIONS[clickList[j][1]] .. " ";
-      if clickList[j][1] == CLICK_POS then
-        safeClick(clickList[j][2], clickList[j][3]);
-        clickedLine = clickedLine .. clickList[j][2] .. ", " .. clickList[j][3] .. "\n";
-      elseif clickList[j][1] == CLICK_TEXT then
-        local found = clickAllText(clickList[j][2]);
-        clickedLine = clickedLine .. "'" .. clickList[j][2] .. "' " .. found .. " times";
-      elseif clickList[j][1] == CLICK_IMG then
-        local found = clickAllImages(clickList[j][2]);
-        clickedLine = clickedLine .. "'" .. clickList[j][2] .. "' " .. found .. " times";
+      if clickList[j][4] == "L" then
+        clickedLine = j .. ") Left Clicked " .. CLICK_ACTIONS[clickList[j][1]] .. " ";
+      elseif clickList[j][4] == "R" then
+        clickedLine = j .. ") Right Clicked " .. CLICK_ACTIONS[clickList[j][1]] .. " ";
+      else
+        clickedLine = j .. ") Clicked " .. CLICK_ACTIONS[clickList[j][1]] .. " ";
       end
+        if clickList[j][1] == CLICK_POS then
+          if clickList[j][4] == "L" then
+            safeClick(clickList[j][2], clickList[j][3]); -- Left Mouse Click
+          elseif clickList[j][4] == "R" then
+            safeClick(clickList[j][2], clickList[j][3], 1); -- Right Mouse Click
+          end
+          clickedLine = clickedLine .. clickList[j][2] .. ", " .. clickList[j][3] .. "\n";
+        elseif clickList[j][1] == CLICK_TEXT then
+          if clickList[j][3] == "U" then
+            srSetWindowBorderColorRange(minUtilityWindowBorderColorRange, maxUtilityWindowBorderColorRange);
+            found = clickAllText(clickList[j][2]);
+          else
+            srSetWindowBorderColorRange(minThinWindowBorderColorRange, maxThinWindowBorderColorRange);
+            found = clickAllText(clickList[j][2]);
+          end
+          clickedLine = clickedLine .. "'" .. clickList[j][2] .. "' " .. found .. " times";
+        elseif clickList[j][1] == CLICK_IMG then
+          local found = clickAllImages(clickList[j][2]);
+          clickedLine = clickedLine .. "'" .. clickList[j][2] .. "' " .. found .. " times";
+        end
+
       table.insert(clickedPoints, clickedLine);
 
       message = "Pass " .. i .. "/" .. count .. " -- ";
