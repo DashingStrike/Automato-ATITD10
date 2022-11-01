@@ -432,7 +432,7 @@ function runForges()
   end
 
   askForWindow("Hover mouse over ATITD Window and press SHIFT");
-  windowManager(nil,nil, false, false, 480, 200, nil, 10, 20,false);
+  windowManager(nil,nil, false, false, 480, 383, nil, 10, 20,false);
 
   local topLevel = {};
   topLevel.Forge = forgeItems;
