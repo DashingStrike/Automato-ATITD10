@@ -10,6 +10,10 @@ TOP_RIGHT = 1;
 BOTTOM_LEFT = 2;
 BOTTOM_RIGHT = 3;
 
+ARRANGE_STASH = 0;
+ARRANGE_GRID = 1;
+ARRANGE_CASCADE = 2;
+
 -------------------------------------------------------------------------------
 -- stashWindow(sourceX, sourceY, corner, bounds)
 --
@@ -457,6 +461,7 @@ function windowManager(title, message, allowCascade, allowUIGap, varWidth, varHe
     pauseForFocus = true;
   end
 
+  local arrangeMode = nil;
   local shift = false;
   local done = false;
   while not done do
@@ -470,6 +475,7 @@ function windowManager(title, message, allowCascade, allowUIGap, varWidth, varHe
         askForWindow(focusMessage);
       end
       arrangeInGrid(false, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight, visibleStats);
+      arrangeMode = ARRANGE_GRID;
     end
     y = y + 30;
 
@@ -480,6 +486,7 @@ function windowManager(title, message, allowCascade, allowUIGap, varWidth, varHe
           askForWindow(focusMessage);
         end
         arrangeInGrid(true, uiGap, varWidth, varHeight, sizeRight, offsetWidth, offsetHeight);
+        arrangeMode = ARRANGE_CASCADE;
       end
       y = y + 30;
     end
@@ -490,6 +497,7 @@ function windowManager(title, message, allowCascade, allowUIGap, varWidth, varHe
         askForWindow(focusMessage);
       end
       stashAllWindows(BOTTOM_RIGHT);
+      arrangeMode = ARRANGE_STASH;
     end
     y = y + 30;
 
@@ -499,6 +507,7 @@ function windowManager(title, message, allowCascade, allowUIGap, varWidth, varHe
         askForWindow(focusMessage);
       end
       stashAllWindows(BOTTOM_LEFT);
+      arrangeMode = ARRANGE_STASH;
     end
     y = y + 30;
 
@@ -561,6 +570,8 @@ function windowManager(title, message, allowCascade, allowUIGap, varWidth, varHe
     lsDoFrame();
     lsSleep(tick_delay);
   end
+  
+  return arrangeMode;
 end
 
 -------------------------------------------------------------------------------
