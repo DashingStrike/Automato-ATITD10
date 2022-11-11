@@ -806,30 +806,22 @@ function runCascade()
   
     for i=1,#wins do
       local forge = monitor.forge[i];
+      if (forge == nil) then
+        monitor.runCompact = true;
+        goto skip
+      end
+
       print(string.format("Begin: %s (%s)", forge.name, getElapsedTime(forge.lastCheck)));
       forge.lastCheck = lsGetTimer();
       forge.x = wins[i][0]+5;
-      forge.y = wins[i][1]+5;    
-
-      --print(forge.name);
+      forge.y = wins[i][1]+5;
      
       -- bring this window to the top
+      srSetMousePos(forge.x, forge.y);
       safeClick(forge.x, forge.y);
       lsSleep(click_delay);
       srReadScreen();
       forge.bounds = getWindowBorders(forge.x, forge.y);
-
-      if (forge.status == Status.EXTINGUISHED) then
-        if auto_close then
-          unpinWindow(forge.bounds);
-          monitor.completed[#monitor.completed+1] = forge;
-          monitor.forge[i] = nil;
-          monitor.runCompact = true;
-          goto skip
-        end
-
-        goto continue
-      end     
 
 
       if (forge.status == Status.INITIALIZING) then
@@ -883,13 +875,16 @@ function runCascade()
         --if findText("is lit", forge.bounds) then
           forge.bounds = getWindowBorders(forge.x, forge.y);
           monitor.running = monitor.running + 1;
-          forge.status = Status.IDLE;
+          forge.status = findText("cooling", forge.bounds) and Status.COOLING or Status.IDLE;
         end
 
         lsSleep(tick_delay);
       end
 
       if (forge.status == Status.EXTINGUISHING) then
+        safeClick(forge.x, forge.y);
+        lsSleep(click_delay);
+        srReadScreen();        
         if findText("is out", forge.bounds) then
           print("Fire is out.");                    
           forge.status = Status.EXTINGUISHED;
@@ -899,7 +894,19 @@ function runCascade()
         lsSleep(tick_delay);
       end
 
-      if (forge.status ~= Status.EXTINGUISHED) then
+      if (forge.status == Status.EXTINGUISHED) then
+        if auto_close then
+          srReadScreen();
+          local pin = findImageInWindow("UnPin.png", forge.x, forge.y);
+          if pin then
+            safeClick(pin[0]+2, pin[1]+2);
+            monitor.completed[#monitor.completed+1] = forge;
+            monitor.forge[i] = nil;
+            monitor.runCompact = true;
+            goto skip
+          end
+        end
+      else  
         if (forge.status == Status.COOLING) then
           print("Forge Cooling...");
 
@@ -941,32 +948,26 @@ function runCascade()
               if madeItem ~= true then
                 table.insert(forge.itemQueue, currentItem);
               else
-                --safeClick(forge.x, forge.y);
-                --lsSleep(click_delay);
-                --srReadScreen();
-    
-                --lsPrintln("Box: " .. forge.bounds.x .. "," .. forge.bounds.y .. "/" .. forge.bounds.width .. "," .. forge.bounds.height);
                 pollWindowForText("cooling", forge.bounds, nil, string.format("%s - Waiting for cooling...", forge.name));
                 forge.status = Status.COOLING;
               end
             else
-              print("No items left to make...");
-              --if #forge.itemQueue == 0 then
-                -- Queue is empty, we're finished with this building type..          
-                if auto_take then 
-                    local p = findText("Take...", forge.bounds);
-                    if (p) then
-                      clickText(p)
-                      lsSleep(click_delay);
-                      local e = waitForText("Everything");
-                        if (e) then
-                          clickText(e);
-                          sleepWithStatus(500,"Taking Items...", nil, 0.7, 0.7);
-                        end
+              print("No items left to make...");             
+              -- Queue is empty, we're finished with this building type..          
+              if auto_take then
+                  local p = findText("Take...", forge.bounds);
+                  if (p) then
+                    clickText(p)
+                    lsSleep(click_delay);
+                    local e = waitForText("Everything");
+                      if (e) then
+                        clickText(e);
+                        sleepWithStatus(500,"Taking Items...", nil, 0.7, 0.7);
+                      end
                   end
-                end
-        
-                if auto_extinguish then forge.status = Status.EXTINGUISH; end
+              end
+      
+              if auto_extinguish then forge.status = Status.EXTINGUISH; end
             end
           else
             forge.status = Status.EXTINGUISHED;
@@ -986,12 +987,13 @@ function runCascade()
         end        
       end
 
-      ::continue::
       lsSleep(100);
-      print(string.format("Moving Window: (%s,%s) -> (%s,%s)", forge.x, forge.y, forge.x+cascadeOffset+1, forge.y+1));
-      safeDrag(forge.x, forge.y, forge.x+cascadeOffset+1, forge.y+1);
-      lsSleep(click_delay);
-      --srReadScreen();
+      if (#monitor.forge > 1) then
+        print(string.format("Moving Window: (%s,%s) -> (%s,%s)", forge.x, forge.y, forge.x+cascadeOffset+1, forge.y+1));
+        safeDrag(forge.x, forge.y, forge.x+cascadeOffset+1, forge.y+1);
+        lsSleep(click_delay);
+      end
+
       print(string.format("End: %s (%s)", forge.name, getElapsedTime(forge.lastCheck)));
       forge.lastCheck = lsGetTimer();
       ::skip::
@@ -1107,7 +1109,7 @@ function drawCascadeMonitorUI(monitor, index, forge)
 end
 
 
--- The waitFor functions in common_wait don't 
+-- The waitFor functions in common_wait don't work with updates that requrie the user to refresh the window
 function pollText(args)
   local text = args[1];
   local range = args[2];
@@ -1119,6 +1121,7 @@ function pollText(args)
   return findText(text, range, flags, sizemod);
 end
 function pollWindowForText(text, range, timeout, message, flags, sizemod)
+  -- range is now required or we can't poll the window
   if not text and not range then
     error("Incorrect number of arguments for pollForText()");
   end
@@ -1132,7 +1135,7 @@ end
 -- Returns a formatted string containing the elapsed time
 --
 -- startTime -- The time the macro started as returned by lsGetTimer()
--- endTime [optional] -- The time the macro ended. Defaults to lsGetTimer()
+-- endTime [optional] -- The time the macro ended. Defaults to lsGetTimer() (a.k.a. Now)
 -------------------------------------------------------------------------------
 local function getElapsedTime(startTime, endTime)
   local endTime = endTime or lsGetTimer();
