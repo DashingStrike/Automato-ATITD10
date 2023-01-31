@@ -505,7 +505,7 @@ function loadReports()
   lsDoFrame();
   statusScreen("Fetching data from Shroomdar...");
 
-  local body, status, auth = http.request("https://automato.sharpnetwork.net/mushroom.asp");
+  local body, status, auth = http.request("https://automato.catitd.com/mushroom.asp");
   if status ~= 200 then
     sleepWithStatus(2000, "Error Fetching Data.\nStatus: " .. status .. "\nBody: " .. body .. "\nAuth: " .. table.concat(auth, ", "));
   end
@@ -634,7 +634,7 @@ function displaySettings()
 end
 
 function copyShroomdarLink(mushroom)
-  lsClipboardSet("https://atitd.sharpnetwork.net/mushrooms/report.asp?shroom=" .. mushroom.shroomdarId);
+  lsClipboardSet("https://catitd.com/mushrooms/report.asp?shroom=" .. mushroom.shroomdarId);
 
   promptOkay("A link to the shroomdar page for " .. mushroom.name .. " has been copied to your clipboard. Paste it into your browser.");
 end
@@ -717,7 +717,7 @@ function reportToShroomdar(mushroom)
     end
 
     if not error and lsButtonText(5, lsScreenY - 30, 5, 80, 0x00ff00ff, "Report") then
-      local body, status, auth = http.request("https://atitd.sharpnetwork.net/mushrooms/submit_report.asp", table.concat({
+      local body, status, auth = http.request("https://catitd.com/mushrooms/submit_report.asp", table.concat({
         "mushroom=" .. mushroom.shroomdarId,
         "Year=" .. yearIndex,
         "Season=" .. seasons[seasonIndex],
