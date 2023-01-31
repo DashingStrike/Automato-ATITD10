@@ -174,9 +174,7 @@ function main()
     checkBreak();
     loadAnvil(metals[metalIndex], recipes[recipeIndex].product);
     statusScreen(message, nil, scale, scale);
-
     makeRecipe();
-
     checkItem();
 
     if not pauseTake then
@@ -384,27 +382,20 @@ end
 
 function loadAnvil(metal, product)
   waitAndClickText("Load Anvil...");
-
   waitAndClickText(metal .. "...");
-
   waitAndClickText("^" .. product, nil, REGEX);
-
   waitAndClickText("This is [a-z]+ Anvil", nil, REGEX);
-
   lsSleep(2000);
 end
 
 function setTool(tool)
   waitAndClickText("Tools...");
-
   waitAndClickText(tool);
 end
 
 function setForce(force)
   waitAndClickText("Tools...");
-
   waitAndClickText("Force Level");
-
   waitAndClickText("[" .. force .. "]");
 end
 
@@ -537,7 +528,6 @@ end
 
 function checkItem()
   waitAndClickText("Tools...");
-
   waitAndClickText("Quality Check");
 end
 
@@ -550,17 +540,15 @@ function takeProduct()
   end
 
   waitAndClickImage("Yes.png");
+  sleepWithStatus(1500,"Short pause to wait for possible popup")
   closePopUp(); -- Close 'Artistic Touch' popup that occurs after passing art tests
   waitAndClickText("This is [a-z]+ Anvil", nil, REGEX);
 end
 
 function scrapProduct()
   srReadScreen();
-
   waitAndClickText("This is [a-z]+ Anvil", nil, REGEX);
-
   waitAndClickText("Discard Project");
-
   srReadScreen();
 
   local yes = waitForImage(
@@ -573,7 +561,6 @@ function scrapProduct()
   end
 
   waitAndClickImage("Yes.png");
-
   waitAndClickText("This is [a-z]+ Anvil", nil, REGEX);
 end
 
@@ -584,10 +571,8 @@ function clickXY(x, y)
   if troubleshoot then
     srSetMousePos(clickX, clickY);
     safeClick(clickX, clickY);
-
     while not lsControlHeld() do
       checkBreak();
-
       lsPrint(5, 5, 0, 0.7, 0.7, 0xffffffff, "Clicked: " .. x .. ", " .. y);
       lsPrint(5, 25, 0, 0.7, 0.7, 0xffffffff, "Press Ctrl to advance");
       if lsButtonText(lsScreenX - 110, lsScreenY - 30, z, 100, 0xFFFFFFff, "End script") then
