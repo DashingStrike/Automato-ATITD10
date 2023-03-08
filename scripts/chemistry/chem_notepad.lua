@@ -1,4 +1,3 @@
-
 dofile("common.inc");
 
 function doit()
@@ -9,9 +8,8 @@ end
 function browseMenu(tree)
   local done = false;
   local tags = {};
-  local nextIndex = 1;
   while not done do
-    local y = 0;
+    y = 0;
     for i=1,#tags do
       y = y + 30;
       lsPrint(40, y, 0, 0.9, 0.9, 0xd0d0d0ff, tags[i]);
@@ -34,14 +32,6 @@ function browseMenu(tree)
 	end
       end
       y = y + 30;
---      if nextTags[1] ~= "" then
---	table.insert(nextTags, 1, "");
---      end
---      nextIndex = lsDropdown("NoteIndex", 40, y, 0, 250, nextIndex, nextTags);
---      if nextIndex ~= 1 then
---	table.insert(tags, nextTags[nextIndex]);
---	nextIndex = 1;
---      end
     else
       y = y + 30;
       lsPrintWrapped(10, y, 0, lsScreenX - 20, 0.7, 0.7, 0xffffffff, nextTags);
@@ -49,11 +39,8 @@ function browseMenu(tree)
 
     if lsButtonText(10, lsScreenY - 30, 0, 100, 0xffffffff, "Restart") then
       if #tags > 0 then
---	table.remove(tags);
-	tags = {};
-	nextIndex = 1;
-      else
---	done = true;
+        --	table.remove(tags);
+        tags = {};
       end
     end
 
@@ -104,7 +91,7 @@ function lookupData(tree, tags, index)
   elseif type(tree) ~= "table" then
     result = tree;
   elseif #tags < index then
-    for key,value in pairs(tree) do
+    for key in pairs(tree) do
       table.insert(result, key);
     end
   else
@@ -146,16 +133,6 @@ function loadNotes(filename)
     setLine(result, line);
   end
   return result;
-end
-
-function saveNotes(filename, tree)
-  local file = io.open(filename, "w+");
-  local lines = {};
-  lookupAllData({}, tree, lines);
-  for line in lines do
-    file:write(line .. "\n");
-  end
-  io.close(file);
 end
 
 -- Added in an explode function (delimiter, string) to deal with broken csplit.
