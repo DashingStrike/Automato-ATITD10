@@ -28,6 +28,7 @@ stds.common = {
     "ButtonText",
     "calculatePixelDiffs",
     "CARTOGRAPHER2CAM",
+    "CARTOGRAPHERCAM",
     "centerMouse",
     "CheckBox",
     "checkBreak",
