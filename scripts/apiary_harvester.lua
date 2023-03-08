@@ -4,7 +4,10 @@
 
 dofile("common.inc");
 
-askText = "Press SHIFT over the ATITD window to start.\n\nMacro will search for the \'Check this Beehive\' message.\n\nClick on a Beehive and don't move you mouse.\n\nThe macro will pin the window, click the check button, then wait for the Take button, and unpin the window.\n\nThe macro will return to looking for a \'Check this Beehive\' message.";
+askText = "Press SHIFT over the ATITD window to start.\n\nMacro will search for " ..
+"the \'Check this Beehive\' message.\n\nClick on a Beehive and don't move you mouse.\n\nThe macro " ..
+"will pin the window, click the check button, then wait for the Take button, and unpin the " ..
+"window.\n\nThe macro will return to looking for a \'Check this Beehive\' message.";
 check_text = "Check this Beehive";
 take_text = "Take...";
 this_is = "This is";
@@ -32,7 +35,7 @@ function doit()
         clickAllText(this_is);
         lsSleep(32);
       end
-     
+
       srReadScreen();
       click_text3 = findText(take_text);
       if click_text3 then
