@@ -39,6 +39,7 @@ items = {
           "Weave Papy Basket",
           "Weave Silk",
           "Weave Wool Cloth",
+          "Wind Well Spring",
         },
         --con
         {"",
@@ -507,6 +508,16 @@ function hacklingRake()
       end
 end
 
+function windWellSpring()
+	t = waitForText("Wind the well spring", 2000);
+	if t then
+		safeClick(t[0]+20,t[1]);
+	else
+		clickText(findText("This is [a-z]+ Deep Well", nil, REGEX));
+		lsSleep(500);
+	end
+end
+
 function stirCement()
 
   if stirFuel == 1 then
@@ -783,6 +794,8 @@ function doTasks()
                   weave("Canvas");
                 elseif curTask == "Weave Linen" then
                   weave("Linen");
+                elseif curTask == "Wind Well Spring" then
+                	windWellSpring();
                 elseif curTask == "Recycle Tattered Sail" then
                   weave("TatteredSail");
                 elseif curTask == "Weave Wool Cloth" then
