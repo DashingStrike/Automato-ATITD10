@@ -7,6 +7,8 @@ local containerCurrent;
 local containerMax;
 local containerConfig;
 
+local http;
+
 function round(value)
   return math.floor(value + 0.5);
 end
@@ -172,6 +174,68 @@ function sortConfig(config)
   return sortTable;
 end
 
+function import(url)
+  if not http then
+    http = require("ssl.https");
+  end
+
+  local body, status, auth = http.request(url);
+  if status ~= 200 then
+    sleepWithStatus(2000, "Error Fetching Data.\nStatus: " .. status .. "\nBody: " .. body .. "\nAuth: " .. table.concat(auth, ", "));
+    return;
+  end
+
+  print(body);
+
+  local file = io.open("scripts/Settings.packrat.lua.txt", "r");
+  if file then
+    local backup = io.open("scripts/Settings.packrat.lua.backup." .. getTime("datetime3") .. ".txt", "w");
+
+    backup:write(file:read("*all"));
+    backup:close();
+    file:close();
+  end
+
+  file = io.open("scripts/Settings.packrat.lua.txt", "w+");
+
+  file:write(body);
+  file:close();
+
+  settingsInitialized = false;
+  initialize();
+
+  lsDoFrame();
+  lsPrint(10, 10, 0, 1.0, 1.0, 0xFFFFFFff, "Import complete");
+  lsDoFrame();
+  lsSleep(2000);
+end
+
+function displayImport()
+  while true do
+    lsPrintWrapped(10, 10, 0, lsScreenX - 20, 0.7, 0.7, 0xFFFFFFff, [[
+  This will backup your current settings.
+  Imports new settings from the interwebz.
+  Pastebin is an easy place to host them.
+    * Be sure to use raw format.
+]]);
+
+    lsPrint(10, 280, 0, 1.0, 1.0, 0xFFFFFFff, "Url:");
+    local _, importUrl = lsEditBox("packrat_import", 50, 280, 0, 240, 25, 1.0, 1.0, 0x000000ff);
+
+    if lsButtonText(10, lsScreenY - 30, 0, 80, 0x0000FFff, "Import") then
+     import(importUrl);
+    end
+
+    if lsButtonText(lsScreenX - 110, lsScreenY - 30, 0, 80, 0xFFFFFFff, "Back") then
+      return;
+    end
+
+    lsDoFrame();
+    checkBreak();
+    lsSleep(50);
+  end
+end
+
 function displayConfig()
   local unique = math.random();
   local newConfig = {};
@@ -242,6 +306,10 @@ function displayStatus()
       end
     else
       message = "Found container, but it has no label."
+    end
+  else
+    if lsButtonText(100, lsScreenY - 30, 0, 80, 0xFFFF00ff, "Import") then
+      displayImport();
     end
   end
 
